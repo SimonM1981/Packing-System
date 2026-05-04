@@ -491,7 +491,7 @@
     img.src = url;
   }
 
-  // ── SUBMIT — sends everything including photos in one POST ─
+   // ── SUBMIT — sends everything including photos in one POST ─
   async function submitData() {
     if (document.getElementById('submitBtn').disabled) return;
 
@@ -510,6 +510,7 @@
 
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const data = {
+      action: "submit",  // REQUIRED for doPost routing
       packedBy, checkerBy, cartonId,
       customer:   document.getElementById('customer').value.trim(),
       pi:         document.getElementById('pi').value.trim(),
@@ -522,18 +523,35 @@
       bagMatch:   matchState.bag,
       innerMatch: matchState.inner,
       outerMatch: matchState.outer,
-      // Send base64 photos — Apps Script will upload to Drive
       imgBag:    photoUrls.imgBag    ? { base64: photoUrls.imgBag,    filename: 'BagPart_'  + timestamp + '.jpg' } : null,
       imgInner:  photoUrls.imgInner  ? { base64: photoUrls.imgInner,  filename: 'InnerBox_' + timestamp + '.jpg' } : null,
       imgCarton: photoUrls.imgCarton ? { base64: photoUrls.imgCarton, filename: 'Carton_'   + timestamp + '.jpg' } : null,
     };
 
     try {
-      // Use GET instead of POST to avoid no-cors body stripping
-      const encoded = encodeURIComponent(JSON.stringify(data));
-      await fetch(SCRIPT_URL + '?action=submit&data=' + encoded);
-      showStatus('✅ Packing data & photos saved successfully!', 'success');
-      setTimeout(() => location.reload(), 2800);
+      // CRITICAL FIX: Use POST with text/plain to avoid CORS preflight AND URL length limits
+      const response = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8'  // Simple request = no preflight
+        },
+        body: JSON.stringify(data),
+        redirect: 'follow'  // Apps Script returns 302 redirect, fetch must follow it
+      });
+
+      // Check if response is OK
+      if (!response.ok) {
+        throw new Error('Server returned ' + response.status + ' ' + response.statusText);
+      }
+
+      const result = await response.json();
+
+      if (result.success) {
+        showStatus('✅ Packing data & photos saved successfully!', 'success');
+        setTimeout(() => location.reload(), 2800);
+      } else {
+        throw new Error(result.error || 'Unknown server error');
+      }
     } catch(err) {
       showStatus('Error: ' + err.message, 'error');
       btn.disabled    = false;
