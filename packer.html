@@ -121,6 +121,13 @@
     <button class="type-btn" onclick="focusField('pi')">TYPE</button>
   </div>
   <div class="auto-filled" id="piNote">Auto-filled from master register</div>
+  <label>Part No.</label>
+  <div class="scan-row">
+    <input type="text" id="partNo" placeholder="Auto-filled or scan/type">
+    <button onclick="startScanner('partNo')">SCAN</button>
+    <button class="type-btn" onclick="focusField('partNo')">TYPE</button>
+  </div>
+  <div class="auto-filled" id="partNoNote">Auto-filled from master register</div>
 </div>
 
 <!-- BARCODES -->
@@ -268,8 +275,10 @@
         masterData = result;
         document.getElementById('customer').value = result.customer;
         document.getElementById('pi').value = result.pi;
+        document.getElementById('partNo').value = result.partNo;
         document.getElementById('customerNote').style.display = 'block';
         document.getElementById('piNote').style.display = 'block';
+        document.getElementById('partNoNote').style.display = 'block';
         const bagOk = bagValue === result.bagBarcode;
         matchState.bag = bagOk;
         setBadge('bag', bagOk ? 'ok' : 'fail', bagOk ? 'Match — Bag OK' : 'Mismatch — Wrong Bag');
@@ -283,8 +292,10 @@
         setBadge('bag', 'fail', 'Not found in master register');
         document.getElementById('customer').value = '';
         document.getElementById('pi').value = '';
+        document.getElementById('partNo').value = '';
         document.getElementById('customerNote').style.display = 'none';
         document.getElementById('piNote').style.display = 'none';
+        document.getElementById('partNoNote').style.display = 'none';
       }
     } catch(err) {
       setBadge('bag', 'fail', 'Lookup failed — check connection');
@@ -371,6 +382,7 @@
       packedBy, checkerBy, cartonId,
       customer:  document.getElementById('customer').value.trim(),
       pi:        document.getElementById('pi').value.trim(),
+      partNo:    document.getElementById('partNo').value.trim(),
       bag:       document.getElementById('bag').value.trim(),
       inner:     document.getElementById('inner').value.trim(),
       outer:     document.getElementById('outer').value.trim(),
