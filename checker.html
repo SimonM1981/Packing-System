@@ -14,154 +14,121 @@
     h1 { text-align:center; color:#ffb74d; margin:12px 0 4px; font-size:1.5rem; }
     .subtitle { text-align:center; color:#888; font-size:0.85rem; margin-bottom:20px; }
 
-    /* PIN SCREEN */
-    #pinScreen {
-      max-width: 340px; margin: 80px auto;
-      background: #1e1e1e; border:1px solid #333; border-radius:16px; padding:32px 24px; text-align:center;
-    }
+    /* PIN */
+    #pinScreen { max-width:340px; margin:80px auto; background:#1e1e1e; border:1px solid #333; border-radius:16px; padding:32px 24px; text-align:center; }
     #pinScreen h2 { color:#ffb74d; margin:0 0 8px; }
     #pinScreen p  { color:#888; font-size:0.9rem; margin:0 0 24px; }
-    #pinInput {
-      width:100%; padding:14px; background:#2a2a2a; border:1px solid #444;
-      border-radius:8px; color:white; font-size:22px; text-align:center; letter-spacing:0.3em;
-      margin-bottom:12px;
-    }
+    #pinInput { width:100%; padding:14px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; font-size:22px; text-align:center; letter-spacing:0.3em; margin-bottom:12px; }
     #pinError { color:#f44336; font-size:0.85rem; margin-top:8px; display:none; }
 
-    /* MAIN */
     #mainScreen { display:none; }
-    .toolbar {
-      display:flex; align-items:center; justify-content:space-between;
-      margin-bottom:16px; gap:10px; flex-wrap:wrap;
-    }
-    .toolbar input {
-      flex:1; min-width:160px; padding:10px 12px; background:#2a2a2a;
-      border:1px solid #444; border-radius:8px; color:white; font-size:15px;
-    }
-    .filter-btn {
-      padding:10px 14px; border-radius:8px; border:none; cursor:pointer;
-      font-size:0.85rem; font-weight:600; white-space:nowrap;
-    }
+    .toolbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; gap:10px; flex-wrap:wrap; }
+    .toolbar input { flex:1; min-width:160px; padding:10px 12px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; font-size:15px; text-transform:uppercase; }
+    .filter-row { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+    .filter-btn { padding:9px 14px; border-radius:8px; border:none; cursor:pointer; font-size:0.82rem; font-weight:600; white-space:nowrap; opacity:0.55; }
+    .filter-btn.active { opacity:1; outline:2px solid white; }
     .filter-btn.all      { background:#455a64; color:white; }
     .filter-btn.pending  { background:#e65100; color:white; }
     .filter-btn.verified { background:#2e7d32; color:white; }
     .filter-btn.rejected { background:#b71c1c; color:white; }
-    .filter-btn.active   { outline:2px solid white; }
+    .refresh-btn { background:#455a64; border:none; color:white; padding:10px 16px; border-radius:8px; cursor:pointer; font-size:0.88rem; white-space:nowrap; }
 
     /* RECORD CARD */
-    .record-card {
-      background:#1e1e1e; border:1px solid #333; border-radius:12px;
-      padding:14px; margin-bottom:12px; cursor:pointer; transition:border-color 0.2s;
-    }
-    .record-card:hover { border-color:#555; }
-    .record-card.verified { border-left:4px solid #4caf50; }
-    .record-card.rejected { border-left:4px solid #f44336; }
-    .record-card.pending  { border-left:4px solid #ff9800; }
+    .record-card { background:#1e1e1e; border:1px solid #333; border-left:4px solid #555; border-radius:12px; padding:14px; margin-bottom:10px; cursor:pointer; transition:border-color 0.2s; }
+    .record-card:hover { border-color:#666; }
+    .record-card.verified { border-left-color:#4caf50; }
+    .record-card.rejected { border-left-color:#f44336; }
+    .record-card.pending  { border-left-color:#ff9800; }
     .record-header { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
     .record-customer { font-weight:700; font-size:1rem; color:#ffb74d; }
-    .record-pi       { font-size:0.82rem; color:#888; }
-    .record-meta     { font-size:0.78rem; color:#666; margin-top:4px; }
-    .status-pill {
-      padding:3px 10px; border-radius:12px; font-size:0.75rem; font-weight:700; white-space:nowrap; flex-shrink:0;
-    }
+    .record-sub { font-size:0.8rem; color:#888; margin-top:2px; }
+    .record-meta { font-size:0.76rem; color:#666; margin-top:6px; }
+    .status-pill { padding:3px 10px; border-radius:12px; font-size:0.75rem; font-weight:700; white-space:nowrap; flex-shrink:0; }
     .status-pill.verified { background:#2e7d32; color:#a5d6a7; }
     .status-pill.rejected { background:#b71c1c; color:#ef9a9a; }
     .status-pill.pending  { background:#e65100; color:#ffcc80; }
-    .match-row { margin-top:8px; font-size:0.8rem; display:flex; gap:8px; flex-wrap:wrap; }
-    .match-tag { padding:2px 8px; border-radius:8px; background:#2a2a2a; }
+    .match-row { margin-top:6px; font-size:0.78rem; }
+    .match-tag { padding:2px 8px; border-radius:8px; background:#2a2a2a; display:inline-block; }
 
     /* DETAIL MODAL */
-    #detailModal {
-      position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.85); z-index:100; overflow-y:auto; padding:16px;
-    }
-    .modal-card {
-      background:#1e1e1e; border:1px solid #444; border-radius:14px;
-      padding:20px; max-width:560px; margin:0 auto;
-    }
+    #detailModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.88); z-index:100; overflow-y:auto; padding:16px; }
+    .modal-card { background:#1e1e1e; border:1px solid #444; border-radius:14px; padding:20px; max-width:560px; margin:0 auto 40px; }
     .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
-    .modal-header h2 { color:#ffb74d; margin:0; font-size:1.2rem; }
-    .close-btn { background:#444; border:none; color:white; padding:8px 14px; border-radius:8px; cursor:pointer; font-size:0.9rem; }
+    .modal-header h2 { color:#ffb74d; margin:0; font-size:1.15rem; }
+    .close-btn { background:#444; border:none; color:white; padding:8px 14px; border-radius:8px; cursor:pointer; }
 
     .detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
-    .detail-item label { display:block; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em; color:#666; margin-bottom:3px; }
-    .detail-item span  { font-size:0.92rem; color:#e0e0e0; font-weight:600; word-break:break-all; }
+    .detail-item label { display:block; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.06em; color:#666; margin-bottom:3px; }
+    .detail-item span  { font-size:0.9rem; color:#e0e0e0; font-weight:600; word-break:break-all; }
 
-    .barcode-row { margin-bottom:14px; }
-    .barcode-row label { display:block; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em; color:#666; margin-bottom:6px; }
-    .barcode-check {
-      display:flex; align-items:center; justify-content:space-between;
-      background:#2a2a2a; border-radius:8px; padding:10px 12px; margin-bottom:6px;
-    }
-    .barcode-check .bc-label { font-size:0.82rem; color:#aaa; }
-    .barcode-check .bc-value { font-size:0.9rem; font-weight:700; flex:1; text-align:center; word-break:break-all; }
-    .barcode-check .bc-badge { font-size:0.85rem; font-weight:700; flex-shrink:0; }
+    .section-lbl { font-size:0.7rem; text-transform:uppercase; letter-spacing:0.06em; color:#666; display:block; margin-bottom:8px; }
+    .barcode-check { display:flex; align-items:center; justify-content:space-between; background:#2a2a2a; border-radius:8px; padding:10px 12px; margin-bottom:6px; gap:8px; }
+    .bc-label { font-size:0.8rem; color:#aaa; flex-shrink:0; width:50px; }
+    .bc-value { font-size:0.88rem; font-weight:700; flex:1; text-align:center; word-break:break-all; }
+    .bc-badge { font-size:0.85rem; font-weight:700; flex-shrink:0; }
     .bc-badge.ok   { color:#4caf50; }
     .bc-badge.fail { color:#f44336; }
+    .bc-badge.nobc { color:#ff9800; }
 
     .photos-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:16px; }
     .photo-wrap { text-align:center; }
-    .photo-wrap img { width:100%; border-radius:8px; border:1px solid #444; cursor:pointer; }
+    .photo-wrap a img { width:100%; border-radius:8px; border:1px solid #444; }
     .photo-wrap .photo-lbl { font-size:0.7rem; color:#777; margin-top:4px; }
-    .no-photo { background:#2a2a2a; border-radius:8px; height:70px; display:flex; align-items:center; justify-content:center; color:#555; font-size:0.75rem; border:1px solid #333; }
+    .no-photo { background:#2a2a2a; border-radius:8px; height:70px; display:flex; align-items:center; justify-content:center; color:#555; font-size:0.72rem; border:1px solid #333; text-align:center; padding:4px; }
+    .open-link { display:block; margin-top:4px; font-size:0.7rem; color:#90caf9; text-decoration:none; }
 
     .verify-section { border-top:1px solid #333; padding-top:16px; }
     .verify-section h3 { color:#ffb74d; margin:0 0 12px; font-size:1rem; }
     .verdict-row { display:flex; gap:10px; margin-bottom:12px; }
-    .verdict-btn {
-      flex:1; padding:14px; border:none; border-radius:10px; font-size:1rem;
-      font-weight:700; cursor:pointer; transition:opacity 0.2s;
-    }
+    .verdict-btn { flex:1; padding:14px; border:none; border-radius:10px; font-size:1rem; font-weight:700; cursor:pointer; opacity:0.5; }
     .verdict-btn.verified { background:#2e7d32; color:white; }
     .verdict-btn.rejected { background:#b71c1c; color:white; }
-    .verdict-btn.selected { outline:3px solid white; }
-    .verdict-btn:not(.selected) { opacity:0.55; }
-    textarea {
-      width:100%; background:#2a2a2a; border:1px solid #444; border-radius:8px;
-      color:white; padding:10px; font-size:15px; resize:vertical; min-height:70px;
-    }
-    .save-verify-btn {
-      width:100%; padding:16px; font-size:1rem; font-weight:700;
-      background:#1565c0; color:white; border:none; border-radius:10px; cursor:pointer; margin-top:12px;
-    }
+    .verdict-btn.selected { opacity:1; outline:3px solid white; }
+    textarea { width:100%; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; padding:10px; font-size:15px; resize:vertical; min-height:70px; text-transform:uppercase; }
+    textarea::placeholder { text-transform:none; color:#555; }
+    .save-verify-btn { width:100%; padding:16px; font-size:1rem; font-weight:700; background:#1565c0; color:white; border:none; border-radius:10px; cursor:pointer; margin-top:12px; }
     .save-verify-btn:disabled { background:#333; color:#666; cursor:not-allowed; }
-
-    /* Full photo lightbox */
-    #lightbox {
-      position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.95); z-index:200; display:none;
-      align-items:center; justify-content:center; padding:16px;
-    }
-    #lightbox img { max-width:100%; max-height:90vh; border-radius:8px; }
-    #lightbox.open { display:flex; }
 
     .empty-state { text-align:center; color:#555; padding:60px 20px; }
     .loading     { text-align:center; color:#888; padding:40px; }
-    .refresh-btn { background:#455a64; border:none; color:white; padding:10px 18px; border-radius:8px; cursor:pointer; font-size:0.9rem; }
-
-    button { cursor:pointer; }
+    .stats-row { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+    .stat-box { flex:1; min-width:70px; background:#1e1e1e; border:1px solid #333; border-radius:8px; padding:10px; text-align:center; }
+    .stat-num { font-size:1.4rem; font-weight:700; }
+    .stat-lbl { font-size:0.7rem; color:#666; }
+    .stat-box.pending  .stat-num { color:#ff9800; }
+    .stat-box.verified .stat-num { color:#4caf50; }
+    .stat-box.rejected .stat-num { color:#f44336; }
+    .stat-box.total    .stat-num { color:#90caf9; }
   </style>
 </head>
 <body>
 
-<!-- PIN SCREEN -->
+<!-- PIN -->
 <div id="pinScreen">
-  <h2>Checker Access</h2>
+  <h2>🔐 Checker Access</h2>
   <p>Enter your PIN to continue</p>
   <input type="password" id="pinInput" placeholder="••••" maxlength="6" oninput="checkPin(this.value)" inputmode="numeric">
   <div id="pinError">Incorrect PIN. Try again.</div>
 </div>
 
-<!-- MAIN SCREEN -->
+<!-- MAIN -->
 <div id="mainScreen">
   <h1>MG Packing System</h1>
   <p class="subtitle">Checker Verification</p>
 
-  <div class="toolbar">
-    <input type="text" id="searchInput" placeholder="Search customer, P/I, carton..." oninput="renderList()">
-    <button class="refresh-btn" onclick="loadRecords()">Refresh</button>
+  <!-- Stats -->
+  <div class="stats-row" id="statsRow">
+    <div class="stat-box total"><div class="stat-num" id="statTotal">—</div><div class="stat-lbl">Total</div></div>
+    <div class="stat-box pending"><div class="stat-num" id="statPending">—</div><div class="stat-lbl">Pending</div></div>
+    <div class="stat-box verified"><div class="stat-num" id="statVerified">—</div><div class="stat-lbl">Verified</div></div>
+    <div class="stat-box rejected"><div class="stat-num" id="statRejected">—</div><div class="stat-lbl">Rejected</div></div>
   </div>
-  <div class="toolbar" style="margin-top:-8px;">
+
+  <div class="toolbar">
+    <input type="text" id="searchInput" placeholder="Search customer, P/I, part, carton..." oninput="renderList()">
+    <button class="refresh-btn" onclick="loadRecords()">↻ Refresh</button>
+  </div>
+  <div class="filter-row">
     <button class="filter-btn all active"      id="fAll"      onclick="setFilter('all')">All</button>
     <button class="filter-btn pending"          id="fPending"  onclick="setFilter('pending')">Pending</button>
     <button class="filter-btn verified"         id="fVerified" onclick="setFilter('verified')">Verified</button>
@@ -176,53 +143,49 @@
   <div class="modal-card">
     <div class="modal-header">
       <h2 id="modalTitle">Record Detail</h2>
-      <button class="close-btn" onclick="closeModal()">Close</button>
+      <button class="close-btn" onclick="closeModal()">✕ Close</button>
     </div>
-
-    <!-- Order info -->
     <div class="detail-grid" id="detailGrid"></div>
-
-    <!-- Barcode checks -->
-    <div class="barcode-row">
-      <label>Barcode Verification</label>
+    <div style="margin-bottom:14px;">
+      <span class="section-lbl">Barcode Verification</span>
       <div id="barcodeChecks"></div>
     </div>
-
-    <!-- Photos -->
-    <div>
-      <label style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.06em;color:#666;display:block;margin-bottom:8px;">Photos</label>
+    <div style="margin-bottom:16px;">
+      <span class="section-lbl">Photos</span>
       <div class="photos-grid" id="photosGrid"></div>
     </div>
-
-    <!-- Verify section -->
     <div class="verify-section" id="verifySection">
-      <h3>Verification</h3>
+      <h3>Verification Decision</h3>
       <div class="verdict-row">
-        <button class="verdict-btn verified" id="btnVerified" onclick="selectVerdict('Verified')">Verified</button>
-        <button class="verdict-btn rejected" id="btnRejected" onclick="selectVerdict('Rejected')">Rejected</button>
+        <button class="verdict-btn verified" id="btnVerified" onclick="selectVerdict('Verified')">✅ Verified</button>
+        <button class="verdict-btn rejected" id="btnRejected" onclick="selectVerdict('Rejected')">❌ Rejected</button>
       </div>
       <textarea id="remarksInput" placeholder="Remarks (required if Rejected)..."></textarea>
       <button class="save-verify-btn" id="saveVerifyBtn" onclick="saveVerification()" disabled>Save Verification</button>
     </div>
-
   </div>
 </div>
 
-<!-- LIGHTBOX -->
-<div id="lightbox" onclick="closeLightbox()">
-  <img id="lightboxImg" src="" alt="Full photo">
-</div>
-
 <script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydOw35PdUzl_tQ1EHl1KBBkolLTQPkuyYm0pTrYxPHy7YLvSuqEYdonILu-RDk2LWM/exec";
-  const CHECKER_PIN = "1234"; // Change this PIN
+  const SCRIPT_URL  = "https://script.google.com/macros/s/AKfycbydOw35PdUzl_tQ1EHl1KBBkolLTQPkuyYm0pTrYxPHy7YLvSuqEYdonILu-RDk2LWM/exec";
+  const CHECKER_PIN = "1234"; // ← Change this PIN
 
-  let allRecords   = [];
-  let currentFilter = 'all';
-  let currentRecord = null;
+  let allRecords     = [];
+  let currentFilter  = 'all';
+  let currentRecord  = null;
   let selectedVerdict = null;
 
-  // ── PIN ──────────────────────────────────────────────────
+  // ── AUTO UPPERCASE ────────────────────────────────────────
+  document.querySelectorAll('input[type="text"], textarea').forEach(el => {
+    el.addEventListener('input', function() {
+      if (this.id === 'searchInput') return; // keep search normal
+      const pos = this.selectionStart;
+      this.value = this.value.toUpperCase();
+      try { this.setSelectionRange(pos, pos); } catch(e){}
+    });
+  });
+
+  // ── PIN ───────────────────────────────────────────────────
   function checkPin(val) {
     if (val === CHECKER_PIN) {
       document.getElementById('pinScreen').style.display = 'none';
@@ -234,21 +197,32 @@
     }
   }
 
-  // ── LOAD RECORDS ─────────────────────────────────────────
+  // ── LOAD RECORDS ──────────────────────────────────────────
   async function loadRecords() {
     document.getElementById('recordList').innerHTML = '<div class="loading">Loading...</div>';
     try {
       const resp = await fetch(SCRIPT_URL + '?action=records');
       const data = await resp.json();
       allRecords = data.records || [];
+      updateStats();
       renderList();
     } catch(err) {
-      document.getElementById('recordList').innerHTML =
-        '<div class="empty-state">Failed to load records.<br>Check your connection.</div>';
+      document.getElementById('recordList').innerHTML = '<div class="empty-state">Failed to load records.<br>Check your connection.</div>';
     }
   }
 
-  // ── FILTER ───────────────────────────────────────────────
+  function updateStats() {
+    const total    = allRecords.length;
+    const verified = allRecords.filter(r => (r.status||'').includes('Verified')).length;
+    const rejected = allRecords.filter(r => (r.status||'').includes('Rejected')).length;
+    const pending  = total - verified - rejected;
+    document.getElementById('statTotal').textContent    = total;
+    document.getElementById('statPending').textContent  = pending;
+    document.getElementById('statVerified').textContent = verified;
+    document.getElementById('statRejected').textContent = rejected;
+  }
+
+  // ── FILTER ────────────────────────────────────────────────
   function setFilter(f) {
     currentFilter = f;
     ['all','pending','verified','rejected'].forEach(k => {
@@ -258,7 +232,7 @@
     renderList();
   }
 
-  // ── RENDER LIST ──────────────────────────────────────────
+  // ── RENDER LIST ───────────────────────────────────────────
   function renderList() {
     const search = document.getElementById('searchInput').value.toLowerCase();
     let records = allRecords;
@@ -266,7 +240,7 @@
     if (currentFilter !== 'all') {
       records = records.filter(r => {
         const s = (r.status || '').toLowerCase();
-        if (currentFilter === 'pending')  return !s || (!s.includes('verified') && !s.includes('rejected'));
+        if (currentFilter === 'pending')  return !s.includes('verified') && !s.includes('rejected');
         if (currentFilter === 'verified') return s.includes('verified');
         if (currentFilter === 'rejected') return s.includes('rejected');
         return true;
@@ -275,10 +249,11 @@
 
     if (search) {
       records = records.filter(r =>
-        (r.customer  || '').toLowerCase().includes(search) ||
-        (r.pi        || '').toLowerCase().includes(search) ||
-        (r.cartonId  || '').toLowerCase().includes(search) ||
-        (r.packedBy  || '').toLowerCase().includes(search)
+        (r.customer || '').toLowerCase().includes(search) ||
+        (r.pi       || '').toLowerCase().includes(search) ||
+        (r.partNo   || '').toLowerCase().includes(search) ||
+        (r.cartonId || '').toLowerCase().includes(search) ||
+        (r.packedBy || '').toLowerCase().includes(search)
       );
     }
 
@@ -288,32 +263,30 @@
     }
 
     document.getElementById('recordList').innerHTML = records.map(r => {
-      const statusVal = (r.status || '').toLowerCase();
-      const statusClass = statusVal.includes('verified') ? 'verified' : statusVal.includes('rejected') ? 'rejected' : 'pending';
-      const statusLabel = statusVal.includes('verified') ? 'Verified' : statusVal.includes('rejected') ? 'Rejected' : 'Pending';
-      const match = r.matchStatus || '';
-
-      return `<div class="record-card ${statusClass}" onclick="openRecord(${r.row})">
+      const s = (r.status || '').toLowerCase();
+      const cls = s.includes('verified') ? 'verified' : s.includes('rejected') ? 'rejected' : 'pending';
+      const lbl = s.includes('verified') ? 'Verified ✅' : s.includes('rejected') ? 'Rejected ❌' : 'Pending ⏳';
+      return `<div class="record-card ${cls}" onclick="openRecord(${r.row})">
         <div class="record-header">
           <div>
             <div class="record-customer">${r.customer || 'Unknown'}</div>
-            <div class="record-pi">P/I: ${r.pi || '-'} &nbsp;|&nbsp; Carton: ${r.cartonId || '-'}</div>
+            <div class="record-sub">P/I: ${r.pi || '—'} &nbsp;|&nbsp; Part: ${r.partNo || '—'}</div>
+            <div class="record-sub">Carton: ${r.cartonId || '—'}</div>
           </div>
-          <span class="status-pill ${statusClass}">${statusLabel}</span>
+          <span class="status-pill ${cls}">${lbl}</span>
         </div>
         <div class="record-meta">
-          Packed: ${r.packedDate || '-'} &nbsp;|&nbsp; By: ${r.packedBy || '-'} &nbsp;|&nbsp; Qty: ${r.qty || '-'}
+          📅 ${r.packedDate || '—'} &nbsp;|&nbsp; 👤 ${r.packedBy || '—'} &nbsp;|&nbsp; 📦 Qty: ${r.qty || '—'}
         </div>
-        ${match ? `<div class="match-row"><span class="match-tag">${match}</span></div>` : ''}
+        ${r.matchStatus ? `<div class="match-row"><span class="match-tag">${r.matchStatus}</span></div>` : ''}
       </div>`;
     }).join('');
   }
 
-  // ── OPEN RECORD ──────────────────────────────────────────
+  // ── OPEN RECORD ───────────────────────────────────────────
   async function openRecord(rowNum) {
     document.getElementById('detailModal').style.display = 'block';
     document.getElementById('detailGrid').innerHTML = '<div style="color:#888;grid-column:span 2;">Loading...</div>';
-
     try {
       const resp = await fetch(SCRIPT_URL + '?action=record&row=' + rowNum);
       currentRecord = await resp.json();
@@ -324,76 +297,85 @@
   }
 
   function renderDetail(r) {
-    document.getElementById('modalTitle').textContent = r.customer || 'Record';
+    document.getElementById('modalTitle').textContent = (r.customer || 'Record') + ' — ' + (r.cartonId || '');
 
     // Detail grid
     const fields = [
       ['Customer',    r.customer],
-      ['P/I No.',     r.pi],
+      ['P/I No.',     r.pi || '(none)'],
+      ['Part No.',    r.partNo],
       ['Carton ID',   r.cartonId],
       ['Packed Date', r.packedDate],
       ['Packed By',   r.packedBy],
       ['Checker By',  r.checkerBy],
       ['Qty',         r.qty],
-      ['Timestamp',   r.timestamp]
     ];
     document.getElementById('detailGrid').innerHTML = fields.map(([lbl, val]) =>
-      `<div class="detail-item"><label>${lbl}</label><span>${val || '-'}</span></div>`
+      `<div class="detail-item"><label>${lbl}</label><span>${val || '—'}</span></div>`
     ).join('');
 
     // Barcode checks
-    const ms = r.matchStatus || '';
+    const ms      = r.matchStatus || '';
     const bagOk   = ms.includes('Bag:✅');
     const innerOk = ms.includes('Inner:✅');
     const outerOk = ms.includes('Outer:✅');
+    const bagNo   = (r.bag   || '').toUpperCase() === 'NO';
+    const innerNo = (r.inner || '').toUpperCase() === 'NO';
+    const outerNo = (r.outer || '').toUpperCase() === 'NO';
 
     document.getElementById('barcodeChecks').innerHTML = [
-      ['Bag',   r.bag,   bagOk],
-      ['Inner', r.inner, innerOk],
-      ['Outer', r.outer, outerOk]
-    ].map(([lbl, val, ok]) =>
-      `<div class="barcode-check">
+      ['Bag',   r.bag,   bagOk,   bagNo],
+      ['Inner', r.inner, innerOk, innerNo],
+      ['Outer', r.outer, outerOk, outerNo]
+    ].map(([lbl, val, ok, isNo]) => {
+      const badgeClass = isNo ? 'nobc' : (ok ? 'ok' : 'fail');
+      const badgeText  = isNo ? '⚠ No Barcode' : (ok ? '✅ Match' : '❌ Mismatch');
+      return `<div class="barcode-check">
         <span class="bc-label">${lbl}</span>
-        <span class="bc-value">${val || '-'}</span>
-        <span class="bc-badge ${ok ? 'ok' : 'fail'}">${ok ? '✅ Match' : '❌ Mismatch'}</span>
-       </div>`
-    ).join('');
+        <span class="bc-value">${val || '—'}</span>
+        <span class="bc-badge ${badgeClass}">${badgeText}</span>
+      </div>`;
+    }).join('');
 
-    // Photos
+    // Photos — show as thumbnails with Drive link
     const photos = [
-      ['Bag+Part', r.imgBag],
-      ['Inner Box', r.imgInner],
-      ['Carton',   r.imgCarton]
+      ['Bag+Part',  r.imgBagUrl],
+      ['Inner Box', r.imgInnerUrl],
+      ['Carton',    r.imgCartonUrl]
     ];
-    document.getElementById('photosGrid').innerHTML = photos.map(([lbl, src]) =>
-      src
-        ? `<div class="photo-wrap"><img src="${src}" alt="${lbl}" onclick="openLightbox('${src}')"><div class="photo-lbl">${lbl}</div></div>`
-        : `<div class="photo-wrap"><div class="no-photo">No photo</div><div class="photo-lbl">${lbl}</div></div>`
-    ).join('');
+    document.getElementById('photosGrid').innerHTML = photos.map(([lbl, url]) => {
+      if (url) {
+        // Convert Drive view URL to thumbnail
+        const match   = url.match(/\/d\/([a-zA-Z0-9_-]+)\//);
+        const fileId  = match ? match[1] : null;
+        const thumbUrl = fileId
+          ? 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w400'
+          : url;
+        return `<div class="photo-wrap">
+          <a href="${url}" target="_blank"><img src="${thumbUrl}" alt="${lbl}" onerror="this.parentElement.innerHTML='<div class=\\'no-photo\\'>View in Drive</div>'"></a>
+          <a class="open-link" href="${url}" target="_blank">Open ↗</a>
+          <div class="photo-lbl">${lbl}</div>
+        </div>`;
+      }
+      return `<div class="photo-wrap"><div class="no-photo">No photo</div><div class="photo-lbl">${lbl}</div></div>`;
+    }).join('');
 
-    // Pre-fill verification if already done
+    // Pre-fill verification
     selectedVerdict = null;
     document.getElementById('remarksInput').value = r.remarks || '';
     document.getElementById('saveVerifyBtn').disabled = true;
+    document.getElementById('btnVerified').classList.remove('selected');
+    document.getElementById('btnRejected').classList.remove('selected');
 
     if (r.status && (r.status.includes('Verified') || r.status.includes('Rejected'))) {
-      const isV = r.status.includes('Verified');
-      selectVerdict(isV ? 'Verified' : 'Rejected');
-    } else {
-      document.getElementById('btnVerified').classList.remove('selected');
-      document.getElementById('btnRejected').classList.remove('selected');
-      document.getElementById('btnVerified').style.opacity = '0.55';
-      document.getElementById('btnRejected').style.opacity = '0.55';
+      selectVerdict(r.status.includes('Verified') ? 'Verified' : 'Rejected');
     }
   }
 
   function selectVerdict(v) {
     selectedVerdict = v;
-    const isV = v === 'Verified';
-    document.getElementById('btnVerified').classList.toggle('selected', isV);
-    document.getElementById('btnRejected').classList.toggle('selected', !isV);
-    document.getElementById('btnVerified').style.opacity = isV ? '1' : '0.55';
-    document.getElementById('btnRejected').style.opacity = !isV ? '1' : '0.55';
+    document.getElementById('btnVerified').classList.toggle('selected', v === 'Verified');
+    document.getElementById('btnRejected').classList.toggle('selected', v === 'Rejected');
     document.getElementById('saveVerifyBtn').disabled = false;
   }
 
@@ -404,51 +386,39 @@
       alert('Please enter a remark explaining the rejection.');
       return;
     }
-
     const checkerName = prompt("Enter your name as Packing Checker:");
     if (!checkerName || !checkerName.trim()) return;
 
     const btn = document.getElementById('saveVerifyBtn');
     btn.disabled = true;
-    btn.textContent = "Saving...";
-
-    const payload = {
-      action:   'verify',
-      row:      currentRecord.row,
-      checker:  checkerName.trim(),
-      status:   selectedVerdict === 'Verified' ? 'Verified ✅' : 'Rejected ❌',
-      remarks:  remarks
-    };
+    btn.textContent = 'Saving...';
 
     try {
       await fetch(SCRIPT_URL, {
-        method: "POST", mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action:  'verify',
+          row:     currentRecord.row,
+          checker: checkerName.trim().toUpperCase(),
+          status:  selectedVerdict === 'Verified' ? 'Verified ✅' : 'Rejected ❌',
+          remarks: remarks.toUpperCase()
+        })
       });
-      alert('Verification saved successfully!');
+      alert('Verification saved!');
       closeModal();
       loadRecords();
     } catch(err) {
-      alert('Error saving: ' + err.message);
+      alert('Error: ' + err.message);
       btn.disabled = false;
-      btn.textContent = "Save Verification";
+      btn.textContent = 'Save Verification';
     }
   }
 
   function closeModal() {
     document.getElementById('detailModal').style.display = 'none';
-    currentRecord = null;
+    currentRecord   = null;
     selectedVerdict = null;
-  }
-
-  // ── LIGHTBOX ─────────────────────────────────────────────
-  function openLightbox(src) {
-    document.getElementById('lightboxImg').src = src;
-    document.getElementById('lightbox').classList.add('open');
-  }
-  function closeLightbox() {
-    document.getElementById('lightbox').classList.remove('open');
   }
 </script>
 </body>
