@@ -352,10 +352,16 @@
       if (result.found) {
         masterData = result;
         document.getElementById('customer').value = result.customer.toUpperCase();
-        document.getElementById('pi').value       = result.pi.toUpperCase();
+        // Only auto-fill P/I if master register has a value — don't overwrite packer's manual entry
+        if (result.pi && result.pi.trim() !== '') {
+          document.getElementById('pi').value = result.pi.toUpperCase();
+          document.getElementById('piNote').style.display = 'block';
+        } else {
+          // Keep whatever packer typed, just hide the auto-fill note
+          document.getElementById('piNote').style.display = 'none';
+        }
         document.getElementById('partNo').value   = result.partNo.toUpperCase();
         document.getElementById('customerNote').style.display = 'block';
-        document.getElementById('piNote').style.display       = 'block';
         document.getElementById('partNoNote').style.display   = 'block';
 
         const bagOk = bagValue.toUpperCase() === result.bagBarcode.toUpperCase();
@@ -523,12 +529,13 @@
     if (!checkerBy) { showStatus('Please enter Packing Checker By.', 'error'); return; }
     if (!cartonId)  { showStatus('Please enter Carton ID.', 'error'); return; }
 
-    // Check photos still uploading
-    const uploading = ['imgBag','imgInner','imgCarton'].some(k => {
-      const el = document.getElementById('prev' + k.replace('img',''));
-      return el && el.style.display !== 'none' && !photoUrls[k];
+    // Warn if a photo was selected but upload is still in progress
+    const stillUploading = ['imgBag','imgInner','imgCarton'].some(k => {
+      const statusId = 'upload' + k.replace('img','');
+      const statusEl = document.getElementById(statusId);
+      return statusEl && statusEl.textContent.includes('Uploading');
     });
-    if (uploading) { showStatus('Please wait, photos still uploading...', 'info'); return; }
+    if (stillUploading) { showStatus('Please wait, photos still uploading...', 'info'); return; }
 
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
