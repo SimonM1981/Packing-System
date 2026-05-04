@@ -19,11 +19,14 @@
     label { display:block; margin:10px 0 5px; font-weight:600; color:#90caf9; font-size:0.9rem; }
     input[type="text"], input[type="number"] {
       width:100%; padding:11px 12px; background:#2a2a2a; border:1px solid #444;
-      border-radius:8px; color:white; font-size:16px;
+      border-radius:8px; color:white; font-size:16px; text-transform:uppercase;
     }
+    input[type="number"] { text-transform:none; }
+    input::placeholder { text-transform:none; color:#555; }
     input:focus { outline:none; border-color:#90caf9; }
-    input.match    { border-color:#4caf50; background:#1a2e1a; }
-    input.mismatch { border-color:#f44336; background:#2e1a1a; }
+    input.match    { border-color:#4caf50 !important; background:#1a2e1a; }
+    input.mismatch { border-color:#f44336 !important; background:#2e1a1a; }
+    input.no-barcode { border-color:#ff9800 !important; background:#2e2200; }
     .scan-row { display:flex; gap:8px; align-items:center; }
     .scan-row input { flex:1; }
     button {
@@ -36,9 +39,10 @@
       display:inline-flex; align-items:center; gap:5px;
       padding:4px 10px; border-radius:20px; font-size:0.8rem; font-weight:700; margin-top:5px; min-height:26px;
     }
-    .match-badge.ok      { background:#1b5e20; color:#a5d6a7; }
-    .match-badge.fail    { background:#b71c1c; color:#ef9a9a; }
-    .match-badge.pending { background:#333; color:#888; }
+    .match-badge.ok       { background:#1b5e20; color:#a5d6a7; }
+    .match-badge.fail     { background:#b71c1c; color:#ef9a9a; }
+    .match-badge.pending  { background:#333; color:#888; }
+    .match-badge.no-bc    { background:#4a3000; color:#ffcc80; }
     #scanner-container { margin:12px 0; text-align:center; }
     #reader { width:100%; max-width:480px; margin:0 auto; border:2px solid #444; border-radius:10px; overflow:hidden; background:#000; }
     .photo-btn {
@@ -53,6 +57,7 @@
       padding:2px 8px; border-radius:10px; display:none;
     }
     .photo-btn.has-photo .done-badge { display:inline; }
+    .photo-btn.uploading { opacity:0.6; }
     .preview { width:100%; max-height:140px; object-fit:cover; border-radius:8px; margin-top:6px; display:none; border:1px solid #555; }
     .submit-btn { width:100%; padding:18px; font-size:1.1rem; font-weight:bold; border-radius:10px; border:none; cursor:pointer; margin-top:8px; }
     .submit-btn.ready   { background:#2e7d32; color:white; }
@@ -68,7 +73,10 @@
     .step.done   { background:#4caf50; }
     .step.active { background:#90caf9; }
     .hint { color:#777; font-size:0.82rem; margin-top:6px; }
-    .readonly-input { opacity:0.7; }
+    .no-hint { color:#ff9800; font-size:0.78rem; margin-top:4px; }
+    .upload-status { font-size:0.78rem; color:#aaa; margin-top:4px; min-height:18px; }
+    .upload-status.ok  { color:#4caf50; }
+    .upload-status.err { color:#f44336; }
   </style>
 </head>
 <body>
@@ -90,54 +98,61 @@
   <div class="scan-row">
     <input type="text" id="packedBy" placeholder="Name or scan ID">
     <button onclick="startScanner('packedBy')">SCAN</button>
+    <button class="type-btn" onclick="focusField('packedBy')">TYPE</button>
   </div>
   <label>Packing Checker By</label>
   <div class="scan-row">
     <input type="text" id="checkerBy" placeholder="Checker name or scan ID">
     <button onclick="startScanner('checkerBy')">SCAN</button>
+    <button class="type-btn" onclick="focusField('checkerBy')">TYPE</button>
   </div>
 </div>
 
 <!-- ORDER -->
 <div class="card">
   <div class="card-title">Order Info</div>
+
   <label>Carton ID</label>
   <div class="scan-row">
     <input type="text" id="cartonId" placeholder="Scan or type Carton ID">
     <button onclick="startScanner('cartonId')">SCAN</button>
     <button class="type-btn" onclick="focusField('cartonId')">TYPE</button>
   </div>
+
   <label>Customer Name</label>
   <div class="scan-row">
     <input type="text" id="customer" placeholder="Auto-filled or scan/type">
     <button onclick="startScanner('customer')">SCAN</button>
     <button class="type-btn" onclick="focusField('customer')">TYPE</button>
   </div>
-  <div class="auto-filled" id="customerNote">Auto-filled from master register</div>
+  <div class="auto-filled" id="customerNote">✓ Auto-filled from master register</div>
+
   <label>P/I No.</label>
   <div class="scan-row">
     <input type="text" id="pi" placeholder="Auto-filled or scan/type">
     <button onclick="startScanner('pi')">SCAN</button>
     <button class="type-btn" onclick="focusField('pi')">TYPE</button>
   </div>
-  <div class="auto-filled" id="piNote">Auto-filled from master register</div>
+  <div class="auto-filled" id="piNote">✓ Auto-filled from master register</div>
+
   <label>Part No.</label>
   <div class="scan-row">
     <input type="text" id="partNo" placeholder="Auto-filled or scan/type">
     <button onclick="startScanner('partNo')">SCAN</button>
     <button class="type-btn" onclick="focusField('partNo')">TYPE</button>
   </div>
-  <div class="auto-filled" id="partNoNote">Auto-filled from master register</div>
+  <div class="auto-filled" id="partNoNote">✓ Auto-filled from master register</div>
 </div>
 
 <!-- BARCODES -->
 <div class="card">
   <div class="card-title">Barcode Verification</div>
-  <p class="hint">Scan in order: Bag first, then Inner, then Outer.</p>
+  <p class="hint">Scan in order: Bag → Inner → Outer. Type "NO" if no barcode.</p>
+  <p class="no-hint">If no barcode exists, type NO and the field will be accepted.</p>
 
   <label>1. Bag Barcode</label>
   <div class="scan-row">
-    <input type="text" id="bag" placeholder="Scan or type bag barcode">
+    <input type="text" id="bag" placeholder="Scan, type barcode, or type NO">
     <button onclick="startScanner('bag')">SCAN</button>
     <button class="type-btn" onclick="focusField('bag')">TYPE</button>
   </div>
@@ -145,7 +160,7 @@
 
   <label>2. Inner Box Barcode</label>
   <div class="scan-row">
-    <input type="text" id="inner" placeholder="Scan or type inner barcode">
+    <input type="text" id="inner" placeholder="Scan, type barcode, or type NO">
     <button onclick="startScanner('inner')">SCAN</button>
     <button class="type-btn" onclick="focusField('inner')">TYPE</button>
   </div>
@@ -153,19 +168,19 @@
 
   <label>3. Outer Carton Barcode</label>
   <div class="scan-row">
-    <input type="text" id="outer" placeholder="Scan or type outer barcode">
+    <input type="text" id="outer" placeholder="Scan, type barcode, or type NO">
     <button onclick="startScanner('outer')">SCAN</button>
     <button class="type-btn" onclick="focusField('outer')">TYPE</button>
   </div>
   <div class="match-badge pending" id="outerBadge">Not checked yet</div>
 
   <div class="blocker-notice" id="blockerNotice">
-    Mismatch detected — submission is blocked. Please recheck barcodes with supervisor.
+    ⛔ Mismatch detected — submission is blocked. Please recheck barcodes.
   </div>
 
   <div id="scanner-container" style="display:none;">
     <div id="reader"></div>
-    <button onclick="stopScanner()" style="margin-top:10px;background:#555;width:100%;">Close Scanner</button>
+    <button onclick="stopScanner()" style="margin-top:10px;background:#555;width:100%;">✕ Close Scanner</button>
   </div>
 </div>
 
@@ -176,26 +191,29 @@
   <button class="photo-btn" id="btnBag" onclick="document.getElementById('fBag').click()">
     <span class="icon">📸</span>
     <span class="photo-label">Bag with Part</span>
-    <span class="done-badge">DONE</span>
+    <span class="done-badge">✓ DONE</span>
   </button>
-  <input type="file" id="fBag" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevBag','imgBag','btnBag')">
+  <input type="file" id="fBag" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevBag','imgBag','btnBag','uploadBag')">
   <img id="prevBag" class="preview" alt="Bag photo">
+  <div class="upload-status" id="uploadBag"></div>
 
   <button class="photo-btn" id="btnInner" onclick="document.getElementById('fInner').click()">
     <span class="icon">📸</span>
     <span class="photo-label">Inner Box / Label</span>
-    <span class="done-badge">DONE</span>
+    <span class="done-badge">✓ DONE</span>
   </button>
-  <input type="file" id="fInner" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevInner','imgInner','btnInner')">
+  <input type="file" id="fInner" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevInner','imgInner','btnInner','uploadInner')">
   <img id="prevInner" class="preview" alt="Inner photo">
+  <div class="upload-status" id="uploadInner"></div>
 
   <button class="photo-btn" id="btnCarton" onclick="document.getElementById('fCarton').click()">
     <span class="icon">📸</span>
     <span class="photo-label">Carton / Label</span>
-    <span class="done-badge">DONE</span>
+    <span class="done-badge">✓ DONE</span>
   </button>
-  <input type="file" id="fCarton" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevCarton','imgCarton','btnCarton')">
+  <input type="file" id="fCarton" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevCarton','imgCarton','btnCarton','uploadCarton')">
   <img id="prevCarton" class="preview" alt="Carton photo">
+  <div class="upload-status" id="uploadCarton"></div>
 </div>
 
 <!-- QTY -->
@@ -215,9 +233,18 @@
   let activeField = null;
   let masterData  = null;
   let matchState  = { bag: null, inner: null, outer: null };
-  let images      = { imgBag: "", imgInner: "", imgCarton: "" };
+  let photoUrls   = { imgBag: "", imgInner: "", imgCarton: "" };
 
-  // Scanner
+  // ── AUTO UPPERCASE on all text inputs ──────────────────────
+  document.querySelectorAll('input[type="text"]').forEach(inp => {
+    inp.addEventListener('input', function() {
+      const pos = this.selectionStart;
+      this.value = this.value.toUpperCase();
+      this.setSelectionRange(pos, pos);
+    });
+  });
+
+  // ── SCANNER ──────────────────────────────────────────────
   async function startScanner(fieldId) {
     activeField = fieldId;
     document.getElementById('scanner-container').style.display = 'block';
@@ -228,9 +255,10 @@
         { facingMode: "environment" },
         { fps: 20, qrbox: 250 },
         (decoded) => {
-          document.getElementById(activeField).value = decoded.trim();
+          const val = decoded.trim().toUpperCase();
+          document.getElementById(activeField).value = val;
           stopScanner();
-          onBarcodeEntered(activeField, decoded.trim());
+          onBarcodeEntered(activeField, val);
         }
       );
     } catch(err) {
@@ -247,13 +275,25 @@
 
   function focusField(id) { document.getElementById(id).focus(); }
 
-  // Keyboard Enter to advance
-  document.getElementById('bag').addEventListener('keypress',   e => { if(e.key==='Enter'){ onBarcodeEntered('bag',   e.target.value.trim()); document.getElementById('inner').focus(); }});
-  document.getElementById('inner').addEventListener('keypress', e => { if(e.key==='Enter'){ onBarcodeEntered('inner', e.target.value.trim()); document.getElementById('outer').focus(); }});
-  document.getElementById('outer').addEventListener('keypress', e => { if(e.key==='Enter'){ onBarcodeEntered('outer', e.target.value.trim()); document.getElementById('qty').focus(); }});
-  document.getElementById('bag').addEventListener('change',     e => onBarcodeEntered('bag',   e.target.value.trim()));
-  document.getElementById('inner').addEventListener('change',   e => onBarcodeEntered('inner', e.target.value.trim()));
-  document.getElementById('outer').addEventListener('change',   e => onBarcodeEntered('outer', e.target.value.trim()));
+  // ── BARCODE KEYBOARD HANDLERS ─────────────────────────────
+  ['bag','inner','outer'].forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        const val = this.value.trim().toUpperCase();
+        this.value = val;
+        onBarcodeEntered(id, val);
+        if (id === 'bag')   document.getElementById('inner').focus();
+        if (id === 'inner') document.getElementById('outer').focus();
+        if (id === 'outer') document.getElementById('qty').focus();
+      }
+    });
+    el.addEventListener('change', function() {
+      const val = this.value.trim().toUpperCase();
+      this.value = val;
+      onBarcodeEntered(id, val);
+    });
+  });
 
   async function onBarcodeEntered(fieldId, value) {
     if (!value) return;
@@ -266,22 +306,46 @@
     updateSteps();
   }
 
+  // ── MASTER LOOKUP ─────────────────────────────────────────
   async function lookupMaster(bagValue) {
+    // "NO" = accepted, no barcode
+    if (bagValue === 'NO') {
+      matchState.bag = true;
+      setBadge('bag', 'no-bc', '⚠ No barcode — accepted');
+      document.getElementById('bag').className = 'no-barcode';
+      updateSubmitButton();
+      updateSteps();
+      return;
+    }
+
     setBadge('bag', 'pending', 'Checking...');
+    const pi     = document.getElementById('pi').value.trim();
+    const partNo = document.getElementById('partNo').value.trim();
+
     try {
-      const resp = await fetch(SCRIPT_URL + '?action=lookup&barcode=' + encodeURIComponent(bagValue));
+      let url = SCRIPT_URL + '?action=lookup&barcode=' + encodeURIComponent(bagValue);
+      if (pi)     url += '&pi='     + encodeURIComponent(pi);
+      if (partNo) url += '&partNo=' + encodeURIComponent(partNo);
+
+      const resp   = await fetch(url);
       const result = await resp.json();
+
       if (result.found) {
         masterData = result;
-        document.getElementById('customer').value = result.customer;
-        document.getElementById('pi').value = result.pi;
-        document.getElementById('partNo').value = result.partNo;
+        document.getElementById('customer').value = result.customer.toUpperCase();
+        document.getElementById('pi').value       = result.pi.toUpperCase();
+        document.getElementById('partNo').value   = result.partNo.toUpperCase();
         document.getElementById('customerNote').style.display = 'block';
-        document.getElementById('piNote').style.display = 'block';
-        document.getElementById('partNoNote').style.display = 'block';
-        const bagOk = bagValue === result.bagBarcode;
+        document.getElementById('piNote').style.display       = 'block';
+        document.getElementById('partNoNote').style.display   = 'block';
+
+        const bagOk = bagValue.toUpperCase() === result.bagBarcode.toUpperCase();
         matchState.bag = bagOk;
-        setBadge('bag', bagOk ? 'ok' : 'fail', bagOk ? 'Match — Bag OK' : 'Mismatch — Wrong Bag');
+        const el = document.getElementById('bag');
+        el.classList.toggle('match', bagOk);
+        el.classList.toggle('mismatch', !bagOk);
+        setBadge('bag', bagOk ? 'ok' : 'fail', bagOk ? '✅ Match — Bag OK' : '❌ Mismatch — Wrong Bag');
+
         const iv = document.getElementById('inner').value.trim();
         const ov = document.getElementById('outer').value.trim();
         if (iv) checkBarcode('inner', iv);
@@ -289,36 +353,49 @@
       } else {
         masterData = null;
         matchState.bag = false;
-        setBadge('bag', 'fail', 'Not found in master register');
+        setBadge('bag', 'fail', '❌ Not found in master register');
+        document.getElementById('bag').classList.add('mismatch');
         document.getElementById('customer').value = '';
-        document.getElementById('pi').value = '';
-        document.getElementById('partNo').value = '';
-        document.getElementById('customerNote').style.display = 'none';
-        document.getElementById('piNote').style.display = 'none';
-        document.getElementById('partNoNote').style.display = 'none';
+        document.getElementById('pi').value       = '';
+        document.getElementById('partNo').value   = '';
+        ['customerNote','piNote','partNoNote'].forEach(id => document.getElementById(id).style.display = 'none');
       }
     } catch(err) {
-      setBadge('bag', 'fail', 'Lookup failed — check connection');
+      setBadge('bag', 'fail', '❌ Lookup failed — check connection');
       matchState.bag = false;
     }
     updateSubmitButton();
     updateSteps();
   }
 
+  // ── BARCODE CHECK (Inner / Outer) ─────────────────────────
   function checkBarcode(fieldId, value) {
+    const el    = document.getElementById(fieldId);
+    const label = fieldId === 'inner' ? 'Inner' : 'Outer';
+
+    // "NO" = accepted
+    if (value === 'NO') {
+      matchState[fieldId] = true;
+      el.className = 'no-barcode';
+      setBadge(fieldId, 'no-bc', '⚠ No barcode — accepted');
+      return;
+    }
+
     if (!masterData) {
       setBadge(fieldId, 'pending', 'Scan Bag barcode first');
       matchState[fieldId] = null;
       return;
     }
+
     const expected = fieldId === 'inner' ? masterData.innerBarcode : masterData.outerBarcode;
-    const ok = value === expected;
+    const ok = value.toUpperCase() === expected.toUpperCase();
     matchState[fieldId] = ok;
-    const label = fieldId === 'inner' ? 'Inner' : 'Outer';
-    setBadge(fieldId, ok ? 'ok' : 'fail', ok ? 'Match — ' + label + ' OK' : 'Mismatch — Wrong ' + label);
-    const el = document.getElementById(fieldId);
-    el.classList.toggle('match', ok);
+
+    el.classList.remove('no-barcode');
+    el.classList.toggle('match',    ok);
     el.classList.toggle('mismatch', !ok);
+    setBadge(fieldId, ok ? 'ok' : 'fail',
+      ok ? '✅ Match — ' + label + ' OK' : '❌ Mismatch — Wrong ' + label);
   }
 
   function setBadge(fieldId, type, text) {
@@ -327,6 +404,7 @@
     b.textContent = text;
   }
 
+  // ── SUBMIT BUTTON STATE ───────────────────────────────────
   function updateSubmitButton() {
     const allMatch = matchState.bag === true && matchState.inner === true && matchState.outer === true;
     const anyFail  = matchState.bag === false || matchState.inner === false || matchState.outer === false;
@@ -341,7 +419,7 @@
       !!(document.getElementById('packedBy').value && document.getElementById('checkerBy').value),
       !!(document.getElementById('bag').value),
       !!(matchState.bag === true && matchState.inner === true && matchState.outer === true),
-      !!(images.imgBag && images.imgInner && images.imgCarton)
+      !!(photoUrls.imgBag && photoUrls.imgInner && photoUrls.imgCarton)
     ];
     s.forEach((done, i) => {
       const el = document.getElementById('step' + (i+1));
@@ -350,64 +428,124 @@
     });
   }
 
-  function processPhoto(input, previewId, dataKey, btnId) {
+  // ── PHOTO: compress, preview, upload to Drive ─────────────
+  function processPhoto(input, previewId, dataKey, btnId, statusId) {
     if (!input.files || !input.files[0]) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      images[dataKey] = e.target.result;
-      const img = document.getElementById(previewId);
-      img.src = e.target.result;
-      img.style.display = 'block';
-      document.getElementById(btnId).classList.add('has-photo');
-      updateSteps();
+    const file = input.files[0];
+    const statusEl = document.getElementById(statusId);
+    const btnEl    = document.getElementById(btnId);
+
+    statusEl.textContent = 'Compressing...';
+    statusEl.className   = 'upload-status';
+
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = function() {
+      // Compress to 50% size
+      const canvas = document.createElement('canvas');
+      canvas.width  = Math.round(img.width  * 0.5);
+      canvas.height = Math.round(img.height * 0.5);
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+
+      const compressed = canvas.toDataURL('image/jpeg', 0.85);
+
+      // Show preview
+      const prevEl = document.getElementById(previewId);
+      prevEl.src = compressed;
+      prevEl.style.display = 'block';
+
+      // Upload to Drive
+      statusEl.textContent = 'Uploading to Drive...';
+      const timestamp = new Date().toISOString().replace(/[:.]/g,'-');
+      const filename  = dataKey + '_' + timestamp + '.jpg';
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action:   'uploadPhoto',
+          base64:   compressed,
+          mimeType: 'image/jpeg',
+          filename: filename
+        })
+      })
+      .then(r => r.json())
+      .then(result => {
+        if (result.success) {
+          photoUrls[dataKey] = result.url;
+          btnEl.classList.add('has-photo');
+          statusEl.textContent = '✓ Uploaded to Drive';
+          statusEl.className   = 'upload-status ok';
+          updateSteps();
+        } else {
+          statusEl.textContent = '⚠ Upload failed: ' + (result.error || 'unknown');
+          statusEl.className   = 'upload-status err';
+        }
+      })
+      .catch(err => {
+        statusEl.textContent = '⚠ Upload error: ' + err.message;
+        statusEl.className   = 'upload-status err';
+      });
     };
-    reader.readAsDataURL(input.files[0]);
+    img.src = url;
   }
 
+  // ── SUBMIT ────────────────────────────────────────────────
   async function submitData() {
     if (document.getElementById('submitBtn').disabled) return;
+
     const packedBy  = document.getElementById('packedBy').value.trim();
     const checkerBy = document.getElementById('checkerBy').value.trim();
     const cartonId  = document.getElementById('cartonId').value.trim();
-    if (!packedBy)  { showStatus("Please enter Packed By.", 'error'); return; }
-    if (!checkerBy) { showStatus("Please enter Packing Checker By.", 'error'); return; }
-    if (!cartonId)  { showStatus("Please enter Carton ID.", 'error'); return; }
+
+    if (!packedBy)  { showStatus('Please enter Packed By.', 'error'); return; }
+    if (!checkerBy) { showStatus('Please enter Packing Checker By.', 'error'); return; }
+    if (!cartonId)  { showStatus('Please enter Carton ID.', 'error'); return; }
+
+    // Check photos still uploading
+    const uploading = ['imgBag','imgInner','imgCarton'].some(k => {
+      const el = document.getElementById('prev' + k.replace('img',''));
+      return el && el.style.display !== 'none' && !photoUrls[k];
+    });
+    if (uploading) { showStatus('Please wait, photos still uploading...', 'info'); return; }
 
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
-    btn.textContent = "Saving...";
-    showStatus("Submitting...", 'info');
+    btn.textContent = 'Saving...';
+    showStatus('Submitting...', 'info');
 
     const data = {
       packedBy, checkerBy, cartonId,
-      customer:  document.getElementById('customer').value.trim(),
-      pi:        document.getElementById('pi').value.trim(),
-      partNo:    document.getElementById('partNo').value.trim(),
-      bag:       document.getElementById('bag').value.trim(),
-      inner:     document.getElementById('inner').value.trim(),
-      outer:     document.getElementById('outer').value.trim(),
-      qty:       document.getElementById('qty').value.trim(),
-      packedDate: new Date().toISOString().split('T')[0],
-      bagMatch:   matchState.bag,
-      innerMatch: matchState.inner,
-      outerMatch: matchState.outer,
-      imgBag:    images.imgBag    || "",
-      imgInner:  images.imgInner  || "",
-      imgCarton: images.imgCarton || ""
+      customer:     document.getElementById('customer').value.trim(),
+      pi:           document.getElementById('pi').value.trim(),
+      partNo:       document.getElementById('partNo').value.trim(),
+      bag:          document.getElementById('bag').value.trim(),
+      inner:        document.getElementById('inner').value.trim(),
+      outer:        document.getElementById('outer').value.trim(),
+      qty:          document.getElementById('qty').value.trim(),
+      packedDate:   new Date().toISOString().split('T')[0],
+      bagMatch:     matchState.bag,
+      innerMatch:   matchState.inner,
+      outerMatch:   matchState.outer,
+      imgBagUrl:    photoUrls.imgBag    || "",
+      imgInnerUrl:  photoUrls.imgInner  || "",
+      imgCartonUrl: photoUrls.imgCarton || ""
     };
 
     try {
       await fetch(SCRIPT_URL, {
-        method: "POST", mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
-      showStatus("Packing data saved successfully!", 'success');
+      showStatus('✅ Packing data saved successfully!', 'success');
       setTimeout(() => location.reload(), 2800);
     } catch(err) {
-      showStatus("Error: " + err.message, 'error');
+      showStatus('Error: ' + err.message, 'error');
       btn.disabled = false;
-      btn.textContent = "SUBMIT PACKING DATA";
+      btn.textContent = 'SUBMIT PACKING DATA';
     }
   }
 
