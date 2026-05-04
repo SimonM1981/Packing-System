@@ -484,7 +484,43 @@
     img.src = url;
   }
 
-  // ── SUBMIT — sends everything including photos in one POST ─
+  // ── UPLOAD SINGLE PHOTO to Drive ──────────────────────────
+  async function uploadSinglePhoto(photoObj) {
+    if (!photoObj || !photoObj.base64) return "";
+
+    try {
+      const response = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8'
+        },
+        body: JSON.stringify({
+          action: "uploadPhoto",
+          base64: photoObj.base64,
+          filename: photoObj.filename,
+          mimeType: 'image/jpeg'
+        }),
+        redirect: 'follow'
+      });
+
+      if (!response.ok) {
+        throw new Error('Server returned ' + response.status);
+      }
+
+      const result = await response.json();
+
+      if (result.success) {
+        return result.url;
+      } else {
+        throw new Error(result.error || 'Upload failed');
+      }
+    } catch(err) {
+      console.error('Photo upload error:', err);
+      return "";
+    }
+  }
+
+  // ── SUBMIT — upload photos first, then submit form data ─
   async function submitData() {
     if (document.getElementById('submitBtn').disabled) return;
 
@@ -498,10 +534,27 @@
 
     const btn = document.getElementById('submitBtn');
     btn.disabled    = true;
-    btn.textContent = 'Saving... (uploading photos)';
-    showStatus('Submitting — please wait, uploading photos to Drive...', 'info');
+    btn.textContent = 'Uploading photos...';
+    showStatus('Uploading photos to Drive...', 'info');
 
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+
+    // Upload photos one by one
+    const imgBagUrl    = await uploadSinglePhoto(
+      photoUrls.imgBag ? { base64: photoUrls.imgBag, filename: 'BagPart_' + timestamp + '.jpg' } : null
+    );
+
+    const imgInnerUrl  = await uploadSinglePhoto(
+      photoUrls.imgInner ? { base64: photoUrls.imgInner, filename: 'InnerBox_' + timestamp + '.jpg' } : null
+    );
+
+    const imgCartonUrl = await uploadSinglePhoto(
+      photoUrls.imgCarton ? { base64: photoUrls.imgCarton, filename: 'Carton_' + timestamp + '.jpg' } : null
+    );
+
+    showStatus('Saving packing data...', 'info');
+    btn.textContent = 'Saving...';
+
     const data = {
       action: "submit",
       packedBy, checkerBy, cartonId,
@@ -516,13 +569,13 @@
       bagMatch:   matchState.bag,
       innerMatch: matchState.inner,
       outerMatch: matchState.outer,
-      imgBag:    photoUrls.imgBag    ? { base64: photoUrls.imgBag,    filename: 'BagPart_'  + timestamp + '.jpg' } : null,
-      imgInner:  photoUrls.imgInner  ? { base64: photoUrls.imgInner,  filename: 'InnerBox_' + timestamp + '.jpg' } : null,
-      imgCarton: photoUrls.imgCarton ? { base64: photoUrls.imgCarton, filename: 'Carton_'   + timestamp + '.jpg' } : null,
+      // Send URLs only — photos already uploaded
+      imgBagUrl:    imgBagUrl,
+      imgInnerUrl:  imgInnerUrl,
+      imgCartonUrl: imgCartonUrl
     };
 
     try {
-      // CRITICAL FIX: Use POST with text/plain to avoid CORS preflight AND URL length limits
       const response = await fetch(SCRIPT_URL, {
         method: 'POST',
         headers: {
