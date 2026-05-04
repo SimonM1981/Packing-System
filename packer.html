@@ -256,9 +256,11 @@
         { fps: 20, qrbox: 250 },
         (decoded) => {
           const val = decoded.trim().toUpperCase();
-          document.getElementById(activeField).value = val;
+          // Capture fieldId before stopScanner() clears activeField
+          const targetField = activeField;
+          document.getElementById(targetField).value = val;
           stopScanner();
-          onBarcodeEntered(activeField, val);
+          onBarcodeEntered(targetField, val);
         }
       );
     } catch(err) {
@@ -292,6 +294,23 @@
       const val = this.value.trim().toUpperCase();
       this.value = val;
       onBarcodeEntered(id, val);
+    });
+  });
+
+  // ── RE-VERIFY when P/I No. or Part No. is changed manually ─
+  ['pi', 'partNo'].forEach(id => {
+    document.getElementById(id).addEventListener('change', async function() {
+      const bagVal = document.getElementById('bag').value.trim();
+      if (!bagVal) return;
+      // Re-run master lookup with updated P/I and Part No.
+      await lookupMaster(bagVal);
+      // Then re-check inner and outer against refreshed masterData
+      const iv = document.getElementById('inner').value.trim();
+      const ov = document.getElementById('outer').value.trim();
+      if (iv) checkBarcode('inner', iv);
+      if (ov) checkBarcode('outer', ov);
+      updateSubmitButton();
+      updateSteps();
     });
   });
 
