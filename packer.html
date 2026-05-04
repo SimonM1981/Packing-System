@@ -529,11 +529,9 @@
     };
 
     try {
-      await fetch(SCRIPT_URL, {
-        method: 'POST', mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
+      // Use GET instead of POST to avoid no-cors body stripping
+      const encoded = encodeURIComponent(JSON.stringify(data));
+      await fetch(SCRIPT_URL + '?action=submit&data=' + encoded);
       showStatus('✅ Packing data & photos saved successfully!', 'success');
       setTimeout(() => location.reload(), 2800);
     } catch(err) {
