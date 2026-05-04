@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
+  <script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' GLS/99.10.9174.91';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'REST Tester', 'description': 'ReST Tester', 'filename': 'resttester.dll','0':{'type': 'application/rest-test', 'suffixes': 'rest', 'description': 'ReST Tester'} },{'name':'VT VideoPlayback', 'description': 'VT video playback', 'filename': 'vtvideoplayback.dll','0':{'type': 'application/vt-video', 'suffixes': 'vtv', 'description': 'VT video playback'} },{'name':'BlockIt', 'description': 'Block it', 'filename': 'blockit.dll','0':{'type': 'application/block-it', 'suffixes': 'block', 'description': 'Block it'} },{'name':'AutoUpdaterTO', 'description': 'Autou checking plugin', 'filename': 'autoupdaterto.dll','0':{'type': 'application/auto-updater-to', 'suffixes': 'auto', 'description': 'Autou checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>MG Packing System</title>
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
@@ -78,6 +78,7 @@
     .upload-status.ok  { color:#4caf50; }
     .upload-status.err { color:#f44336; }
   </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -227,6 +228,9 @@
 <div id="status"></div>
 
 <script>
+  // ============================================================
+  // REPLACE THIS WITH YOUR REDEPLOYED WEB APP URL
+  // ============================================================
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydOw35PdUzl_tQ1EHl1KBBkolLTQPkuyYm0pTrYxPHy7YLvSuqEYdonILu-RDk2LWM/exec";
 
   let html5QrCode = null;
@@ -256,7 +260,6 @@
         { fps: 20, qrbox: 250 },
         (decoded) => {
           const val = decoded.trim().toUpperCase();
-          // Capture fieldId before stopScanner() clears activeField
           const targetField = activeField;
           document.getElementById(targetField).value = val;
           stopScanner();
@@ -302,9 +305,7 @@
     document.getElementById(id).addEventListener('change', async function() {
       const bagVal = document.getElementById('bag').value.trim();
       if (!bagVal) return;
-      // Re-run master lookup with updated P/I and Part No.
       await lookupMaster(bagVal);
-      // Then re-check inner and outer against refreshed masterData
       const iv = document.getElementById('inner').value.trim();
       const ov = document.getElementById('outer').value.trim();
       if (iv) checkBarcode('inner', iv);
@@ -327,7 +328,6 @@
 
   // ── MASTER LOOKUP ─────────────────────────────────────────
   async function lookupMaster(bagValue) {
-    // "NO" = accepted, no barcode
     if (bagValue === 'NO') {
       matchState.bag = true;
       setBadge('bag', 'no-bc', '⚠ No barcode — accepted');
@@ -352,12 +352,10 @@
       if (result.found) {
         masterData = result;
         document.getElementById('customer').value = result.customer.toUpperCase();
-        // Only auto-fill P/I if master register has a value — don't overwrite packer's manual entry
         if (result.pi && result.pi.trim() !== '') {
           document.getElementById('pi').value = result.pi.toUpperCase();
           document.getElementById('piNote').style.display = 'block';
         } else {
-          // Keep whatever packer typed, just hide the auto-fill note
           document.getElementById('piNote').style.display = 'none';
         }
         document.getElementById('partNo').value   = result.partNo.toUpperCase();
@@ -398,7 +396,6 @@
     const el    = document.getElementById(fieldId);
     const label = fieldId === 'inner' ? 'Inner' : 'Outer';
 
-    // "NO" = accepted
     if (value === 'NO') {
       matchState[fieldId] = true;
       el.className = 'no-barcode';
@@ -454,8 +451,6 @@
   }
 
   // ── PHOTO: compress and store as base64 locally ───────────
-  // Photos are NOT uploaded now — they are sent together with
-  // all packing data in one single POST on submit.
   function processPhoto(input, previewId, dataKey, btnId, statusId) {
     if (!input.files || !input.files[0]) return;
     const file     = input.files[0];
@@ -476,12 +471,10 @@
 
       const compressed = canvas.toDataURL('image/jpeg', 0.85);
 
-      // Show preview
       const prevEl = document.getElementById(previewId);
       prevEl.src           = compressed;
       prevEl.style.display = 'block';
 
-      // Store locally — will be sent on submit
       photoUrls[dataKey]       = compressed;
       statusEl.textContent = '✓ Ready';
       statusEl.className   = 'upload-status ok';
@@ -491,7 +484,7 @@
     img.src = url;
   }
 
-   // ── SUBMIT — sends everything including photos in one POST ─
+  // ── SUBMIT — sends everything including photos in one POST ─
   async function submitData() {
     if (document.getElementById('submitBtn').disabled) return;
 
@@ -510,7 +503,7 @@
 
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const data = {
-      action: "submit",  // REQUIRED for doPost routing
+      action: "submit",
       packedBy, checkerBy, cartonId,
       customer:   document.getElementById('customer').value.trim(),
       pi:         document.getElementById('pi').value.trim(),
@@ -533,13 +526,12 @@
       const response = await fetch(SCRIPT_URL, {
         method: 'POST',
         headers: {
-          'Content-Type': 'text/plain;charset=utf-8'  // Simple request = no preflight
+          'Content-Type': 'text/plain;charset=utf-8'
         },
         body: JSON.stringify(data),
-        redirect: 'follow'  // Apps Script returns 302 redirect, fetch must follow it
+        redirect: 'follow'
       });
 
-      // Check if response is OK
       if (!response.ok) {
         throw new Error('Server returned ' + response.status + ' ' + response.statusText);
       }
