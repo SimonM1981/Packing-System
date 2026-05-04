@@ -453,10 +453,12 @@
     });
   }
 
-  // ── PHOTO: compress, preview, upload to Drive ─────────────
+  // ── PHOTO: compress and store as base64 locally ───────────
+  // Photos are NOT uploaded now — they are sent together with
+  // all packing data in one single POST on submit.
   function processPhoto(input, previewId, dataKey, btnId, statusId) {
     if (!input.files || !input.files[0]) return;
-    const file = input.files[0];
+    const file     = input.files[0];
     const statusEl = document.getElementById(statusId);
     const btnEl    = document.getElementById(btnId);
 
@@ -466,58 +468,30 @@
     const img = new Image();
     const url = URL.createObjectURL(file);
     img.onload = function() {
-      // Compress to 50% size
       const canvas = document.createElement('canvas');
       canvas.width  = Math.round(img.width  * 0.5);
       canvas.height = Math.round(img.height * 0.5);
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
       URL.revokeObjectURL(url);
 
       const compressed = canvas.toDataURL('image/jpeg', 0.85);
 
       // Show preview
       const prevEl = document.getElementById(previewId);
-      prevEl.src = compressed;
+      prevEl.src           = compressed;
       prevEl.style.display = 'block';
 
-      // Upload to Drive
-      statusEl.textContent = 'Uploading to Drive...';
-      const timestamp = new Date().toISOString().replace(/[:.]/g,'-');
-      const filename  = dataKey + '_' + timestamp + '.jpg';
-
-      fetch(SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action:   'uploadPhoto',
-          base64:   compressed,
-          mimeType: 'image/jpeg',
-          filename: filename
-        })
-      })
-      .then(r => r.json())
-      .then(result => {
-        if (result.success) {
-          photoUrls[dataKey] = result.url;
-          btnEl.classList.add('has-photo');
-          statusEl.textContent = '✓ Uploaded to Drive';
-          statusEl.className   = 'upload-status ok';
-          updateSteps();
-        } else {
-          statusEl.textContent = '⚠ Upload failed: ' + (result.error || 'unknown');
-          statusEl.className   = 'upload-status err';
-        }
-      })
-      .catch(err => {
-        statusEl.textContent = '⚠ Upload error: ' + err.message;
-        statusEl.className   = 'upload-status err';
-      });
+      // Store locally — will be sent on submit
+      photoUrls[dataKey]       = compressed;
+      statusEl.textContent = '✓ Ready';
+      statusEl.className   = 'upload-status ok';
+      btnEl.classList.add('has-photo');
+      updateSteps();
     };
     img.src = url;
   }
 
-  // ── SUBMIT ────────────────────────────────────────────────
+  // ── SUBMIT — sends everything including photos in one POST ─
   async function submitData() {
     if (document.getElementById('submitBtn').disabled) return;
 
@@ -529,35 +503,29 @@
     if (!checkerBy) { showStatus('Please enter Packing Checker By.', 'error'); return; }
     if (!cartonId)  { showStatus('Please enter Carton ID.', 'error'); return; }
 
-    // Warn if a photo was selected but upload is still in progress
-    const stillUploading = ['imgBag','imgInner','imgCarton'].some(k => {
-      const statusId = 'upload' + k.replace('img','');
-      const statusEl = document.getElementById(statusId);
-      return statusEl && statusEl.textContent.includes('Uploading');
-    });
-    if (stillUploading) { showStatus('Please wait, photos still uploading...', 'info'); return; }
-
     const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.textContent = 'Saving...';
-    showStatus('Submitting...', 'info');
+    btn.disabled    = true;
+    btn.textContent = 'Saving... (uploading photos)';
+    showStatus('Submitting — please wait, uploading photos to Drive...', 'info');
 
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const data = {
       packedBy, checkerBy, cartonId,
-      customer:     document.getElementById('customer').value.trim(),
-      pi:           document.getElementById('pi').value.trim(),
-      partNo:       document.getElementById('partNo').value.trim(),
-      bag:          document.getElementById('bag').value.trim(),
-      inner:        document.getElementById('inner').value.trim(),
-      outer:        document.getElementById('outer').value.trim(),
-      qty:          document.getElementById('qty').value.trim(),
-      packedDate:   new Date().toISOString().split('T')[0],
-      bagMatch:     matchState.bag,
-      innerMatch:   matchState.inner,
-      outerMatch:   matchState.outer,
-      imgBagUrl:    photoUrls.imgBag    || "",
-      imgInnerUrl:  photoUrls.imgInner  || "",
-      imgCartonUrl: photoUrls.imgCarton || ""
+      customer:   document.getElementById('customer').value.trim(),
+      pi:         document.getElementById('pi').value.trim(),
+      partNo:     document.getElementById('partNo').value.trim(),
+      bag:        document.getElementById('bag').value.trim(),
+      inner:      document.getElementById('inner').value.trim(),
+      outer:      document.getElementById('outer').value.trim(),
+      qty:        document.getElementById('qty').value.trim(),
+      packedDate: new Date().toISOString().split('T')[0],
+      bagMatch:   matchState.bag,
+      innerMatch: matchState.inner,
+      outerMatch: matchState.outer,
+      // Send base64 photos — Apps Script will upload to Drive
+      imgBag:    photoUrls.imgBag    ? { base64: photoUrls.imgBag,    filename: 'BagPart_'  + timestamp + '.jpg' } : null,
+      imgInner:  photoUrls.imgInner  ? { base64: photoUrls.imgInner,  filename: 'InnerBox_' + timestamp + '.jpg' } : null,
+      imgCarton: photoUrls.imgCarton ? { base64: photoUrls.imgCarton, filename: 'Carton_'   + timestamp + '.jpg' } : null,
     };
 
     try {
@@ -566,11 +534,11 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
-      showStatus('✅ Packing data saved successfully!', 'success');
+      showStatus('✅ Packing data & photos saved successfully!', 'success');
       setTimeout(() => location.reload(), 2800);
     } catch(err) {
       showStatus('Error: ' + err.message, 'error');
-      btn.disabled = false;
+      btn.disabled    = false;
       btn.textContent = 'SUBMIT PACKING DATA';
     }
   }
