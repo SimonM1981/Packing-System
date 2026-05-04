@@ -394,17 +394,15 @@
     btn.textContent = 'Saving...';
 
     try {
-      await fetch(SCRIPT_URL, {
-        method: 'POST', mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action:  'verify',
-          row:     currentRecord.row,
-          checker: checkerName.trim().toUpperCase(),
-          status:  selectedVerdict === 'Verified' ? 'Verified ✅' : 'Rejected ❌',
-          remarks: remarks.toUpperCase()
-        })
-      });
+      const payload = {
+        action:  'verify',
+        row:     currentRecord.row,
+        checker: checkerName.trim().toUpperCase(),
+        status:  selectedVerdict === 'Verified' ? 'Verified ✅' : 'Rejected ❌',
+        remarks: remarks.toUpperCase()
+      };
+      const encoded = encodeURIComponent(JSON.stringify(payload));
+      await fetch(SCRIPT_URL + '?action=verify&data=' + encoded);
       alert('Verification saved!');
       closeModal();
       loadRecords();
