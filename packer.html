@@ -20,6 +20,7 @@
     input.match     { border-color:#4caf50 !important; background:#1a2e1a; }
     input.mismatch  { border-color:#f44336 !important; background:#2e1a1a; }
     input.no-barcode{ border-color:#ff9800 !important; background:#2e2200; }
+    input.required-empty { border-color:#ff5722 !important; box-shadow: 0 0 0 2px rgba(255,87,34,0.3); }
     .scan-row { display:flex; gap:8px; align-items:center; }
     .scan-row input { flex:1; }
     button { background:#3f51b5; color:white; border:none; padding:11px 14px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:0.88rem; white-space:nowrap; flex-shrink:0; }
@@ -55,6 +56,8 @@
     .upload-status { font-size:0.78rem; color:#aaa; margin-top:4px; min-height:18px; }
     .upload-status.ok  { color:#4caf50; }
     .upload-status.err { color:#f44336; }
+    .required-label::after { content:" *"; color:#ff5722; }
+    .missing-notice { background:#4a2000; color:#ffab91; border-radius:8px; padding:10px 14px; font-size:0.85rem; font-weight:600; margin-top:10px; display:none; }
   </style>
 </head>
 <body>
@@ -67,23 +70,21 @@
 
 <div class="card">
   <div class="card-title">Staff Info</div>
-  <label>Packed By</label>
+  <label class="required-label">Packed By</label>
   <div class="scan-row"><input type="text" id="packedBy" placeholder="Name or scan ID"><button onclick="startScanner('packedBy')">SCAN</button><button class="type-btn" onclick="focusField('packedBy')">TYPE</button></div>
-  <label>Packing Checker By</label>
-  <div class="scan-row"><input type="text" id="checkerBy" placeholder="Checker name or scan ID"><button onclick="startScanner('checkerBy')">SCAN</button><button class="type-btn" onclick="focusField('checkerBy')">TYPE</button></div>
+  <label class="required-label">Packing Team</label>
+  <div class="scan-row"><input type="text" id="checkerBy" placeholder="Team name or scan ID"><button onclick="startScanner('checkerBy')">SCAN</button><button class="type-btn" onclick="focusField('checkerBy')">TYPE</button></div>
 </div>
 
 <div class="card">
   <div class="card-title">Order Info</div>
-  <label>Carton ID</label>
+  <label class="required-label">Carton ID</label>
   <div class="scan-row"><input type="text" id="cartonId" placeholder="Scan or type Carton ID"><button onclick="startScanner('cartonId')">SCAN</button><button class="type-btn" onclick="focusField('cartonId')">TYPE</button></div>
-  <label>Customer Name</label>
-  <div class="scan-row"><input type="text" id="customer" placeholder="Auto-filled or scan/type"><button onclick="startScanner('customer')">SCAN</button><button class="type-btn" onclick="focusField('customer')">TYPE</button></div>
-  <div class="auto-filled" id="customerNote">Auto-filled from master register</div>
-  <label>P/I No.</label>
-  <div class="scan-row"><input type="text" id="pi" placeholder="Auto-filled or scan/type"><button onclick="startScanner('pi')">SCAN</button><button class="type-btn" onclick="focusField('pi')">TYPE</button></div>
-  <div class="auto-filled" id="piNote">Auto-filled from master register</div>
-  <label>Part No.</label>
+  <label class="required-label">Customer Name</label>
+  <div class="scan-row"><input type="text" id="customer" placeholder="Type Customer Name"><button onclick="startScanner('customer')">SCAN</button><button class="type-btn" onclick="focusField('customer')">TYPE</button></div>
+  <label class="required-label">P/I No.</label>
+  <div class="scan-row"><input type="text" id="pi" placeholder="Type P/I No."><button onclick="startScanner('pi')">SCAN</button><button class="type-btn" onclick="focusField('pi')">TYPE</button></div>
+  <label class="required-label">Part No.</label>
   <div class="scan-row"><input type="text" id="partNo" placeholder="Auto-filled or scan/type"><button onclick="startScanner('partNo')">SCAN</button><button class="type-btn" onclick="focusField('partNo')">TYPE</button></div>
   <div class="auto-filled" id="partNoNote">Auto-filled from master register</div>
 </div>
@@ -91,16 +92,17 @@
 <div class="card">
   <div class="card-title">Barcode Verification</div>
   <p class="hint">Scan in order: Bag → Inner → Outer. Type NO if no barcode.</p>
-  <label>1. Bag Barcode</label>
+  <label class="required-label">1. Bag Barcode</label>
   <div class="scan-row"><input type="text" id="bag" placeholder="Scan, type barcode, or NO"><button onclick="startScanner('bag')">SCAN</button><button class="type-btn" onclick="focusField('bag')">TYPE</button></div>
   <div class="match-badge pending" id="bagBadge">Not checked yet</div>
-  <label>2. Inner Box Barcode</label>
+  <label class="required-label">2. Inner Box Barcode</label>
   <div class="scan-row"><input type="text" id="inner" placeholder="Scan, type barcode, or NO"><button onclick="startScanner('inner')">SCAN</button><button class="type-btn" onclick="focusField('inner')">TYPE</button></div>
   <div class="match-badge pending" id="innerBadge">Not checked yet</div>
-  <label>3. Outer Carton Barcode</label>
+  <label class="required-label">3. Outer Carton Barcode</label>
   <div class="scan-row"><input type="text" id="outer" placeholder="Scan, type barcode, or NO"><button onclick="startScanner('outer')">SCAN</button><button class="type-btn" onclick="focusField('outer')">TYPE</button></div>
   <div class="match-badge pending" id="outerBadge">Not checked yet</div>
   <div class="blocker-notice" id="blockerNotice">Mismatch detected — submission blocked. Please recheck barcodes.</div>
+  <div class="missing-notice" id="missingNotice">Please fill in all required fields marked with *</div>
   <div id="scanner-container" style="display:none;">
     <div id="reader"></div>
     <button onclick="stopScanner()" style="margin-top:10px;background:#555;width:100%;">Close Scanner</button>
@@ -124,7 +126,7 @@
 
 <div class="card">
   <div class="card-title">Quantity</div>
-  <label>Qty (pcs)</label>
+  <label class="required-label">Qty (pcs)</label>
   <input type="number" id="qty" min="1" value="1">
 </div>
 
@@ -141,6 +143,9 @@
   let matchState  = { bag:null, inner:null, outer:null };
   let photoData   = { imgBag:null, imgInner:null, imgCarton:null };
 
+  // List of all required field IDs
+  const requiredFields = ['packedBy', 'checkerBy', 'cartonId', 'customer', 'pi', 'partNo', 'bag', 'inner', 'outer', 'qty'];
+
   // AUTO UPPERCASE
   document.querySelectorAll('input[type="text"]').forEach(inp => {
     inp.addEventListener('input', function() {
@@ -148,6 +153,20 @@
       this.value = this.value.toUpperCase();
       try { this.setSelectionRange(pos,pos); } catch(e){}
     });
+  });
+
+  // Add blur listeners to required fields for validation feedback
+  requiredFields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('blur', function() {
+        validateRequiredFields();
+      });
+      el.addEventListener('input', function() {
+        // Remove red border when user starts typing
+        this.classList.remove('required-empty');
+      });
+    }
   });
 
   // ── SCANNER ──────────────────────────────────────────────
@@ -213,20 +232,12 @@
       const resp   = await fetch(url);
       const result = await resp.json();
 
-      // DEBUG - remove after testing
-      console.log("Lookup result:", result);
-      console.log("Bag value:", bagValue, "type:", typeof bagValue);
-      console.log("Result bagBarcode:", result.bagBarcode, "type:", typeof result.bagBarcode);
-
       if (result.found) {
         masterData = result;
-        document.getElementById('customer').value = String(result.customer || "").toUpperCase();  // CHANGED: added String()
-        document.getElementById('pi').value = String(result.pi || "").toUpperCase();               // CHANGED: added String()
-        document.getElementById('partNo').value = String(result.partNo || "").toUpperCase();       // CHANGED: added String()
-        
-        ['customerNote','piNote','partNoNote'].forEach(id=>document.getElementById(id).style.display='block');
+        // CHANGED: Only auto-fill Part No., NOT Customer or P/I No.
+        document.getElementById('partNo').value = String(result.partNo || "").toUpperCase();
+        document.getElementById('partNoNote').style.display = 'block';
 
-        // CHANGED: Force both to strings before comparing
         const bagOk = String(bagValue).toUpperCase() === String(result.bagBarcode).toUpperCase();
         matchState.bag = bagOk;
         const el = document.getElementById('bag');
@@ -245,7 +256,6 @@
         document.getElementById('bag').classList.add('mismatch');
       }
     } catch(err) {
-      console.error("Lookup error:", err);  // CHANGED: log to console
       setBadge('bag', 'fail', 'Lookup failed: ' + err.message);
     }
     updateSubmitButton();
@@ -267,7 +277,6 @@
       return;
     }
     const expected = fieldId === 'inner' ? masterData.innerBarcode : masterData.outerBarcode;
-    // CHANGED: Force both to strings before comparing
     const ok = String(value).toUpperCase() === String(expected).toUpperCase();
     matchState[fieldId] = ok;
     el.classList.remove('no-barcode');
@@ -282,16 +291,44 @@
     b.textContent = text;
   }
 
+  // CHANGED: New function to check if all required fields are filled
+  function validateRequiredFields() {
+    let allFilled = true;
+    let firstEmpty = null;
+    
+    requiredFields.forEach(id => {
+      const el = document.getElementById(id);
+      const val = el.value.trim();
+      if (!val || val === '') {
+        allFilled = false;
+        el.classList.add('required-empty');
+        if (!firstEmpty) firstEmpty = el;
+      } else {
+        el.classList.remove('required-empty');
+      }
+    });
+    
+    return { allFilled, firstEmpty };
+  }
+
   function updateSubmitButton() {
+    const { allFilled } = validateRequiredFields();
     const allMatch = matchState.bag === true && matchState.inner === true && matchState.outer === true;
     const anyFail = matchState.bag === false || matchState.inner === false || matchState.outer === false;
     const btn = document.getElementById('submitBtn');
-    btn.className = 'submit-btn ' + (allMatch ? 'ready' : 'blocked');
-    btn.disabled = !allMatch;
+    
+    // CHANGED: Must have all fields filled AND all barcodes matched
+    const canSubmit = allFilled && allMatch;
+    
+    btn.className = 'submit-btn ' + (canSubmit ? 'ready' : 'blocked');
+    btn.disabled = !canSubmit;
+    
     document.getElementById('blockerNotice').style.display = anyFail ? 'block' : 'none';
+    document.getElementById('missingNotice').style.display = (!allFilled && (allMatch || anyFail)) ? 'block' : 'none';
   }
 
   function updateSteps() {
+    const { allFilled } = validateRequiredFields();
     const s = [
       !!(document.getElementById('packedBy').value && document.getElementById('checkerBy').value),
       !!(document.getElementById('bag').value),
@@ -357,6 +394,17 @@
   }
 
   async function submitData() {
+    // CHANGED: Double-check all required fields before submitting
+    const { allFilled, firstEmpty } = validateRequiredFields();
+    if (!allFilled) {
+      showStatus('Please fill in all required fields marked with *', 'error');
+      if (firstEmpty) {
+        firstEmpty.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        firstEmpty.focus();
+      }
+      return;
+    }
+    
     const btn = document.getElementById('submitBtn');
     if (btn.disabled) return;
     btn.disabled = true;
@@ -369,7 +417,6 @@
       carton: await uploadPhoto('imgCarton', 'uploadCarton')
     };
 
-    // CHANGED: Added bagMatch, innerMatch, outerMatch to payload
     const payload = {
       action: 'submit',
       packedBy: document.getElementById('packedBy').value,
@@ -382,9 +429,9 @@
       inner: document.getElementById('inner').value,
       outer: document.getElementById('outer').value,
       qty: document.getElementById('qty').value,
-      bagMatch: matchState.bag,        // CHANGED
-      innerMatch: matchState.inner,    // CHANGED
-      outerMatch: matchState.outer,    // CHANGED
+      bagMatch: matchState.bag,
+      innerMatch: matchState.inner,
+      outerMatch: matchState.outer,
       imgBagUrl: urls.bag,
       imgInnerUrl: urls.inner,
       imgCartonUrl: urls.carton
