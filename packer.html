@@ -173,7 +173,7 @@
   }
   function focusField(id) { document.getElementById(id).focus(); }
 
-  // FIXED: Added async/await to ensure barcode verification completes before moving focus
+  // FIXED: Added async/await with timeout safety
   ['bag','inner','outer'].forEach(id => {
     document.getElementById(id).addEventListener('keypress', async function(e) {
       if (e.key === 'Enter') { 
@@ -212,21 +212,36 @@
     updateSubmitButton(); updateSteps();
   }
 
-  // MASTER LOOKUP via google.script.run
+  // FIXED: Added 8-second timeout to prevent "Checking..." forever
   function lookupMaster(bagValue) {
     return new Promise((resolve) => {
+      // Timeout safety - if google.script.run never responds
+      const timeoutId = setTimeout(() => {
+        matchState.bag = false;
+        masterData = null;
+        setBadge('bag', 'fail', '❌ Lookup timeout — check connection & redeploy');
+        document.getElementById('bag').classList.add('mismatch');
+        showStatus('Connection to server failed. Please redeploy the web app.', 'error');
+        updateSubmitButton(); 
+        updateSteps(); 
+        resolve();
+      }, 8000);
+
       if (bagValue === 'NO') {
+        clearTimeout(timeoutId);
         matchState.bag = true;
         setBadge('bag','no-bc','⚠ No barcode — accepted');
         document.getElementById('bag').className = 'no-barcode';
         updateSubmitButton(); updateSteps(); resolve(); return;
       }
+
       setBadge('bag','pending','Checking...');
       const pi     = document.getElementById('pi').value.trim();
       const partNo = document.getElementById('partNo').value.trim();
 
       google.script.run
         .withSuccessHandler(function(result) {
+          clearTimeout(timeoutId); // Cancel timeout on success
           if (result.found) {
             masterData = result;
             document.getElementById('customer').value = result.customer.toUpperCase();
@@ -236,18 +251,23 @@
             } else { document.getElementById('piNote').style.display = 'none'; }
             document.getElementById('partNo').value = result.partNo.toUpperCase();
             document.getElementById('customerNote').style.display = 'block';
-            document.getElementById('partNoNote').style.display   = 'block';
+            document.getElementById('partNoNote').style.display = 'block';
+            
             const bagOk = bagValue.toUpperCase() === result.bagBarcode.toUpperCase();
             matchState.bag = bagOk;
             const el = document.getElementById('bag');
-            el.classList.toggle('match', bagOk); el.classList.toggle('mismatch', !bagOk);
-            setBadge('bag', bagOk?'ok':'fail', bagOk?'✅ Match — Bag OK':'❌ Mismatch — Wrong Bag');
+            el.classList.toggle('match', bagOk); 
+            el.classList.toggle('mismatch', !bagOk);
+            setBadge('bag', bagOk ? 'ok' : 'fail', bagOk ? '✅ Match — Bag OK' : '❌ Mismatch — Wrong Bag');
+            
+            // Re-check inner/outer if they were already entered
             const iv = document.getElementById('inner').value.trim();
             const ov = document.getElementById('outer').value.trim();
             if (iv) checkBarcode('inner', iv);
             if (ov) checkBarcode('outer', ov);
           } else {
-            masterData = null; matchState.bag = false;
+            masterData = null; 
+            matchState.bag = false;
             setBadge('bag','fail','❌ Not found in master register');
             document.getElementById('bag').classList.add('mismatch');
             document.getElementById('customer').value = '';
@@ -258,14 +278,18 @@
           updateSubmitButton(); updateSteps(); resolve();
         })
         .withFailureHandler(function(err) {
+          clearTimeout(timeoutId); // Cancel timeout on failure
           setBadge('bag','fail','❌ Lookup failed: ' + err.message);
-          matchState.bag = false; updateSubmitButton(); updateSteps(); resolve();
+          matchState.bag = false; 
+          masterData = null;
+          document.getElementById('bag').classList.add('mismatch');
+          updateSubmitButton(); updateSteps(); resolve();
         })
         .lookupBarcodeFromClient(bagValue, pi, partNo);
     });
   }
 
-  // FIXED: Now properly sets matchState to false when masterData is missing
+  // FIXED: Properly handles missing masterData with false state
   function checkBarcode(fieldId, value) {
     const el = document.getElementById(fieldId);
     const label = fieldId === 'inner' ? 'Inner' : 'Outer';
@@ -276,9 +300,9 @@
       return; 
     }
     if (!masterData) { 
-      matchState[fieldId] = false;  // FIXED: was null, now false
+      matchState[fieldId] = false;
       el.classList.add('mismatch');
-      setBadge(fieldId, 'fail', '❌ Bag barcode not verified yet');  // FIXED: clearer message
+      setBadge(fieldId, 'fail', '❌ Bag barcode not verified yet');
       return; 
     }
     const expected = fieldId === 'inner' ? masterData.innerBarcode : masterData.outerBarcode;
@@ -296,7 +320,6 @@
     b.textContent = text; 
   }
 
-  // FIXED: Now explicitly handles null values as blocked
   function updateSubmitButton() {
     const bagOk = matchState.bag === true;
     const innerOk = matchState.inner === true;
