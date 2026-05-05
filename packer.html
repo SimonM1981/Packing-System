@@ -132,6 +132,7 @@
 <div id="status"></div>
 
 <script>
+  // Ensure this URL is correct and script is deployed as "Anyone"
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJNbH09bwWqsO0lnM8j_xHA7ALfPFKpSjSFwUK4SRugrHqMWIhds7KhyUHN7kXR28/exec";
 
   let html5QrCode = null;
@@ -187,19 +188,6 @@
     });
   });
 
-  ['pi','partNo'].forEach(id => {
-    document.getElementById(id).addEventListener('change', async function() {
-      const bagVal = document.getElementById('bag').value.trim();
-      if (!bagVal) return;
-      await lookupMaster(bagVal);
-      const iv=document.getElementById('inner').value.trim();
-      const ov=document.getElementById('outer').value.trim();
-      if(iv) checkBarcode('inner',iv);
-      if(ov) checkBarcode('outer',ov);
-      updateSubmitButton(); updateSteps();
-    });
-  });
-
   async function onBarcodeEntered(fieldId, value) {
     if (!value) return;
     if (fieldId==='bag') await lookupMaster(value);
@@ -207,7 +195,7 @@
     updateSubmitButton(); updateSteps();
   }
 
-  // ── MASTER LOOKUP via fetch GET (no CORS issue) ───────────
+  // ── MASTER LOOKUP via fetch GET ───────────
   async function lookupMaster(bagValue) {
     if (bagValue==='NO') {
       matchState.bag=true; setBadge('bag','no-bc','No barcode — accepted');
@@ -219,7 +207,7 @@
       const pi     = document.getElementById('pi').value.trim();
       const partNo = document.getElementById('partNo').value.trim();
       let url = SCRIPT_URL+'?action=lookup&barcode='+encodeURIComponent(bagValue);
-      if (pi)     url += '&pi='+encodeURIComponent(pi);
+      if (pi)      url += '&pi='+encodeURIComponent(pi);
       if (partNo) url += '&partNo='+encodeURIComponent(partNo);
 
       const resp   = await fetch(url);
@@ -228,13 +216,10 @@
       if (result.found) {
         masterData = result;
         document.getElementById('customer').value = result.customer.toUpperCase();
-        if (result.pi && result.pi.trim()!=='') {
-          document.getElementById('pi').value = result.pi.toUpperCase();
-          document.getElementById('piNote').style.display='block';
-        } else { document.getElementById('piNote').style.display='none'; }
-        document.getElementById('partNo').value = result.partNo.toUpperCase();
-        document.getElementById('customerNote').style.display='block';
-        document.getElementById('partNoNote').style.display='block';
+        document.getElementById('pi').value = (result.pi || "").toUpperCase();
+        document.getElementById('partNo').value = (result.partNo || "").toUpperCase();
+        
+        ['customerNote','piNote','partNoNote'].forEach(id=>document.getElementById(id).style.display='block');
 
         const bagOk = bagValue.toUpperCase()===result.bagBarcode.toUpperCase();
         matchState.bag=bagOk;
@@ -250,14 +235,9 @@
         masterData=null; matchState.bag=false;
         setBadge('bag','fail','Not found in master register');
         document.getElementById('bag').classList.add('mismatch');
-        document.getElementById('customer').value='';
-        document.getElementById('pi').value='';
-        document.getElementById('partNo').value='';
-        ['customerNote','piNote','partNoNote'].forEach(id=>document.getElementById(id).style.display='none');
       }
     } catch(err) {
       setBadge('bag','fail','Lookup failed: '+err.message);
-      matchState.bag=false;
     }
     updateSubmitButton(); updateSteps();
   }
@@ -293,37 +273,32 @@
     s.forEach((done,i)=>{ const el=document.getElementById('step'+(i+1)); el.className='step '+(done?'done':(i===s.indexOf(false)?'active':'')); });
   }
 
-  // ── PHOTO: compress and store locally ────────────────────
   function processPhoto(input, previewId, dataKey, btnId, statusId) {
     if (!input.files||!input.files[0]) return;
     const statusEl=document.getElementById(statusId);
-    statusEl.textContent='Compressing...'; statusEl.className='upload-status';
+    statusEl.textContent='Compressing...';
     const img=new Image(), url=URL.createObjectURL(input.files[0]);
     img.onload=function() {
       const MAX=1024; let w=img.width,h=img.height;
       if(w>h&&w>MAX){h=Math.round(h*MAX/w);w=MAX;} else if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
       const canvas=document.createElement('canvas'); canvas.width=w; canvas.height=h;
       canvas.getContext('2d').drawImage(img,0,0,w,h);
-      URL.revokeObjectURL(url);
-      const compressed=canvas.toDataURL('image/jpeg',0.75);
-      const sizeKB=Math.round(compressed.length*0.75/1024);
+      const compressed=canvas.toDataURL('image/jpeg',0.7);
       document.getElementById(previewId).src=compressed;
       document.getElementById(previewId).style.display='block';
       document.getElementById(btnId).classList.add('has-photo');
-      const ts=new Date().toISOString().replace(/[:.]/g,'-');
-      photoData[dataKey]={base64:compressed, filename:dataKey+'_'+ts+'.jpg'};
-      statusEl.textContent='Ready (~'+sizeKB+'KB)'; statusEl.className='upload-status ok';
+      photoData[dataKey]={base64:compressed.split(',')[1], filename:dataKey+'_'+Date.now()+'.jpg'};
+      statusEl.textContent='Ready'; statusEl.className='upload-status ok';
       updateSteps();
     };
     img.src=url;
   }
 
-  // ── UPLOAD ONE PHOTO via POST with text/plain (avoids CORS preflight) ──
   async function uploadPhoto(dataKey, statusId) {
     const obj=photoData[dataKey];
     if (!obj) return "";
     const statusEl=document.getElementById(statusId);
-    statusEl.textContent='Uploading to Drive...'; statusEl.className='upload-status';
+    statusEl.textContent='Uploading...';
     try {
       const resp = await fetch(SCRIPT_URL, {
         method:'POST',
@@ -332,76 +307,67 @@
       });
       const result = await resp.json();
       if (result.success) {
-        statusEl.textContent='Saved to Drive'; statusEl.className='upload-status ok';
-        return result.url;
+        statusEl.textContent='Saved'; return result.url;
       } else {
-        statusEl.textContent='Upload failed: '+(result.error||'unknown'); statusEl.className='upload-status err';
-        return "";
+        throw new Error(result.error);
       }
     } catch(err) {
-      statusEl.textContent='Upload error: '+err.message; statusEl.className='upload-status err';
+      statusEl.textContent='Drive Error'; statusEl.className='upload-status err';
       return "";
     }
   }
 
-  // ── SUBMIT ────────────────────────────────────────────────
   async function submitData() {
-    if (document.getElementById('submitBtn').disabled) return;
-    const packedBy=document.getElementById('packedBy').value.trim();
-    const checkerBy=document.getElementById('checkerBy').value.trim();
-    const cartonId=document.getElementById('cartonId').value.trim();
-    if (!packedBy)  { showStatus('Please enter Packed By.','error'); return; }
-    if (!checkerBy) { showStatus('Please enter Packing Checker By.','error'); return; }
-    if (!cartonId)  { showStatus('Please enter Carton ID.','error'); return; }
-
     const btn=document.getElementById('submitBtn');
-    btn.disabled=true; btn.textContent='Uploading photos...';
-    showStatus('Uploading photos to Drive...','info');
+    if (btn.disabled) return;
+    btn.disabled=true;
+    btn.textContent='Uploading Photos...';
+    showStatus('Uploading Photos to Drive...','info');
 
-    // Upload photos one by one
-    const imgBagUrl    = await uploadPhoto('imgBag',    'uploadBag');
-    const imgInnerUrl  = await uploadPhoto('imgInner',  'uploadInner');
-    const imgCartonUrl = await uploadPhoto('imgCarton', 'uploadCarton');
+    const urls = {
+      bag: await uploadPhoto('imgBag', 'uploadBag'),
+      inner: await uploadPhoto('imgInner', 'uploadInner'),
+      carton: await uploadPhoto('imgCarton', 'uploadCarton')
+    };
 
-    btn.textContent='Saving...';
-    showStatus('Saving packing data...','info');
-
-    const data = {
-      action:'submit', packedBy, checkerBy, cartonId,
-      customer:  document.getElementById('customer').value.trim(),
-      pi:        document.getElementById('pi').value.trim(),
-      partNo:    document.getElementById('partNo').value.trim(),
-      bag:       document.getElementById('bag').value.trim(),
-      inner:     document.getElementById('inner').value.trim(),
-      outer:     document.getElementById('outer').value.trim(),
-      qty:       document.getElementById('qty').value.trim(),
-      packedDate:new Date().toISOString().split('T')[0],
-      bagMatch:  matchState.bag, innerMatch:matchState.inner, outerMatch:matchState.outer,
-      imgBagUrl, imgInnerUrl, imgCartonUrl
+    const payload = {
+      action:'submit',
+      packedBy: document.getElementById('packedBy').value,
+      checkerBy: document.getElementById('checkerBy').value,
+      cartonId: document.getElementById('cartonId').value,
+      customer: document.getElementById('customer').value,
+      pi: document.getElementById('pi').value,
+      partNo: document.getElementById('partNo').value,
+      bag: document.getElementById('bag').value,
+      inner: document.getElementById('inner').value,
+      outer: document.getElementById('outer').value,
+      qty: document.getElementById('qty').value,
+      imgBagUrl: urls.bag,
+      imgInnerUrl: urls.inner,
+      imgCartonUrl: urls.carton
     };
 
     try {
       const resp = await fetch(SCRIPT_URL, {
         method:'POST',
         headers:{'Content-Type':'text/plain'},
-        body: JSON.stringify(data)
+        body: JSON.stringify(payload)
       });
-      const result = await resp.json();
-      if (result.success) {
-        showStatus('Packing data saved successfully!','success');
+      const res = await resp.json();
+      if (res.success) {
+        showStatus('Success! Saved to Sheet.','success');
         setTimeout(()=>location.reload(), 2800);
       } else {
-        showStatus('Error: '+(result.error||'Unknown'),'error');
-        btn.disabled=false; btn.textContent='SUBMIT PACKING DATA';
+        throw new Error(res.error || 'Unknown server error');
       }
-    } catch(err) {
-      showStatus('Error: '+err.message,'error');
-      btn.disabled=false; btn.textContent='SUBMIT PACKING DATA';
+    } catch(e) {
+      showStatus('Submit Error: '+e.message, 'error');
+      btn.disabled=false;
+      btn.textContent='RETRY SUBMIT';
     }
   }
 
   function showStatus(msg,type) { const s=document.getElementById('status'); s.textContent=msg; s.className=type; }
-  updateSubmitButton(); updateSteps();
 </script>
 </body>
 </html>
