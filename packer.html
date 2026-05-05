@@ -7,7 +7,7 @@
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
   <style>
     * { box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background:#0f0f0f; color:#e0e0e0; margin:0; padding:16px; min-height:100vh; }
+    body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#0f0f0f; color:#e0e0e0; margin:0; padding:16px; min-height:100vh; }
     h1 { text-align:center; color:#90caf9; margin:12px 0 4px; font-size:1.5rem; }
     .subtitle { text-align:center; color:#888; font-size:0.85rem; margin-bottom:20px; }
     .card { background:#1e1e1e; border:1px solid #333; border-radius:12px; padding:16px; margin-bottom:16px; }
@@ -17,15 +17,15 @@
     input[type="number"] { text-transform:none; }
     input::placeholder { text-transform:none; color:#555; }
     input:focus { outline:none; border-color:#90caf9; }
-    input.match    { border-color:#4caf50 !important; background:#1a2e1a; }
-    input.mismatch { border-color:#f44336 !important; background:#2e1a1a; }
-    input.no-barcode { border-color:#ff9800 !important; background:#2e2200; }
+    input.match     { border-color:#4caf50 !important; background:#1a2e1a; }
+    input.mismatch  { border-color:#f44336 !important; background:#2e1a1a; }
+    input.no-barcode{ border-color:#ff9800 !important; background:#2e2200; }
     .scan-row { display:flex; gap:8px; align-items:center; }
     .scan-row input { flex:1; }
     button { background:#3f51b5; color:white; border:none; padding:11px 14px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:0.88rem; white-space:nowrap; flex-shrink:0; }
     button.type-btn { background:#455a64; }
     button:disabled { opacity:0.4; cursor:not-allowed; }
-    .match-badge { display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:20px; font-size:0.8rem; font-weight:700; margin-top:5px; min-height:26px; }
+    .match-badge { display:inline-flex; align-items:center; padding:4px 10px; border-radius:20px; font-size:0.8rem; font-weight:700; margin-top:5px; min-height:26px; }
     .match-badge.ok      { background:#1b5e20; color:#a5d6a7; }
     .match-badge.fail    { background:#b71c1c; color:#ef9a9a; }
     .match-badge.pending { background:#333; color:#888; }
@@ -79,50 +79,47 @@
   <div class="scan-row"><input type="text" id="cartonId" placeholder="Scan or type Carton ID"><button onclick="startScanner('cartonId')">SCAN</button><button class="type-btn" onclick="focusField('cartonId')">TYPE</button></div>
   <label>Customer Name</label>
   <div class="scan-row"><input type="text" id="customer" placeholder="Auto-filled or scan/type"><button onclick="startScanner('customer')">SCAN</button><button class="type-btn" onclick="focusField('customer')">TYPE</button></div>
-  <div class="auto-filled" id="customerNote">✓ Auto-filled from master register</div>
+  <div class="auto-filled" id="customerNote">Auto-filled from master register</div>
   <label>P/I No.</label>
   <div class="scan-row"><input type="text" id="pi" placeholder="Auto-filled or scan/type"><button onclick="startScanner('pi')">SCAN</button><button class="type-btn" onclick="focusField('pi')">TYPE</button></div>
-  <div class="auto-filled" id="piNote">✓ Auto-filled from master register</div>
+  <div class="auto-filled" id="piNote">Auto-filled from master register</div>
   <label>Part No.</label>
   <div class="scan-row"><input type="text" id="partNo" placeholder="Auto-filled or scan/type"><button onclick="startScanner('partNo')">SCAN</button><button class="type-btn" onclick="focusField('partNo')">TYPE</button></div>
-  <div class="auto-filled" id="partNoNote">✓ Auto-filled from master register</div>
+  <div class="auto-filled" id="partNoNote">Auto-filled from master register</div>
 </div>
 
 <div class="card">
   <div class="card-title">Barcode Verification</div>
   <p class="hint">Scan in order: Bag → Inner → Outer. Type NO if no barcode.</p>
   <label>1. Bag Barcode</label>
-  <div class="scan-row"><input type="text" id="bag" placeholder="Scan, type barcode, or type NO"><button onclick="startScanner('bag')">SCAN</button><button class="type-btn" onclick="focusField('bag')">TYPE</button></div>
+  <div class="scan-row"><input type="text" id="bag" placeholder="Scan, type barcode, or NO"><button onclick="startScanner('bag')">SCAN</button><button class="type-btn" onclick="focusField('bag')">TYPE</button></div>
   <div class="match-badge pending" id="bagBadge">Not checked yet</div>
   <label>2. Inner Box Barcode</label>
-  <div class="scan-row"><input type="text" id="inner" placeholder="Scan, type barcode, or type NO"><button onclick="startScanner('inner')">SCAN</button><button class="type-btn" onclick="focusField('inner')">TYPE</button></div>
+  <div class="scan-row"><input type="text" id="inner" placeholder="Scan, type barcode, or NO"><button onclick="startScanner('inner')">SCAN</button><button class="type-btn" onclick="focusField('inner')">TYPE</button></div>
   <div class="match-badge pending" id="innerBadge">Not checked yet</div>
   <label>3. Outer Carton Barcode</label>
-  <div class="scan-row"><input type="text" id="outer" placeholder="Scan, type barcode, or type NO"><button onclick="startScanner('outer')">SCAN</button><button class="type-btn" onclick="focusField('outer')">TYPE</button></div>
+  <div class="scan-row"><input type="text" id="outer" placeholder="Scan, type barcode, or NO"><button onclick="startScanner('outer')">SCAN</button><button class="type-btn" onclick="focusField('outer')">TYPE</button></div>
   <div class="match-badge pending" id="outerBadge">Not checked yet</div>
-  <div class="blocker-notice" id="blockerNotice">⛔ Mismatch detected — submission blocked. Please recheck barcodes.</div>
+  <div class="blocker-notice" id="blockerNotice">Mismatch detected — submission blocked. Please recheck barcodes.</div>
   <div id="scanner-container" style="display:none;">
     <div id="reader"></div>
-    <button onclick="stopScanner()" style="margin-top:10px;background:#555;width:100%;">✕ Close Scanner</button>
+    <button onclick="stopScanner()" style="margin-top:10px;background:#555;width:100%;">Close Scanner</button>
   </div>
 </div>
 
 <div class="card">
   <div class="card-title">Photos</div>
-  <button class="photo-btn" id="btnBag" onclick="document.getElementById('fBag').click()"><span class="icon">📸</span><span class="photo-label">Bag with Part</span><span class="done-badge">✓ DONE</span></button>
+  <button class="photo-btn" id="btnBag" onclick="document.getElementById('fBag').click()"><span class="icon">📸</span><span class="photo-label">Bag with Part</span><span class="done-badge">DONE</span></button>
   <input type="file" id="fBag" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevBag','imgBag','btnBag','uploadBag')">
-  <img id="prevBag" class="preview" alt="Bag photo">
-  <div class="upload-status" id="uploadBag"></div>
+  <img id="prevBag" class="preview"><div class="upload-status" id="uploadBag"></div>
 
-  <button class="photo-btn" id="btnInner" onclick="document.getElementById('fInner').click()"><span class="icon">📸</span><span class="photo-label">Inner Box / Label</span><span class="done-badge">✓ DONE</span></button>
+  <button class="photo-btn" id="btnInner" onclick="document.getElementById('fInner').click()"><span class="icon">📸</span><span class="photo-label">Inner Box / Label</span><span class="done-badge">DONE</span></button>
   <input type="file" id="fInner" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevInner','imgInner','btnInner','uploadInner')">
-  <img id="prevInner" class="preview" alt="Inner photo">
-  <div class="upload-status" id="uploadInner"></div>
+  <img id="prevInner" class="preview"><div class="upload-status" id="uploadInner"></div>
 
-  <button class="photo-btn" id="btnCarton" onclick="document.getElementById('fCarton').click()"><span class="icon">📸</span><span class="photo-label">Carton / Label</span><span class="done-badge">✓ DONE</span></button>
+  <button class="photo-btn" id="btnCarton" onclick="document.getElementById('fCarton').click()"><span class="icon">📸</span><span class="photo-label">Carton / Label</span><span class="done-badge">DONE</span></button>
   <input type="file" id="fCarton" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevCarton','imgCarton','btnCarton','uploadCarton')">
-  <img id="prevCarton" class="preview" alt="Carton photo">
-  <div class="upload-status" id="uploadCarton"></div>
+  <img id="prevCarton" class="preview"><div class="upload-status" id="uploadCarton"></div>
 </div>
 
 <div class="card">
@@ -135,36 +132,38 @@
 <div id="status"></div>
 
 <script>
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydOw35PdUzl_tQ1EHl1KBBkolLTQPkuyYm0pTrYxPHy7YLvSuqEYdonILu-RDk2LWM/exec";
+
   let html5QrCode = null;
   let activeField = null;
   let masterData  = null;
-  let matchState  = { bag: null, inner: null, outer: null };
-  let photoData   = { imgBag: null, imgInner: null, imgCarton: null };
+  let matchState  = { bag:null, inner:null, outer:null };
+  let photoData   = { imgBag:null, imgInner:null, imgCarton:null };
 
   // AUTO UPPERCASE
   document.querySelectorAll('input[type="text"]').forEach(inp => {
     inp.addEventListener('input', function() {
       const pos = this.selectionStart;
       this.value = this.value.toUpperCase();
-      try { this.setSelectionRange(pos, pos); } catch(e) {}
+      try { this.setSelectionRange(pos,pos); } catch(e){}
     });
   });
 
-  // SCANNER
+  // ── SCANNER ──────────────────────────────────────────────
   async function startScanner(fieldId) {
     activeField = fieldId;
     document.getElementById('scanner-container').style.display = 'block';
     if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
     try {
       if (html5QrCode.isScanning) await html5QrCode.stop();
-      await html5QrCode.start({ facingMode: "environment" }, { fps: 20, qrbox: 250 }, (decoded) => {
+      await html5QrCode.start({ facingMode:"environment" }, { fps:20, qrbox:250 }, (decoded) => {
         const val = decoded.trim().toUpperCase();
         const tf  = activeField;
         document.getElementById(tf).value = val;
         stopScanner();
         onBarcodeEntered(tf, val);
       });
-    } catch(err) { showStatus("Camera error: " + err.message, 'error'); stopScanner(); }
+    } catch(err) { showStatus("Camera error: "+err.message,'error'); stopScanner(); }
   }
   function stopScanner() {
     if (html5QrCode && html5QrCode.isScanning) html5QrCode.stop().catch(()=>{});
@@ -173,22 +172,18 @@
   }
   function focusField(id) { document.getElementById(id).focus(); }
 
-  // FIXED: Added async/await with timeout safety
+  // ── BARCODE LISTENERS ─────────────────────────────────────
   ['bag','inner','outer'].forEach(id => {
-    document.getElementById(id).addEventListener('keypress', async function(e) {
-      if (e.key === 'Enter') { 
-        const v = this.value.trim().toUpperCase(); 
-        this.value = v; 
-        await onBarcodeEntered(id, v);
-        if (id==='bag') document.getElementById('inner').focus();
-        else if (id==='inner') document.getElementById('outer').focus();
+    document.getElementById(id).addEventListener('keypress', function(e) {
+      if (e.key==='Enter') {
+        const v=this.value.trim().toUpperCase(); this.value=v; onBarcodeEntered(id,v);
+        if(id==='bag') document.getElementById('inner').focus();
+        else if(id==='inner') document.getElementById('outer').focus();
         else document.getElementById('qty').focus();
       }
     });
-    document.getElementById(id).addEventListener('change', async function() { 
-      const v = this.value.trim().toUpperCase(); 
-      this.value = v; 
-      await onBarcodeEntered(id, v); 
+    document.getElementById(id).addEventListener('change', function() {
+      const v=this.value.trim().toUpperCase(); this.value=v; onBarcodeEntered(id,v);
     });
   });
 
@@ -197,284 +192,216 @@
       const bagVal = document.getElementById('bag').value.trim();
       if (!bagVal) return;
       await lookupMaster(bagVal);
-      const iv = document.getElementById('inner').value.trim();
-      const ov = document.getElementById('outer').value.trim();
-      if (iv) checkBarcode('inner', iv);
-      if (ov) checkBarcode('outer', ov);
+      const iv=document.getElementById('inner').value.trim();
+      const ov=document.getElementById('outer').value.trim();
+      if(iv) checkBarcode('inner',iv);
+      if(ov) checkBarcode('outer',ov);
       updateSubmitButton(); updateSteps();
     });
   });
 
   async function onBarcodeEntered(fieldId, value) {
     if (!value) return;
-    if (fieldId === 'bag') await lookupMaster(value);
+    if (fieldId==='bag') await lookupMaster(value);
     else checkBarcode(fieldId, value);
     updateSubmitButton(); updateSteps();
   }
 
-  // FIXED: Added 8-second timeout to prevent "Checking..." forever
-  function lookupMaster(bagValue) {
-    return new Promise((resolve) => {
-      // Timeout safety - if google.script.run never responds
-      const timeoutId = setTimeout(() => {
-        matchState.bag = false;
-        masterData = null;
-        setBadge('bag', 'fail', '❌ Lookup timeout — check connection & redeploy');
-        document.getElementById('bag').classList.add('mismatch');
-        showStatus('Connection to server failed. Please redeploy the web app.', 'error');
-        updateSubmitButton(); 
-        updateSteps(); 
-        resolve();
-      }, 8000);
-
-      if (bagValue === 'NO') {
-        clearTimeout(timeoutId);
-        matchState.bag = true;
-        setBadge('bag','no-bc','⚠ No barcode — accepted');
-        document.getElementById('bag').className = 'no-barcode';
-        updateSubmitButton(); updateSteps(); resolve(); return;
-      }
-
-      setBadge('bag','pending','Checking...');
+  // ── MASTER LOOKUP via fetch GET (no CORS issue) ───────────
+  async function lookupMaster(bagValue) {
+    if (bagValue==='NO') {
+      matchState.bag=true; setBadge('bag','no-bc','No barcode — accepted');
+      document.getElementById('bag').className='no-barcode';
+      updateSubmitButton(); updateSteps(); return;
+    }
+    setBadge('bag','pending','Checking...');
+    try {
       const pi     = document.getElementById('pi').value.trim();
       const partNo = document.getElementById('partNo').value.trim();
+      let url = SCRIPT_URL+'?action=lookup&barcode='+encodeURIComponent(bagValue);
+      if (pi)     url += '&pi='+encodeURIComponent(pi);
+      if (partNo) url += '&partNo='+encodeURIComponent(partNo);
 
-      google.script.run
-        .withSuccessHandler(function(result) {
-          clearTimeout(timeoutId); // Cancel timeout on success
-          if (result.found) {
-            masterData = result;
-            document.getElementById('customer').value = result.customer.toUpperCase();
-            if (result.pi && result.pi.trim() !== '') {
-              document.getElementById('pi').value = result.pi.toUpperCase();
-              document.getElementById('piNote').style.display = 'block';
-            } else { document.getElementById('piNote').style.display = 'none'; }
-            document.getElementById('partNo').value = result.partNo.toUpperCase();
-            document.getElementById('customerNote').style.display = 'block';
-            document.getElementById('partNoNote').style.display = 'block';
-            
-            const bagOk = bagValue.toUpperCase() === result.bagBarcode.toUpperCase();
-            matchState.bag = bagOk;
-            const el = document.getElementById('bag');
-            el.classList.toggle('match', bagOk); 
-            el.classList.toggle('mismatch', !bagOk);
-            setBadge('bag', bagOk ? 'ok' : 'fail', bagOk ? '✅ Match — Bag OK' : '❌ Mismatch — Wrong Bag');
-            
-            // Re-check inner/outer if they were already entered
-            const iv = document.getElementById('inner').value.trim();
-            const ov = document.getElementById('outer').value.trim();
-            if (iv) checkBarcode('inner', iv);
-            if (ov) checkBarcode('outer', ov);
-          } else {
-            masterData = null; 
-            matchState.bag = false;
-            setBadge('bag','fail','❌ Not found in master register');
-            document.getElementById('bag').classList.add('mismatch');
-            document.getElementById('customer').value = '';
-            document.getElementById('pi').value = '';
-            document.getElementById('partNo').value = '';
-            ['customerNote','piNote','partNoNote'].forEach(id => document.getElementById(id).style.display='none');
-          }
-          updateSubmitButton(); updateSteps(); resolve();
-        })
-        .withFailureHandler(function(err) {
-          clearTimeout(timeoutId); // Cancel timeout on failure
-          setBadge('bag','fail','❌ Lookup failed: ' + err.message);
-          matchState.bag = false; 
-          masterData = null;
-          document.getElementById('bag').classList.add('mismatch');
-          updateSubmitButton(); updateSteps(); resolve();
-        })
-        .lookupBarcodeFromClient(bagValue, pi, partNo);
-    });
+      const resp   = await fetch(url);
+      const result = await resp.json();
+
+      if (result.found) {
+        masterData = result;
+        document.getElementById('customer').value = result.customer.toUpperCase();
+        if (result.pi && result.pi.trim()!=='') {
+          document.getElementById('pi').value = result.pi.toUpperCase();
+          document.getElementById('piNote').style.display='block';
+        } else { document.getElementById('piNote').style.display='none'; }
+        document.getElementById('partNo').value = result.partNo.toUpperCase();
+        document.getElementById('customerNote').style.display='block';
+        document.getElementById('partNoNote').style.display='block';
+
+        const bagOk = bagValue.toUpperCase()===result.bagBarcode.toUpperCase();
+        matchState.bag=bagOk;
+        const el=document.getElementById('bag');
+        el.classList.toggle('match',bagOk); el.classList.toggle('mismatch',!bagOk);
+        setBadge('bag',bagOk?'ok':'fail',bagOk?'Match — Bag OK':'Mismatch — Wrong Bag');
+
+        const iv=document.getElementById('inner').value.trim();
+        const ov=document.getElementById('outer').value.trim();
+        if(iv) checkBarcode('inner',iv);
+        if(ov) checkBarcode('outer',ov);
+      } else {
+        masterData=null; matchState.bag=false;
+        setBadge('bag','fail','Not found in master register');
+        document.getElementById('bag').classList.add('mismatch');
+        document.getElementById('customer').value='';
+        document.getElementById('pi').value='';
+        document.getElementById('partNo').value='';
+        ['customerNote','piNote','partNoNote'].forEach(id=>document.getElementById(id).style.display='none');
+      }
+    } catch(err) {
+      setBadge('bag','fail','Lookup failed: '+err.message);
+      matchState.bag=false;
+    }
+    updateSubmitButton(); updateSteps();
   }
 
-  // FIXED: Properly handles missing masterData with false state
   function checkBarcode(fieldId, value) {
-    const el = document.getElementById(fieldId);
-    const label = fieldId === 'inner' ? 'Inner' : 'Outer';
-    if (value === 'NO') { 
-      matchState[fieldId] = true; 
-      el.className = 'no-barcode'; 
-      setBadge(fieldId, 'no-bc', '⚠ No barcode — accepted'); 
-      return; 
-    }
-    if (!masterData) { 
-      matchState[fieldId] = false;
-      el.classList.add('mismatch');
-      setBadge(fieldId, 'fail', '❌ Bag barcode not verified yet');
-      return; 
-    }
-    const expected = fieldId === 'inner' ? masterData.innerBarcode : masterData.outerBarcode;
-    const ok = value.toUpperCase() === expected.toUpperCase();
-    matchState[fieldId] = ok;
-    el.classList.remove('no-barcode'); 
-    el.classList.toggle('match', ok); 
-    el.classList.toggle('mismatch', !ok);
-    setBadge(fieldId, ok ? 'ok' : 'fail', ok ? '✅ Match — ' + label + ' OK' : '❌ Mismatch — Wrong ' + label);
+    const el=document.getElementById(fieldId), label=fieldId==='inner'?'Inner':'Outer';
+    if (value==='NO') { matchState[fieldId]=true; el.className='no-barcode'; setBadge(fieldId,'no-bc','No barcode — accepted'); return; }
+    if (!masterData) { setBadge(fieldId,'pending','Scan Bag barcode first'); matchState[fieldId]=null; return; }
+    const expected=fieldId==='inner'?masterData.innerBarcode:masterData.outerBarcode;
+    const ok=value.toUpperCase()===expected.toUpperCase();
+    matchState[fieldId]=ok;
+    el.classList.remove('no-barcode'); el.classList.toggle('match',ok); el.classList.toggle('mismatch',!ok);
+    setBadge(fieldId,ok?'ok':'fail',ok?'Match — '+label+' OK':'Mismatch — Wrong '+label);
   }
 
-  function setBadge(id, type, text) { 
-    const b = document.getElementById(id + 'Badge'); 
-    b.className = 'match-badge ' + type; 
-    b.textContent = text; 
-  }
+  function setBadge(id,type,text) { const b=document.getElementById(id+'Badge'); b.className='match-badge '+type; b.textContent=text; }
 
   function updateSubmitButton() {
-    const bagOk = matchState.bag === true;
-    const innerOk = matchState.inner === true;
-    const outerOk = matchState.outer === true;
-    
-    const allMatch = bagOk && innerOk && outerOk;
-    const anyFail = matchState.bag === false || matchState.inner === false || matchState.outer === false;
-    
-    const btn = document.getElementById('submitBtn');
-    btn.className = 'submit-btn ' + (allMatch ? 'ready' : 'blocked'); 
-    btn.disabled = !allMatch;
-    document.getElementById('blockerNotice').style.display = anyFail ? 'block' : 'none';
+    const allMatch=matchState.bag===true&&matchState.inner===true&&matchState.outer===true;
+    const anyFail=matchState.bag===false||matchState.inner===false||matchState.outer===false;
+    const btn=document.getElementById('submitBtn');
+    btn.className='submit-btn '+(allMatch?'ready':'blocked'); btn.disabled=!allMatch;
+    document.getElementById('blockerNotice').style.display=anyFail?'block':'none';
   }
 
   function updateSteps() {
-    const s = [
-      !!(document.getElementById('packedBy').value && document.getElementById('checkerBy').value),
+    const s=[
+      !!(document.getElementById('packedBy').value&&document.getElementById('checkerBy').value),
       !!(document.getElementById('bag').value),
-      !!(matchState.bag === true && matchState.inner === true && matchState.outer === true),
-      !!(photoData.imgBag && photoData.imgInner && photoData.imgCarton)
+      !!(matchState.bag===true&&matchState.inner===true&&matchState.outer===true),
+      !!(photoData.imgBag&&photoData.imgInner&&photoData.imgCarton)
     ];
-    s.forEach((done, i) => { 
-      const el = document.getElementById('step' + (i + 1)); 
-      el.className = 'step ' + (done ? 'done' : (i === s.indexOf(false) ? 'active' : '')); 
-    });
+    s.forEach((done,i)=>{ const el=document.getElementById('step'+(i+1)); el.className='step '+(done?'done':(i===s.indexOf(false)?'active':'')); });
   }
 
-  // PHOTO: compress and store locally
+  // ── PHOTO: compress and store locally ────────────────────
   function processPhoto(input, previewId, dataKey, btnId, statusId) {
-    if (!input.files || !input.files[0]) return;
-    const statusEl = document.getElementById(statusId);
-    statusEl.textContent = 'Compressing...'; 
-    statusEl.className = 'upload-status';
-    const img = new Image();
-    const url = URL.createObjectURL(input.files[0]);
-    img.onload = function() {
-      const MAX = 1024;
-      let w = img.width, h = img.height;
-      if (w > h && w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
-      else if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; }
-      const canvas = document.createElement('canvas');
-      canvas.width = w; 
-      canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    if (!input.files||!input.files[0]) return;
+    const statusEl=document.getElementById(statusId);
+    statusEl.textContent='Compressing...'; statusEl.className='upload-status';
+    const img=new Image(), url=URL.createObjectURL(input.files[0]);
+    img.onload=function() {
+      const MAX=1024; let w=img.width,h=img.height;
+      if(w>h&&w>MAX){h=Math.round(h*MAX/w);w=MAX;} else if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
+      const canvas=document.createElement('canvas'); canvas.width=w; canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
       URL.revokeObjectURL(url);
-      const compressed = canvas.toDataURL('image/jpeg', 0.75);
-      const sizeKB = Math.round(compressed.length * 0.75 / 1024);
-      document.getElementById(previewId).src = compressed;
-      document.getElementById(previewId).style.display = 'block';
+      const compressed=canvas.toDataURL('image/jpeg',0.75);
+      const sizeKB=Math.round(compressed.length*0.75/1024);
+      document.getElementById(previewId).src=compressed;
+      document.getElementById(previewId).style.display='block';
       document.getElementById(btnId).classList.add('has-photo');
-      const ts = new Date().toISOString().replace(/[:.]/g, '-');
-      photoData[dataKey] = { base64: compressed, filename: dataKey + '_' + ts + '.jpg' };
-      statusEl.textContent = '✓ Ready (~' + sizeKB + 'KB)'; 
-      statusEl.className = 'upload-status ok';
+      const ts=new Date().toISOString().replace(/[:.]/g,'-');
+      photoData[dataKey]={base64:compressed, filename:dataKey+'_'+ts+'.jpg'};
+      statusEl.textContent='Ready (~'+sizeKB+'KB)'; statusEl.className='upload-status ok';
       updateSteps();
     };
-    img.src = url;
+    img.src=url;
   }
 
-  // UPLOAD photo via google.script.run
-  function uploadPhoto(dataKey, statusId) {
-    return new Promise((resolve) => {
-      const obj = photoData[dataKey];
-      if (!obj) { resolve(""); return; }
-      const statusEl = document.getElementById(statusId);
-      statusEl.textContent = 'Uploading to Drive...'; 
-      statusEl.className = 'upload-status';
-      google.script.run
-        .withSuccessHandler(function(result) {
-          if (result.success) {
-            statusEl.textContent = '✓ Saved to Drive'; 
-            statusEl.className = 'upload-status ok';
-            resolve(result.url);
-          } else {
-            statusEl.textContent = '⚠ Upload failed: ' + (result.error || 'unknown'); 
-            statusEl.className = 'upload-status err';
-            resolve("");
-          }
-        })
-        .withFailureHandler(function(err) {
-          statusEl.textContent = '⚠ Error: ' + err.message; 
-          statusEl.className = 'upload-status err';
-          resolve("");
-        })
-        .uploadPhotoFromClient(obj.base64, obj.filename);
-    });
+  // ── UPLOAD ONE PHOTO via POST with text/plain (avoids CORS preflight) ──
+  async function uploadPhoto(dataKey, statusId) {
+    const obj=photoData[dataKey];
+    if (!obj) return "";
+    const statusEl=document.getElementById(statusId);
+    statusEl.textContent='Uploading to Drive...'; statusEl.className='upload-status';
+    try {
+      const resp = await fetch(SCRIPT_URL, {
+        method:'POST',
+        headers:{'Content-Type':'text/plain'},
+        body: JSON.stringify({ action:'uploadPhoto', base64:obj.base64, filename:obj.filename })
+      });
+      const result = await resp.json();
+      if (result.success) {
+        statusEl.textContent='Saved to Drive'; statusEl.className='upload-status ok';
+        return result.url;
+      } else {
+        statusEl.textContent='Upload failed: '+(result.error||'unknown'); statusEl.className='upload-status err';
+        return "";
+      }
+    } catch(err) {
+      statusEl.textContent='Upload error: '+err.message; statusEl.className='upload-status err';
+      return "";
+    }
   }
 
-  // SUBMIT
+  // ── SUBMIT ────────────────────────────────────────────────
   async function submitData() {
     if (document.getElementById('submitBtn').disabled) return;
-    const packedBy  = document.getElementById('packedBy').value.trim();
-    const checkerBy = document.getElementById('checkerBy').value.trim();
-    const cartonId  = document.getElementById('cartonId').value.trim();
-    if (!packedBy)  { showStatus('Please enter Packed By.', 'error'); return; }
-    if (!checkerBy) { showStatus('Please enter Packing Checker By.', 'error'); return; }
-    if (!cartonId)  { showStatus('Please enter Carton ID.', 'error'); return; }
+    const packedBy=document.getElementById('packedBy').value.trim();
+    const checkerBy=document.getElementById('checkerBy').value.trim();
+    const cartonId=document.getElementById('cartonId').value.trim();
+    if (!packedBy)  { showStatus('Please enter Packed By.','error'); return; }
+    if (!checkerBy) { showStatus('Please enter Packing Checker By.','error'); return; }
+    if (!cartonId)  { showStatus('Please enter Carton ID.','error'); return; }
 
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true; 
-    btn.textContent = 'Uploading photos...';
-    showStatus('Uploading photos to Drive...', 'info');
+    const btn=document.getElementById('submitBtn');
+    btn.disabled=true; btn.textContent='Uploading photos...';
+    showStatus('Uploading photos to Drive...','info');
 
-    const [imgBagUrl, imgInnerUrl, imgCartonUrl] = await Promise.all([
-      uploadPhoto('imgBag', 'uploadBag'),
-      uploadPhoto('imgInner', 'uploadInner'),
-      uploadPhoto('imgCarton', 'uploadCarton')
-    ]);
+    // Upload photos one by one
+    const imgBagUrl    = await uploadPhoto('imgBag',    'uploadBag');
+    const imgInnerUrl  = await uploadPhoto('imgInner',  'uploadInner');
+    const imgCartonUrl = await uploadPhoto('imgCarton', 'uploadCarton');
 
-    btn.textContent = 'Saving data...';
-    showStatus('Saving packing data...', 'info');
+    btn.textContent='Saving...';
+    showStatus('Saving packing data...','info');
 
     const data = {
-      packedBy, checkerBy, cartonId,
-      customer: document.getElementById('customer').value.trim(),
-      pi: document.getElementById('pi').value.trim(),
-      partNo: document.getElementById('partNo').value.trim(),
-      bag: document.getElementById('bag').value.trim(),
-      inner: document.getElementById('inner').value.trim(),
-      outer: document.getElementById('outer').value.trim(),
-      qty: document.getElementById('qty').value.trim(),
-      packedDate: new Date().toISOString().split('T')[0],
-      bagMatch: matchState.bag, 
-      innerMatch: matchState.inner, 
-      outerMatch: matchState.outer,
+      action:'submit', packedBy, checkerBy, cartonId,
+      customer:  document.getElementById('customer').value.trim(),
+      pi:        document.getElementById('pi').value.trim(),
+      partNo:    document.getElementById('partNo').value.trim(),
+      bag:       document.getElementById('bag').value.trim(),
+      inner:     document.getElementById('inner').value.trim(),
+      outer:     document.getElementById('outer').value.trim(),
+      qty:       document.getElementById('qty').value.trim(),
+      packedDate:new Date().toISOString().split('T')[0],
+      bagMatch:  matchState.bag, innerMatch:matchState.inner, outerMatch:matchState.outer,
       imgBagUrl, imgInnerUrl, imgCartonUrl
     };
 
-    google.script.run
-      .withSuccessHandler(function(result) {
-        if (result.success) {
-          showStatus('✅ Packing data & photos saved successfully!', 'success');
-          setTimeout(() => location.reload(), 2800);
-        } else {
-          showStatus('Error: ' + (result.error || 'Unknown error'), 'error');
-          btn.disabled = false; 
-          btn.textContent = 'SUBMIT PACKING DATA';
-        }
-      })
-      .withFailureHandler(function(err) {
-        showStatus('Error: ' + err.message, 'error');
-        btn.disabled = false; 
-        btn.textContent = 'SUBMIT PACKING DATA';
-      })
-      .submitPackingFromClient(data);
+    try {
+      const resp = await fetch(SCRIPT_URL, {
+        method:'POST',
+        headers:{'Content-Type':'text/plain'},
+        body: JSON.stringify(data)
+      });
+      const result = await resp.json();
+      if (result.success) {
+        showStatus('Packing data saved successfully!','success');
+        setTimeout(()=>location.reload(), 2800);
+      } else {
+        showStatus('Error: '+(result.error||'Unknown'),'error');
+        btn.disabled=false; btn.textContent='SUBMIT PACKING DATA';
+      }
+    } catch(err) {
+      showStatus('Error: '+err.message,'error');
+      btn.disabled=false; btn.textContent='SUBMIT PACKING DATA';
+    }
   }
 
-  function showStatus(msg, type) { 
-    const s = document.getElementById('status'); 
-    s.textContent = msg; 
-    s.className = type; 
-  }
-  
-  updateSubmitButton(); 
-  updateSteps();
+  function showStatus(msg,type) { const s=document.getElementById('status'); s.textContent=msg; s.className=type; }
+  updateSubmitButton(); updateSteps();
 </script>
 </body>
 </html>
