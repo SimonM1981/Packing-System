@@ -163,7 +163,6 @@
         validateRequiredFields();
       });
       el.addEventListener('input', function() {
-        // Remove red border when user starts typing
         this.classList.remove('required-empty');
       });
     }
@@ -234,7 +233,6 @@
 
       if (result.found) {
         masterData = result;
-        // CHANGED: Only auto-fill Part No., NOT Customer or P/I No.
         document.getElementById('partNo').value = String(result.partNo || "").toUpperCase();
         document.getElementById('partNoNote').style.display = 'block';
 
@@ -291,7 +289,6 @@
     b.textContent = text;
   }
 
-  // CHANGED: New function to check if all required fields are filled
   function validateRequiredFields() {
     let allFilled = true;
     let firstEmpty = null;
@@ -317,7 +314,6 @@
     const anyFail = matchState.bag === false || matchState.inner === false || matchState.outer === false;
     const btn = document.getElementById('submitBtn');
     
-    // CHANGED: Must have all fields filled AND all barcodes matched
     const canSubmit = allFilled && allMatch;
     
     btn.className = 'submit-btn ' + (canSubmit ? 'ready' : 'blocked');
@@ -393,8 +389,17 @@
     }
   }
 
+  // CHANGED: Helper function to format date as DD/MMM/YYYY
+  function getFormattedDate() {
+    const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = months[now.getMonth()];
+    const year = now.getFullYear();
+    return day + '/' + month + '/' + year;
+  }
+
   async function submitData() {
-    // CHANGED: Double-check all required fields before submitting
     const { allFilled, firstEmpty } = validateRequiredFields();
     if (!allFilled) {
       showStatus('Please fill in all required fields marked with *', 'error');
@@ -419,6 +424,7 @@
 
     const payload = {
       action: 'submit',
+      packedDate: getFormattedDate(),  // CHANGED: sends DD/MMM/YYYY e.g. 05/MAY/2026
       packedBy: document.getElementById('packedBy').value,
       checkerBy: document.getElementById('checkerBy').value,
       cartonId: document.getElementById('cartonId').value,
