@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>MG Packing — Checker</title>
   <style>
+    /* ... (Your existing CSS remains exactly the same) ... */
     * { box-sizing:border-box; }
     body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#0f0f0f; color:#e0e0e0; margin:0; padding:16px; min-height:100vh; }
     h1 { text-align:center; color:#ffb74d; margin:12px 0 4px; font-size:1.5rem; }
@@ -96,188 +97,208 @@
   <h1>MG Packing System</h1>
   <p class="subtitle">Checker Verification</p>
   <div class="stats-row">
-    <div class="stat-box total"><div class="stat-num" id="statTotal">—</div><div class="stat-lbl">Total</div></div>
-    <div class="stat-box pending"><div class="stat-num" id="statPending">—</div><div class="stat-lbl">Pending</div></div>
-    <div class="stat-box verified"><div class="stat-num" id="statVerified">—</div><div class="stat-lbl">Verified</div></div>
-    <div class="stat-box rejected"><div class="stat-num" id="statRejected">—</div><div class="stat-lbl">Rejected</div></div>
+    <div class="stat-box total"><div class="stat-num" id="statTotal">0</div><div class="stat-lbl">Total</div></div>
+    <div class="stat-box pending"><div class="stat-num" id="statPending">0</div><div class="stat-lbl">Pending</div></div>
+    <div class="stat-box verified"><div class="stat-num" id="statVerified">0</div><div class="stat-lbl">Verified</div></div>
+    <div class="stat-box rejected"><div class="stat-num" id="statRejected">0</div><div class="stat-lbl">Rejected</div></div>
   </div>
   <div class="toolbar">
-    <input type="text" id="searchInput" placeholder="Search customer, P/I, part, carton..." oninput="renderList()">
+    <input type="text" id="searchInput" placeholder="Search customer, P/I, part..." oninput="renderList()">
     <button class="refresh-btn" onclick="loadRecords()">↻ Refresh</button>
   </div>
   <div class="filter-row">
-    <button class="filter-btn all active"     id="fAll"      onclick="setFilter('all')">All</button>
-    <button class="filter-btn pending"         id="fPending"  onclick="setFilter('pending')">Pending</button>
-    <button class="filter-btn verified"        id="fVerified" onclick="setFilter('verified')">Verified</button>
-    <button class="filter-btn rejected"        id="fRejected" onclick="setFilter('rejected')">Rejected</button>
+    <button class="filter-btn all active" id="fAll" onclick="setFilter('all')">All</button>
+    <button class="filter-btn pending" id="fPending" onclick="setFilter('pending')">Pending</button>
+    <button class="filter-btn verified" id="fVerified" onclick="setFilter('verified')">Verified</button>
+    <button class="filter-btn rejected" id="fRejected" onclick="setFilter('rejected')">Rejected</button>
   </div>
-  <div id="recordList"><div class="loading">Loading records...</div></div>
+  <div id="recordList"></div>
 </div>
 
 <div id="detailModal">
   <div class="modal-card">
-    <div class="modal-header"><h2 id="modalTitle">Record Detail</h2><button class="close-btn" onclick="closeModal()">✕ Close</button></div>
-    <div class="detail-grid" id="detailGrid"></div>
-    <div style="margin-bottom:14px;"><span class="section-lbl">Barcode Verification</span><div id="barcodeChecks"></div></div>
-    <div style="margin-bottom:16px;"><span class="section-lbl">Photos</span><div class="photos-grid" id="photosGrid"></div></div>
-    <div class="verify-section">
-      <h3>Verification Decision</h3>
-      <div class="verdict-row">
-        <button class="verdict-btn verified" id="btnVerified" onclick="selectVerdict('Verified')">✅ Verified</button>
-        <button class="verdict-btn rejected" id="btnRejected" onclick="selectVerdict('Rejected')">❌ Rejected</button>
-      </div>
-      <textarea id="remarksInput" placeholder="Remarks (required if Rejected)..."></textarea>
-      <button class="save-verify-btn" id="saveVerifyBtn" onclick="saveVerification()" disabled>Save Verification</button>
+    <div class="modal-header">
+      <h2 id="modalTitle">Record Details</h2>
+      <button class="close-btn" onclick="closeModal()">CLOSE</button>
+    </div>
+    <div id="modalContent">
+      <!-- Content populated by JS -->
     </div>
   </div>
 </div>
 
 <script>
-  const CHECKER_PIN = "1234"; // ← Change this
-  let allRecords = [], currentFilter = 'all', currentRecord = null, selectedVerdict = null;
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJNbH09bwWqsO0lnM8j_xHA7ALfPFKpSjSFwUK4SRugrHqMWIhds7KhyUHN7kXR28/exec";
+  const ACCESS_PIN = "1234"; // Set your preferred PIN here
+  
+  let allRecords = [];
+  let currentFilter = 'all';
 
   function checkPin(val) {
-    if (val === CHECKER_PIN) {
+    if (val === ACCESS_PIN) {
       document.getElementById('pinScreen').style.display = 'none';
       document.getElementById('mainScreen').style.display = 'block';
       loadRecords();
-    } else if (val.length === CHECKER_PIN.length) {
+    } else if (val.length >= 4) {
       document.getElementById('pinError').style.display = 'block';
-      document.getElementById('pinInput').value = '';
+      setTimeout(() => { document.getElementById('pinInput').value = ''; }, 500);
     }
   }
 
-  function loadRecords() {
-    document.getElementById('recordList').innerHTML = '<div class="loading">Loading...</div>';
-    google.script.run
-      .withSuccessHandler(function(data) {
-        allRecords = data.records || [];
-        updateStats(); renderList();
-      })
-      .withFailureHandler(function(err) {
-        document.getElementById('recordList').innerHTML = '<div class="empty-state">Failed to load: '+err.message+'</div>';
-      })
-      .getRecordsFromClient();
+  async function loadRecords() {
+    const listEl = document.getElementById('recordList');
+    listEl.innerHTML = '<div class="loading">Loading records from Google Sheets...</div>';
+    
+    try {
+      const resp = await fetch(SCRIPT_URL + '?action=getRecords');
+      const data = await resp.json();
+      allRecords = data.records || [];
+      updateStats();
+      renderList();
+    } catch (e) {
+      listEl.innerHTML = '<div class="empty-state">Error loading data: ' + e.message + '</div>';
+    }
   }
 
   function updateStats() {
-    const total=allRecords.length, verified=allRecords.filter(r=>(r.status||'').includes('Verified')).length,
-          rejected=allRecords.filter(r=>(r.status||'').includes('Rejected')).length, pending=total-verified-rejected;
-    document.getElementById('statTotal').textContent=total; document.getElementById('statPending').textContent=pending;
-    document.getElementById('statVerified').textContent=verified; document.getElementById('statRejected').textContent=rejected;
+    document.getElementById('statTotal').textContent = allRecords.length;
+    document.getElementById('statPending').textContent = allRecords.filter(r => !r.status || r.status === 'PENDING').length;
+    document.getElementById('statVerified').textContent = allRecords.filter(r => r.status === 'VERIFIED').length;
+    document.getElementById('statRejected').textContent = allRecords.filter(r => r.status === 'REJECTED').length;
   }
 
   function setFilter(f) {
-    currentFilter=f;
-    ['all','pending','verified','rejected'].forEach(k => {
-      const btn=document.getElementById('f'+k.charAt(0).toUpperCase()+k.slice(1));
-      if(btn) btn.classList.toggle('active', k===f);
-    });
+    currentFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('f' + f.charAt(0).toUpperCase() + f.slice(1)).classList.add('active');
     renderList();
   }
 
   function renderList() {
-    const search = document.getElementById('searchInput').value.toLowerCase();
-    let records = allRecords;
-    if (currentFilter !== 'all') {
-      records = records.filter(r => {
-        const s=(r.status||'').toLowerCase();
-        if(currentFilter==='pending')  return !s.includes('verified')&&!s.includes('rejected');
-        if(currentFilter==='verified') return s.includes('verified');
-        if(currentFilter==='rejected') return s.includes('rejected');
-        return true;
-      });
+    const term = document.getElementById('searchInput').value.toLowerCase();
+    const listEl = document.getElementById('recordList');
+    
+    let filtered = allRecords.filter(r => {
+      const matchSearch = (r.customer + r.pi + r.partNo + r.cartonId).toLowerCase().includes(term);
+      const status = (r.status || 'PENDING').toLowerCase();
+      if (currentFilter === 'all') return matchSearch;
+      return matchSearch && status === currentFilter;
+    });
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = '<div class="empty-state">No records found.</div>';
+      return;
     }
-    if (search) records = records.filter(r =>
-      (r.customer||'').toLowerCase().includes(search)||(r.pi||'').toLowerCase().includes(search)||
-      (r.partNo||'').toLowerCase().includes(search)||(r.cartonId||'').toLowerCase().includes(search)
-    );
-    if (!records.length) { document.getElementById('recordList').innerHTML='<div class="empty-state">No records found.</div>'; return; }
-    document.getElementById('recordList').innerHTML = records.map(r => {
-      const s=(r.status||'').toLowerCase();
-      const cls=s.includes('verified')?'verified':s.includes('rejected')?'rejected':'pending';
-      const lbl=s.includes('verified')?'Verified ✅':s.includes('rejected')?'Rejected ❌':'Pending ⏳';
-      return `<div class="record-card ${cls}" onclick="openRecord(${r.row})">
-        <div class="record-header"><div>
-          <div class="record-customer">${r.customer||'Unknown'}</div>
-          <div class="record-sub">P/I: ${r.pi||'—'} | Part: ${r.partNo||'—'}</div>
-          <div class="record-sub">Carton: ${r.cartonId||'—'}</div>
-        </div><span class="status-pill ${cls}">${lbl}</span></div>
-        <div class="record-meta">📅 ${r.packedDate||'—'} | 👤 ${r.packedBy||'—'} | 📦 Qty: ${r.qty||'—'}</div>
-        ${r.matchStatus?`<div><span class="match-tag">${r.matchStatus}</span></div>`:''}
-      </div>`;
-    }).join('');
+
+    listEl.innerHTML = filtered.map((r, idx) => `
+      <div class="record-card ${ (r.status || 'PENDING').toLowerCase() }" onclick="openDetails(${allRecords.indexOf(r)})">
+        <div class="record-header">
+          <div>
+            <div class="record-customer">${r.customer}</div>
+            <div class="record-sub">P/I: ${r.pi} | Part: ${r.partNo}</div>
+          </div>
+          <div class="status-pill ${ (r.status || 'PENDING').toLowerCase() }">${r.status || 'PENDING'}</div>
+        </div>
+        <div class="record-meta">Carton ID: ${r.cartonId} | Packed by: ${r.packedBy}</div>
+        ${r.bagMatch && r.innerMatch && r.outerMatch ? '<div class="match-tag">✅ Barcodes Match</div>' : '<div class="match-tag" style="color:#f44336">⚠️ Verification Issue</div>'}
+      </div>
+    `).join('');
   }
 
-  function openRecord(rowNum) {
-    document.getElementById('detailModal').style.display = 'block';
-    document.getElementById('detailGrid').innerHTML = '<div style="color:#888;grid-column:span 2;">Loading...</div>';
-    google.script.run
-      .withSuccessHandler(function(r) { currentRecord=r; renderDetail(r); })
-      .withFailureHandler(function(err) { document.getElementById('detailGrid').innerHTML='<div style="color:#f44336;grid-column:span 2;">Failed: '+err.message+'</div>'; })
-      .getRecordFromClient(rowNum);
+  function openDetails(index) {
+    const r = allRecords[index];
+    const modal = document.getElementById('detailModal');
+    const content = document.getElementById('modalContent');
+    
+    modal.style.display = 'block';
+    content.innerHTML = `
+      <div class="detail-grid">
+        <div class="detail-item"><label>Customer</label><span>${r.customer}</span></div>
+        <div class="detail-item"><label>P/I No.</label><span>${r.pi}</span></div>
+        <div class="detail-item"><label>Part No.</label><span>${r.partNo}</span></div>
+        <div class="detail-item"><label>Carton ID</label><span>${r.cartonId}</span></div>
+        <div class="detail-item"><label>Qty</label><span>${r.qty} pcs</span></div>
+        <div class="detail-item"><label>Packed By</label><span>${r.packedBy}</span></div>
+      </div>
+
+      <span class="section-lbl">Barcode Checks</span>
+      <div class="barcode-check"><span class="bc-label">BAG</span><span class="bc-value">${r.bag}</span><span class="bc-badge ${r.bagMatch ? 'ok' : 'fail'}">${r.bagMatch ? 'MATCH' : 'FAIL'}</span></div>
+      <div class="barcode-check"><span class="bc-label">INNER</span><span class="bc-value">${r.inner}</span><span class="bc-badge ${r.innerMatch ? 'ok' : 'fail'}">${r.innerMatch ? 'MATCH' : 'FAIL'}</span></div>
+      <div class="barcode-check"><span class="bc-label">OUTER</span><span class="bc-value">${r.outer}</span><span class="bc-badge ${r.outerMatch ? 'ok' : 'fail'}">${r.outerMatch ? 'MATCH' : 'FAIL'}</span></div>
+
+      <span class="section-lbl">Photos</span>
+      <div class="photos-grid">
+        ${renderPhoto('Bag', r.imgBagUrl)}
+        ${renderPhoto('Inner', r.imgInnerUrl)}
+        ${renderPhoto('Carton', r.imgCartonUrl)}
+      </div>
+
+      <div class="verify-section">
+        <h3>Final Verdict</h3>
+        <div class="verdict-row">
+          <button id="vApprove" class="verdict-btn verified" onclick="selectVerdict('VERIFIED')">APPROVE</button>
+          <button id="vReject" class="verdict-btn rejected" onclick="selectVerdict('REJECTED')">REJECT</button>
+        </div>
+        <textarea id="checkerNote" placeholder="ADD REMARKS/NOTES (OPTIONAL)">${r.remarks || ''}</textarea>
+        <button class="save-verify-btn" onclick="saveVerification(${index})">SAVE VERIFICATION</button>
+      </div>
+    `;
   }
 
-  function renderDetail(r) {
-    document.getElementById('modalTitle').textContent = (r.customer||'Record')+' — '+(r.cartonId||'');
-    document.getElementById('detailGrid').innerHTML = [
-      ['Customer',r.customer],['P/I No.',r.pi||'(none)'],['Part No.',r.partNo],
-      ['Carton ID',r.cartonId],['Packed Date',r.packedDate],['Packed By',r.packedBy],
-      ['Checker By',r.checkerBy],['Qty',r.qty]
-    ].map(([l,v])=>`<div class="detail-item"><label>${l}</label><span>${v||'—'}</span></div>`).join('');
-
-    const ms=r.matchStatus||'', bagOk=ms.includes('Bag:✅'), innerOk=ms.includes('Inner:✅'), outerOk=ms.includes('Outer:✅');
-    const bagNo=(r.bag||'').toUpperCase()==='NO', innerNo=(r.inner||'').toUpperCase()==='NO', outerNo=(r.outer||'').toUpperCase()==='NO';
-    document.getElementById('barcodeChecks').innerHTML = [
-      ['Bag',r.bag,bagOk,bagNo],['Inner',r.inner,innerOk,innerNo],['Outer',r.outer,outerOk,outerNo]
-    ].map(([l,v,ok,isNo])=>`<div class="barcode-check">
-      <span class="bc-label">${l}</span><span class="bc-value">${v||'—'}</span>
-      <span class="bc-badge ${isNo?'nobc':ok?'ok':'fail'}">${isNo?'⚠ No Barcode':ok?'✅ Match':'❌ Mismatch'}</span>
-    </div>`).join('');
-
-    document.getElementById('photosGrid').innerHTML = [['Bag+Part',r.imgBagUrl],['Inner Box',r.imgInnerUrl],['Carton',r.imgCartonUrl]].map(([lbl,url])=>{
-      if (!url) return `<div class="photo-wrap"><div class="no-photo">No photo</div><div class="photo-lbl">${lbl}</div></div>`;
-      const match=url.match(/\/d\/([a-zA-Z0-9_-]+)\//);
-      const fid=match?match[1]:null;
-      const thumb=fid?'https://drive.google.com/thumbnail?id='+fid+'&sz=w400':url;
-      return `<div class="photo-wrap"><a href="${url}" target="_blank"><img src="${thumb}" alt="${lbl}" onerror="this.parentElement.innerHTML='<div class=\\'no-photo\\'>View in Drive</div>'"></a><a class="open-link" href="${url}" target="_blank">Open ↗</a><div class="photo-lbl">${lbl}</div></div>`;
-    }).join('');
-
-    selectedVerdict=null;
-    document.getElementById('remarksInput').value=r.remarks||'';
-    document.getElementById('saveVerifyBtn').disabled=true;
-    document.getElementById('btnVerified').classList.remove('selected');
-    document.getElementById('btnRejected').classList.remove('selected');
-    if (r.status&&(r.status.includes('Verified')||r.status.includes('Rejected'))) selectVerdict(r.status.includes('Verified')?'Verified':'Rejected');
+  function renderPhoto(label, url) {
+    if (!url || url === "") return `<div class="photo-wrap"><div class="no-photo">No Photo</div><div class="photo-lbl">${label}</div></div>`;
+    return `
+      <div class="photo-wrap">
+        <a href="${url}" target="_blank"><img src="${url}"></a>
+        <div class="photo-lbl">${label}</div>
+      </div>
+    `;
   }
 
-  function selectVerdict(v) {
-    selectedVerdict=v;
-    document.getElementById('btnVerified').classList.toggle('selected',v==='Verified');
-    document.getElementById('btnRejected').classList.toggle('selected',v==='Rejected');
-    document.getElementById('btnVerified').style.opacity=v==='Verified'?'1':'0.5';
-    document.getElementById('btnRejected').style.opacity=v==='Rejected'?'1':'0.5';
-    document.getElementById('saveVerifyBtn').disabled=false;
+  let selectedStatus = '';
+  function selectVerdict(status) {
+    selectedStatus = status;
+    document.getElementById('vApprove').classList.toggle('selected', status === 'VERIFIED');
+    document.getElementById('vReject').classList.toggle('selected', status === 'REJECTED');
   }
 
-  function saveVerification() {
-    if (!selectedVerdict||!currentRecord) return;
-    const remarks=document.getElementById('remarksInput').value.trim();
-    if (selectedVerdict==='Rejected'&&!remarks) { alert('Please enter a remark for rejection.'); return; }
-    const checkerName=prompt("Enter your name as Packing Checker:");
-    if (!checkerName||!checkerName.trim()) return;
-    const btn=document.getElementById('saveVerifyBtn');
-    btn.disabled=true; btn.textContent='Saving...';
-    google.script.run
-      .withSuccessHandler(function(result) {
-        if (result.success) { alert('Verification saved!'); closeModal(); loadRecords(); }
-        else { alert('Error: '+(result.error||'Unknown')); btn.disabled=false; btn.textContent='Save Verification'; }
-      })
-      .withFailureHandler(function(err) { alert('Error: '+err.message); btn.disabled=false; btn.textContent='Save Verification'; })
-      .verifyFromClient(currentRecord.row, checkerName.trim().toUpperCase(), selectedVerdict==='Verified'?'Verified ✅':'Rejected ❌', remarks.toUpperCase());
+  async function saveVerification(index) {
+    if (!selectedStatus) { alert("Please select Approve or Reject"); return; }
+    
+    const r = allRecords[index];
+    const btn = document.querySelector('.save-verify-btn');
+    btn.disabled = true;
+    btn.textContent = "SAVING...";
+
+    const payload = {
+      action: 'verify',
+      rowId: r.rowId, // Ensure your GAS script sends back the row number/ID
+      status: selectedStatus,
+      remarks: document.getElementById('checkerNote').value.toUpperCase(),
+      checkerName: "MANAGER" // You can add a field for this
+    };
+
+    try {
+      const resp = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(payload)
+      });
+      const res = await resp.json();
+      if (res.success) {
+        closeModal();
+        loadRecords();
+      } else {
+        alert("Error: " + res.error);
+        btn.disabled = false;
+      }
+    } catch (e) {
+      alert("Network Error");
+      btn.disabled = false;
+    }
   }
 
-  function closeModal() { document.getElementById('detailModal').style.display='none'; currentRecord=null; selectedVerdict=null; }
+  function closeModal() { document.getElementById('detailModal').style.display = 'none'; selectedStatus = ''; }
 </script>
 </body>
 </html>
