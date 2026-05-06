@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <!-- CHANGED: Prevent caching -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>MG Packing System</title>
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
   <style>
@@ -218,6 +222,14 @@
     if (bagValue==='NO') {
       matchState.bag=true; setBadge('bag','no-bc','No barcode — accepted');
       document.getElementById('bag').className='no-barcode';
+      
+      // CHANGED: Still lookup master data using P/I + Part No. for inner/outer verification
+      const pi = document.getElementById('pi').value.trim();
+      const partNo = document.getElementById('partNo').value.trim();
+      if (pi && partNo) {
+        await lookupMasterByPIPartNo(pi, partNo);
+      }
+      
       updateSubmitButton(); updateSteps(); return;
     }
     setBadge('bag','pending','Checking...');
@@ -260,20 +272,67 @@
     updateSteps();
   }
 
+  // CHANGED: New function to lookup master by P/I + Part No. when Bag = "NO"
+  async function lookupMasterByPIPartNo(pi, partNo) {
+    try {
+      let url = SCRIPT_URL + '?action=lookup&barcode=NO&pi=' + encodeURIComponent(pi) + '&partNo=' + encodeURIComponent(partNo);
+      const resp = await fetch(url);
+      const result = await resp.json();
+      
+      if (result.found) {
+        masterData = result;
+        // Auto-fill Part No. if empty
+        if (!document.getElementById('partNo').value) {
+          document.getElementById('partNo').value = String(result.partNo || "").toUpperCase();
+          document.getElementById('partNoNote').style.display = 'block';
+        }
+        
+        // Now check inner/outer if already filled
+        const iv = document.getElementById('inner').value.trim();
+        const ov = document.getElementById('outer').value.trim();
+        if (iv) checkBarcode('inner', iv);
+        if (ov) checkBarcode('outer', ov);
+      }
+    } catch(err) {
+      console.log('Lookup by P/I+PartNo failed:', err);
+    }
+  }
+
+  // CHANGED: Updated to handle Bag = "NO" case
   function checkBarcode(fieldId, value) {
     const el = document.getElementById(fieldId);
     const label = fieldId === 'inner' ? 'Inner' : 'Outer';
+    
     if (value === 'NO') {
       matchState[fieldId] = true;
       el.className = 'no-barcode';
       setBadge(fieldId, 'no-bc', 'No barcode — accepted');
       return;
     }
+    
+    // If no masterData, try to lookup first using P/I + Part No.
     if (!masterData) {
+      const pi = document.getElementById('pi').value.trim();
+      const partNo = document.getElementById('partNo').value.trim();
+      if (pi && partNo) {
+        // Will trigger async lookup, then re-check
+        lookupMasterByPIPartNo(pi, partNo).then(() => {
+          // Re-run check after lookup completes
+          if (masterData) {
+            checkBarcode(fieldId, value);
+          } else {
+            setBadge(fieldId, 'fail', 'Not found in master register');
+            matchState[fieldId] = false;
+          }
+          updateSubmitButton();
+        });
+        return; // Wait for async
+      }
       setBadge(fieldId, 'pending', 'Scan Bag barcode first');
       matchState[fieldId] = null;
       return;
     }
+    
     const expected = fieldId === 'inner' ? masterData.innerBarcode : masterData.outerBarcode;
     const ok = String(value).toUpperCase() === String(expected).toUpperCase();
     matchState[fieldId] = ok;
@@ -424,7 +483,7 @@
 
     const payload = {
       action: 'submit',
-      packedDate: getFormattedDate(),  // CHANGED: sends DD/MMM/YYYY e.g. 05/MAY/2026
+      packedDate: getFormattedDate(),
       packedBy: document.getElementById('packedBy').value,
       checkerBy: document.getElementById('checkerBy').value,
       cartonId: document.getElementById('cartonId').value,
