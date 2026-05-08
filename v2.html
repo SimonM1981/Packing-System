@@ -16,18 +16,26 @@
     /* TABS */
     #mainScreen { display:none; }
     .main-tabs { display:flex; background:#161616; border-bottom:1px solid #333; position:sticky; top:0; z-index:50; }
-    .main-tab { flex:1; padding:14px 8px; text-align:center; font-size:0.82rem; font-weight:700; color:#666; cursor:pointer; border-bottom:3px solid transparent; }
+    .main-tab { flex:1; padding:18px 8px; text-align:center; font-size:0.9rem; font-weight:700; color:#666; cursor:pointer; border-bottom:4px solid transparent; text-transform:uppercase; }
     .main-tab.active { color:#ffb74d; border-bottom-color:#ffb74d; background:#1a1a1a; }
     .tab-content { display:none; padding:16px; }
     .tab-content.active { display:block; }
 
-    /* STATS & FILTER BUTTONS */
-    .stats-row { display:flex; gap:8px; margin-bottom:10px; }
-    .stat-box { flex:1; background:#1e1e1e; border:1px solid #333; border-radius:8px; padding:8px 4px; text-align:center; cursor:pointer; }
-    .stat-box.active-filter { border-color: #ffb74d; background: #252525; }
-    .stat-box.active-filter-stamp { border-color: #4caf50; background: #1b2e1c; }
-    .stat-num { font-size:1.1rem; font-weight:700; display:block; }
-    .stat-lbl { font-size:0.55rem; color:#888; text-transform:uppercase; }
+    /* STATS BUTTONS (SCREENSHOT STYLE) */
+    .stats-row { display:flex; gap:10px; margin-bottom:15px; }
+    .stat-box { flex:1; background:#1e1e1e; border:1px solid #333; border-radius:10px; padding:15px 5px; text-align:center; cursor:pointer; }
+    
+    /* Colors from screenshot */
+    #fAll.active-filter { border: 2px solid #ffb74d; }
+    #fPending.active-filter { border: 2px solid #ffb74d; }
+    #fVerified.active-filter { border: 2px solid #4caf50; }
+    #fRejected.active-filter { border: 2px solid #f44336; }
+    
+    #fsWait.active-filter-stamp { border: 2px solid #ffb74d; }
+    #fsDone.active-filter-stamp { border: 2px solid #4caf50; }
+
+    .stat-num { font-size:1.4rem; font-weight:700; display:block; color:white; }
+    .stat-lbl { font-size:0.65rem; color:#888; text-transform:uppercase; margin-top:5px; display:block; }
 
     .toolbar { display:flex; gap:10px; margin-bottom:12px; }
     .toolbar input { flex:1; padding:12px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; }
@@ -39,24 +47,23 @@
     .record-card.rejected { border-left-color:#f44336; }
     .record-card.pending  { border-left-color:#ff9800; }
     .record-header { display:flex; justify-content:space-between; align-items:center; }
-    .record-customer { font-weight:700; color:#ffb74d; font-size:1rem; }
+    .record-customer { font-weight:700; color:#ffb74d; font-size:1.1rem; }
     .status-pill { padding:3px 8px; border-radius:10px; font-size:0.7rem; font-weight:bold; color:white; }
     .status-pill.verified { background:#2e7d32; }
     .status-pill.rejected { background:#b71c1c; }
     .status-pill.pending  { background:#e65100; }
 
-    /* STAMP CARD */
-    .stamp-card { background:#1e1e1e; border:1px solid #333; border-left:4px solid #ff9800; border-radius:12px; padding:14px; margin-bottom:10px; }
-    .stamp-card.stamped { border-left-color: #4caf50; opacity: 0.8; }
-    .stamp-btn { width:100%; padding:12px; background:#1565c0; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-top:10px; }
-    .stamp-done-pill { background:#2e7d32; color:white; padding:4px 10px; border-radius:6px; font-size:0.75rem; font-weight:bold; }
+    /* STAMPING */
+    .stamp-card { background:#1e1e1e; border:1px solid #333; border-left:4px solid #ff9800; border-radius:12px; padding:16px; margin-bottom:12px; }
+    .stamp-card.stamped { border-left-color: #4caf50; }
+    .stamp-btn { width:100%; padding:14px; background:#1565c0; color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer; margin-top:10px; }
 
     /* DETAIL MODAL */
     #detailModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.96); z-index:100; overflow-y:auto; padding:10px; display:none; }
     .modal-card { background:#1e1e1e; border-radius:14px; padding:20px; max-width:900px; margin:0 auto 40px; border:1px solid #333; }
-    .detail-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:20px; }
+    .detail-grid { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px; margin-bottom:20px; }
     .detail-item label { display:block; font-size:0.65rem; color:#666; text-transform:uppercase; }
-    .detail-item span { font-size:0.85rem; font-weight:bold; color:#eee; }
+    .detail-item span { font-size:0.9rem; font-weight:bold; color:#eee; }
 
     /* BARCODES */
     .barcode-check { display:flex; align-items:center; background:#2a2a2a; border-radius:8px; padding:10px; margin-bottom:6px; gap:10px; }
@@ -65,27 +72,13 @@
     .bc-badge.fail { color:#f44336; background:rgba(244,67,54,0.15); border:1px solid #f44336; }
     .bc-badge.nobc { color:#ff9800; background:rgba(255,152,0,0.15); border:1px solid #ff9800; }
 
-    /* PHOTOS - SINGLE ROW FIXED */
-    .photo-row-container { 
-      display: grid; 
-      grid-template-columns: 1fr 1fr 1fr; 
-      gap: 10px; 
-      margin-bottom: 20px;
-    }
-    .photo-wrap { 
-      text-align:center; 
-      background:#111; 
-      padding:6px; 
-      border-radius:10px; 
-      border:1px solid #333; 
-    }
+    /* PHOTOS */
+    .photo-row-container { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+    .photo-wrap { text-align:center; background:#111; padding:8px; border-radius:10px; border:1px solid #333; }
     .photo-wrap img { width:100%; height:auto; aspect-ratio: 1/1; object-fit:contain; border-radius:6px; cursor:pointer; background:#000; }
-    .photo-lbl { font-size:0.7rem; font-weight:bold; margin-bottom:4px; color:#ffb74d; }
+    .photo-lbl { font-size:0.75rem; font-weight:bold; margin-bottom:5px; color:#ffb74d; }
 
-    /* ACTIONS */
-    .verdict-row { display:flex; gap:10px; margin-bottom:15px; }
-    .verdict-btn { flex:1; padding:16px; border:none; border-radius:10px; font-weight:bold; opacity:0.3; color:white; cursor:pointer; }
-    .verdict-btn.selected { opacity:1; outline:3px solid white; }
+    /* INPUTS */
     .checker-input { width:100%; padding:14px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; margin-bottom:12px; }
     textarea { width:100%; height:80px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; padding:12px; }
 
@@ -103,8 +96,8 @@
 <div id="mainScreen">
   <h1>MG Packing System</h1>
   <div class="main-tabs">
-    <div class="main-tab active" id="tabVerify" onclick="switchTab('verify')">CHECK LIST</div>
-    <div class="main-tab" id="tabStamp" onclick="switchTab('stamp')">STAMPING</div>
+    <div class="main-tab active" id="tabVerify" onclick="switchTab('verify')">Check List</div>
+    <div class="main-tab" id="tabStamp" onclick="switchTab('stamp')">Stamping</div>
   </div>
 
   <div class="tab-content active" id="contentVerify">
@@ -124,8 +117,11 @@
 
   <div class="tab-content" id="contentStamp">
     <div class="stats-row">
-      <div class="stat-box active-filter-stamp" id="fsWait" onclick="setStampFilter('wait')"><span class="stat-num" id="sStatWait">-</span><span class="stat-lbl" style="color:#ffb74d">WAIT STAMP</span></div>
-      <div class="stat-box" id="fsDone" onclick="setStampFilter('done')"><span class="stat-num" id="sStatDone">-</span><span class="stat-lbl" style="color:#4caf50">STAMPED</span></div>
+      <div class="stat-box active-filter-stamp" id="fsWait" onclick="setStampFilter('wait')"><span class="stat-num" id="sStatWait">-</span><span class="stat-lbl">WAIT STAMP</span></div>
+      <div class="stat-box" id="fsDone" onclick="setStampFilter('done')"><span class="stat-num" id="sStatDone">-</span><span class="stat-lbl">STAMPED</span></div>
+    </div>
+    <div style="padding: 0 5px 15px 5px;">
+        <input type="text" id="stampStaffName" class="checker-input" placeholder="ENTER STAMPING STAFF NAME" style="margin-bottom:0; border-color:#ffb74d;">
     </div>
     <div id="stampList"></div>
   </div>
@@ -134,14 +130,12 @@
 <div id="detailModal">
   <div class="modal-card">
     <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-      <h2 id="modalTitle" style="margin:0; color:#ffb74d; font-size:1.2rem;"></h2>
+      <h2 id="modalTitle" style="margin:0; color:#ffb74d;"></h2>
       <button onclick="closeModal()" style="background:#444; color:white; border:none; padding:8px 15px; border-radius:6px; cursor:pointer;">CLOSE</button>
     </div>
 
     <div class="detail-grid" id="detailGrid"></div>
     <div id="barcodeChecks" style="margin-bottom:20px;"></div>
-
-    <div style="margin-bottom:8px;"><label class="stat-lbl">PHOTOS (ONE ROW)</label></div>
     <div class="photo-row-container" id="photosGrid"></div>
 
     <div style="border-top:1px solid #333; padding-top:20px;">
@@ -149,9 +143,9 @@
         <button class="verdict-btn" id="btnVerified" style="background:#2e7d32;" onclick="selectVerdict('Verified')">APPROVE</button>
         <button class="verdict-btn" id="btnRejected" style="background:#b71c1c;" onclick="selectVerdict('Rejected')">REJECT</button>
       </div>
-      <input type="text" class="checker-input" id="checkerNameInput" placeholder="CHECKER NAME">
-      <textarea id="remarksInput" placeholder="REMARKS"></textarea>
-      <button id="saveVerifyBtn" onclick="saveVerification()" style="width:100%; padding:18px; background:#1565c0; color:white; border:none; border-radius:12px; font-weight:bold; margin-top:15px; cursor:pointer;">SAVE DECISION</button>
+      <input type="text" class="checker-input" id="checkerNameInput" placeholder="CHECKER STAFF NAME">
+      <textarea id="remarksInput" placeholder="REMARKS / REJECTION REASON"></textarea>
+      <button id="saveVerifyBtn" onclick="saveVerification()" style="width:100%; padding:18px; background:#1565c0; color:white; border:none; border-radius:12px; font-weight:bold; margin-top:15px; cursor:pointer;">SUBMIT REPORT</button>
     </div>
   </div>
 </div>
@@ -177,7 +171,6 @@
   function switchTab(tab) {
     document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    
     if (tab === 'verify') {
       document.getElementById('tabVerify').classList.add('active');
       document.getElementById('contentVerify').classList.add('active');
@@ -220,11 +213,9 @@
     document.getElementById('vStatVerified').textContent = ok;
     document.getElementById('vStatRejected').textContent = fail;
 
-    const vRecords = allRecords.filter(r => (r.status||'').includes('Verified'));
-    const wait = vRecords.filter(r => !(r.stampStatus||'').includes('Stamped')).length;
-    const done = vRecords.filter(r => (r.stampStatus||'').includes('Stamped')).length;
-    document.getElementById('sStatWait').textContent = wait;
-    document.getElementById('sStatDone').textContent = done;
+    const vRecs = allRecords.filter(r => (r.status||'').includes('Verified'));
+    document.getElementById('sStatWait').textContent = vRecs.filter(r => !(r.stampStatus||'').includes('Stamped')).length;
+    document.getElementById('sStatDone').textContent = vRecs.filter(r => (r.stampStatus||'').includes('Stamped')).length;
   }
 
   function renderVerifyList() {
@@ -240,10 +231,7 @@
       const s = (r.status||'').toLowerCase();
       const cls = s.includes('verified') ? 'verified' : s.includes('rejected') ? 'rejected' : 'pending';
       return `<div class="record-card ${cls}" onclick="openRecord(${r.row})">
-        <div class="record-header">
-          <span class="record-customer">${r.customer}</span>
-          <span class="status-pill ${cls}">${r.status || 'Pending'}</span>
-        </div>
+        <div class="record-header"><span class="record-customer">${r.customer}</span><span class="status-pill ${cls}">${r.status || 'Pending'}</span></div>
         <div style="font-size:0.75rem; color:#888; margin-top:8px;">PI: ${r.pi} | Team: ${r.checkerBy || 'N/A'} | Date: ${r.packedDate}</div>
       </div>`;
     }).join('');
@@ -260,14 +248,14 @@
     document.getElementById('stampList').innerHTML = filtered.map(r => `
       <div class="stamp-card ${currentStampFilter === 'done' ? 'stamped' : ''}">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span class="record-customer">${r.customer}</span>
-          ${currentStampFilter === 'done' ? '<span class="stamp-done-pill">STAMPED ✅</span>' : ''}
+          <span class="record-customer" style="color:#ffb74d;">${r.customer}</span>
+          ${currentStampFilter === 'done' ? '<span style="color:#4caf50; font-weight:bold; font-size:0.8rem;">STAMPED ✅</span>' : ''}
         </div>
-        <div style="font-size:0.85rem; color:#aaa; margin:8px 0;">CARTON ID: ${r.cartonId} | PI: ${r.pi}</div>
-        <div style="font-size:0.75rem; color:#666;">Packed By: ${r.packedBy || 'N/A'}</div>
+        <div style="font-size:0.85rem; color:#eee; margin:8px 0;">CARTON ID: ${r.cartonId} | PI: ${r.pi}</div>
+        <div style="font-size:0.75rem; color:#888;">Packed By: ${r.packedBy || 'N/A'}</div>
         ${currentStampFilter === 'wait' ? `<button class="stamp-btn" onclick="markStamped(${r.row})">MARK AS STAMPED</button>` : ''}
       </div>
-    `).join('') || '<div style="text-align:center; padding:40px; color:#666;">No records found</div>';
+    `).join('') || '<div style="text-align:center; padding:40px; color:#666;">No records</div>';
   }
 
   async function openRecord(row) {
@@ -286,28 +274,16 @@
     `;
 
     const ms = r.matchStatus || '';
-    const barcodes = [
-      {l:'BAG', v:r.bag, ok:ms.includes('Bag:✅'), no:(r.bag||'').toUpperCase()==='NO'},
-      {l:'INNER', v:r.inner, ok:ms.includes('Inner:✅'), no:(r.inner||'').toUpperCase()==='NO'},
-      {l:'OUTER', v:r.outer, ok:ms.includes('Outer:✅'), no:(r.outer||'').toUpperCase()==='NO'}
-    ];
+    const barcodes = [{l:'BAG', v:r.bag, ok:ms.includes('Bag:✅'), no:(r.bag||'').toUpperCase()==='NO'}, {l:'INNER', v:r.inner, ok:ms.includes('Inner:✅'), no:(r.inner||'').toUpperCase()==='NO'}, {l:'OUTER', v:r.outer, ok:ms.includes('Outer:✅'), no:(r.outer||'').toUpperCase()==='NO'}];
     document.getElementById('barcodeChecks').innerHTML = barcodes.map(b => `
-      <div class="barcode-check">
-        <span style="font-size:0.7rem; width:50px; color:#888;">${b.l}</span>
-        <span style="flex:1; font-weight:bold; text-align:center;">${b.v || '-'}</span>
-        <span class="bc-badge ${b.no?'nobc':b.ok?'ok':'fail'}">${b.no?'NO BC':b.ok?'MATCH':'FAIL'}</span>
-      </div>
+      <div class="barcode-check"><span style="font-size:0.7rem; width:50px; color:#888;">${b.l}</span><span style="flex:1; font-weight:bold; text-align:center;">${b.v || '-'}</span><span class="bc-badge ${b.no?'nobc':b.ok?'ok':'fail'}">${b.no?'NO BC':b.ok?'MATCH':'FAIL'}</span></div>
     `).join('');
 
     const photos = [{lbl:'BAG', url: r.imgBagUrl}, {lbl:'INNER', url: r.imgInnerUrl}, {lbl:'CARTON', url: r.imgCartonUrl}];
     document.getElementById('photosGrid').innerHTML = photos.map(p => {
       const id = (p.url||'').match(/[-\w]{25,}/);
       const thumb = id ? `https://drive.google.com/thumbnail?id=${id[0]}&sz=800` : '';
-      return `<div class="photo-wrap">
-        <div class="photo-lbl">${p.lbl}</div>
-        <img src="${thumb}" onclick="openLightbox('${thumb}')">
-        <a href="${p.url}" target="_blank" style="color:#90caf9; font-size:0.65rem; text-decoration:none; display:block; margin-top:5px;">Original ↗</a>
-      </div>`;
+      return `<div class="photo-wrap"><div class="photo-lbl">${p.lbl}</div><img src="${thumb}" onclick="openLightbox('${thumb}')"><a href="${p.url}" target="_blank" style="color:#90caf9; font-size:0.65rem; text-decoration:none; display:block; margin-top:5px;">Original ↗</a></div>`;
     }).join('');
 
     selectedVerdict = null;
@@ -333,8 +309,10 @@
   }
 
   async function markStamped(row) {
+    const staff = document.getElementById('stampStaffName').value.trim();
+    if(!staff) return alert("Please enter the Stamping Staff Name first");
     if(!confirm("Mark this item as STAMPED?")) return;
-    await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({action:'stamp', row:row}) });
+    await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({action:'stamp', row:row, staff:staff.toUpperCase()}) });
     loadRecords();
   }
 
