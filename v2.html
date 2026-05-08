@@ -21,7 +21,7 @@
     .tab-content { display:none; padding:16px; }
     .tab-content.active { display:block; }
 
-    /* STATS BUTTONS - SCREENSHOT STYLE */
+    /* STATS BUTTONS */
     .stats-row { display:flex; gap:10px; margin-bottom:15px; }
     .stat-box { flex:1; background:#1e1e1e; border:1px solid #333; border-radius:10px; padding:15px 5px; text-align:center; cursor:pointer; }
     #fAll.active-filter { border: 2px solid #ffb74d; }
@@ -56,7 +56,7 @@
     .barcode-check { display:flex; align-items:center; background:#2a2a2a; border-radius:8px; padding:12px; margin-bottom:8px; justify-content:space-between; }
     .bc-badge { font-size:0.75rem; font-weight:bold; padding:5px 12px; border-radius:6px; border:1px solid #4caf50; color:#4caf50; }
 
-    /* PHOTOS - FIXED GRID LAYOUT */
+    /* PHOTOS GRID */
     .photo-row-container { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; justify-content: space-between; overflow: hidden; }
     .photo-wrap { flex: 1; width: calc(33.33% - 7px); text-align:center; background:#111; padding:8px; border-radius:10px; border:1px solid #333; }
     .photo-wrap img { width:100%; height:auto; aspect-ratio: 1/1; object-fit:cover; border-radius:6px; cursor:pointer; }
@@ -77,9 +77,10 @@
     .stamp-card { background:#1e1e1e; border:1px solid #333; border-left:4px solid #ff9800; border-radius:12px; padding:16px; margin-bottom:12px; }
     .stamp-btn { width:100%; padding:15px; background:#1565c0; color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer; margin-top:10px; }
 
-    /* LIGHTBOX */
-    #lightbox { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:1000; display:none; align-items:center; justify-content:center; }
-    #lightbox img { max-width:98%; max-height:98%; object-fit: contain; }
+    /* LIGHTBOX WITH ZOOM */
+    #lightbox { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:1000; display:none; align-items:center; justify-content:center; overflow: hidden; touch-action: none; }
+    #lightbox img { max-width:100%; max-height:100%; object-fit: contain; transform-origin: center center; transition: transform 0.1s ease-out; cursor: grab; }
+    .close-lb { position: absolute; top: 20px; right: 20px; background: #444; color: white; border: none; padding: 12px 20px; border-radius: 8px; z-index: 1001; font-weight: bold; }
 
     .toolbar input { width:100%; padding:12px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; margin-bottom:12px; }
   </style>
@@ -123,12 +124,10 @@
       <h2 id="modalTitle" style="margin:0; color:#ffb74d;"></h2>
       <button onclick="closeModal()" style="background:#333; color:white; border:none; padding:10px 20px; border-radius:8px;">CLOSE</button>
     </div>
-
     <div class="detail-grid" id="detailGrid"></div>
     <div id="barcodeChecks"></div>
     <div style="margin: 15px 0 5px 0;"><label class="stat-lbl">PHOTOS</label></div>
     <div class="photo-row-container" id="photosGrid"></div>
-
     <div style="border-top:1px solid #333; padding-top:20px;">
       <div class="verdict-row">
         <button class="verdict-btn v-approve" id="btnVerified" onclick="selectVerdict('Verified')">APPROVE</button>
@@ -141,7 +140,10 @@
   </div>
 </div>
 
-<div id="lightbox" onclick="this.style.display='none'"><img id="lightboxImg"></div>
+<div id="lightbox">
+  <button class="close-lb" onclick="closeLightbox()">CLOSE</button>
+  <img id="lightboxImg">
+</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJNbH09bwWqsO0lnM8j_xHA7ALfPFKpSjSFwUK4SRugrHqMWIhds7KhyUHN7kXR28/exec";
@@ -150,6 +152,9 @@
   let currentStampFilter = 'wait';
   let currentRecord = null;
   let selectedVerdict = null;
+
+  // Zoom Variables
+  let scale = 1, posX = 0, posY = 0, lastPosX = 0, lastPosY = 0, isDragging = false;
 
   function checkPin(val) {
     if (val === "1234") {
@@ -305,11 +310,75 @@
   }
 
   function closeModal() { document.getElementById('detailModal').style.display='none'; }
-  function openLightbox(s) { 
-    const highRes = s.replace('sz=800', 'sz=w2000');
-    document.getElementById('lightboxImg').src=highRes; 
-    document.getElementById('lightbox').style.display='flex'; 
+
+  // ZOOM & LIGHTBOX LOGIC
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+
+  function openLightbox(s) {
+    scale = 1; posX = 0; posY = 0;
+    updateTransform();
+    lbImg.src = s.replace('sz=800', 'sz=w2000');
+    lb.style.display = 'flex';
   }
+
+  function closeLightbox() { lb.style.display = 'none'; }
+
+  function updateTransform() {
+    lbImg.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+  }
+
+  lb.addEventListener('wheel', e => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    scale = Math.min(Math.max(1, scale * delta), 5);
+    updateTransform();
+  });
+
+  lb.addEventListener('mousedown', e => {
+    isDragging = true;
+    lastPosX = e.clientX - posX;
+    lastPosY = e.clientY - posY;
+    lbImg.style.cursor = 'grabbing';
+  });
+
+  window.addEventListener('mousemove', e => {
+    if (!isDragging || scale <= 1) return;
+    posX = e.clientX - lastPosX;
+    posY = e.clientY - lastPosY;
+    updateTransform();
+  });
+
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+    lbImg.style.cursor = 'grab';
+  });
+
+  // Mobile Touch Zoom
+  let initialDist = 0;
+  lb.addEventListener('touchstart', e => {
+    if (e.touches.length === 2) {
+      initialDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
+    } else {
+      isDragging = true;
+      lastPosX = e.touches[0].pageX - posX;
+      lastPosY = e.touches[0].pageY - posY;
+    }
+  });
+
+  lb.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (e.touches.length === 2) {
+      const dist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
+      scale = Math.min(Math.max(1, (dist / initialDist)), 5);
+    } else if (isDragging && scale > 1) {
+      posX = e.touches[0].pageX - lastPosX;
+      posY = e.touches[0].pageY - lastPosY;
+    }
+    updateTransform();
+  });
+
+  lb.addEventListener('touchend', () => { isDragging = false; });
 </script>
 </body>
 </html>
