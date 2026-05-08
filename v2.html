@@ -21,7 +21,7 @@
     .tab-content { display:none; padding:16px; }
     .tab-content.active { display:block; }
 
-    /* STATS BUTTONS */
+    /* STATS BUTTONS - SCREENSHOT STYLE */
     .stats-row { display:flex; gap:10px; margin-bottom:15px; }
     .stat-box { flex:1; background:#1e1e1e; border:1px solid #333; border-radius:10px; padding:15px 5px; text-align:center; cursor:pointer; }
     #fAll.active-filter { border: 2px solid #ffb74d; }
@@ -56,9 +56,9 @@
     .barcode-check { display:flex; align-items:center; background:#2a2a2a; border-radius:8px; padding:12px; margin-bottom:8px; justify-content:space-between; }
     .bc-badge { font-size:0.75rem; font-weight:bold; padding:5px 12px; border-radius:6px; border:1px solid #4caf50; color:#4caf50; }
 
-    /* PHOTOS - SINGLE ROW */
-    .photo-row-container { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom:10px; }
-    .photo-wrap { flex: 1; min-width: 45%; text-align:center; background:#111; padding:8px; border-radius:10px; border:1px solid #333; }
+    /* PHOTOS - FIXED GRID LAYOUT */
+    .photo-row-container { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; justify-content: space-between; overflow: hidden; }
+    .photo-wrap { flex: 1; width: calc(33.33% - 7px); text-align:center; background:#111; padding:8px; border-radius:10px; border:1px solid #333; }
     .photo-wrap img { width:100%; height:auto; aspect-ratio: 1/1; object-fit:cover; border-radius:6px; cursor:pointer; }
     .photo-lbl { font-size:0.8rem; font-weight:bold; margin-bottom:5px; color:#ffb74d; text-transform:uppercase; }
 
@@ -126,7 +126,7 @@
 
     <div class="detail-grid" id="detailGrid"></div>
     <div id="barcodeChecks"></div>
-    <div style="margin: 15px 0 5px 0;"><label class="stat-lbl">PHOTOS (SWIPE)</label></div>
+    <div style="margin: 15px 0 5px 0;"><label class="stat-lbl">PHOTOS</label></div>
     <div class="photo-row-container" id="photosGrid"></div>
 
     <div style="border-top:1px solid #333; padding-top:20px;">
@@ -263,9 +263,7 @@
       <div class="detail-item"><label>QTY</label><span>${r.qty || '0'} PCS</span></div>
     `;
 
-    const barcodes = [
-      {l:'BAG', v:r.bag}, {l:'INNER', v:r.inner}, {l:'OUTER', v:r.outer}
-    ];
+    const barcodes = [{l:'BAG', v:r.bag}, {l:'INNER', v:r.inner}, {l:'OUTER', v:r.outer}];
     document.getElementById('barcodeChecks').innerHTML = barcodes.map(b => `
       <div class="barcode-check"><span style="color:#888;">${b.l}</span><span style="font-weight:bold;">${b.v || '-'}</span><span class="bc-badge">MATCH</span></div>
     `).join('');
@@ -274,7 +272,7 @@
     document.getElementById('photosGrid').innerHTML = photos.map(p => {
       const id = (p.url||'').match(/[-\w]{25,}/);
       const thumb = id ? `https://drive.google.com/thumbnail?id=${id[0]}&sz=800` : '';
-      return `<div class="photo-wrap"><div class="photo-lbl">${p.lbl}</div><img src="${thumb}" onclick="openLightbox('${thumb}')"><a href="${p.url}" target="_blank" style="color:#90caf9; font-size:0.65rem; text-decoration:none; display:block; margin-top:5px;">Original ↗</a></div>`;
+      return `<div class="photo-wrap"><div class="photo-lbl">${p.lbl}</div><img src="${thumb}" onclick="openLightbox('${thumb}')"></div>`;
     }).join('');
 
     selectedVerdict = null;
