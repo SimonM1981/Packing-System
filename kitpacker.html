@@ -75,7 +75,7 @@ button.danger { background:#c62828; }
 .part-match-item .bc-val { font-size:0.9rem; font-weight:bold; color:#eee; word-break:break-all; }
 .add-part-btn { width:100%; padding:14px; background:#2e1a3e; border:2px dashed #7b1fa2; color:#ce93d8; border-radius:10px; font-weight:bold; cursor:pointer; margin-bottom:16px; }
 .add-part-btn:disabled { opacity:0.4; cursor:not-allowed; border-color:#555; color:#666; }
-.kit-summary { background:#2e1a3e; border:1px solid #7b1fa2; border-radius:10px; padding:14px; margin-bottom:16px; }
+.kit-summary { display:none !important; } /* Hidden in production */
 .kit-summary-title { color:#ce93d8; font-weight:700; margin-bottom:8px; }
 .kit-summary-item { display:flex; justify-content:space-between; padding:4px 0; font-size:0.9rem; }
 
@@ -157,7 +157,7 @@ button.danger { background:#c62828; }
 
 <button class="add-part-btn" id="addPartBtn" onclick="addKitPart()">+ ADD KIT PART</button>
 
-<div class="kit-summary" id="kitSummary" style="display:none;">
+<div class="kit-summary" id="kitSummary" style="display:none !important;">
 <div class="kit-summary-title">KIT Summary</div>
 <div id="kitSummaryContent"></div>
 </div>
