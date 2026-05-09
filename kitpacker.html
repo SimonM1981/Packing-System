@@ -103,8 +103,7 @@ button.danger { background:#c62828; }
 .close-lb { position:absolute; top:20px; right:20px; background:#444; color:white; border:none; padding:12px 20px; border-radius:8px; font-weight:bold; cursor:pointer; }
 
 /* Debug panel */
-.debug-panel { background:#1a1a1a; border:1px solid #333; border-radius:8px; padding:10px; margin:10px 0; font-size:0.75rem; color:#888; display:none; }
-.debug-panel.active { display:block; }
+.debug-panel { display:none !important; } /* Hidden in production */
 </style>
 <base target="_blank">
 </head>
@@ -253,10 +252,11 @@ const MIN_PARTS = 1;
 
 // Debug logging
 function debug(msg) {
-const panel = document.getElementById('debugPanel');
-const content = document.getElementById('debugContent');
-content.innerHTML += '<div>' + new Date().toLocaleTimeString() + ' — ' + msg + '</div>';
-panel.classList.add('active');
+// Debug logging disabled in production
+// const panel = document.getElementById('debugPanel');
+// const content = document.getElementById('debugContent');
+// content.innerHTML += '<div>' + new Date().toLocaleTimeString() + ' — ' + msg + '</div>';
+// panel.classList.add('active');
 console.log('[KIT DEBUG]', msg);
 }
 
