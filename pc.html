@@ -4,8 +4,6 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
   <title>MG Packing System</title>
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
   <style>
@@ -14,7 +12,6 @@
     h1 { text-align:center; color:#90caf9; margin:12px 0 4px; font-size:1.5rem; }
     .subtitle { text-align:center; color:#888; font-size:0.85rem; margin-bottom:20px; }
     
-    /* Tab Navigation */
     .tab-bar { display:flex; gap:4px; margin-bottom:16px; border-bottom:2px solid #333; padding-bottom:4px; }
     .tab-btn { flex:1; padding:12px; background:#1e1e1e; border:1px solid #333; border-radius:8px 8px 0 0; color:#888; font-weight:600; cursor:pointer; font-size:0.85rem; text-align:center; }
     .tab-btn.active { background:#3f51b5; color:white; border-color:#3f51b5; }
@@ -27,1184 +24,217 @@
     .card { background:#1e1e1e; border:1px solid #333; border-radius:12px; padding:16px; margin-bottom:16px; }
     .card-title { font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#666; margin-bottom:12px; }
     label { display:block; margin:10px 0 5px; font-weight:600; color:#90caf9; font-size:0.9rem; }
-    input[type="text"],input[type="number"] { width:100%; padding:11px 12px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; font-size:16px; text-transform:uppercase; }
-    input[type="number"] { text-transform:none; }
-    input::placeholder { text-transform:none; color:#555; }
-    input:focus { outline:none; border-color:#90caf9; }
-    input.match     { border-color:#4caf50 !important; background:#1a2e1a; }
-    input.mismatch  { border-color:#f44336 !important; background:#2e1a1a; }
-    input.no-barcode{ border-color:#ff9800 !important; background:#2e2200; }
-    input.required-empty { border-color:#ff5722 !important; box-shadow: 0 0 0 2px rgba(255,87,34,0.3); }
-    input:disabled { opacity:0.5; cursor:not-allowed; }
+    input[type="text"], input[type="number"] { width:100%; padding:11px 12px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; font-size:16px; text-transform:uppercase; }
     
     .scan-row { display:flex; gap:8px; align-items:center; }
     .scan-row input { flex:1; }
-    button { background:#3f51b5; color:white; border:none; padding:11px 14px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:0.88rem; white-space:nowrap; flex-shrink:0; }
-    button.type-btn { background:#455a64; }
-    button:disabled { opacity:0.4; cursor:not-allowed; }
-    button.secondary { background:#455a64; }
-    button.danger { background:#c62828; }
-    button.success { background:#2e7d32; }
+    button { background:#3f51b5; color:white; border:none; padding:11px 14px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:0.88rem; }
     
+    /* BADGES */
     .match-badge { display:inline-flex; align-items:center; padding:4px 10px; border-radius:20px; font-size:0.8rem; font-weight:700; margin-top:5px; min-height:26px; }
-    .match-badge.ok      { background:#1b5e20; color:#a5d6a7; }
-    .match-badge.fail    { background:#b71c1c; color:#ef9a9a; }
+    .match-badge.ok { background:#1b5e20; color:#a5d6a7; }
+    .match-badge.fail { background:#b71c1c; color:#ef9a9a; }
     .match-badge.pending { background:#333; color:#888; }
-    .match-badge.no-bc   { background:#4a3000; color:#ffcc80; }
     
-    #scanner-container { margin:12px 0; text-align:center; }
-    #reader { width:100%; max-width:480px; margin:0 auto; border:2px solid #444; border-radius:10px; overflow:hidden; background:#000; }
-    
-    .photo-btn { width:100%; padding:15px; margin:8px 0; font-size:1rem; background:#37474f; border-radius:10px; border:none; color:white; cursor:pointer; text-align:left; display:flex; align-items:center; gap:10px; }
-    .photo-btn .icon { font-size:1.3rem; }
-    .photo-btn .photo-label { flex:1; }
-    .photo-btn .done-badge { background:#2e7d32; color:#a5d6a7; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:10px; display:none; }
-    .photo-btn.has-photo .done-badge { display:inline; }
-    .photo-btn .existing-badge { background:#1565c0; color:#90caf9; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:10px; display:none; }
-    .photo-btn.has-existing .existing-badge { display:inline; }
-    
-    .preview { width:100%; max-height:140px; object-fit:cover; border-radius:8px; margin-top:6px; display:none; border:1px solid #555; }
-    .preview.show { display:block; }
-    .photo-existing { width:100%; max-height:140px; object-fit:cover; border-radius:8px; margin-top:6px; border:1px solid #555; display:none; }
-    .photo-existing.show { display:block; }
-    .photo-note { font-size:0.75rem; color:#888; margin-top:4px; display:none; }
-    .photo-note.show { display:block; }
-    
+    /* PHOTOS */
+    .photo-btn { width:100%; padding:15px; margin:8px 0; background:#37474f; border-radius:10px; border:none; color:white; cursor:pointer; text-align:left; display:flex; align-items:center; gap:10px; }
+    .photo-btn.has-photo .done-badge { display:inline; background:#2e7d32; padding:2px 8px; border-radius:10px; font-size:0.7rem; }
+    .done-badge { display:none; }
+    .preview { width:100%; max-height:180px; object-fit:contain; border-radius:8px; margin-top:10px; display:none; border:1px solid #555; background:#000; }
+
+    /* OVERLAYS */
+    #scanner-container { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:black; z-index:1000; padding:20px; }
+    #status { margin:12px 0; padding:12px; border-radius:8px; font-weight:bold; text-align:center; display:none; }
+    #status.info { background:#1565c0; display:block; color:white; }
+    #status.success { background:#2e7d32; display:block; color:white; }
+    #status.error { background:#c62828; display:block; color:white; }
+
     .submit-btn { width:100%; padding:18px; font-size:1.1rem; font-weight:bold; border-radius:10px; border:none; cursor:pointer; margin-top:8px; }
-    .submit-btn.ready   { background:#2e7d32; color:white; }
+    .submit-btn.ready { background:#2e7d32; color:white; }
     .submit-btn.blocked { background:#333; color:#666; cursor:not-allowed; }
     
-    #status { margin:12px 0; padding:12px; border-radius:8px; font-weight:bold; text-align:center; display:none; }
-    #status.success { background:#2e7d32; color:white; display:block; }
-    #status.error   { background:#c62828; color:white; display:block; }
-    #status.info    { background:#1565c0; color:white; display:block; }
-    
-    .auto-filled { font-size:0.75rem; color:#4caf50; margin-top:3px; display:none; }
-    .blocker-notice { background:#b71c1c; color:#ef9a9a; border-radius:8px; padding:10px 14px; font-size:0.85rem; font-weight:600; margin-top:10px; display:none; }
-    .missing-notice { background:#4a2000; color:#ffab91; border-radius:8px; padding:10px 14px; font-size:0.85rem; font-weight:600; margin-top:10px; display:none; }
-    
-    .step-bar { display:flex; gap:6px; margin-bottom:14px; }
-    .step { flex:1; height:4px; border-radius:2px; background:#333; transition:background 0.3s; }
-    .step.done   { background:#4caf50; }
-    .step.active { background:#90caf9; }
-    
-    .hint { color:#777; font-size:0.82rem; margin-top:6px; }
-    .upload-status { font-size:0.78rem; color:#aaa; margin-top:4px; min-height:18px; }
-    .upload-status.ok  { color:#4caf50; }
-    .upload-status.err { color:#f44336; }
-    .required-label::after { content:" *"; color:#ff5722; }
-    
-    /* Reject List Styles */
-    .reject-list { max-height:60vh; overflow-y:auto; }
-    .reject-item { background:#2a2a2a; border:1px solid #444; border-radius:10px; padding:14px; margin-bottom:10px; cursor:pointer; transition:all 0.2s; }
-    .reject-item:hover { border-color:#90caf9; background:#333; }
-    .reject-item.selected { border-color:#90caf9; background:#1a237e; }
-    .reject-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
-    .reject-id { font-weight:700; color:#90caf9; font-size:1rem; }
-    .reject-status { font-size:0.75rem; padding:3px 10px; border-radius:12px; font-weight:700; }
-    .reject-status.fail { background:#b71c1c; color:#ef9a9a; }
-    .reject-status.partial { background:#e65100; color:#ffcc80; }
-    .reject-meta { font-size:0.8rem; color:#888; line-height:1.6; }
-    .reject-meta strong { color:#ccc; }
-    .reject-photos { display:flex; gap:6px; margin-top:8px; }
-    .reject-thumb { width:50px; height:50px; object-fit:cover; border-radius:6px; border:1px solid #555; background:#1a1a1a; }
-    .reject-thumb.missing { opacity:0.3; display:flex; align-items:center; justify-content:center; font-size:0.6rem; color:#666; text-align:center; }
-    
-    .back-btn { background:#555; margin-bottom:12px; width:100%; }
-    .edit-header { background:#1a237e; border:1px solid #3949ab; border-radius:10px; padding:12px; margin-bottom:16px; }
-    .edit-header h3 { margin:0 0 4px; color:#90caf9; font-size:1rem; }
-    .edit-header p { margin:0; color:#888; font-size:0.8rem; }
-    
-    .photo-section { background:#1a1a1a; border:1px solid #333; border-radius:10px; padding:12px; margin:10px 0; }
-    .photo-section-title { font-size:0.8rem; color:#666; margin-bottom:8px; font-weight:600; }
-    
-    .loading { text-align:center; padding:40px; color:#888; }
-    .empty-state { text-align:center; padding:40px; color:#666; }
-    .empty-state .icon { font-size:3rem; margin-bottom:10px; }
-    
-    .row { display:flex; gap:10px; }
-    .row > * { flex:1; }
-    
-    .reject-badge { display:inline-block; background:#c62828; color:white; font-size:0.7rem; padding:2px 8px; border-radius:10px; margin-left:6px; font-weight:700; }
+    .reject-item { background:#2a2a2a; border-left:5px solid #f44336; padding:15px; margin-bottom:10px; border-radius:8px; cursor:pointer; }
   </style>
 </head>
 <body>
+
 <h1>MG Packing System</h1>
 <p class="subtitle" id="pageSubtitle">Packer Entry</p>
 
-<!-- TAB NAVIGATION -->
 <div class="tab-bar">
   <button class="tab-btn active" id="tabPacker" onclick="switchTab('packer')">📦 Packer</button>
   <button class="tab-btn" id="tabReject" onclick="switchTab('reject')">🔧 Fix Reject <span class="badge" id="rejectBadge">0</span></button>
 </div>
 
-<!-- ==================== PACKER TAB ==================== -->
+<!-- PACKER TAB -->
 <div id="packerTab" class="tab-content active">
-  <div class="step-bar">
-    <div class="step" id="step1"></div><div class="step" id="step2"></div>
-    <div class="step" id="step3"></div><div class="step" id="step4"></div>
+  <div class="card">
+    <div class="card-title">Staff & Order</div>
+    <label>Packed By</label>
+    <div class="scan-row"><input type="text" id="packedBy"><button onclick="startScanner('packedBy')">SCAN</button></div>
+    <label>Carton ID</label>
+    <div class="scan-row"><input type="text" id="cartonId"><button onclick="startScanner('cartonId')">SCAN</button></div>
   </div>
 
   <div class="card">
-    <div class="card-title">Staff Info</div>
-    <label class="required-label">Packed By</label>
-    <div class="scan-row"><input type="text" id="packedBy" placeholder="Name or scan ID"><button onclick="startScanner('packedBy')">SCAN</button><button class="type-btn" onclick="focusField('packedBy')">TYPE</button></div>
-    <label class="required-label">Packing Team</label>
-    <div class="scan-row"><input type="text" id="checkerBy" placeholder="Team name or scan ID"><button onclick="startScanner('checkerBy')">SCAN</button><button class="type-btn" onclick="focusField('checkerBy')">TYPE</button></div>
-  </div>
+    <div class="card-title">Verification</div>
+    <label>1. Bag Barcode</label>
+    <div class="scan-row"><input type="text" id="bag" onchange="lookupMaster(this.value)"><button onclick="startScanner('bag')">SCAN</button></div>
+    <div id="bagBadge" class="match-badge pending">Not Checked</div>
 
-  <div class="card">
-    <div class="card-title">Order Info</div>
-    <label class="required-label">Carton ID</label>
-    <div class="scan-row"><input type="text" id="cartonId" placeholder="Scan or type Carton ID"><button onclick="startScanner('cartonId')">SCAN</button><button class="type-btn" onclick="focusField('cartonId')">TYPE</button></div>
-    <label class="required-label">Customer Name</label>
-    <div class="scan-row"><input type="text" id="customer" placeholder="Type Customer Name"><button onclick="startScanner('customer')">SCAN</button><button class="type-btn" onclick="focusField('customer')">TYPE</button></div>
-    <label class="required-label">P/I No.</label>
-    <div class="scan-row"><input type="text" id="pi" placeholder="Type P/I No."><button onclick="startScanner('pi')">SCAN</button><button class="type-btn" onclick="focusField('pi')">TYPE</button></div>
-    <label class="required-label">Part No.</label>
-    <div class="scan-row"><input type="text" id="partNo" placeholder="Auto-filled or scan/type"><button onclick="startScanner('partNo')">SCAN</button><button class="type-btn" onclick="focusField('partNo')">TYPE</button></div>
-    <div class="auto-filled" id="partNoNote">Auto-filled from master register</div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Barcode Verification</div>
-    <p class="hint">Scan in order: Bag → Inner → Outer. Type NO if no barcode.</p>
-    <label class="required-label">1. Bag Barcode</label>
-    <div class="scan-row"><input type="text" id="bag" placeholder="Scan, type barcode, or NO"><button onclick="startScanner('bag')">SCAN</button><button class="type-btn" onclick="focusField('bag')">TYPE</button></div>
-    <div class="match-badge pending" id="bagBadge">Not checked yet</div>
-    <label class="required-label">2. Inner Box Barcode</label>
-    <div class="scan-row"><input type="text" id="inner" placeholder="Scan, type barcode, or NO"><button onclick="startScanner('inner')">SCAN</button><button class="type-btn" onclick="focusField('inner')">TYPE</button></div>
-    <div class="match-badge pending" id="innerBadge">Not checked yet</div>
-    <label class="required-label">3. Outer Carton Barcode</label>
-    <div class="scan-row"><input type="text" id="outer" placeholder="Scan, type barcode, or NO"><button onclick="startScanner('outer')">SCAN</button><button class="type-btn" onclick="focusField('outer')">TYPE</button></div>
-    <div class="match-badge pending" id="outerBadge">Not checked yet</div>
-    <div class="blocker-notice" id="blockerNotice">Mismatch detected — submission blocked. Please recheck barcodes.</div>
-    <div class="missing-notice" id="missingNotice">Please fill in all required fields marked with *</div>
-    <div id="scanner-container" style="display:none;">
-      <div id="reader"></div>
-      <button onclick="stopScanner()" style="margin-top:10px;background:#555;width:100%;">Close Scanner</button>
-    </div>
+    <label>2. Inner Barcode</label>
+    <div class="scan-row"><input type="text" id="inner" onchange="checkMatch('inner', this.value)"><button onclick="startScanner('inner')">SCAN</button></div>
+    <div id="innerBadge" class="match-badge pending">Not Checked</div>
   </div>
 
   <div class="card">
     <div class="card-title">Photos</div>
-    <button class="photo-btn" id="btnBag" onclick="document.getElementById('fBag').click()"><span class="icon">📸</span><span class="photo-label">Bag with Part</span><span class="done-badge">DONE</span></button>
-    <input type="file" id="fBag" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevBag','imgBag','btnBag','uploadBag')">
-    <img id="prevBag" class="preview"><div class="upload-status" id="uploadBag"></div>
-
-    <button class="photo-btn" id="btnInner" onclick="document.getElementById('fInner').click()"><span class="icon">📸</span><span class="photo-label">Inner Box / Label</span><span class="done-badge">DONE</span></button>
-    <input type="file" id="fInner" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevInner','imgInner','btnInner','uploadInner')">
-    <img id="prevInner" class="preview"><div class="upload-status" id="uploadInner"></div>
-
-    <button class="photo-btn" id="btnCarton" onclick="document.getElementById('fCarton').click()"><span class="icon">📸</span><span class="photo-label">Carton / Label</span><span class="done-badge">DONE</span></button>
-    <input type="file" id="fCarton" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevCarton','imgCarton','btnCarton','uploadCarton')">
-    <img id="prevCarton" class="preview"><div class="upload-status" id="uploadCarton"></div>
+    <button class="photo-btn" id="btnBag" onclick="document.getElementById('fBag').click()">📸 Bag Photo <span class="done-badge">DONE</span></button>
+    <input type="file" id="fBag" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevBag','imgBag','btnBag')">
+    <img id="prevBag" class="preview">
   </div>
 
-  <div class="card">
-    <div class="card-title">Quantity</div>
-    <label class="required-label">Qty (pcs)</label>
-    <input type="number" id="qty" min="1" value="1">
-  </div>
-
-  <button class="submit-btn blocked" id="submitBtn" onclick="submitData()" disabled>SUBMIT PACKING DATA</button>
-  <div id="status"></div>
+  <button class="submit-btn blocked" id="submitBtn" onclick="submitData()" disabled>SUBMIT DATA</button>
 </div>
 
-<!-- ==================== REJECT FIXER TAB ==================== -->
+<!-- REJECT TAB -->
 <div id="rejectTab" class="tab-content">
-
-  <!-- LIST VIEW -->
-  <div id="rejectListView">
-    <div class="card">
-      <div class="card-title">Rejected Records</div>
-      <p class="hint">Tap a record to edit and fix. Only records with barcode mismatches are shown.</p>
-      <div id="rejectLoading" class="loading">Loading rejects...</div>
-      <div id="rejectEmpty" class="empty-state" style="display:none;">
-        <div class="icon">✅</div>
-        <div>No rejected records found!</div>
-        <p style="font-size:0.8rem; margin-top:8px;">All barcodes are matching correctly.</p>
-      </div>
-      <div id="rejectList" class="reject-list" style="display:none;"></div>
-    </div>
-    <button class="submit-btn secondary" onclick="loadRejects()">🔄 Refresh List</button>
-  </div>
-
-  <!-- EDIT VIEW -->
-  <div id="rejectEditView" style="display:none;">
-    <button class="back-btn" onclick="backToRejectList()">← Back to Reject List</button>
-    
-    <div class="edit-header">
-      <h3>🔧 Fixing Reject #<span id="editRowNum">-</span></h3>
-      <p>Carton: <span id="editCartonId">-</span> | Customer: <span id="editCustomer">-</span></p>
-    </div>
-
-    <div class="step-bar">
-      <div class="step" id="rstep1"></div><div class="step" id="rstep2"></div>
-      <div class="step" id="rstep3"></div><div class="step" id="rstep4"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Staff Info</div>
-      <label class="required-label">Packed By</label>
-      <div class="scan-row"><input type="text" id="rPackedBy" placeholder="Name or scan ID"><button onclick="startScanner('rPackedBy')">SCAN</button><button class="type-btn" onclick="focusField('rPackedBy')">TYPE</button></div>
-      <label class="required-label">Packing Team</label>
-      <div class="scan-row"><input type="text" id="rCheckerBy" placeholder="Team name or scan ID"><button onclick="startScanner('rCheckerBy')">SCAN</button><button class="type-btn" onclick="focusField('rCheckerBy')">TYPE</button></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Order Info</div>
-      <label class="required-label">Carton ID</label>
-      <div class="scan-row"><input type="text" id="rCartonId" placeholder="Scan or type Carton ID"><button onclick="startScanner('rCartonId')">SCAN</button><button class="type-btn" onclick="focusField('rCartonId')">TYPE</button></div>
-      <label class="required-label">Customer Name</label>
-      <div class="scan-row"><input type="text" id="rCustomer" placeholder="Type Customer Name"><button onclick="startScanner('rCustomer')">SCAN</button><button class="type-btn" onclick="focusField('rCustomer')">TYPE</button></div>
-      <label class="required-label">P/I No.</label>
-      <div class="scan-row"><input type="text" id="rPI" placeholder="Type P/I No."><button onclick="startScanner('rPI')">SCAN</button><button class="type-btn" onclick="focusField('rPI')">TYPE</button></div>
-      <label class="required-label">Part No.</label>
-      <div class="scan-row"><input type="text" id="rPartNo" placeholder="Auto-filled or scan/type"><button onclick="startScanner('rPartNo')">SCAN</button><button class="type-btn" onclick="focusField('rPartNo')">TYPE</button></div>
-      <div class="auto-filled" id="rPartNoNote">Auto-filled from master register</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Barcode Verification</div>
-      <p class="hint">Scan in order: Bag → Inner → Outer. Type NO if no barcode.</p>
-      
-      <label class="required-label">1. Bag Barcode</label>
-      <div class="scan-row"><input type="text" id="rBag" placeholder="Scan, type barcode, or NO"><button onclick="startScanner('rBag')">SCAN</button><button class="type-btn" onclick="focusField('rBag')">TYPE</button></div>
-      <div class="match-badge pending" id="rBagBadge">Not checked yet</div>
-      
-      <label class="required-label">2. Inner Box Barcode</label>
-      <div class="scan-row"><input type="text" id="rInner" placeholder="Scan, type barcode, or NO"><button onclick="startScanner('rInner')">SCAN</button><button class="type-btn" onclick="focusField('rInner')">TYPE</button></div>
-      <div class="match-badge pending" id="rInnerBadge">Not checked yet</div>
-      
-      <label class="required-label">3. Outer Carton Barcode</label>
-      <div class="scan-row"><input type="text" id="rOuter" placeholder="Scan, type barcode, or NO"><button onclick="startScanner('rOuter')">SCAN</button><button class="type-btn" onclick="focusField('rOuter')">TYPE</button></div>
-      <div class="match-badge pending" id="rOuterBadge">Not checked yet</div>
-      
-      <div class="blocker-notice" id="rBlockerNotice">Mismatch detected — submission blocked. Please recheck barcodes.</div>
-      <div class="missing-notice" id="rMissingNotice">Please fill in all required fields marked with *</div>
-      
-      <div id="scanner-container" style="display:none;">
-        <div id="reader"></div>
-        <button onclick="stopScanner()" style="margin-top:10px;background:#555;width:100%;">Close Scanner</button>
-      </div>
-    </div>
-
-    <!-- PHOTOS SECTION WITH EXISTING + NEW -->
-    <div class="card">
-      <div class="card-title">Photos</div>
-      <p class="hint">Existing photos are shown below. Tap camera button to replace.</p>
-      
-      <!-- Bag Photo -->
-      <div class="photo-section">
-        <div class="photo-section-title">📸 Bag with Part</div>
-        <img id="rExistingBag" class="photo-existing" onclick="window.open(this.src, '_blank')">
-        <p class="photo-note" id="rNoteBag">↑ Existing photo — tap camera to replace</p>
-        <button class="photo-btn" id="rBtnBag" onclick="document.getElementById('rfBag').click()">
-          <span class="icon">📷</span><span class="photo-label">Replace Bag Photo</span>
-          <span class="done-badge">NEW</span><span class="existing-badge">EXISTING</span>
-        </button>
-        <input type="file" id="rfBag" accept="image/*" capture="environment" style="display:none" onchange="processRejectPhoto(this,'rPrevBag','rImgBag','rBtnBag','rUploadBag','rExistingBag','rNoteBag')">
-        <img id="rPrevBag" class="preview"><div class="upload-status" id="rUploadBag"></div>
-      </div>
-
-      <!-- Inner Photo -->
-      <div class="photo-section">
-        <div class="photo-section-title">📸 Inner Box / Label</div>
-        <img id="rExistingInner" class="photo-existing" onclick="window.open(this.src, '_blank')">
-        <p class="photo-note" id="rNoteInner">↑ Existing photo — tap camera to replace</p>
-        <button class="photo-btn" id="rBtnInner" onclick="document.getElementById('rfInner').click()">
-          <span class="icon">📷</span><span class="photo-label">Replace Inner Photo</span>
-          <span class="done-badge">NEW</span><span class="existing-badge">EXISTING</span>
-        </button>
-        <input type="file" id="rfInner" accept="image/*" capture="environment" style="display:none" onchange="processRejectPhoto(this,'rPrevInner','rImgInner','rBtnInner','rUploadInner','rExistingInner','rNoteInner')">
-        <img id="rPrevInner" class="preview"><div class="upload-status" id="rUploadInner"></div>
-      </div>
-
-      <!-- Carton Photo -->
-      <div class="photo-section">
-        <div class="photo-section-title">📸 Carton / Label</div>
-        <img id="rExistingCarton" class="photo-existing" onclick="window.open(this.src, '_blank')">
-        <p class="photo-note" id="rNoteCarton">↑ Existing photo — tap camera to replace</p>
-        <button class="photo-btn" id="rBtnCarton" onclick="document.getElementById('rfCarton').click()">
-          <span class="icon">📷</span><span class="photo-label">Replace Carton Photo</span>
-          <span class="done-badge">NEW</span><span class="existing-badge">EXISTING</span>
-        </button>
-        <input type="file" id="rfCarton" accept="image/*" capture="environment" style="display:none" onchange="processRejectPhoto(this,'rPrevCarton','rImgCarton','rBtnCarton','rUploadCarton','rExistingCarton','rNoteCarton')">
-        <img id="rPrevCarton" class="preview"><div class="upload-status" id="rUploadCarton"></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Quantity</div>
-      <label class="required-label">Qty (pcs)</label>
-      <input type="number" id="rQty" min="1" value="1">
-    </div>
-
-    <button class="submit-btn blocked" id="rSubmitBtn" onclick="submitRejectFix()" disabled>UPDATE & RESUBMIT</button>
-    <div id="rStatus"></div>
-  </div>
+  <div id="rejectList"></div>
 </div>
+
+<!-- SCANNER OVERLAY -->
+<div id="scanner-container">
+  <div id="reader"></div>
+  <button onclick="stopScanner()" style="width:100%; padding:20px; background:#444; margin-top:20px;">CANCEL</button>
+</div>
+
+<div id="status"></div>
 
 <script>
-  // UPDATE THIS URL after redeploying Apps Script
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJNbH09bwWqsO0lnM8j_xHA7ALfPFKpSjSFwUK4SRugrHqMWIhds7KhyUHN7kXR28/exec";
-
+  const SCRIPT_URL = "YOUR_APPS_SCRIPT_URL_HERE";
   let html5QrCode = null;
-  let activeField = null;
-  let masterData  = null;
-  let matchState  = { bag:null, inner:null, outer:null };
-  let photoData   = { imgBag:null, imgInner:null, imgCarton:null };
+  let masterData = null;
+  let editingRow = null;
+  let matchState = { bag: false, inner: false };
+  let photoData = { imgBag: null };
 
-  // Reject tab state
-  let currentRejectRow = null;
-  let originalRejectData = null;
-  let rejectPhotoData = { rImgBag:null, rImgInner:null, rImgCarton:null };
-  let rejectMatchState = { bag:null, inner:null, outer:null };
-  let rejectMasterData = null;
-
-  // List of all required field IDs (packer tab)
-  const requiredFields = ['packedBy', 'checkerBy', 'cartonId', 'customer', 'pi', 'partNo', 'bag', 'inner', 'outer', 'qty'];
-  const rejectRequiredFields = ['rPackedBy', 'rCheckerBy', 'rCartonId', 'rCustomer', 'rPI', 'rPartNo', 'rBag', 'rInner', 'rOuter', 'rQty'];
-
-  // AUTO UPPERCASE
-  document.querySelectorAll('input[type="text"]').forEach(inp => {
-    inp.addEventListener('input', function() {
-      const pos = this.selectionStart;
-      this.value = this.value.toUpperCase();
-      try { this.setSelectionRange(pos,pos); } catch(e){}
-    });
-  });
-
-  // Add blur listeners to required fields for validation feedback
-  requiredFields.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener('blur', function() { validateRequiredFields(); });
-      el.addEventListener('input', function() { this.classList.remove('required-empty'); });
-    }
-  });
-
-  rejectRequiredFields.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener('blur', function() { validateRejectFields(); });
-      el.addEventListener('input', function() { this.classList.remove('required-empty'); });
-    }
-  });
-
-  // ==================== TAB SWITCHING ====================
   function switchTab(tab) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    
-    if (tab === 'packer') {
-      document.getElementById('tabPacker').classList.add('active');
-      document.getElementById('packerTab').classList.add('active');
-      document.getElementById('pageSubtitle').textContent = 'Packer Entry';
-    } else {
-      document.getElementById('tabReject').classList.add('active');
-      document.getElementById('rejectTab').classList.add('active');
-      document.getElementById('pageSubtitle').textContent = 'Fix Reject';
-      loadRejects();
-    }
+    document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+    document.getElementById(tab + 'Tab').classList.add('active');
+    if(tab === 'reject') loadRejects();
   }
 
-  // ==================== SCANNER ====================
-  async function startScanner(fieldId) {
-    activeField = fieldId;
+  async function startScanner(fId) {
     document.getElementById('scanner-container').style.display = 'block';
     if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
+    html5QrCode.start({ facingMode:"environment" }, { fps:20, qrbox:250 }, (txt) => {
+      const val = txt.trim().toUpperCase();
+      document.getElementById(fId).value = val;
+      stopScanner();
+      if(fId === 'bag') lookupMaster(val);
+      else if(fId === 'inner') checkMatch('inner', val);
+      validate();
+    }).catch(() => stopScanner());
+  }
+
+  function stopScanner() { if(html5QrCode) html5QrCode.stop(); document.getElementById('scanner-container').style.display='none'; }
+
+  async function lookupMaster(barcode) {
+    const badge = document.getElementById('bagBadge');
+    badge.className = 'match-badge pending'; badge.textContent = 'Searching...';
     try {
-      if (html5QrCode.isScanning) await html5QrCode.stop();
-      await html5QrCode.start({ facingMode:"environment" }, { fps:20, qrbox:250 }, (decoded) => {
-        const val = decoded.trim().toUpperCase();
-        const tf  = activeField;
-        document.getElementById(tf).value = val;
-        stopScanner();
-        if (tf.startsWith('r')) {
-          onRejectBarcodeEntered(tf, val);
-        } else {
-          onBarcodeEntered(tf, val);
-        }
-      });
-    } catch(err) { showStatus("Camera error: "+err.message,'error'); stopScanner(); }
-  }
-  function stopScanner() {
-    if (html5QrCode && html5QrCode.isScanning) html5QrCode.stop().catch(()=>{});
-    document.getElementById('scanner-container').style.display = 'none';
-    activeField = null;
-  }
-  function focusField(id) { document.getElementById(id).focus(); }
-
-  // ==================== PACKER BARCODE LISTENERS ====================
-  ['bag','inner','outer'].forEach(id => {
-    document.getElementById(id).addEventListener('keypress', function(e) {
-      if (e.key==='Enter') {
-        const v=this.value.trim().toUpperCase(); this.value=v; onBarcodeEntered(id,v);
-        if(id==='bag') document.getElementById('inner').focus();
-        else if(id==='inner') document.getElementById('outer').focus();
-        else document.getElementById('qty').focus();
-      }
-    });
-    document.getElementById(id).addEventListener('change', function() {
-      const v=this.value.trim().toUpperCase(); this.value=v; onBarcodeEntered(id,v);
-    });
-  });
-
-  async function onBarcodeEntered(fieldId, value) {
-    if (!value) return;
-    if (fieldId==='bag') await lookupMaster(value);
-    else checkBarcode(fieldId, value);
-    updateSubmitButton(); updateSteps();
-  }
-
-  // ==================== MASTER LOOKUP ====================
-  async function lookupMaster(bagValue) {
-    if (bagValue==='NO') {
-      matchState.bag=true; setBadge('bag','no-bc','No barcode — accepted');
-      document.getElementById('bag').className='no-barcode';
-      const pi = document.getElementById('pi').value.trim();
-      const partNo = document.getElementById('partNo').value.trim();
-      if (pi && partNo) await lookupMasterByPIPartNo(pi, partNo);
-      updateSubmitButton(); updateSteps(); return;
-    }
-    setBadge('bag','pending','Checking...');
-    try {
-      const pi = document.getElementById('pi').value.trim();
-      const partNo = document.getElementById('partNo').value.trim();
-      let url = SCRIPT_URL+'?action=lookup&barcode='+encodeURIComponent(bagValue);
-      if (pi) url += '&pi='+encodeURIComponent(pi);
-      if (partNo) url += '&partNo='+encodeURIComponent(partNo);
-
-      const resp = await fetch(url);
-      const result = await resp.json();
-
-      if (result.found) {
-        masterData = result;
-        document.getElementById('partNo').value = String(result.partNo || "").toUpperCase();
-        document.getElementById('partNoNote').style.display = 'block';
-
-        const bagOk = String(bagValue).toUpperCase() === String(result.bagBarcode).toUpperCase();
-        matchState.bag = bagOk;
-        const el = document.getElementById('bag');
-        el.classList.toggle('match', bagOk);
-        el.classList.toggle('mismatch', !bagOk);
-        setBadge('bag', bagOk ? 'ok' : 'fail', bagOk ? 'Match — Bag OK' : 'Mismatch — Wrong Bag');
-
-        const iv = document.getElementById('inner').value.trim();
-        const ov = document.getElementById('outer').value.trim();
-        if(iv) checkBarcode('inner', iv);
-        if(ov) checkBarcode('outer', ov);
+      const r = await fetch(SCRIPT_URL + "?action=lookup&barcode=" + encodeURIComponent(barcode));
+      const res = await r.json();
+      if (res.found) {
+        masterData = res;
+        matchState.bag = true;
+        updateBadge('bagBadge', 'ok', 'Match OK');
       } else {
-        masterData = null;
         matchState.bag = false;
-        setBadge('bag', 'fail', 'Not found in master register');
-        document.getElementById('bag').classList.add('mismatch');
+        updateBadge('bagBadge', 'fail', 'Not Found');
       }
-    } catch(err) {
-      setBadge('bag', 'fail', 'Lookup failed: ' + err.message);
-    }
-    updateSubmitButton(); updateSteps();
+    } catch(e) { updateBadge('bagBadge', 'fail', 'Error'); }
+    validate();
   }
 
-  async function lookupMasterByPIPartNo(pi, partNo) {
-    try {
-      let url = SCRIPT_URL + '?action=lookup&barcode=NO&pi=' + encodeURIComponent(pi) + '&partNo=' + encodeURIComponent(partNo);
-      const resp = await fetch(url);
-      const result = await resp.json();
-      if (result.found) {
-        masterData = result;
-        if (!document.getElementById('partNo').value) {
-          document.getElementById('partNo').value = String(result.partNo || "").toUpperCase();
-          document.getElementById('partNoNote').style.display = 'block';
-        }
-        const iv = document.getElementById('inner').value.trim();
-        const ov = document.getElementById('outer').value.trim();
-        if (iv) checkBarcode('inner', iv);
-        if (ov) checkBarcode('outer', ov);
-      }
-    } catch(err) { console.log('Lookup by P/I+PartNo failed:', err); }
+  function checkMatch(id, val) {
+    if(!masterData) return;
+    const ok = val === masterData.innerBarcode;
+    matchState[id] = ok;
+    updateBadge(id+'Badge', ok?'ok':'fail', ok?'Match OK':'Mismatch');
+    validate();
   }
 
-  function checkBarcode(fieldId, value) {
-    const el = document.getElementById(fieldId);
-    const label = fieldId === 'inner' ? 'Inner' : 'Outer';
-    if (value === 'NO') {
-      matchState[fieldId] = true;
-      el.className = 'no-barcode';
-      setBadge(fieldId, 'no-bc', 'No barcode — accepted');
-      return;
-    }
-    if (!masterData) {
-      const pi = document.getElementById('pi').value.trim();
-      const partNo = document.getElementById('partNo').value.trim();
-      if (pi && partNo) {
-        lookupMasterByPIPartNo(pi, partNo).then(() => {
-          if (masterData) checkBarcode(fieldId, value);
-          else { setBadge(fieldId, 'fail', 'Not found in master register'); matchState[fieldId] = false; }
-          updateSubmitButton();
-        });
-        return;
-      }
-      setBadge(fieldId, 'pending', 'Scan Bag barcode first');
-      matchState[fieldId] = null;
-      return;
-    }
-    const expected = fieldId === 'inner' ? masterData.innerBarcode : masterData.outerBarcode;
-    const ok = String(value).toUpperCase() === String(expected).toUpperCase();
-    matchState[fieldId] = ok;
-    el.classList.remove('no-barcode');
-    el.classList.toggle('match', ok);
-    el.classList.toggle('mismatch', !ok);
-    setBadge(fieldId, ok ? 'ok' : 'fail', ok ? 'Match — ' + label + ' OK' : 'Mismatch — Wrong ' + label);
+  function updateBadge(id, cls, txt) {
+    const b = document.getElementById(id);
+    b.className = 'match-badge ' + cls; b.textContent = txt;
   }
 
-  function setBadge(id, type, text) {
-    const b = document.getElementById(id + 'Badge');
-    b.className = 'match-badge ' + type;
-    b.textContent = text;
-  }
-
-  // ==================== VALIDATION ====================
-  function validateRequiredFields() {
-    let allFilled = true;
-    let firstEmpty = null;
-    requiredFields.forEach(id => {
-      const el = document.getElementById(id);
-      const val = el.value.trim();
-      if (!val || val === '') {
-        allFilled = false;
-        el.classList.add('required-empty');
-        if (!firstEmpty) firstEmpty = el;
-      } else {
-        el.classList.remove('required-empty');
-      }
-    });
-    return { allFilled, firstEmpty };
-  }
-
-  function updateSubmitButton() {
-    const { allFilled } = validateRequiredFields();
-    const allMatch = matchState.bag === true && matchState.inner === true && matchState.outer === true;
-    const anyFail = matchState.bag === false || matchState.inner === false || matchState.outer === false;
-    const btn = document.getElementById('submitBtn');
-    const canSubmit = allFilled && allMatch;
-    btn.className = 'submit-btn ' + (canSubmit ? 'ready' : 'blocked');
-    btn.disabled = !canSubmit;
-    document.getElementById('blockerNotice').style.display = anyFail ? 'block' : 'none';
-    document.getElementById('missingNotice').style.display = (!allFilled && (allMatch || anyFail)) ? 'block' : 'none';
-  }
-
-  function updateSteps() {
-    const s = [
-      !!(document.getElementById('packedBy').value && document.getElementById('checkerBy').value),
-      !!(document.getElementById('bag').value),
-      !!(matchState.bag === true && matchState.inner === true && matchState.outer === true),
-      !!(photoData.imgBag && photoData.imgInner && photoData.imgCarton)
-    ];
-    s.forEach((done, i) => {
-      const el = document.getElementById('step' + (i + 1));
-      el.className = 'step ' + (done ? 'done' : (i === s.indexOf(false) ? 'active' : ''));
-    });
-  }
-
-  // ==================== PHOTOS ====================
-  function processPhoto(input, previewId, dataKey, btnId, statusId) {
-    if (!input.files || !input.files[0]) return;
-    const statusEl = document.getElementById(statusId);
-    statusEl.textContent = 'Compressing...';
-    const img = new Image();
-    const url = URL.createObjectURL(input.files[0]);
-    img.onload = function() {
-      const MAX = 1024;
-      let w = img.width, h = img.height;
-      if (w > h && w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
-      else if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; }
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      const compressed = canvas.toDataURL('image/jpeg', 0.7);
-      document.getElementById(previewId).src = compressed;
-      document.getElementById(previewId).style.display = 'block';
+  function processPhoto(input, prevId, key, btnId) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.getElementById(prevId);
+      img.src = e.target.result; img.style.display = 'block';
       document.getElementById(btnId).classList.add('has-photo');
-      photoData[dataKey] = { base64: compressed.split(',')[1], filename: dataKey + '_' + Date.now() + '.jpg' };
-      statusEl.textContent = 'Ready';
-      statusEl.className = 'upload-status ok';
-      updateSteps();
+      photoData[key] = e.target.result.split(',')[1];
+      validate();
     };
-    img.src = url;
+    reader.readAsDataURL(input.files[0]);
   }
 
-  async function uploadPhoto(dataKey, statusId) {
-    const obj = photoData[dataKey];
-    if (!obj) return "";
-    const statusEl = document.getElementById(statusId);
-    statusEl.textContent = 'Uploading...';
-    try {
-      const resp = await fetch(SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ action: 'uploadPhoto', base64: obj.base64, filename: obj.filename })
-      });
-      const result = await resp.json();
-      if (result.success) { statusEl.textContent = 'Saved'; return result.url; }
-      else throw new Error(result.error);
-    } catch (err) {
-      statusEl.textContent = 'Drive Error';
-      statusEl.className = 'upload-status err';
-      return "";
-    }
-  }
-
-  // ==================== SUBMIT ====================
-  function getFormattedDate() {
-    const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-    const now = new Date();
-    return String(now.getDate()).padStart(2, '0') + '/' + months[now.getMonth()] + '/' + now.getFullYear();
-  }
-
-  async function submitData() {
-    const { allFilled, firstEmpty } = validateRequiredFields();
-    if (!allFilled) {
-      showStatus('Please fill in all required fields marked with *', 'error');
-      if (firstEmpty) { firstEmpty.scrollIntoView({ behavior: 'smooth', block: 'center' }); firstEmpty.focus(); }
-      return;
-    }
+  function validate() {
     const btn = document.getElementById('submitBtn');
-    if (btn.disabled) return;
-    btn.disabled = true;
-    btn.textContent = 'Uploading Photos...';
-    showStatus('Uploading Photos to Drive...', 'info');
-
-    const urls = {
-      bag: await uploadPhoto('imgBag', 'uploadBag'),
-      inner: await uploadPhoto('imgInner', 'uploadInner'),
-      carton: await uploadPhoto('imgCarton', 'uploadCarton')
-    };
-
-    const payload = {
-      action: 'submit',
-      packedDate: getFormattedDate(),
-      packedBy: document.getElementById('packedBy').value,
-      checkerBy: document.getElementById('checkerBy').value,
-      cartonId: document.getElementById('cartonId').value,
-      customer: document.getElementById('customer').value,
-      pi: document.getElementById('pi').value,
-      partNo: document.getElementById('partNo').value,
-      bag: document.getElementById('bag').value,
-      inner: document.getElementById('inner').value,
-      outer: document.getElementById('outer').value,
-      qty: document.getElementById('qty').value,
-      bagMatch: matchState.bag,
-      innerMatch: matchState.inner,
-      outerMatch: matchState.outer,
-      imgBagUrl: urls.bag,
-      imgInnerUrl: urls.inner,
-      imgCartonUrl: urls.carton
-    };
-
-    try {
-      const resp = await fetch(SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(payload)
-      });
-      const res = await resp.json();
-      if (res.success) {
-        showStatus('Success! Saved to Sheet.', 'success');
-        setTimeout(() => location.reload(), 2800);
-      } else throw new Error(res.error || 'Unknown server error');
-    } catch (e) {
-      showStatus('Submit Error: ' + e.message, 'error');
-      btn.disabled = false;
-      btn.textContent = 'RETRY SUBMIT';
-    }
-  }
-
-  function showStatus(msg, type) {
-    const s = document.getElementById('status');
-    s.textContent = msg;
-    s.className = type;
-  }
-
-  // ==================== REJECT FIXER ====================
-
-  // Parse match status string like "Bag:❌ Inner:✅ Outer:✅"
-  function parseMatchStatus(statusStr) {
-    const result = { bag: null, inner: null, outer: null };
-    if (!statusStr) return result;
-    const bagMatch = statusStr.match(/Bag:([✅❌])/);
-    const innerMatch = statusStr.match(/Inner:([✅❌])/);
-    const outerMatch = statusStr.match(/Outer:([✅❌])/);
-    if (bagMatch) result.bag = bagMatch[1] === '✅';
-    if (innerMatch) result.inner = innerMatch[1] === '✅';
-    if (outerMatch) result.outer = outerMatch[1] === '✅';
-    return result;
-  }
-
-  function isRecordRejected(record) {
-    const ms = parseMatchStatus(record.matchStatus);
-    return ms.bag === false || ms.inner === false || ms.outer === false;
+    const ok = matchState.bag && matchState.inner && document.getElementById('packedBy').value;
+    btn.disabled = !ok;
+    btn.className = 'submit-btn ' + (ok ? 'ready' : 'blocked');
   }
 
   async function loadRejects() {
-    document.getElementById('rejectLoading').style.display = 'block';
-    document.getElementById('rejectEmpty').style.display = 'none';
-    document.getElementById('rejectList').style.display = 'none';
+    const list = document.getElementById('rejectList');
+    list.innerHTML = "Loading...";
+    const r = await fetch(SCRIPT_URL + "?action=records");
+    const data = await r.json();
+    const rejects = data.records.filter(x => x.status.includes("Rejected"));
+    document.getElementById('rejectBadge').textContent = rejects.length;
+    document.getElementById('rejectBadge').style.display = rejects.length ? 'inline' : 'none';
     
-    try {
-      const resp = await fetch(SCRIPT_URL + '?action=records');
-      const result = await resp.json();
-      
-      if (result.error) throw new Error(result.error);
-      
-      const rejects = (result.records || []).filter(isRecordRejected);
-      document.getElementById('rejectBadge').textContent = rejects.length;
-      document.getElementById('rejectBadge').classList.toggle('show', rejects.length > 0);
-      
-      document.getElementById('rejectLoading').style.display = 'none';
-      
-      if (rejects.length === 0) {
-        document.getElementById('rejectEmpty').style.display = 'block';
-        return;
-      }
-      
-      renderRejectList(rejects);
-      document.getElementById('rejectList').style.display = 'block';
-    } catch(err) {
-      document.getElementById('rejectLoading').textContent = 'Error: ' + err.message;
-    }
+    list.innerHTML = rejects.map(item => `
+      <div class="reject-item" onclick='editReject(${JSON.stringify(item)})'>
+        <strong>${item.cartonId}</strong> - ${item.customer}<br>
+        <small style="color:#ef9a9a">${item.remarks}</small>
+      </div>
+    `).join('') || "No rejects found.";
   }
 
-  function renderRejectList(records) {
-    const container = document.getElementById('rejectList');
-    container.innerHTML = '';
+  function editReject(item) {
+    editingRow = item.row;
+    document.getElementById('packedBy').value = item.packedBy;
+    document.getElementById('cartonId').value = item.cartonId;
+    document.getElementById('bag').value = item.bag;
+    document.getElementById('inner').value = item.inner;
     
-    records.forEach(rec => {
-      const ms = parseMatchStatus(rec.matchStatus);
-      const failCount = [ms.bag, ms.inner, ms.outer].filter(x => x === false).length;
-      const statusClass = failCount === 3 ? 'fail' : 'partial';
-      const statusText = failCount === 3 ? 'ALL FAIL' : failCount + ' FAIL';
-      
-      const div = document.createElement('div');
-      div.className = 'reject-item';
-      div.onclick = () => openRejectEdit(rec);
-      
-      div.innerHTML = `
-        <div class="reject-header">
-          <span class="reject-id">${rec.cartonId || 'No Carton ID'}</span>
-          <span class="reject-status ${statusClass}">${statusText}</span>
-        </div>
-        <div class="reject-meta">
-          <div><strong>Customer:</strong> ${rec.customer || '-'} | <strong>P/I:</strong> ${rec.pi || '-'} | <strong>Part:</strong> ${rec.partNo || '-'}</div>
-          <div><strong>Bag:</strong> ${ms.bag === false ? '❌' : (ms.bag === true ? '✅' : '?')} 
-               <strong>Inner:</strong> ${ms.inner === false ? '❌' : (ms.inner === true ? '✅' : '?')} 
-               <strong>Outer:</strong> ${ms.outer === false ? '❌' : (ms.outer === true ? '✅' : '?')}</div>
-          <div><strong>Qty:</strong> ${rec.qty || '-'} | <strong>Packed:</strong> ${rec.packedBy || '-'} | <strong>Date:</strong> ${rec.packedDate || '-'}</div>
-        </div>
-        <div class="reject-photos">
-          ${rec.imgBagUrl ? `<img src="${rec.imgBagUrl}" class="reject-thumb" onclick="event.stopPropagation(); window.open('${rec.imgBagUrl}','_blank')">` : '<div class="reject-thumb missing">No<br>Bag</div>'}
-          ${rec.imgInnerUrl ? `<img src="${rec.imgInnerUrl}" class="reject-thumb" onclick="event.stopPropagation(); window.open('${rec.imgInnerUrl}','_blank')">` : '<div class="reject-thumb missing">No<br>Inner</div>'}
-          ${rec.imgCartonUrl ? `<img src="${rec.imgCartonUrl}" class="reject-thumb" onclick="event.stopPropagation(); window.open('${rec.imgCartonUrl}','_blank')">` : '<div class="reject-thumb missing">No<br>Carton</div>'}
-        </div>
-      `;
-      container.appendChild(div);
-    });
-  }
-
-  function openRejectEdit(record) {
-    currentRejectRow = record.row;
-    originalRejectData = record;
-    
-    // Populate fields
-    document.getElementById('rPackedBy').value = record.packedBy || '';
-    document.getElementById('rCheckerBy').value = record.checkerBy || '';
-    document.getElementById('rCartonId').value = record.cartonId || '';
-    document.getElementById('rCustomer').value = record.customer || '';
-    document.getElementById('rPI').value = record.pi || '';
-    document.getElementById('rPartNo').value = record.partNo || '';
-    document.getElementById('rBag').value = record.bag || '';
-    document.getElementById('rInner').value = record.inner || '';
-    document.getElementById('rOuter').value = record.outer || '';
-    document.getElementById('rQty').value = record.qty || '1';
-    
-    // Header info
-    document.getElementById('editRowNum').textContent = record.row;
-    document.getElementById('editCartonId').textContent = record.cartonId || '-';
-    document.getElementById('editCustomer').textContent = record.customer || '-';
-    
-    // Show existing photos
-    const existingBag = document.getElementById('rExistingBag');
-    const existingInner = document.getElementById('rExistingInner');
-    const existingCarton = document.getElementById('rExistingCarton');
-    
-    if (record.imgBagUrl) {
-      existingBag.src = record.imgBagUrl;
-      existingBag.classList.add('show');
-      document.getElementById('rNoteBag').classList.add('show');
-      document.getElementById('rBtnBag').classList.add('has-existing');
-    } else {
-      existingBag.classList.remove('show');
-      document.getElementById('rNoteBag').classList.remove('show');
-      document.getElementById('rBtnBag').classList.remove('has-existing');
+    if(item.imgBagUrl) {
+      const prev = document.getElementById('prevBag');
+      prev.src = item.imgBagUrl; prev.style.display = 'block';
+      document.getElementById('btnBag').classList.add('has-photo');
     }
     
-    if (record.imgInnerUrl) {
-      existingInner.src = record.imgInnerUrl;
-      existingInner.classList.add('show');
-      document.getElementById('rNoteInner').classList.add('show');
-      document.getElementById('rBtnInner').classList.add('has-existing');
-    } else {
-      existingInner.classList.remove('show');
-      document.getElementById('rNoteInner').classList.remove('show');
-      document.getElementById('rBtnInner').classList.remove('has-existing');
-    }
-    
-    if (record.imgCartonUrl) {
-      existingCarton.src = record.imgCartonUrl;
-      existingCarton.classList.add('show');
-      document.getElementById('rNoteCarton').classList.add('show');
-      document.getElementById('rBtnCarton').classList.add('has-existing');
-    } else {
-      existingCarton.classList.remove('show');
-      document.getElementById('rNoteCarton').classList.remove('show');
-      document.getElementById('rBtnCarton').classList.remove('has-existing');
-    }
-    
-    // Reset new photo previews
-    document.getElementById('rPrevBag').style.display = 'none';
-    document.getElementById('rPrevInner').style.display = 'none';
-    document.getElementById('rPrevCarton').style.display = 'none';
-    document.getElementById('rBtnBag').classList.remove('has-photo');
-    document.getElementById('rBtnInner').classList.remove('has-photo');
-    document.getElementById('rBtnCarton').classList.remove('has-photo');
-    
-    // Reset photo data
-    rejectPhotoData = { rImgBag:null, rImgInner:null, rImgCarton:null };
-    
-    // Reset badges and run barcode checks
-    rejectMatchState = { bag:null, inner:null, outer:null };
-    rejectMasterData = null;
-    
-    // Clear all input styling
-    ['rBag','rInner','rOuter'].forEach(id => {
-      document.getElementById(id).className = '';
-    });
-    
-    // Run barcode verification
-    const bagVal = document.getElementById('rBag').value.trim();
-    if (bagVal) onRejectBarcodeEntered('rBag', bagVal);
-    
-    // Switch view
-    document.getElementById('rejectListView').style.display = 'none';
-    document.getElementById('rejectEditView').style.display = 'block';
-    
-    updateRejectSteps();
+    switchTab('packer');
+    document.getElementById('submitBtn').textContent = "FIX & RESUBMIT";
+    lookupMaster(item.bag);
   }
 
-  function backToRejectList() {
-    document.getElementById('rejectEditView').style.display = 'none';
-    document.getElementById('rejectListView').style.display = 'block';
-    currentRejectRow = null;
-    originalRejectData = null;
-    rejectPhotoData = { rImgBag:null, rImgInner:null, rImgCarton:null };
-    rejectMatchState = { bag:null, inner:null, outer:null };
-    rejectMasterData = null;
-    stopScanner();
+  async function submitData() {
+    // Implement your POST logic here
+    showStatus("Submitting...", "info");
+    // ... fetch logic ...
   }
 
-  // ==================== REJECT BARCODE HANDLING ====================
-  ['rBag','rInner','rOuter'].forEach(id => {
-    document.getElementById(id).addEventListener('keypress', function(e) {
-      if (e.key==='Enter') {
-        const v=this.value.trim().toUpperCase(); this.value=v; onRejectBarcodeEntered(id,v);
-        if(id==='rBag') document.getElementById('rInner').focus();
-        else if(id==='rInner') document.getElementById('rOuter').focus();
-        else document.getElementById('rQty').focus();
-      }
-    });
-    document.getElementById(id).addEventListener('change', function() {
-      const v=this.value.trim().toUpperCase(); this.value=v; onRejectBarcodeEntered(id,v);
-    });
-  });
-
-  async function onRejectBarcodeEntered(fieldId, value) {
-    if (!value) return;
-    if (fieldId==='rBag') await lookupRejectMaster(value);
-    else checkRejectBarcode(fieldId, value);
-    updateRejectSubmitButton();
-    updateRejectSteps();
-  }
-
-  async function lookupRejectMaster(bagValue) {
-    if (bagValue==='NO') {
-      rejectMatchState.bag=true; setBadge('rBag','no-bc','No barcode — accepted');
-      document.getElementById('rBag').className='no-barcode';
-      const pi = document.getElementById('rPI').value.trim();
-      const partNo = document.getElementById('rPartNo').value.trim();
-      if (pi && partNo) await lookupRejectMasterByPIPartNo(pi, partNo);
-      updateRejectSubmitButton(); updateRejectSteps(); return;
-    }
-    setBadge('rBag','pending','Checking...');
-    try {
-      const pi = document.getElementById('rPI').value.trim();
-      const partNo = document.getElementById('rPartNo').value.trim();
-      let url = SCRIPT_URL+'?action=lookup&barcode='+encodeURIComponent(bagValue);
-      if (pi) url += '&pi='+encodeURIComponent(pi);
-      if (partNo) url += '&partNo='+encodeURIComponent(partNo);
-
-      const resp = await fetch(url);
-      const result = await resp.json();
-
-      if (result.found) {
-        rejectMasterData = result;
-        if (!document.getElementById('rPartNo').value) {
-          document.getElementById('rPartNo').value = String(result.partNo || "").toUpperCase();
-          document.getElementById('rPartNoNote').style.display = 'block';
-        }
-
-        const bagOk = String(bagValue).toUpperCase() === String(result.bagBarcode).toUpperCase();
-        rejectMatchState.bag = bagOk;
-        const el = document.getElementById('rBag');
-        el.classList.toggle('match', bagOk);
-        el.classList.toggle('mismatch', !bagOk);
-        setBadge('rBag', bagOk ? 'ok' : 'fail', bagOk ? 'Match — Bag OK' : 'Mismatch — Wrong Bag');
-
-        const iv = document.getElementById('rInner').value.trim();
-        const ov = document.getElementById('rOuter').value.trim();
-        if(iv) checkRejectBarcode('rInner', iv);
-        if(ov) checkRejectBarcode('rOuter', ov);
-      } else {
-        rejectMasterData = null;
-        rejectMatchState.bag = false;
-        setBadge('rBag', 'fail', 'Not found in master register');
-        document.getElementById('rBag').classList.add('mismatch');
-      }
-    } catch(err) {
-      setBadge('rBag', 'fail', 'Lookup failed: ' + err.message);
-    }
-    updateRejectSubmitButton(); updateRejectSteps();
-  }
-
-  async function lookupRejectMasterByPIPartNo(pi, partNo) {
-    try {
-      let url = SCRIPT_URL + '?action=lookup&barcode=NO&pi=' + encodeURIComponent(pi) + '&partNo=' + encodeURIComponent(partNo);
-      const resp = await fetch(url);
-      const result = await resp.json();
-      if (result.found) {
-        rejectMasterData = result;
-        if (!document.getElementById('rPartNo').value) {
-          document.getElementById('rPartNo').value = String(result.partNo || "").toUpperCase();
-          document.getElementById('rPartNoNote').style.display = 'block';
-        }
-        const iv = document.getElementById('rInner').value.trim();
-        const ov = document.getElementById('rOuter').value.trim();
-        if (iv) checkRejectBarcode('rInner', iv);
-        if (ov) checkRejectBarcode('rOuter', ov);
-      }
-    } catch(err) { console.log('Lookup by P/I+PartNo failed:', err); }
-  }
-
-  function checkRejectBarcode(fieldId, value) {
-    const el = document.getElementById(fieldId);
-    const label = fieldId === 'rInner' ? 'Inner' : 'Outer';
-    if (value === 'NO') {
-      rejectMatchState[fieldId.replace('r','').toLowerCase()] = true;
-      el.className = 'no-barcode';
-      setBadge(fieldId, 'no-bc', 'No barcode — accepted');
-      return;
-    }
-    if (!rejectMasterData) {
-      const pi = document.getElementById('rPI').value.trim();
-      const partNo = document.getElementById('rPartNo').value.trim();
-      if (pi && partNo) {
-        lookupRejectMasterByPIPartNo(pi, partNo).then(() => {
-          if (rejectMasterData) checkRejectBarcode(fieldId, value);
-          else { setBadge(fieldId, 'fail', 'Not found in master register'); rejectMatchState[fieldId.replace('r','').toLowerCase()] = false; }
-          updateRejectSubmitButton();
-        });
-        return;
-      }
-      setBadge(fieldId, 'pending', 'Scan Bag barcode first');
-      rejectMatchState[fieldId.replace('r','').toLowerCase()] = null;
-      return;
-    }
-    const key = fieldId === 'rInner' ? 'innerBarcode' : 'outerBarcode';
-    const expected = rejectMasterData[key];
-    const ok = String(value).toUpperCase() === String(expected).toUpperCase();
-    rejectMatchState[fieldId.replace('r','').toLowerCase()] = ok;
-    el.classList.remove('no-barcode');
-    el.classList.toggle('match', ok);
-    el.classList.toggle('mismatch', !ok);
-    setBadge(fieldId, ok ? 'ok' : 'fail', ok ? 'Match — ' + label + ' OK' : 'Mismatch — Wrong ' + label);
-  }
-
-  // ==================== REJECT PHOTOS ====================
-  function processRejectPhoto(input, previewId, dataKey, btnId, statusId, existingId, noteId) {
-    if (!input.files || !input.files[0]) return;
-    const statusEl = document.getElementById(statusId);
-    statusEl.textContent = 'Compressing...';
-    const img = new Image();
-    const url = URL.createObjectURL(input.files[0]);
-    img.onload = function() {
-      const MAX = 1024;
-      let w = img.width, h = img.height;
-      if (w > h && w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
-      else if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; }
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      const compressed = canvas.toDataURL('image/jpeg', 0.7);
-      document.getElementById(previewId).src = compressed;
-      document.getElementById(previewId).style.display = 'block';
-      document.getElementById(btnId).classList.add('has-photo');
-      rejectPhotoData[dataKey] = { base64: compressed.split(',')[1], filename: dataKey + '_' + Date.now() + '.jpg' };
-      statusEl.textContent = 'Ready (will replace existing)';
-      statusEl.className = 'upload-status ok';
-      
-      // Hide existing photo note since we're replacing
-      document.getElementById(noteId).textContent = '↑ New photo will replace existing on save';
-      updateRejectSteps();
-    };
-    img.src = url;
-  }
-
-  async function uploadRejectPhoto(dataKey, statusId) {
-    const obj = rejectPhotoData[dataKey];
-    if (!obj) return null; // null = keep existing
-    const statusEl = document.getElementById(statusId);
-    statusEl.textContent = 'Uploading...';
-    try {
-      const resp = await fetch(SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ action: 'uploadPhoto', base64: obj.base64, filename: obj.filename })
-      });
-      const result = await resp.json();
-      if (result.success) { statusEl.textContent = 'Saved'; return result.url; }
-      else throw new Error(result.error);
-    } catch (err) {
-      statusEl.textContent = 'Drive Error';
-      statusEl.className = 'upload-status err';
-      return "";
-    }
-  }
-
-  // ==================== REJECT VALIDATION ====================
-  function validateRejectFields() {
-    let allFilled = true;
-    let firstEmpty = null;
-    rejectRequiredFields.forEach(id => {
-      const el = document.getElementById(id);
-      const val = el.value.trim();
-      if (!val || val === '') {
-        allFilled = false;
-        el.classList.add('required-empty');
-        if (!firstEmpty) firstEmpty = el;
-      } else {
-        el.classList.remove('required-empty');
-      }
-    });
-    return { allFilled, firstEmpty };
-  }
-
-  function updateRejectSubmitButton() {
-    const { allFilled } = validateRejectFields();
-    const allMatch = rejectMatchState.bag === true && rejectMatchState.inner === true && rejectMatchState.outer === true;
-    const anyFail = rejectMatchState.bag === false || rejectMatchState.inner === false || rejectMatchState.outer === false;
-    const btn = document.getElementById('rSubmitBtn');
-    const canSubmit = allFilled && allMatch;
-    btn.className = 'submit-btn ' + (canSubmit ? 'ready' : 'blocked');
-    btn.disabled = !canSubmit;
-    document.getElementById('rBlockerNotice').style.display = anyFail ? 'block' : 'none';
-    document.getElementById('rMissingNotice').style.display = (!allFilled && (allMatch || anyFail)) ? 'block' : 'none';
-  }
-
-  function updateRejectSteps() {
-    const s = [
-      !!(document.getElementById('rPackedBy').value && document.getElementById('rCheckerBy').value),
-      !!(document.getElementById('rBag').value),
-      !!(rejectMatchState.bag === true && rejectMatchState.inner === true && rejectMatchState.outer === true),
-      !!(rejectPhotoData.rImgBag || originalRejectData?.imgBagUrl) && 
-      !!(rejectPhotoData.rImgInner || originalRejectData?.imgInnerUrl) && 
-      !!(rejectPhotoData.rImgCarton || originalRejectData?.imgCartonUrl)
-    ];
-    s.forEach((done, i) => {
-      const el = document.getElementById('rstep' + (i + 1));
-      el.className = 'step ' + (done ? 'done' : (i === s.indexOf(false) ? 'active' : ''));
-    });
-  }
-
-  // ==================== REJECT SUBMIT ====================
-  async function submitRejectFix() {
-    if (!currentRejectRow) return;
-    
-    const { allFilled, firstEmpty } = validateRejectFields();
-    if (!allFilled) {
-      showRejectStatus('Please fill in all required fields marked with *', 'error');
-      if (firstEmpty) { firstEmpty.scrollIntoView({ behavior: 'smooth', block: 'center' }); firstEmpty.focus(); }
-      return;
-    }
-    
-    const btn = document.getElementById('rSubmitBtn');
-    if (btn.disabled) return;
-    btn.disabled = true;
-    btn.textContent = 'Uploading Photos...';
-    showRejectStatus('Uploading new photos to Drive...', 'info');
-
-    // Upload new photos if taken, otherwise keep existing URLs
-    const bagUrl = await uploadRejectPhoto('rImgBag', 'rUploadBag');
-    const innerUrl = await uploadRejectPhoto('rImgInner', 'rUploadInner');
-    const cartonUrl = await uploadRejectPhoto('rImgCarton', 'rUploadCarton');
-
-    const payload = {
-      action: 'updateReject',
-      row: currentRejectRow,
-      packedDate: getFormattedDate(),
-      packedBy: document.getElementById('rPackedBy').value,
-      checkerBy: document.getElementById('rCheckerBy').value,
-      cartonId: document.getElementById('rCartonId').value,
-      customer: document.getElementById('rCustomer').value,
-      pi: document.getElementById('rPI').value,
-      partNo: document.getElementById('rPartNo').value,
-      bag: document.getElementById('rBag').value,
-      inner: document.getElementById('rInner').value,
-      outer: document.getElementById('rOuter').value,
-      qty: document.getElementById('rQty').value,
-      bagMatch: rejectMatchState.bag,
-      innerMatch: rejectMatchState.inner,
-      outerMatch: rejectMatchState.outer,
-      imgBagUrl: bagUrl !== null ? bagUrl : (originalRejectData.imgBagUrl || ""),
-      imgInnerUrl: innerUrl !== null ? innerUrl : (originalRejectData.imgInnerUrl || ""),
-      imgCartonUrl: cartonUrl !== null ? cartonUrl : (originalRejectData.imgCartonUrl || "")
-    };
-
-    try {
-      const resp = await fetch(SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(payload)
-      });
-      const res = await resp.json();
-      if (res.success) {
-        showRejectStatus('✅ Reject fixed and updated!', 'success');
-        setTimeout(() => {
-          backToRejectList();
-          loadRejects();
-        }, 2000);
-      } else throw new Error(res.error || 'Unknown server error');
-    } catch (e) {
-      showRejectStatus('Update Error: ' + e.message, 'error');
-      btn.disabled = false;
-      btn.textContent = 'RETRY UPDATE';
-    }
-  }
-
-  function showRejectStatus(msg, type) {
-    const s = document.getElementById('rStatus');
-    s.textContent = msg;
-    s.className = type;
+  function showStatus(txt, cls) {
+    const s = document.getElementById('status');
+    s.textContent = txt; s.className = cls; s.style.display = 'block';
   }
 </script>
 </body>
