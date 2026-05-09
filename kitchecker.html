@@ -75,11 +75,15 @@
 
     .checker-input { width:100%; padding:15px; background:#1a1a1a; border:1px solid #444; border-radius:8px; color:white; margin-bottom:12px; font-size:1rem; }
     textarea { width:100%; height:100px; background:#1a1a1a; border:1px solid #444; border-radius:8px; color:white; padding:15px; font-size:1rem; }
-    .submit-btn { width:100%; padding:20px; background:#6a1b9a; color:white; border:none; border-radius:12px; font-weight:bold; font-size:1.1rem; cursor:pointer; }
+    
+    /* SUBMIT BUTTON WITH LOADING STATE */
+    .submit-btn { width:100%; padding:20px; background:#6a1b9a; color:white; border:none; border-radius:12px; font-weight:bold; font-size:1.1rem; cursor:pointer; transition: opacity 0.3s; }
+    .submit-btn:disabled { background: #444; cursor: not-allowed; opacity: 0.7; }
 
     /* STAMP CARD */
     .stamp-card { background:#1e1e1e; border:1px solid #333; border-left:4px solid #ff9800; border-radius:12px; padding:16px; margin-bottom:12px; }
     .stamp-btn { width:100%; padding:15px; background:#6a1b9a; color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer; margin-top:10px; }
+    .stamp-btn:disabled { background: #444; cursor: not-allowed; }
 
     /* LIGHTBOX WITH ZOOM */
     #lightbox { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:1000; display:none; align-items:center; justify-content:center; overflow: hidden; touch-action: none; }
@@ -143,7 +147,7 @@
       </div>
       <input type="text" class="checker-input" id="checkerNameInput" placeholder="CHECKER STAFF NAME">
       <textarea id="remarksInput" placeholder="REMARKS / REJECTION REASON"></textarea>
-      <button class="submit-btn" onclick="saveVerification()">SUBMIT REPORT</button>
+      <button class="submit-btn" id="finalSubmitBtn" onclick="saveVerification()">SUBMIT REPORT</button>
     </div>
   </div>
 </div>
@@ -256,7 +260,7 @@
           ${currentStampFilter === 'done' ? '<span style="color:#4caf50; font-weight:bold;">STAMPED ✅</span>' : ''}
         </div>
         <div style="font-size:0.9rem; color:#eee; margin:10px 0;">KIT: ${r.kitModel} | PI: ${r.pi}</div>
-        ${currentStampFilter === 'wait' ? `<button class="stamp-btn" onclick="markStamped(${r.row})">MARK AS STAMPED</button>` : `<div style="font-size:0.8rem; color:#888;">By: ${r.stampedBy || 'N/A'}</div>`}
+        ${currentStampFilter === 'wait' ? `<button class="stamp-btn" id="stampBtn_${r.row}" onclick="markStamped(${r.row})">MARK AS STAMPED</button>` : `<div style="font-size:0.8rem; color:#888;">By: ${r.stampedBy || 'N/A'}</div>`}
       </div>
     `).join('') || '<div style="text-align:center; padding:40px; color:#666;">No items found</div>';
   }
@@ -304,6 +308,11 @@
     document.getElementById('btnRejected').classList.remove('selected');
     document.getElementById('checkerNameInput').value = r.checker || '';
     document.getElementById('remarksInput').value = r.remarks || '';
+    
+    // Reset submit button state
+    const sBtn = document.getElementById('finalSubmitBtn');
+    sBtn.disabled = false;
+    sBtn.textContent = 'SUBMIT REPORT';
   }
 
   function selectVerdict(v) {
@@ -314,18 +323,47 @@
 
   async function saveVerification() {
     const name = document.getElementById('checkerNameInput').value;
+    const sBtn = document.getElementById('finalSubmitBtn');
+    
     if(!name || !selectedVerdict) return alert("Required: Checker Name and Decision");
-    await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({
-      action:'verify', row:currentRecord.row, checker:name.toUpperCase(), status:selectedVerdict==='Verified'?'Verified ✅':'Rejected ❌', remarks:document.getElementById('remarksInput').value.toUpperCase()
-    })});
-    closeModal(); loadRecords();
+    
+    // SHOW LOADING STATE
+    sBtn.disabled = true;
+    sBtn.textContent = "PLEASE WAIT...";
+    
+    try {
+      await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({
+        action:'verify', row:currentRecord.row, checker:name.toUpperCase(), status:selectedVerdict==='Verified'?'Verified ✅':'Rejected ❌', remarks:document.getElementById('remarksInput').value.toUpperCase()
+      })});
+      closeModal(); 
+      loadRecords();
+    } catch(e) {
+      alert("Error submitting report. Please try again.");
+      sBtn.disabled = false;
+      sBtn.textContent = "SUBMIT REPORT";
+    }
   }
 
   async function markStamped(row) {
     const staff = prompt("ENTER STAMPING STAFF NAME:");
     if(!staff) return;
-    await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({action:'stamp', row:row, staff:staff.toUpperCase()}) });
-    loadRecords();
+    
+    const sBtn = document.getElementById('stampBtn_' + row);
+    if(sBtn) {
+       sBtn.disabled = true;
+       sBtn.textContent = "PLEASE WAIT...";
+    }
+    
+    try {
+      await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({action:'stamp', row:row, staff:staff.toUpperCase()}) });
+      loadRecords();
+    } catch(e) {
+      alert("Error marking as stamped.");
+      if(sBtn) {
+        sBtn.disabled = false;
+        sBtn.textContent = "MARK AS STAMPED";
+      }
+    }
   }
 
   function closeModal() { document.getElementById('detailModal').style.display='none'; }
@@ -337,7 +375,6 @@
   function openLightbox(s) {
     scale = 1; posX = 0; posY = 0;
     updateTransform();
-    // Swaps low-res thumbnail for high-res source
     lbImg.src = s.replace('sz=800', 'sz=w2000');
     lb.style.display = 'flex';
   }
