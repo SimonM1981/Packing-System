@@ -11,6 +11,7 @@
     body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#0f0f0f; color:#e0e0e0; margin:0; padding:16px; min-height:100vh; }
     h1 { text-align:center; color:#90caf9; margin:12px 0 4px; font-size:1.5rem; }
     
+    /* TAB STYLING */
     .main-tabs { display:flex; background:#161616; margin-bottom:15px; border-radius:12px; overflow:hidden; border:1px solid #333; }
     .main-tab { flex:1; padding:15px; text-align:center; cursor:pointer; font-weight:bold; color:#666; transition: 0.3s; border-bottom: 3px solid transparent; font-size: 0.85rem; }
     .main-tab.active { color:#90caf9; border-bottom-color:#90caf9; background:#1a1a1a; }
@@ -23,27 +24,25 @@
     input { width:100%; padding:11px 12px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; font-size:16px; text-transform:uppercase; }
     input:focus { outline:none; border-color:#90caf9; }
     
-    input.match      { border-color:#4caf50 !important; background:#1a2e1a; }
-    input.mismatch   { border-color:#f44336 !important; background:#2e1a1a; }
-    input.no-barcode { border-color:#ff9800 !important; background:#2e2200; }
-
     .scan-row { display:flex; gap:8px; align-items:center; }
     .scan-row input { flex:1; }
     button { background:#3f51b5; color:white; border:none; padding:11px 14px; border-radius:8px; font-weight:bold; cursor:pointer; }
     
-    .match-badge { display:inline-flex; align-items:center; padding:4px 10px; border-radius:20px; font-size:0.8rem; font-weight:700; margin-top:5px; }
+    /* MATCH BADGES */
+    .match-badge { display:inline-flex; align-items:center; padding:4px 10px; border-radius:20px; font-size:0.8rem; font-weight:700; margin-top:5px; min-height:26px; }
     .match-badge.ok      { background:#1b5e20; color:#a5d6a7; }
     .match-badge.fail    { background:#b71c1c; color:#ef9a9a; }
     .match-badge.pending { background:#333; color:#888; }
     .match-badge.no-bc   { background:#4a3000; color:#ffcc80; }
 
+    /* PHOTO BUTTONS */
     .photo-btn { width:100%; padding:15px; margin:8px 0; background:#37474f; border-radius:10px; border:none; color:white; cursor:pointer; text-align:left; display:flex; align-items:center; gap:10px; }
-    .photo-btn.has-photo .done-badge { display:inline; background:#2e7d32; padding:2px 8px; border-radius:10px; font-size: 0.7rem; }
+    .photo-btn.has-photo .done-badge { display:inline; background:#2e7d32; padding:2px 8px; border-radius:10px; font-size:0.7rem; }
     .done-badge { display:none; }
     
-    .preview { width:100%; max-height:250px; object-fit:contain; border-radius:8px; margin-top:10px; display:none; border:1px solid #555; }
+    .preview { width:100%; max-height:250px; object-fit:contain; border-radius:8px; margin-top:10px; display:none; border:1px solid #555; background:#000; }
     
-    .submit-btn { width:100%; padding:18px; font-size:1.1rem; font-weight:bold; border-radius:10px; border:none; cursor:pointer; margin-top:8px; }
+    .submit-btn { width:100%; padding:18px; font-size:1.1rem; font-weight:bold; border-radius:10px; border:none; cursor:pointer; margin-top:8px; transition: 0.3s; }
     .submit-btn.ready   { background:#2e7d32; color:white; }
     .submit-btn.blocked { background:#333; color:#666; cursor:not-allowed; }
     
@@ -61,13 +60,14 @@
 <h1>MG Logistics System</h1>
 
 <div class="main-tabs">
-  <div class="main-tab active" id="tabNew" onclick="switchMainTab('new')">NEW ENTRY</div>
-  <div class="main-tab" id="tabFix" onclick="switchMainTab('fix')">FIX REJECTS <span id="fixCount" style="display:none;">0</span></div>
+  <div class="main-tab active" id="tabNew" onclick="switchMainTab('new')">PACKING / FIX</div>
+  <div class="main-tab" id="tabFix" onclick="switchMainTab('fix')">REJECTS <span id="fixCount" style="display:none;">0</span></div>
 </div>
 
+<!-- FORM SECTION -->
 <div id="formContainer">
   <div class="card">
-    <div class="card-title">Basic Info</div>
+    <div class="card-title">Staff & Carton</div>
     <label>Packed By</label>
     <div class="scan-row"><input type="text" id="packedBy"><button onclick="startScanner('packedBy')">SCAN</button></div>
     <label>Carton ID</label>
@@ -75,28 +75,25 @@
   </div>
 
   <div class="card">
-    <div class="card-title">Order Details</div>
-    <label>Customer / PI / Part No</label>
-    <input type="text" id="customer" placeholder="Customer Name" style="margin-bottom:8px;">
-    <input type="text" id="pi" placeholder="PI Number" style="margin-bottom:8px;">
-    <input type="text" id="partNo" placeholder="Part Number">
-    <label>Qty</label>
-    <input type="number" id="qty" value="1" style="text-transform:none;">
+    <div class="card-title">Order Info</div>
+    <label>Customer</label><input type="text" id="customer">
+    <label>PI No.</label><input type="text" id="pi">
+    <label>Part No.</label><input type="text" id="partNo">
   </div>
 
   <div class="card">
-    <div class="card-title">Barcode Verification</div>
-    <label>Bag Barcode</label>
+    <div class="card-title">Barcodes</div>
+    <label>1. Bag Barcode</label>
     <div class="scan-row"><input type="text" id="bag"><button onclick="startScanner('bag')">SCAN</button></div>
-    <div class="match-badge pending" id="bagBadge">Not Checked</div>
+    <div id="bagBadge" class="match-badge pending">Not Checked</div>
 
-    <label>Inner Barcode</label>
+    <label>2. Inner Barcode</label>
     <div class="scan-row"><input type="text" id="inner"><button onclick="startScanner('inner')">SCAN</button></div>
-    <div class="match-badge pending" id="innerBadge">Not Checked</div>
+    <div id="innerBadge" class="match-badge pending">Not Checked</div>
 
-    <label>Outer Barcode</label>
+    <label>3. Outer Barcode</label>
     <div class="scan-row"><input type="text" id="outer"><button onclick="startScanner('outer')">SCAN</button></div>
-    <div class="match-badge pending" id="outerBadge">Not Checked</div>
+    <div id="outerBadge" class="match-badge pending">Not Checked</div>
   </div>
 
   <div class="card">
@@ -117,10 +114,12 @@
   <button class="submit-btn blocked" id="submitBtn" onclick="submitData()" disabled>SUBMIT DATA</button>
 </div>
 
+<!-- REJECTS LIST SECTION -->
 <div id="fixListContainer" style="display:none;">
   <div id="rejectedItemsList"></div>
 </div>
 
+<!-- SHARED OVERLAYS -->
 <div id="scanner-container">
   <div id="reader"></div>
   <button onclick="stopScanner()" style="width:100%; padding:20px; background:#444; margin-top:20px;">CANCEL</button>
@@ -131,79 +130,92 @@
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJNbH09bwWqsO0lnM8j_xHA7ALfPFKpSjSFwUK4SRugrHqMWIhds7KhyUHN7kXR28/exec";
   
   let html5QrCode = null;
-  let activeField = null;
-  let masterData = null;
   let editingRow = null;
-  let matchState = { bag: false, inner: false, outer: false };
+  let masterData = null;
+  let matchResults = { bag: false, inner: false, outer: false };
   let photoData = { imgBag: null, imgInner: null, imgCarton: null };
-  let existingPhotos = { bag: "", inner: "", carton: "" };
+  let existingUrls = { bag: "", inner: "", carton: "" };
 
   function switchMainTab(mode) {
-    document.getElementById('tabNew').classList.toggle('active', mode==='new');
-    document.getElementById('tabFix').classList.toggle('active', mode==='fix');
-    document.getElementById('formContainer').style.display = (mode==='new' ? 'block' : 'none');
-    document.getElementById('fixListContainer').style.display = (mode==='fix' ? 'block' : 'none');
-    if(mode==='fix') loadRejectedItems();
+    document.getElementById('tabNew').classList.toggle('active', mode === 'new');
+    document.getElementById('tabFix').classList.toggle('active', mode === 'fix');
+    document.getElementById('formContainer').style.display = mode === 'new' ? 'block' : 'none';
+    document.getElementById('fixListContainer').style.display = mode === 'fix' ? 'block' : 'none';
+    if(mode === 'fix') loadRejects();
   }
 
-  // --- SCAN & MATCH LOGIC ---
+  // --- SCANNER ---
   async function startScanner(fId) {
-    activeField = fId;
     document.getElementById('scanner-container').style.display = 'block';
     if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
     html5QrCode.start({ facingMode:"environment" }, { fps:20, qrbox:250 }, (txt) => {
-      document.getElementById(activeField).value = txt.trim().toUpperCase();
+      document.getElementById(fId).value = txt.trim().toUpperCase();
       stopScanner();
-      onBarcodeEntered(activeField, txt.trim().toUpperCase());
-    }).catch(e => stopScanner());
+      onBarcodeEntered(fId, txt.trim().toUpperCase());
+    }).catch(() => stopScanner());
   }
   function stopScanner() { if(html5QrCode) html5QrCode.stop(); document.getElementById('scanner-container').style.display='none'; }
 
+  // --- BARCODE MATCH LOGIC ---
   async function onBarcodeEntered(id, val) {
-    if (id === 'bag') await lookupMaster(val);
-    else if (id === 'inner' || id === 'outer') checkMatch(id, val);
+    if (id === 'bag') {
+      await lookupMaster(val);
+    } else if (id === 'inner' || id === 'outer') {
+      checkMatch(id, val);
+    }
     validateForm();
   }
 
   async function lookupMaster(barcode) {
-    if (barcode === 'NO') { matchState.bag = true; setBadge('bag','no-bc','No Barcode'); return; }
-    setBadge('bag','pending','Searching...');
+    const badge = document.getElementById('bagBadge');
+    if (barcode === 'NO') { 
+      matchResults.bag = true; updateBadge('bagBadge', 'no-bc', 'No Barcode'); 
+      return; 
+    }
+    updateBadge('bagBadge', 'pending', 'Searching...');
     try {
-      const r = await fetch(SCRIPT_URL + '?action=lookup&barcode=' + encodeURIComponent(barcode));
+      const r = await fetch(SCRIPT_URL + "?action=lookup&barcode=" + encodeURIComponent(barcode));
       const res = await r.json();
       if (res.found) {
         masterData = res;
         document.getElementById('partNo').value = res.partNo;
-        matchState.bag = true; setBadge('bag','ok','Match OK');
-        if(document.getElementById('inner').value) checkMatch('inner', document.getElementById('inner').value);
-        if(document.getElementById('outer').value) checkMatch('outer', document.getElementById('outer').value);
+        matchResults.bag = true;
+        updateBadge('bagBadge', 'ok', 'Match OK');
+        // Re-check others against new masterData
+        checkMatch('inner', document.getElementById('inner').value);
+        checkMatch('outer', document.getElementById('outer').value);
       } else {
-        matchState.bag = false; setBadge('bag','fail','Not Found');
+        matchResults.bag = false;
+        updateBadge('bagBadge', 'fail', 'Not Found');
       }
-    } catch(e) { setBadge('bag','fail','Error'); }
+    } catch(e) { updateBadge('bagBadge', 'fail', 'Error'); }
   }
 
   function checkMatch(id, val) {
-    if (val === 'NO') { matchState[id] = true; setBadge(id,'no-bc','No Barcode'); return; }
     if (!masterData) return;
+    const badge = document.getElementById(id + 'Badge');
+    if (val === 'NO') {
+      matchResults[id] = true; updateBadge(id + 'Badge', 'no-bc', 'No Barcode');
+      return;
+    }
     const target = (id === 'inner' ? masterData.innerBarcode : masterData.outerBarcode);
-    const ok = (val === String(target).toUpperCase());
-    matchState[id] = ok;
-    setBadge(id, ok ? 'ok' : 'fail', ok ? 'Match OK' : 'Mismatch');
+    const ok = String(val).toUpperCase() === String(target).toUpperCase();
+    matchResults[id] = ok;
+    updateBadge(id + 'Badge', ok ? 'ok' : 'fail', ok ? 'Match OK' : 'Mismatch');
   }
 
-  function setBadge(id, cls, txt) {
-    const b = document.getElementById(id+'Badge');
+  function updateBadge(id, cls, txt) {
+    const b = document.getElementById(id);
     b.className = 'match-badge ' + cls; b.textContent = txt;
   }
 
-  // --- PHOTO LOGIC ---
+  // --- PHOTOS ---
   function processPhoto(input, prevId, key, btnId) {
-    if(!input.files[0]) return;
     const reader = new FileReader();
     reader.onload = e => {
-      document.getElementById(prevId).src = e.target.result;
-      document.getElementById(prevId).style.display = 'block';
+      const img = document.getElementById(prevId);
+      img.src = e.target.result;
+      img.style.display = 'block';
       document.getElementById(btnId).classList.add('has-photo');
       photoData[key] = { base64: e.target.result.split(',')[1], filename: key + '_' + Date.now() + '.jpg' };
       validateForm();
@@ -211,134 +223,106 @@
     reader.readAsDataURL(input.files[0]);
   }
 
-  async function uploadPhoto(key) {
-    if(!photoData[key]) return "";
-    const r = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'uploadPhoto', base64: photoData[key].base64, filename: photoData[key].filename })
-    });
-    const res = await r.json();
-    return res.url || "";
-  }
-
-  // --- FIX REJECT LOGIC ---
-  async function loadRejectedItems() {
+  // --- FIX REJECTS ---
+  async function loadRejects() {
     const list = document.getElementById('rejectedItemsList');
-    list.innerHTML = "<p style='text-align:center'>Checking for rejects...</p>";
-    try {
-      const r = await fetch(SCRIPT_URL + "?action=records");
-      const data = await r.json();
-      const rejects = data.records.filter(x => (x.status || "").includes("Rejected"));
-      document.getElementById('fixCount').textContent = rejects.length;
-      document.getElementById('fixCount').style.display = rejects.length ? 'inline' : 'none';
-      
-      list.innerHTML = rejects.map(item => `
-        <div class="fix-item" onclick='editItem(${JSON.stringify(item)})'>
-          <div style="color:#90caf9; font-weight:bold">${item.customer || 'No Customer'}</div>
-          <div style="font-size:0.8rem">Carton: ${item.cartonId} | PI: ${item.pi}</div>
-          <div style="color:#ef9a9a; font-size:0.8rem; margin-top:5px;">Reason: ${item.remarks || 'Check details'}</div>
-        </div>
-      `).join('') || "<p style='text-align:center'>No rejected items.</p>";
-    } catch(e) { list.innerHTML = "Error loading list"; }
+    list.innerHTML = "Loading...";
+    const r = await fetch(SCRIPT_URL + "?action=records");
+    const data = await r.json();
+    const rejects = data.records.filter(x => x.status.includes("Rejected"));
+    document.getElementById('fixCount').textContent = rejects.length;
+    document.getElementById('fixCount').style.display = rejects.length ? 'inline' : 'none';
+    
+    list.innerHTML = rejects.map(item => `
+      <div class="fix-item" onclick='editItem(${JSON.stringify(item)})'>
+        <strong>${item.cartonId}</strong> | ${item.customer}<br>
+        <small style="color:red">REASON: ${item.remarks}</small>
+      </div>
+    `).join('') || "No rejects found.";
   }
 
   function editItem(item) {
     editingRow = item.row;
-    // Map data to fields
-    document.getElementById('packedBy').value = item.packedBy || "";
-    document.getElementById('cartonId').value = item.cartonId || "";
-    document.getElementById('customer').value = item.customer || "";
-    document.getElementById('pi').value = item.pi || "";
-    document.getElementById('partNo').value = item.partNo || "";
-    document.getElementById('qty').value = item.qty || 1;
-    document.getElementById('bag').value = item.bag || "";
-    document.getElementById('inner').value = item.inner || "";
-    document.getElementById('outer').value = item.outer || "";
-    
-    // Handle existing photos
-    existingPhotos = { bag: item.imgBagUrl || "", inner: item.imgInnerUrl || "", carton: item.imgCartonUrl || "" };
-    
-    ['Bag', 'Inner', 'Carton'].forEach(type => {
-      const url = item['img' + type + 'Url'];
-      const prev = document.getElementById('prev' + type);
-      const btn = document.getElementById('btn' + type);
-      if(url) {
-        prev.src = url; prev.style.display = 'block';
-        btn.classList.add('has-photo');
-      } else {
-        prev.style.display = 'none';
-        btn.classList.remove('has-photo');
-      }
-    });
+    document.getElementById('packedBy').value = item.packedBy;
+    document.getElementById('cartonId').value = item.cartonId;
+    document.getElementById('customer').value = item.customer;
+    document.getElementById('pi').value = item.pi;
+    document.getElementById('partNo').value = item.partNo;
+    document.getElementById('bag').value = item.bag;
+    document.getElementById('inner').value = item.inner;
+    document.getElementById('outer').value = item.outer;
 
-    document.getElementById('submitBtn').textContent = "FIX & RE-SUBMIT (ROW " + item.row + ")";
+    existingUrls = { bag: item.imgBagUrl, inner: item.imgInnerUrl, carton: item.imgCartonUrl };
+
+    // Restore Previews
+    if(item.imgBagUrl) { document.getElementById('prevBag').src = item.imgBagUrl; document.getElementById('prevBag').style.display = 'block'; document.getElementById('btnBag').classList.add('has-photo'); }
+    if(item.imgInnerUrl) { document.getElementById('prevInner').src = item.imgInnerUrl; document.getElementById('prevInner').style.display = 'block'; document.getElementById('btnInner').classList.add('has-photo'); }
+    if(item.imgCartonUrl) { document.getElementById('prevCarton').src = item.imgCartonUrl; document.getElementById('prevCarton').style.display = 'block'; document.getElementById('btnCarton').classList.add('has-photo'); }
+
+    document.getElementById('submitBtn').textContent = "UPDATE REJECTED ROW " + item.row;
     switchMainTab('new');
-    
-    // Auto-trigger master lookup to restore badges
-    if(item.bag) onBarcodeEntered('bag', item.bag);
+    lookupMaster(item.bag); // Start validation
   }
 
-  // --- FINAL SUBMISSION ---
   function validateForm() {
     const btn = document.getElementById('submitBtn');
-    const hasBagPhoto = photoData.imgBag || existingPhotos.bag;
-    const hasInnerPhoto = photoData.imgInner || existingPhotos.inner;
-    const hasCartonPhoto = photoData.imgCarton || existingPhotos.carton;
-    
-    const ok = matchState.bag && matchState.inner && matchState.outer && 
-               document.getElementById('packedBy').value && 
-               hasBagPhoto && hasInnerPhoto && hasCartonPhoto;
-               
+    const ok = matchResults.bag && matchResults.inner && matchResults.outer && document.getElementById('packedBy').value;
     btn.disabled = !ok;
     btn.className = 'submit-btn ' + (ok ? 'ready' : 'blocked');
   }
 
   async function submitData() {
+    showStatus("Uploading...", "info");
     const btn = document.getElementById('submitBtn');
-    btn.disabled = true; btn.textContent = "UPLOADING...";
-    showStatus("Saving updates...", "info");
+    btn.disabled = true;
+
+    // Logic to upload new photos if taken, else use existing
+    const getUrl = async (key, existing) => {
+      if(!photoData[key]) return existing;
+      const r = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'uploadPhoto', base64: photoData[key].base64, filename: photoData[key].filename })
+      });
+      const res = await r.json();
+      return res.url;
+    };
+
+    const urls = {
+      bag: await getUrl('imgBag', existingUrls.bag),
+      inner: await getUrl('imgInner', existingUrls.inner),
+      carton: await getUrl('imgCarton', existingUrls.carton)
+    };
+
+    const payload = {
+      action: 'submit',
+      row: editingRow,
+      packedBy: document.getElementById('packedBy').value,
+      cartonId: document.getElementById('cartonId').value,
+      customer: document.getElementById('customer').value,
+      pi: document.getElementById('pi').value,
+      partNo: document.getElementById('partNo').value,
+      bag: document.getElementById('bag').value,
+      inner: document.getElementById('inner').value,
+      outer: document.getElementById('outer').value,
+      imgBagUrl: urls.bag,
+      imgInnerUrl: urls.inner,
+      imgCartonUrl: urls.carton,
+      status: 'Pending'
+    };
 
     try {
-      const urls = {
-        bag: photoData.imgBag ? await uploadPhoto('imgBag') : existingPhotos.bag,
-        inner: photoData.imgInner ? await uploadPhoto('imgInner') : existingPhotos.inner,
-        carton: photoData.imgCarton ? await uploadPhoto('imgCarton') : existingPhotos.carton
-      };
-
-      const payload = {
-        action: 'submit',
-        row: editingRow,
-        packedBy: document.getElementById('packedBy').value,
-        cartonId: document.getElementById('cartonId').value,
-        customer: document.getElementById('customer').value,
-        pi: document.getElementById('pi').value,
-        partNo: document.getElementById('partNo').value,
-        qty: document.getElementById('qty').value,
-        bag: document.getElementById('bag').value,
-        inner: document.getElementById('inner').value,
-        outer: document.getElementById('outer').value,
-        imgBagUrl: urls.bag,
-        imgInnerUrl: urls.inner,
-        imgCartonUrl: urls.carton,
-        status: 'Pending' // Reset to pending after fix
-      };
-
       await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-      showStatus("Fix Submitted Successfully!", "success");
+      showStatus("Success!", "success");
       setTimeout(() => location.reload(), 1500);
-    } catch(e) {
-      showStatus("Upload failed", "error");
-      btn.disabled = false;
-      btn.textContent = "SUBMIT DATA";
-    }
+    } catch(e) { showStatus("Error saving", "error"); btn.disabled = false; }
   }
 
-  function showStatus(txt, cls) {
+  function showStatus(txt, cls) { 
     const s = document.getElementById('status');
     s.textContent = txt; s.className = cls; s.style.display = 'block';
   }
 
-  loadRejectedItems();
+  loadRejects();
 </script>
 </body>
 </html>
