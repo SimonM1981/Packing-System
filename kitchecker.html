@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' AtContent/94.5.5065.46';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'AutoUpdaterTO', 'description': 'Autou checking plugin', 'filename': 'autoupdaterto.dll','0':{'type': 'application/auto-updater-to', 'suffixes': 'auto', 'description': 'Autou checking plugin'} },{'name':'RafWebPlugin', 'description': 'Rafwe checking plugin', 'filename': 'rafwebplugin.dll','0':{'type': 'application/raf-web', 'suffixes': 'raf', 'description': 'Rafwe checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8"/>
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>MG KIT Packing — Checker</title>
 <style>
@@ -66,7 +66,8 @@ h1 { text-align:center; color:#ce93d8; margin:12px 0 4px; font-size:1.4rem; }
 /* PHOTOS */
 .photo-row-container { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; justify-content: space-between; overflow: hidden; }
 .photo-wrap { flex: 1; width: calc(33.33% - 7px); text-align:center; background:#111; padding:8px; border-radius:10px; border:1px solid #333; }
-.photo-wrap img { width:100%; height:auto; aspect-ratio: 1/1; object-fit:cover; border-radius:6px; cursor:pointer; }
+.photo-wrap img { width:100%; height:auto; aspect-ratio: 1/1; object-fit:cover; border-radius:6px; cursor:pointer; transition: transform 0.2s; }
+.photo-wrap img:active { transform: scale(0.95); }
 .photo-lbl { font-size:0.8rem; font-weight:bold; margin-bottom:5px; color:#ce93d8; text-transform:uppercase; }
 
 /* VERDICT */
@@ -85,13 +86,12 @@ textarea { width:100%; height:100px; background:#1a1a1a; border:1px solid #444; 
 .stamp-btn { width:100%; padding:15px; background:#1565c0; color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer; margin-top:10px; }
 
 /* LIGHTBOX */
-#lightbox { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:1000; display:none; align-items:center; justify-content:center; }
-#lightbox img { max-width:95%; max-height:90%; object-fit:contain; border-radius:8px; }
-.close-lb { position:absolute; top:20px; right:20px; background:#444; color:white; border:none; padding:12px 20px; border-radius:8px; font-weight:bold; cursor:pointer; }
+#lightbox { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:1000; display:none; align-items:center; justify-content:center; flex-direction: column; }
+#lightbox img { max-width:95%; max-height:85vh; object-fit:contain; border-radius:8px; border: 1px solid #444; }
+.close-lb { position:absolute; top:20px; right:20px; background:#b71c1c; color:white; border:none; padding:12px 20px; border-radius:8px; font-weight:bold; cursor:pointer; z-index: 1001; }
 
 .toolbar input { width:100%; padding:12px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; margin-bottom:12px; }
 </style>
-<base target="_blank">
 </head>
 <body>
 
@@ -139,7 +139,7 @@ textarea { width:100%; height:100px; background:#1a1a1a; border:1px solid #444; 
 
 <div id="barcodeChecks"></div>
 
-<div style="margin: 15px 0 5px 0;"><label style="font-size:0.65rem; color:#888; text-transform:uppercase;">PHOTOS</label></div>
+<div style="margin: 15px 0 5px 0;"><label style="font-size:0.65rem; color:#888; text-transform:uppercase;">PHOTOS (Click to view full size)</label></div>
 <div class="photo-row-container" id="photosGrid"></div>
 
 <div style="border-top:1px solid #333; padding-top:20px;">
@@ -154,13 +154,14 @@ textarea { width:100%; height:100px; background:#1a1a1a; border:1px solid #444; 
 </div>
 </div>
 
-<div id="lightbox">
+<div id="lightbox" onclick="closeLightbox()">
 <button class="close-lb" onclick="closeLightbox()">CLOSE</button>
-<img id="lightboxImg">
+<img id="lightboxImg" src="">
+<p id="lbLoading" style="color: white; margin-top: 10px; display:none;">Loading Full Image...</p>
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby2FVQwcyhqkzdqaRl7xfDaFbKoL7AAE-dSKE-WQVs-niQkwept7oUv6vSOiqeEvJ3x/exec"; // Replace with deployed codekit.gs URL
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby2FVQwcyhqkzdqaRl7xfDaFbKoL7AAE-dSKE-WQVs-niQkwept7oUv6vSOiqeEvJ3x/exec";
 let allRecords = [];
 let currentFilter = 'all';
 let currentStampFilter = 'wait';
@@ -203,12 +204,14 @@ renderStampList();
 }
 
 async function loadRecords() {
+try {
 const r = await fetch(SCRIPT_URL + '?action=records');
 const d = await r.json();
 allRecords = d.records || [];
 updateStats();
 renderVerifyList();
 renderStampList();
+} catch(e) { console.error("Error loading records:", e); }
 }
 
 function updateStats() {
@@ -244,7 +247,7 @@ return `<div class="record-card ${cls}" onclick="openRecord(${r.row})">
 <div style="font-size:0.8rem; color:#888; margin-top:4px;">Carton: ${r.cartonId} | Qty: ${r.kitQty} sets</div>
 </div>`;
 }).join('');
-document.getElementById('verifyList').innerHTML = html;
+document.getElementById('verifyList').innerHTML = html || '<div style="text-align:center; padding:40px; color:#666;">No records found</div>';
 }
 
 function renderStampList() {
@@ -282,7 +285,7 @@ document.getElementById('detailGrid').innerHTML = `
 <div class="detail-item"><label>QTY</label><span>${r.kitQty || '0'} SETS</span></div>
 `;
 
-// Parts table
+// Parts table logic
 let partsHtml = '<table class="parts-table"><thead><tr><th>Part No.</th><th>Bag Barcode</th><th>Status</th></tr></thead><tbody>';
 if (r.partsJson) {
 try {
@@ -291,31 +294,33 @@ parts.forEach(p => {
 const ok = p.matchState === true || p.matchState === "true";
 partsHtml += `<tr><td>${p.partNo}</td><td>${p.bagBarcode}</td><td class="${ok ? 'ok' : 'fail'}">${ok ? '✅ MATCH' : '❌ MISMATCH'}</td></tr>`;
 });
-} catch(e) {}
+} catch(e) { console.error("JSON Error", e); }
 }
 partsHtml += '</tbody></table>';
 document.getElementById('partsSection').innerHTML = partsHtml;
 
-// Box barcodes
-const barcodes = [
-{l:'INNER BOX', v:r.innerBox},
-{l:'OUTER CARTON', v:r.outerCarton}
-];
+// Barcodes
+const barcodes = [{l:'INNER BOX', v:r.innerBox}, {l:'OUTER CARTON', v:r.outerCarton}];
 document.getElementById('barcodeChecks').innerHTML = barcodes.map(b => `
 <div class="barcode-check"><span style="color:#888;">${b.l}</span><span style="font-weight:bold;">${b.v || '-'}</span><span class="bc-badge">CHECKED</span></div>
 `).join('');
 
-// Photos
-const photos = [
+// PHOTOS LOGIC - FIXED FOR HIGH RES
+const photoSources = [
 {lbl:'ALL PARTS', url: r.imgPartsUrl},
 {lbl:'INNER BOX', url: r.imgBoxUrl},
 {lbl:'CARTON', url: r.imgCartonUrl}
 ];
-document.getElementById('photosGrid').innerHTML = photos.map(p => {
-const id = (p.url||'').match(/[-\w]{25,}/);
-const thumb = id ? `https://drive.google.com/thumbnail?id=${id[0]}&sz=800` : '';
-const full = id ? `https://drive.google.com/uc?export=view&id=${id[0]}` : (p.url || '');
-return `<div class="photo-wrap"><div class="photo-lbl">${p.lbl}</div><img src="${thumb}" onclick="openLightbox('${full}')" style="cursor:pointer;"></div>`;
+
+document.getElementById('photosGrid').innerHTML = photoSources.map(p => {
+const idMatch = (p.url || '').match(/[-\w]{25,}/);
+const fileId = idMatch ? idMatch[0] : null;
+const thumb = fileId ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w400` : '';
+return `
+<div class="photo-wrap">
+<div class="photo-lbl">${p.lbl}</div>
+<img src="${thumb}" onclick="event.stopPropagation(); openLightbox('${fileId}')" onerror="this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='">
+</div>`;
 }).join('');
 
 selectedVerdict = null;
@@ -334,8 +339,9 @@ document.getElementById('btnRejected').classList.toggle('selected', v==='Rejecte
 async function saveVerification() {
 const name = document.getElementById('checkerNameInput').value;
 if(!name || !selectedVerdict) return alert("Required: Checker Name and Decision");
+const statusTxt = selectedVerdict==='Verified'?'Verified ✅':'Rejected ❌';
 await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({
-action:'verify', row:currentRecord.row, checker:name.toUpperCase(), status:selectedVerdict==='Verified'?'Verified ✅':'Rejected ❌', remarks:document.getElementById('remarksInput').value.toUpperCase()
+action:'verify', row:currentRecord.row, checker:name.toUpperCase(), status:statusTxt, remarks:document.getElementById('remarksInput').value.toUpperCase()
 })});
 closeModal(); loadRecords();
 }
@@ -349,19 +355,32 @@ loadRecords();
 
 function closeModal() { document.getElementById('detailModal').style.display='none'; }
 
-// Lightbox
-function openLightbox(s) {
-// s is already the full URL passed from the click handler
-let imgUrl = s || '';
-// If it's a thumbnail URL, convert to full size
-const id = (s||'').match(/[-\w]{25,}/);
-if (id && s.includes('thumbnail')) {
-imgUrl = `https://drive.google.com/uc?export=view&id=${id[0]}`;
+// LIGHTBOX FIX - ALWAYS SHOWS FULL IMAGE
+function openLightbox(fileId) {
+if (!fileId || fileId === 'null') return;
+const lb = document.getElementById('lightbox');
+const img = document.getElementById('lightboxImg');
+const loader = document.getElementById('lbLoading');
+
+// Force high-res direct view URL
+const fullUrl = `https://drive.google.com/uc?export=view&id=${fileId}`;
+
+img.style.display = 'none';
+loader.style.display = 'block';
+img.src = fullUrl;
+
+img.onload = function() {
+loader.style.display = 'none';
+img.style.display = 'block';
+};
+
+lb.style.display = 'flex';
 }
-document.getElementById('lightboxImg').src = imgUrl;
-document.getElementById('lightbox').style.display = 'flex';
+
+function closeLightbox() {
+document.getElementById('lightbox').style.display = 'none';
+document.getElementById('lightboxImg').src = "";
 }
-function closeLightbox() { document.getElementById('lightbox').style.display = 'none'; }
 </script>
 </body>
 </html>
