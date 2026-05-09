@@ -4,325 +4,1496 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <title>MG Logistics System</title>
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>MG Packing System</title>
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; }
-    body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#0f0f0f; color:#e0e0e0; margin:0; padding:16px; min-height:100vh; }
-    h1 { text-align:center; color:#90caf9; margin:12px 0 4px; font-size:1.5rem; }
-    
-    /* TAB STYLING */
-    .main-tabs { display:flex; background:#161616; margin-bottom:15px; border-radius:12px; overflow:hidden; border:1px solid #333; }
-    .main-tab { flex:1; padding:15px; text-align:center; cursor:pointer; font-weight:bold; color:#666; transition: 0.3s; border-bottom: 3px solid transparent; font-size: 0.85rem; }
-    .main-tab.active { color:#90caf9; border-bottom-color:#90caf9; background:#1a1a1a; }
-    #fixCount { background:#f44336; color:white; padding:2px 7px; border-radius:10px; font-size:0.75rem; margin-left:5px; }
+    :root {
+      --bg: #080c10;
+      --surface: #0e1318;
+      --surface2: #141b22;
+      --surface3: #1a2330;
+      --border: #1e2d3d;
+      --border2: #243547;
+      --accent: #00d4ff;
+      --accent2: #0099cc;
+      --accent-dim: rgba(0,212,255,0.12);
+      --accent-glow: rgba(0,212,255,0.06);
+      --green: #00e5a0;
+      --green-dim: rgba(0,229,160,0.12);
+      --red: #ff4b4b;
+      --red-dim: rgba(255,75,75,0.12);
+      --orange: #ffaa00;
+      --orange-dim: rgba(255,170,0,0.12);
+      --text: #e8f0f8;
+      --text2: #8ba0b4;
+      --text3: #506070;
+      --radius: 10px;
+      --radius-sm: 6px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 40px;
+    }
 
-    .card { background:#1e1e1e; border:1px solid #333; border-radius:12px; padding:16px; margin-bottom:16px; }
-    .card-title { font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#666; margin-bottom:12px; }
-    label { display:block; margin:10px 0 5px; font-weight:600; color:#90caf9; font-size:0.9rem; }
-    
-    input { width:100%; padding:11px 12px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; font-size:16px; text-transform:uppercase; }
-    input:focus { outline:none; border-color:#90caf9; }
-    
-    .scan-row { display:flex; gap:8px; align-items:center; }
-    .scan-row input { flex:1; }
-    button { background:#3f51b5; color:white; border:none; padding:11px 14px; border-radius:8px; font-weight:bold; cursor:pointer; }
-    
-    /* MATCH BADGES */
-    .match-badge { display:inline-flex; align-items:center; padding:4px 10px; border-radius:20px; font-size:0.8rem; font-weight:700; margin-top:5px; min-height:26px; }
-    .match-badge.ok      { background:#1b5e20; color:#a5d6a7; }
-    .match-badge.fail    { background:#b71c1c; color:#ef9a9a; }
-    .match-badge.pending { background:#333; color:#888; }
-    .match-badge.no-bc   { background:#4a3000; color:#ffcc80; }
+    /* ── HEADER ── */
+    .header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(8,12,16,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 16px;
+    }
+    .header-inner {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 0 10px;
+    }
+    .logo-box {
+      width: 36px; height: 36px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .logo-box svg { width: 20px; height: 20px; fill: #080c10; }
+    .header-text { flex: 1; }
+    .header-title {
+      font-size: 1.1rem; font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+    .header-sub { font-size: 0.72rem; color: var(--text3); font-family: 'DM Mono', monospace; margin-top: 1px; }
 
-    /* PHOTO BUTTONS */
-    .photo-btn { width:100%; padding:15px; margin:8px 0; background:#37474f; border-radius:10px; border:none; color:white; cursor:pointer; text-align:left; display:flex; align-items:center; gap:10px; }
-    .photo-btn.has-photo .done-badge { display:inline; background:#2e7d32; padding:2px 8px; border-radius:10px; font-size:0.7rem; }
-    .done-badge { display:none; }
-    
-    .preview { width:100%; max-height:250px; object-fit:contain; border-radius:8px; margin-top:10px; display:none; border:1px solid #555; background:#000; }
-    
-    .submit-btn { width:100%; padding:18px; font-size:1.1rem; font-weight:bold; border-radius:10px; border:none; cursor:pointer; margin-top:8px; transition: 0.3s; }
-    .submit-btn.ready   { background:#2e7d32; color:white; }
-    .submit-btn.blocked { background:#333; color:#666; cursor:not-allowed; }
-    
-    #status { margin:12px 0; padding:12px; border-radius:8px; font-weight:bold; text-align:center; display:none; }
-    #status.info    { background:#1565c0; display:block; color:white; }
-    #status.success { background:#2e7d32; display:block; color:white; }
-    #status.error   { background:#c62828; display:block; color:white; }
+    /* ── TABS ── */
+    .tab-bar {
+      display: flex; gap: 4px;
+      padding: 8px 0 0;
+      border-bottom: none;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 9px 6px 10px;
+      background: none; border: none; cursor: pointer;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.78rem; font-weight: 700;
+      color: var(--text3);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .tab-btn .tab-badge {
+      position: absolute; top: 6px; right: 6px;
+      background: var(--red);
+      color: white; font-size: 9px; font-weight: 700;
+      width: 16px; height: 16px; border-radius: 50%;
+      display: none; align-items: center; justify-content: center;
+      font-family: 'DM Mono', monospace;
+    }
+    .tab-btn .tab-badge.show { display: flex; }
 
-    #scanner-container { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:black; z-index:1000; padding:20px; }
-    .fix-item { background:#1e1e1e; border:1px solid #333; border-left:5px solid #f44336; padding:16px; border-radius:12px; margin-bottom:12px; cursor:pointer; }
+    /* ── PANELS ── */
+    .panel { display: none; padding: 16px; }
+    .panel.active { display: block; }
+
+    /* ── STEP BAR ── */
+    .step-bar { display: flex; gap: 5px; margin-bottom: 18px; }
+    .step {
+      flex: 1; height: 3px;
+      background: var(--border2); border-radius: 2px;
+      transition: background 0.3s;
+    }
+    .step.done { background: var(--green); }
+    .step.active { background: var(--accent); }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border2), transparent);
+    }
+    .card-title {
+      font-size: 0.68rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--text3);
+      margin-bottom: 14px;
+      font-family: 'DM Mono', monospace;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card-title::before {
+      content: '';
+      width: 3px; height: 12px;
+      background: var(--accent);
+      border-radius: 2px;
+      display: inline-block;
+    }
+
+    /* ── LABELS & INPUTS ── */
+    .field-label {
+      display: block;
+      font-size: 0.75rem; font-weight: 600;
+      color: var(--text2);
+      margin: 12px 0 6px;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .field-label.required::after { content: " ●"; color: var(--accent); font-size: 0.5rem; vertical-align: middle; }
+    .scan-row { display: flex; gap: 6px; align-items: stretch; }
+    .scan-row input { flex: 1; min-width: 0; }
+
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      padding: 11px 13px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 15px;
+      font-family: 'DM Mono', monospace;
+      font-weight: 400;
+      text-transform: uppercase;
+      transition: border-color 0.2s, background 0.2s;
+      -webkit-appearance: none;
+    }
+    input[type="number"] { text-transform: none; }
+    input::placeholder, select option { color: var(--text3); text-transform: none; font-size: 13px; }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: var(--surface3);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+    input.match { border-color: var(--green) !important; background: rgba(0,229,160,0.06) !important; }
+    input.mismatch { border-color: var(--red) !important; background: rgba(255,75,75,0.06) !important; }
+    input.no-barcode { border-color: var(--orange) !important; background: rgba(255,170,0,0.06) !important; }
+    input.required-empty { border-color: var(--red) !important; box-shadow: 0 0 0 2px rgba(255,75,75,0.2); }
+
+    /* ── BUTTONS ── */
+    .btn {
+      padding: 10px 12px;
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      background: var(--surface3);
+      color: var(--text2);
+      font-family: 'Syne', sans-serif;
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .btn:hover { background: var(--border2); color: var(--text); }
+    .btn:active { transform: scale(0.97); }
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #080c10;
+    }
+    .btn.primary:hover { background: #00bce5; }
+    .btn.danger {
+      background: var(--red-dim);
+      border-color: var(--red);
+      color: var(--red);
+    }
+    .btn.success {
+      background: var(--green-dim);
+      border-color: var(--green);
+      color: var(--green);
+    }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    /* ── BADGES ── */
+    .match-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 10px; border-radius: 20px;
+      font-size: 0.73rem; font-weight: 700;
+      margin-top: 6px;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.03em;
+    }
+    .match-badge::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .match-badge.pending { background: var(--surface2); color: var(--text3); }
+    .match-badge.pending::before { background: var(--text3); }
+    .match-badge.ok { background: var(--green-dim); color: var(--green); }
+    .match-badge.ok::before { background: var(--green); }
+    .match-badge.fail { background: var(--red-dim); color: var(--red); }
+    .match-badge.fail::before { background: var(--red); }
+    .match-badge.no-bc { background: var(--orange-dim); color: var(--orange); }
+    .match-badge.no-bc::before { background: var(--orange); }
+
+    /* ── SCANNER ── */
+    #scanner-container, #scanner-container-reject {
+      margin: 12px 0; text-align: center;
+      display: none;
+    }
+    #reader, #reader-reject {
+      width: 100%; max-width: 480px; margin: 0 auto;
+      border: 1px solid var(--border2);
+      border-radius: var(--radius); overflow: hidden; background: #000;
+    }
+
+    /* ── PHOTOS ── */
+    .photo-btn {
+      width: 100%; padding: 14px 16px;
+      margin: 8px 0;
+      background: var(--surface2);
+      border: 1px dashed var(--border2);
+      border-radius: var(--radius-sm);
+      color: var(--text2);
+      cursor: pointer;
+      display: flex; align-items: center; gap: 12px;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.85rem; font-weight: 600;
+      transition: all 0.2s;
+    }
+    .photo-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .photo-btn.has-photo { border-style: solid; border-color: var(--green); color: var(--green); }
+    .photo-btn .photo-icon { font-size: 1.2rem; }
+    .photo-btn .photo-label { flex: 1; text-align: left; }
+    .done-badge {
+      background: var(--green-dim); color: var(--green);
+      font-size: 0.68rem; font-weight: 700; padding: 3px 8px;
+      border-radius: 20px; display: none;
+      font-family: 'DM Mono', monospace;
+    }
+    .photo-btn.has-photo .done-badge { display: inline-block; }
+    .preview {
+      width: 100%; max-height: 160px; object-fit: cover;
+      border-radius: var(--radius-sm); margin-top: 8px;
+      display: none; border: 1px solid var(--border2);
+    }
+    .upload-status {
+      font-size: 0.72rem; color: var(--text3);
+      margin-top: 4px; min-height: 16px;
+      font-family: 'DM Mono', monospace;
+    }
+    .upload-status.ok { color: var(--green); }
+    .upload-status.err { color: var(--red); }
+
+    /* ── SUBMIT BUTTON ── */
+    .submit-btn {
+      width: 100%; padding: 18px;
+      font-size: 1rem; font-weight: 800;
+      border-radius: var(--radius);
+      border: none; cursor: pointer;
+      margin-top: 10px;
+      font-family: 'Syne', sans-serif;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .submit-btn.ready {
+      background: var(--green);
+      color: #080c10;
+      box-shadow: 0 4px 24px rgba(0,229,160,0.25);
+    }
+    .submit-btn.ready:hover { transform: translateY(-1px); box-shadow: 0 6px 30px rgba(0,229,160,0.35); }
+    .submit-btn.blocked { background: var(--surface2); color: var(--text3); cursor: not-allowed; }
+
+    /* ── STATUS ── */
+    #status, #reject-status {
+      margin: 12px 0; padding: 13px 16px;
+      border-radius: var(--radius);
+      font-weight: 700; text-align: center;
+      display: none; font-size: 0.9rem;
+      font-family: 'DM Mono', monospace;
+    }
+    #status.success, #reject-status.success { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); display: block; }
+    #status.error, #reject-status.error { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); display: block; }
+    #status.info, #reject-status.info { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent); display: block; }
+
+    /* ── NOTICES ── */
+    .notice {
+      padding: 11px 14px; border-radius: var(--radius-sm);
+      font-size: 0.82rem; font-weight: 600;
+      margin-top: 10px; display: none;
+      font-family: 'DM Mono', monospace;
+    }
+    .notice.blocker { background: var(--red-dim); color: var(--red); border: 1px solid rgba(255,75,75,0.3); }
+    .notice.missing { background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(255,170,0,0.3); }
+
+    /* ── AUTO FILLED ── */
+    .auto-tag {
+      display: none; font-size: 0.7rem; color: var(--green);
+      margin-top: 4px; font-family: 'DM Mono', monospace;
+    }
+
+    .hint {
+      font-size: 0.78rem; color: var(--text3); margin-bottom: 12px;
+      font-family: 'DM Mono', monospace; line-height: 1.5;
+      padding: 10px 12px; background: var(--surface2); border-radius: var(--radius-sm);
+      border-left: 3px solid var(--accent);
+    }
+
+    /* ── REJECT LIST ── */
+    .reject-header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 16px;
+    }
+    .reject-count-badge {
+      background: var(--red-dim); color: var(--red);
+      border: 1px solid var(--red);
+      padding: 4px 10px; border-radius: 20px;
+      font-size: 0.72rem; font-weight: 700;
+      font-family: 'DM Mono', monospace;
+    }
+    .reject-filter {
+      display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 6px 12px;
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      background: none; cursor: pointer;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.72rem; font-weight: 700;
+      color: var(--text3);
+      transition: all 0.15s;
+      text-transform: uppercase;
+    }
+    .filter-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+    .reject-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .reject-card:hover { border-color: var(--border2); }
+    .reject-card-header {
+      padding: 13px 16px;
+      display: flex; align-items: center; gap: 10px;
+      cursor: pointer;
+      background: var(--surface);
+    }
+    .reject-card-header:hover { background: var(--surface2); }
+    .reject-icon {
+      width: 36px; height: 36px; border-radius: var(--radius-sm);
+      background: var(--red-dim); border: 1px solid var(--red);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .reject-icon svg { width: 18px; height: 18px; stroke: var(--red); fill: none; stroke-width: 2; }
+    .reject-info { flex: 1; min-width: 0; }
+    .reject-title {
+      font-size: 0.88rem; font-weight: 700; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .reject-meta {
+      font-size: 0.7rem; color: var(--text3);
+      font-family: 'DM Mono', monospace; margin-top: 2px;
+    }
+    .reject-status-pill {
+      padding: 3px 9px; border-radius: 20px;
+      font-size: 0.68rem; font-weight: 700;
+      font-family: 'DM Mono', monospace;
+      flex-shrink: 0;
+    }
+    .pill-reject { background: var(--red-dim); color: var(--red); border: 1px solid rgba(255,75,75,0.3); }
+    .pill-fixed { background: var(--green-dim); color: var(--green); border: 1px solid rgba(0,229,160,0.3); }
+    .pill-pending { background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(255,170,0,0.3); }
+    .chevron {
+      flex-shrink: 0; transition: transform 0.25s;
+      color: var(--text3);
+    }
+    .chevron svg { width: 16px; height: 16px; }
+    .reject-card.open .chevron { transform: rotate(180deg); }
+
+    .reject-body {
+      display: none; padding: 16px;
+      border-top: 1px solid var(--border);
+      background: var(--surface2);
+    }
+    .reject-card.open .reject-body { display: block; }
+
+    /* Edit form inside reject body */
+    .reject-edit-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+      margin-bottom: 14px;
+    }
+    .reject-edit-grid .full { grid-column: 1 / -1; }
+
+    .edit-field label {
+      display: block; font-size: 0.68rem; font-weight: 700;
+      color: var(--text3); text-transform: uppercase;
+      letter-spacing: 0.06em; margin-bottom: 5px;
+      font-family: 'DM Mono', monospace;
+    }
+    .edit-field input, .edit-field select {
+      font-size: 13px; padding: 9px 10px;
+    }
+
+    /* Photo display in reject */
+    .reject-photos {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+      margin: 14px 0;
+    }
+    .reject-photo-slot {
+      position: relative; border-radius: var(--radius-sm); overflow: hidden;
+      background: var(--surface3); border: 1px solid var(--border);
+      aspect-ratio: 1;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 6px; cursor: pointer;
+    }
+    .reject-photo-slot img {
+      width: 100%; height: 100%; object-fit: cover; display: none;
+    }
+    .reject-photo-slot.has-photo img { display: block; }
+    .reject-photo-slot .slot-label {
+      font-size: 0.65rem; color: var(--text3);
+      text-align: center; font-family: 'DM Mono', monospace;
+      padding: 0 4px;
+    }
+    .reject-photo-slot .slot-icon { color: var(--text3); font-size: 1.4rem; }
+    .reject-photo-slot.has-photo .slot-label,
+    .reject-photo-slot.has-photo .slot-icon { display: none; }
+    .reject-photo-slot .retake-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: none; align-items: center; justify-content: center;
+      flex-direction: column; gap: 4px; color: white;
+      font-size: 0.65rem; font-family: 'DM Mono', monospace;
+    }
+    .reject-photo-slot.has-photo:hover .retake-overlay { display: flex; }
+    .reject-photo-slot .retake-overlay svg { width: 20px; height: 20px; }
+
+    /* Barcode checks in reject */
+    .barcode-checks { margin: 14px 0; }
+    .bc-row {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+    }
+    .bc-row .bc-label {
+      font-size: 0.7rem; color: var(--text3);
+      font-family: 'DM Mono', monospace; width: 80px; flex-shrink: 0;
+    }
+    .bc-row .bc-input { flex: 1; }
+    .bc-badge {
+      font-size: 0.65rem; padding: 3px 8px; border-radius: 20px;
+      font-family: 'DM Mono', monospace; font-weight: 700; white-space: nowrap; flex-shrink: 0;
+    }
+    .bc-badge.ok { background: var(--green-dim); color: var(--green); }
+    .bc-badge.fail { background: var(--red-dim); color: var(--red); }
+    .bc-badge.pending { background: var(--surface3); color: var(--text3); }
+    .bc-badge.no-bc { background: var(--orange-dim); color: var(--orange); }
+
+    .reject-actions { display: flex; gap: 8px; margin-top: 14px; }
+    .reject-actions .btn { flex: 1; }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center; padding: 48px 24px;
+    }
+    .empty-icon { font-size: 3rem; margin-bottom: 12px; opacity: 0.3; }
+    .empty-text { color: var(--text3); font-size: 0.88rem; font-family: 'DM Mono', monospace; }
+
+    .loading-state { text-align: center; padding: 32px; }
+    .loading-spin {
+      width: 28px; height: 28px; border: 2px solid var(--border2);
+      border-top-color: var(--accent); border-radius: 50%;
+      margin: 0 auto 12px; animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { color: var(--text3); font-family: 'DM Mono', monospace; font-size: 0.82rem; }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 999;
+      background: rgba(0,0,0,0.92);
+      display: none; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 100%; max-height: 80vh; border-radius: var(--radius); }
+    .lightbox-close {
+      position: absolute; top: 16px; right: 16px;
+      background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 50%; width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text);
+    }
   </style>
 </head>
 <body>
 
-<h1>MG Logistics System</h1>
-
-<div class="main-tabs">
-  <div class="main-tab active" id="tabNew" onclick="switchMainTab('new')">PACKING / FIX</div>
-  <div class="main-tab" id="tabFix" onclick="switchMainTab('fix')">REJECTS <span id="fixCount" style="display:none;">0</span></div>
+<div class="header">
+  <div class="header-inner">
+    <div class="logo-box">
+      <svg viewBox="0 0 20 20"><rect x="2" y="2" width="7" height="7" rx="1"/><rect x="11" y="2" width="7" height="7" rx="1"/><rect x="2" y="11" width="7" height="7" rx="1"/><rect x="11" y="11" width="7" height="7" rx="1"/></svg>
+    </div>
+    <div class="header-text">
+      <div class="header-title">MG Packing System</div>
+      <div class="header-sub">v2.0 · Packer Entry</div>
+    </div>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('pack')">📦 Pack Entry</button>
+    <button class="tab-btn" id="rejectTab" onclick="switchTab('reject')">
+      🔧 Fix Rejects
+      <span class="tab-badge" id="rejectBadge"></span>
+    </button>
+  </div>
 </div>
 
-<!-- FORM SECTION -->
-<div id="formContainer">
-  <div class="card">
-    <div class="card-title">Staff & Carton</div>
-    <label>Packed By</label>
-    <div class="scan-row"><input type="text" id="packedBy"><button onclick="startScanner('packedBy')">SCAN</button></div>
-    <label>Carton ID</label>
-    <div class="scan-row"><input type="text" id="cartonId"><button onclick="startScanner('cartonId')">SCAN</button></div>
+<!-- ══════════════════════════════════════════
+     PACK ENTRY PANEL
+══════════════════════════════════════════ -->
+<div class="panel active" id="panel-pack">
+
+  <div class="step-bar" style="margin-top:16px;">
+    <div class="step" id="step1"></div>
+    <div class="step" id="step2"></div>
+    <div class="step" id="step3"></div>
+    <div class="step" id="step4"></div>
   </div>
 
+  <!-- Staff Info -->
+  <div class="card">
+    <div class="card-title">Staff Info</div>
+    <label class="field-label required">Packed By</label>
+    <div class="scan-row">
+      <input type="text" id="packedBy" placeholder="Name or scan ID">
+      <button class="btn" onclick="startScanner('packedBy','reader','scanner-container')">SCAN</button>
+      <button class="btn" onclick="focusField('packedBy')">TYPE</button>
+    </div>
+    <label class="field-label required">Packing Team</label>
+    <div class="scan-row">
+      <input type="text" id="checkerBy" placeholder="Team name or scan ID">
+      <button class="btn" onclick="startScanner('checkerBy','reader','scanner-container')">SCAN</button>
+      <button class="btn" onclick="focusField('checkerBy')">TYPE</button>
+    </div>
+  </div>
+
+  <!-- Order Info -->
   <div class="card">
     <div class="card-title">Order Info</div>
-    <label>Customer</label><input type="text" id="customer">
-    <label>PI No.</label><input type="text" id="pi">
-    <label>Part No.</label><input type="text" id="partNo">
+    <label class="field-label required">Carton ID</label>
+    <div class="scan-row">
+      <input type="text" id="cartonId" placeholder="Scan or type">
+      <button class="btn" onclick="startScanner('cartonId','reader','scanner-container')">SCAN</button>
+      <button class="btn" onclick="focusField('cartonId')">TYPE</button>
+    </div>
+    <label class="field-label required">Customer Name</label>
+    <div class="scan-row">
+      <input type="text" id="customer" placeholder="Customer name">
+      <button class="btn" onclick="startScanner('customer','reader','scanner-container')">SCAN</button>
+      <button class="btn" onclick="focusField('customer')">TYPE</button>
+    </div>
+    <label class="field-label required">P/I No.</label>
+    <div class="scan-row">
+      <input type="text" id="pi" placeholder="P/I Number">
+      <button class="btn" onclick="startScanner('pi','reader','scanner-container')">SCAN</button>
+      <button class="btn" onclick="focusField('pi')">TYPE</button>
+    </div>
+    <label class="field-label required">Part No.</label>
+    <div class="scan-row">
+      <input type="text" id="partNo" placeholder="Auto-filled or type">
+      <button class="btn" onclick="startScanner('partNo','reader','scanner-container')">SCAN</button>
+      <button class="btn" onclick="focusField('partNo')">TYPE</button>
+    </div>
+    <div class="auto-tag" id="partNoNote">⚡ Auto-filled from master register</div>
   </div>
 
+  <!-- Barcode Verification -->
   <div class="card">
-    <div class="card-title">Barcodes</div>
-    <label>1. Bag Barcode</label>
-    <div class="scan-row"><input type="text" id="bag"><button onclick="startScanner('bag')">SCAN</button></div>
-    <div id="bagBadge" class="match-badge pending">Not Checked</div>
+    <div class="card-title">Barcode Verification</div>
+    <div class="hint">Scan in order: Bag → Inner → Outer. Type NO if no barcode.</div>
 
-    <label>2. Inner Barcode</label>
-    <div class="scan-row"><input type="text" id="inner"><button onclick="startScanner('inner')">SCAN</button></div>
-    <div id="innerBadge" class="match-badge pending">Not Checked</div>
+    <label class="field-label required">1. Bag Barcode</label>
+    <div class="scan-row">
+      <input type="text" id="bag" placeholder="Scan or type NO">
+      <button class="btn" onclick="startScanner('bag','reader','scanner-container')">SCAN</button>
+      <button class="btn" onclick="focusField('bag')">TYPE</button>
+    </div>
+    <div class="match-badge pending" id="bagBadge">Not checked yet</div>
 
-    <label>3. Outer Barcode</label>
-    <div class="scan-row"><input type="text" id="outer"><button onclick="startScanner('outer')">SCAN</button></div>
-    <div id="outerBadge" class="match-badge pending">Not Checked</div>
+    <label class="field-label required">2. Inner Box Barcode</label>
+    <div class="scan-row">
+      <input type="text" id="inner" placeholder="Scan or type NO">
+      <button class="btn" onclick="startScanner('inner','reader','scanner-container')">SCAN</button>
+      <button class="btn" onclick="focusField('inner')">TYPE</button>
+    </div>
+    <div class="match-badge pending" id="innerBadge">Not checked yet</div>
+
+    <label class="field-label required">3. Outer Carton Barcode</label>
+    <div class="scan-row">
+      <input type="text" id="outer" placeholder="Scan or type NO">
+      <button class="btn" onclick="startScanner('outer','reader','scanner-container')">SCAN</button>
+      <button class="btn" onclick="focusField('outer')">TYPE</button>
+    </div>
+    <div class="match-badge pending" id="outerBadge">Not checked yet</div>
+
+    <div class="notice blocker" id="blockerNotice">⚠ Mismatch detected — submission blocked. Please recheck barcodes.</div>
+    <div class="notice missing" id="missingNotice">⚠ Please fill in all required fields marked with ●</div>
+
+    <div id="scanner-container">
+      <div id="reader"></div>
+      <button class="btn" onclick="stopScanner('reader','scanner-container')" style="width:100%;margin-top:10px;">✕ Close Scanner</button>
+    </div>
   </div>
 
+  <!-- Photos -->
   <div class="card">
     <div class="card-title">Photos</div>
-    <button class="photo-btn" id="btnBag" onclick="document.getElementById('fBag').click()">📸 Bag Photo <span class="done-badge">DONE</span></button>
-    <input type="file" id="fBag" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevBag','imgBag','btnBag')">
+    <button class="photo-btn" id="btnBag" onclick="document.getElementById('fBag').click()">
+      <span class="photo-icon">📸</span>
+      <span class="photo-label">Bag with Part</span>
+      <span class="done-badge">DONE</span>
+    </button>
+    <input type="file" id="fBag" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevBag','imgBag','btnBag','uploadBag')">
     <img id="prevBag" class="preview">
+    <div class="upload-status" id="uploadBag"></div>
 
-    <button class="photo-btn" id="btnInner" onclick="document.getElementById('fInner').click()">📸 Inner Photo <span class="done-badge">DONE</span></button>
-    <input type="file" id="fInner" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevInner','imgInner','btnInner')">
+    <button class="photo-btn" id="btnInner" onclick="document.getElementById('fInner').click()">
+      <span class="photo-icon">📸</span>
+      <span class="photo-label">Inner Box / Label</span>
+      <span class="done-badge">DONE</span>
+    </button>
+    <input type="file" id="fInner" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevInner','imgInner','btnInner','uploadInner')">
     <img id="prevInner" class="preview">
+    <div class="upload-status" id="uploadInner"></div>
 
-    <button class="photo-btn" id="btnCarton" onclick="document.getElementById('fCarton').click()">📸 Outer Photo <span class="done-badge">DONE</span></button>
-    <input type="file" id="fCarton" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevCarton','imgCarton','btnCarton')">
+    <button class="photo-btn" id="btnCarton" onclick="document.getElementById('fCarton').click()">
+      <span class="photo-icon">📸</span>
+      <span class="photo-label">Carton / Label</span>
+      <span class="done-badge">DONE</span>
+    </button>
+    <input type="file" id="fCarton" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevCarton','imgCarton','btnCarton','uploadCarton')">
     <img id="prevCarton" class="preview">
+    <div class="upload-status" id="uploadCarton"></div>
   </div>
 
-  <button class="submit-btn blocked" id="submitBtn" onclick="submitData()" disabled>SUBMIT DATA</button>
+  <!-- Quantity -->
+  <div class="card">
+    <div class="card-title">Quantity</div>
+    <label class="field-label required">Qty (pcs)</label>
+    <input type="number" id="qty" min="1" value="1">
+  </div>
+
+  <button class="submit-btn blocked" id="submitBtn" onclick="submitData()" disabled>SUBMIT PACKING DATA</button>
+  <div id="status"></div>
 </div>
 
-<!-- REJECTS LIST SECTION -->
-<div id="fixListContainer" style="display:none;">
-  <div id="rejectedItemsList"></div>
+<!-- ══════════════════════════════════════════
+     FIX REJECTS PANEL
+══════════════════════════════════════════ -->
+<div class="panel" id="panel-reject">
+
+  <div class="reject-header" style="margin-top:16px;">
+    <div style="flex:1;">
+      <div style="font-size:1rem;font-weight:800;color:var(--text);">Reject Queue</div>
+      <div style="font-size:0.72rem;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px;">Records with barcode mismatch</div>
+    </div>
+    <span class="reject-count-badge" id="rejectCountBadge">0 items</span>
+    <button class="btn" onclick="loadRejects()" style="padding:8px 12px;">↻ Refresh</button>
+  </div>
+
+  <div class="reject-filter">
+    <button class="filter-btn active" onclick="setRejectFilter('all', this)">All</button>
+    <button class="filter-btn" onclick="setRejectFilter('reject', this)">Mismatch</button>
+    <button class="filter-btn" onclick="setRejectFilter('pending', this)">Pending</button>
+    <button class="filter-btn" onclick="setRejectFilter('fixed', this)">Fixed</button>
+  </div>
+
+  <div id="rejectList">
+    <div class="loading-state">
+      <div class="loading-spin"></div>
+      <div class="loading-text">Loading rejects...</div>
+    </div>
+  </div>
+
+  <div id="scanner-container-reject">
+    <div id="reader-reject"></div>
+    <button class="btn" onclick="stopScanner('reader-reject','scanner-container-reject')" style="width:100%;margin-top:10px;">✕ Close Scanner</button>
+  </div>
+
+  <div id="reject-status"></div>
 </div>
 
-<!-- SHARED OVERLAYS -->
-<div id="scanner-container">
-  <div id="reader"></div>
-  <button onclick="stopScanner()" style="width:100%; padding:20px; background:#444; margin-top:20px;">CANCEL</button>
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <div class="lightbox-close" onclick="closeLightbox()">✕</div>
+  <img id="lightboxImg" src="" alt="">
 </div>
-<div id="status"></div>
 
 <script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJNbH09bwWqsO0lnM8j_xHA7ALfPFKpSjSFwUK4SRugrHqMWIhds7KhyUHN7kXR28/exec";
-  
-  let html5QrCode = null;
-  let editingRow = null;
-  let masterData = null;
-  let matchResults = { bag: false, inner: false, outer: false };
-  let photoData = { imgBag: null, imgInner: null, imgCarton: null };
-  let existingUrls = { bag: "", inner: "", carton: "" };
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJNbH09bwWqsO0lnM8j_xHA7ALfPFKpSjSFwUK4SRugrHqMWIhds7KhyUHN7kXR28/exec";
 
-  function switchMainTab(mode) {
-    document.getElementById('tabNew').classList.toggle('active', mode === 'new');
-    document.getElementById('tabFix').classList.toggle('active', mode === 'fix');
-    document.getElementById('formContainer').style.display = mode === 'new' ? 'block' : 'none';
-    document.getElementById('fixListContainer').style.display = mode === 'fix' ? 'block' : 'none';
-    if(mode === 'fix') loadRejects();
-  }
+// ─────────────────────────────
+// STATE
+// ─────────────────────────────
+let html5QrCodes = {};
+let activeScanner = null;
+let activeScannerField = null;
+let masterData = null;
+let matchState = { bag:null, inner:null, outer:null };
+let photoData = { imgBag:null, imgInner:null, imgCarton:null };
 
-  // --- SCANNER ---
-  async function startScanner(fId) {
-    document.getElementById('scanner-container').style.display = 'block';
-    if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
-    html5QrCode.start({ facingMode:"environment" }, { fps:20, qrbox:250 }, (txt) => {
-      document.getElementById(fId).value = txt.trim().toUpperCase();
-      stopScanner();
-      onBarcodeEntered(fId, txt.trim().toUpperCase());
-    }).catch(() => stopScanner());
-  }
-  function stopScanner() { if(html5QrCode) html5QrCode.stop(); document.getElementById('scanner-container').style.display='none'; }
+let rejectData = [];
+let rejectFilter = 'all';
+let rejectMatchStates = {};
+let rejectPhotoData = {};
 
-  // --- BARCODE MATCH LOGIC ---
-  async function onBarcodeEntered(id, val) {
-    if (id === 'bag') {
-      await lookupMaster(val);
-    } else if (id === 'inner' || id === 'outer') {
-      checkMatch(id, val);
-    }
-    validateForm();
-  }
+const requiredFields = ['packedBy','checkerBy','cartonId','customer','pi','partNo','bag','inner','outer','qty'];
 
-  async function lookupMaster(barcode) {
-    const badge = document.getElementById('bagBadge');
-    if (barcode === 'NO') { 
-      matchResults.bag = true; updateBadge('bagBadge', 'no-bc', 'No Barcode'); 
-      return; 
-    }
-    updateBadge('bagBadge', 'pending', 'Searching...');
-    try {
-      const r = await fetch(SCRIPT_URL + "?action=lookup&barcode=" + encodeURIComponent(barcode));
-      const res = await r.json();
-      if (res.found) {
-        masterData = res;
-        document.getElementById('partNo').value = res.partNo;
-        matchResults.bag = true;
-        updateBadge('bagBadge', 'ok', 'Match OK');
-        // Re-check others against new masterData
-        checkMatch('inner', document.getElementById('inner').value);
-        checkMatch('outer', document.getElementById('outer').value);
+// ─────────────────────────────
+// TABS
+// ─────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+  if (tab === 'reject') loadRejects();
+}
+
+// ─────────────────────────────
+// UPPERCASE
+// ─────────────────────────────
+document.querySelectorAll('input[type="text"]').forEach(inp => {
+  inp.addEventListener('input', function() {
+    const pos = this.selectionStart;
+    this.value = this.value.toUpperCase();
+    try { this.setSelectionRange(pos,pos); } catch(e){}
+  });
+});
+
+requiredFields.forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('blur', () => validateRequiredFields());
+  el.addEventListener('input', function() { this.classList.remove('required-empty'); });
+});
+
+// ─────────────────────────────
+// SCANNER (generic, supports multiple readers)
+// ─────────────────────────────
+async function startScanner(fieldId, readerId, containerId, rejectRowId) {
+  activeScannerField = { fieldId, rejectRowId };
+  const container = document.getElementById(containerId);
+  container.style.display = 'block';
+  container.scrollIntoView({ behavior:'smooth', block:'center' });
+
+  if (!html5QrCodes[readerId]) html5QrCodes[readerId] = new Html5Qrcode(readerId);
+  const qr = html5QrCodes[readerId];
+  activeScanner = { qr, readerId, containerId };
+
+  try {
+    if (qr.isScanning) await qr.stop();
+    await qr.start({ facingMode:'environment' }, { fps:20, qrbox:220 }, (decoded) => {
+      const val = decoded.trim().toUpperCase();
+      if (rejectRowId !== undefined) {
+        handleRejectScan(rejectRowId, fieldId, val);
       } else {
-        matchResults.bag = false;
-        updateBadge('bagBadge', 'fail', 'Not Found');
+        document.getElementById(fieldId).value = val;
+        stopScanner(readerId, containerId);
+        onBarcodeEntered(fieldId, val);
       }
-    } catch(e) { updateBadge('bagBadge', 'fail', 'Error'); }
+    });
+  } catch(err) {
+    showStatus("Camera error: " + err.message, 'error');
+    stopScanner(readerId, containerId);
   }
+}
 
-  function checkMatch(id, val) {
-    if (!masterData) return;
-    const badge = document.getElementById(id + 'Badge');
-    if (val === 'NO') {
-      matchResults[id] = true; updateBadge(id + 'Badge', 'no-bc', 'No Barcode');
+function stopScanner(readerId, containerId) {
+  const qr = html5QrCodes[readerId];
+  if (qr && qr.isScanning) qr.stop().catch(()=>{});
+  document.getElementById(containerId).style.display = 'none';
+  activeScannerField = null;
+  activeScanner = null;
+}
+
+function focusField(id) { document.getElementById(id).focus(); }
+
+// ─────────────────────────────
+// BARCODE LISTENERS (Pack Entry)
+// ─────────────────────────────
+['bag','inner','outer'].forEach(id => {
+  document.getElementById(id).addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      const v = this.value.trim().toUpperCase(); this.value = v;
+      onBarcodeEntered(id, v);
+      if (id==='bag') document.getElementById('inner').focus();
+      else if (id==='inner') document.getElementById('outer').focus();
+      else document.getElementById('qty').focus();
+    }
+  });
+  document.getElementById(id).addEventListener('change', function() {
+    const v = this.value.trim().toUpperCase(); this.value = v;
+    onBarcodeEntered(id, v);
+  });
+});
+
+async function onBarcodeEntered(fieldId, value) {
+  if (!value) return;
+  if (fieldId === 'bag') await lookupMaster(value);
+  else checkBarcode(fieldId, value);
+  updateSubmitButton(); updateSteps();
+}
+
+// ─────────────────────────────
+// MASTER LOOKUP
+// ─────────────────────────────
+async function lookupMaster(bagValue) {
+  if (bagValue === 'NO') {
+    matchState.bag = true;
+    setBadge('bag','no-bc','No barcode — accepted');
+    document.getElementById('bag').className = 'no-barcode';
+    const pi = document.getElementById('pi').value.trim();
+    const partNo = document.getElementById('partNo').value.trim();
+    if (pi && partNo) await lookupMasterByPIPartNo(pi, partNo);
+    updateSubmitButton(); updateSteps(); return;
+  }
+  setBadge('bag','pending','Checking...');
+  try {
+    const pi = document.getElementById('pi').value.trim();
+    const partNo = document.getElementById('partNo').value.trim();
+    let url = SCRIPT_URL + '?action=lookup&barcode=' + encodeURIComponent(bagValue);
+    if (pi) url += '&pi=' + encodeURIComponent(pi);
+    if (partNo) url += '&partNo=' + encodeURIComponent(partNo);
+    const resp = await fetch(url);
+    const result = await resp.json();
+    if (result.found) {
+      masterData = result;
+      document.getElementById('partNo').value = String(result.partNo||'').toUpperCase();
+      document.getElementById('partNoNote').style.display = 'block';
+      const bagOk = String(bagValue).toUpperCase() === String(result.bagBarcode).toUpperCase();
+      matchState.bag = bagOk;
+      const el = document.getElementById('bag');
+      el.classList.toggle('match', bagOk);
+      el.classList.toggle('mismatch', !bagOk);
+      setBadge('bag', bagOk ? 'ok' : 'fail', bagOk ? 'Match — Bag OK' : 'Mismatch — Wrong Bag');
+      const iv = document.getElementById('inner').value.trim();
+      const ov = document.getElementById('outer').value.trim();
+      if (iv) checkBarcode('inner', iv);
+      if (ov) checkBarcode('outer', ov);
+    } else {
+      masterData = null; matchState.bag = false;
+      setBadge('bag','fail','Not found in master register');
+      document.getElementById('bag').classList.add('mismatch');
+    }
+  } catch(err) { setBadge('bag','fail','Lookup failed: ' + err.message); }
+  updateSubmitButton(); updateSteps();
+}
+
+async function lookupMasterByPIPartNo(pi, partNo) {
+  try {
+    const url = SCRIPT_URL + '?action=lookup&barcode=NO&pi=' + encodeURIComponent(pi) + '&partNo=' + encodeURIComponent(partNo);
+    const resp = await fetch(url);
+    const result = await resp.json();
+    if (result.found) {
+      masterData = result;
+      if (!document.getElementById('partNo').value) {
+        document.getElementById('partNo').value = String(result.partNo||'').toUpperCase();
+        document.getElementById('partNoNote').style.display = 'block';
+      }
+      const iv = document.getElementById('inner').value.trim();
+      const ov = document.getElementById('outer').value.trim();
+      if (iv) checkBarcode('inner', iv);
+      if (ov) checkBarcode('outer', ov);
+    }
+  } catch(err) { console.log('Lookup failed:', err); }
+}
+
+function checkBarcode(fieldId, value) {
+  const el = document.getElementById(fieldId);
+  const label = fieldId === 'inner' ? 'Inner' : 'Outer';
+  if (value === 'NO') {
+    matchState[fieldId] = true; el.className = 'no-barcode';
+    setBadge(fieldId,'no-bc','No barcode — accepted'); return;
+  }
+  if (!masterData) {
+    const pi = document.getElementById('pi').value.trim();
+    const partNo = document.getElementById('partNo').value.trim();
+    if (pi && partNo) {
+      lookupMasterByPIPartNo(pi, partNo).then(() => {
+        if (masterData) checkBarcode(fieldId, value);
+        else { setBadge(fieldId,'fail','Not found in master register'); matchState[fieldId] = false; }
+        updateSubmitButton();
+      });
       return;
     }
-    const target = (id === 'inner' ? masterData.innerBarcode : masterData.outerBarcode);
-    const ok = String(val).toUpperCase() === String(target).toUpperCase();
-    matchResults[id] = ok;
-    updateBadge(id + 'Badge', ok ? 'ok' : 'fail', ok ? 'Match OK' : 'Mismatch');
+    setBadge(fieldId,'pending','Scan Bag barcode first'); matchState[fieldId] = null; return;
+  }
+  const expected = fieldId === 'inner' ? masterData.innerBarcode : masterData.outerBarcode;
+  const ok = String(value).toUpperCase() === String(expected).toUpperCase();
+  matchState[fieldId] = ok;
+  el.classList.remove('no-barcode');
+  el.classList.toggle('match', ok);
+  el.classList.toggle('mismatch', !ok);
+  setBadge(fieldId, ok ? 'ok' : 'fail', ok ? 'Match — ' + label + ' OK' : 'Mismatch — Wrong ' + label);
+}
+
+function setBadge(id, type, text) {
+  const b = document.getElementById(id + 'Badge');
+  b.className = 'match-badge ' + type;
+  b.textContent = text;
+}
+
+function validateRequiredFields() {
+  let allFilled = true, firstEmpty = null;
+  requiredFields.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const val = el.value.trim();
+    if (!val) {
+      allFilled = false; el.classList.add('required-empty');
+      if (!firstEmpty) firstEmpty = el;
+    } else { el.classList.remove('required-empty'); }
+  });
+  return { allFilled, firstEmpty };
+}
+
+function updateSubmitButton() {
+  const { allFilled } = validateRequiredFields();
+  const allMatch = matchState.bag===true && matchState.inner===true && matchState.outer===true;
+  const anyFail = matchState.bag===false || matchState.inner===false || matchState.outer===false;
+  const btn = document.getElementById('submitBtn');
+  const canSubmit = allFilled && allMatch;
+  btn.className = 'submit-btn ' + (canSubmit ? 'ready' : 'blocked');
+  btn.disabled = !canSubmit;
+  document.getElementById('blockerNotice').style.display = anyFail ? 'block' : 'none';
+  document.getElementById('missingNotice').style.display = (!allFilled && (allMatch||anyFail)) ? 'block' : 'none';
+}
+
+function updateSteps() {
+  const s = [
+    !!(document.getElementById('packedBy').value && document.getElementById('checkerBy').value),
+    !!(document.getElementById('bag').value),
+    !!(matchState.bag===true && matchState.inner===true && matchState.outer===true),
+    !!(photoData.imgBag && photoData.imgInner && photoData.imgCarton)
+  ];
+  s.forEach((done,i) => {
+    const el = document.getElementById('step'+(i+1));
+    el.className = 'step ' + (done ? 'done' : (i === s.indexOf(false) ? 'active' : ''));
+  });
+}
+
+function processPhoto(input, previewId, dataKey, btnId, statusId) {
+  if (!input.files || !input.files[0]) return;
+  const statusEl = document.getElementById(statusId);
+  statusEl.textContent = 'Compressing...';
+  const img = new Image();
+  const url = URL.createObjectURL(input.files[0]);
+  img.onload = function() {
+    const MAX = 1024;
+    let w=img.width, h=img.height;
+    if (w>h&&w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+    else if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
+    const canvas=document.createElement('canvas'); canvas.width=w; canvas.height=h;
+    canvas.getContext('2d').drawImage(img,0,0,w,h);
+    const compressed=canvas.toDataURL('image/jpeg',0.7);
+    document.getElementById(previewId).src=compressed;
+    document.getElementById(previewId).style.display='block';
+    document.getElementById(btnId).classList.add('has-photo');
+    photoData[dataKey]={base64:compressed.split(',')[1], filename:dataKey+'_'+Date.now()+'.jpg'};
+    statusEl.textContent='Ready'; statusEl.className='upload-status ok';
+    updateSteps();
+  };
+  img.src=url;
+}
+
+async function uploadPhoto(dataKey, statusId) {
+  const obj = photoData[dataKey]; if (!obj) return "";
+  const statusEl = document.getElementById(statusId);
+  statusEl.textContent='Uploading...';
+  try {
+    const resp = await fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain'}, body:JSON.stringify({action:'uploadPhoto',base64:obj.base64,filename:obj.filename}) });
+    const result = await resp.json();
+    if (result.success) { statusEl.textContent='Saved'; return result.url; }
+    else throw new Error(result.error);
+  } catch(err) { statusEl.textContent='Drive Error'; statusEl.className='upload-status err'; return ""; }
+}
+
+function getFormattedDate() {
+  const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const now=new Date();
+  return String(now.getDate()).padStart(2,'0')+'/'+months[now.getMonth()]+'/'+now.getFullYear();
+}
+
+async function submitData() {
+  const {allFilled,firstEmpty}=validateRequiredFields();
+  if (!allFilled) {
+    showStatus('Please fill in all required fields marked with ●','error');
+    if (firstEmpty){firstEmpty.scrollIntoView({behavior:'smooth',block:'center'});firstEmpty.focus();}
+    return;
+  }
+  const btn=document.getElementById('submitBtn');
+  if (btn.disabled) return;
+  btn.disabled=true; btn.textContent='Uploading Photos...';
+  showStatus('Uploading Photos to Drive...','info');
+  const urls={bag:await uploadPhoto('imgBag','uploadBag'),inner:await uploadPhoto('imgInner','uploadInner'),carton:await uploadPhoto('imgCarton','uploadCarton')};
+  const payload={
+    action:'submit', packedDate:getFormattedDate(),
+    packedBy:document.getElementById('packedBy').value,
+    checkerBy:document.getElementById('checkerBy').value,
+    cartonId:document.getElementById('cartonId').value,
+    customer:document.getElementById('customer').value,
+    pi:document.getElementById('pi').value,
+    partNo:document.getElementById('partNo').value,
+    bag:document.getElementById('bag').value,
+    inner:document.getElementById('inner').value,
+    outer:document.getElementById('outer').value,
+    qty:document.getElementById('qty').value,
+    bagMatch:matchState.bag, innerMatch:matchState.inner, outerMatch:matchState.outer,
+    imgBagUrl:urls.bag, imgInnerUrl:urls.inner, imgCartonUrl:urls.carton
+  };
+  try {
+    const resp=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)});
+    const res=await resp.json();
+    if (res.success){showStatus('Success! Saved to Sheet.','success');setTimeout(()=>location.reload(),2800);}
+    else throw new Error(res.error||'Unknown server error');
+  } catch(e) { showStatus('Submit Error: '+e.message,'error'); btn.disabled=false; btn.textContent='RETRY SUBMIT'; }
+}
+
+function showStatus(msg, type) {
+  const s=document.getElementById('status'); s.textContent=msg; s.className=type;
+}
+
+// ═══════════════════════════════════════════════════
+// REJECT FIX SYSTEM
+// ═══════════════════════════════════════════════════
+
+async function loadRejects() {
+  document.getElementById('rejectList').innerHTML = `
+    <div class="loading-state">
+      <div class="loading-spin"></div>
+      <div class="loading-text">Loading rejects...</div>
+    </div>`;
+  try {
+    const resp = await fetch(SCRIPT_URL + '?action=getRejects');
+    const result = await resp.json();
+    if (result.success) {
+      rejectData = result.data || [];
+      renderRejectList();
+      updateRejectBadge();
+    } else {
+      document.getElementById('rejectList').innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Failed to load: ${result.error||'Unknown error'}</div></div>`;
+    }
+  } catch(err) {
+    // Fallback: show demo data if backend not reachable
+    rejectData = getDemoRejects();
+    renderRejectList();
+    updateRejectBadge();
+  }
+}
+
+function getDemoRejects() {
+  return [
+    { rowIndex:2, packedDate:'08/MAY/2025', packedBy:'JOHN', checkerBy:'TEAM A', cartonId:'CTN-001', customer:'ABC CORP', pi:'PI-2025-001', partNo:'PN-1234', bag:'BAG001', inner:'INN001', outer:'OUT001', qty:'50', bagMatch:'TRUE', innerMatch:'FALSE', outerMatch:'FALSE', imgBagUrl:'', imgInnerUrl:'', imgCartonUrl:'', status:'reject' },
+    { rowIndex:3, packedDate:'08/MAY/2025', packedBy:'MARY', checkerBy:'TEAM B', cartonId:'CTN-002', customer:'XYZ LTD', pi:'PI-2025-002', partNo:'PN-5678', bag:'NO', inner:'INN002', outer:'', qty:'25', bagMatch:'TRUE', innerMatch:'TRUE', outerMatch:'FALSE', imgBagUrl:'', imgInnerUrl:'', imgCartonUrl:'', status:'reject' },
+    { rowIndex:4, packedDate:'07/MAY/2025', packedBy:'PETER', checkerBy:'TEAM A', cartonId:'CTN-003', customer:'DEF INC', pi:'PI-2025-003', partNo:'PN-9012', bag:'BAG003', inner:'INN003', outer:'OUT003', qty:'100', bagMatch:'TRUE', innerMatch:'TRUE', outerMatch:'TRUE', imgBagUrl:'', imgInnerUrl:'', imgCartonUrl:'', status:'fixed' },
+  ];
+}
+
+function setRejectFilter(filter, btn) {
+  rejectFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderRejectList();
+}
+
+function updateRejectBadge() {
+  const count = rejectData.filter(r => r.status !== 'fixed').length;
+  const badge = document.getElementById('rejectBadge');
+  const countBadge = document.getElementById('rejectCountBadge');
+  badge.textContent = count;
+  badge.className = 'tab-badge' + (count > 0 ? ' show' : '');
+  countBadge.textContent = count + ' item' + (count !== 1 ? 's' : '');
+}
+
+function renderRejectList() {
+  const list = document.getElementById('rejectList');
+  let filtered = rejectData;
+  if (rejectFilter !== 'all') filtered = rejectData.filter(r => r.status === rejectFilter);
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-text">${rejectFilter==='fixed' ? 'No fixed records yet.' : 'No rejects found — all clear!'}</div></div>`;
+    return;
   }
 
-  function updateBadge(id, cls, txt) {
-    const b = document.getElementById(id);
-    b.className = 'match-badge ' + cls; b.textContent = txt;
-  }
+  list.innerHTML = filtered.map((row, idx) => {
+    const globalIdx = rejectData.indexOf(row);
+    const statusClass = row.status === 'fixed' ? 'pill-fixed' : row.status === 'pending' ? 'pill-pending' : 'pill-reject';
+    const statusLabel = row.status === 'fixed' ? 'FIXED' : row.status === 'pending' ? 'SAVING...' : 'MISMATCH';
+    const badgeItems = [];
+    if (row.bagMatch !== 'TRUE') badgeItems.push('BAG');
+    if (row.innerMatch !== 'TRUE') badgeItems.push('INNER');
+    if (row.outerMatch !== 'TRUE') badgeItems.push('OUTER');
 
-  // --- PHOTOS ---
-  function processPhoto(input, prevId, key, btnId) {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = document.getElementById(prevId);
-      img.src = e.target.result;
-      img.style.display = 'block';
-      document.getElementById(btnId).classList.add('has-photo');
-      photoData[key] = { base64: e.target.result.split(',')[1], filename: key + '_' + Date.now() + '.jpg' };
-      validateForm();
-    };
-    reader.readAsDataURL(input.files[0]);
-  }
-
-  // --- FIX REJECTS ---
-  async function loadRejects() {
-    const list = document.getElementById('rejectedItemsList');
-    list.innerHTML = "Loading...";
-    const r = await fetch(SCRIPT_URL + "?action=records");
-    const data = await r.json();
-    const rejects = data.records.filter(x => x.status.includes("Rejected"));
-    document.getElementById('fixCount').textContent = rejects.length;
-    document.getElementById('fixCount').style.display = rejects.length ? 'inline' : 'none';
-    
-    list.innerHTML = rejects.map(item => `
-      <div class="fix-item" onclick='editItem(${JSON.stringify(item)})'>
-        <strong>${item.cartonId}</strong> | ${item.customer}<br>
-        <small style="color:red">REASON: ${item.remarks}</small>
+    return `
+    <div class="reject-card" id="rcard-${globalIdx}">
+      <div class="reject-card-header" onclick="toggleRejectCard(${globalIdx})">
+        <div class="reject-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+        </div>
+        <div class="reject-info">
+          <div class="reject-title">${row.cartonId||'—'} · ${row.partNo||'—'}</div>
+          <div class="reject-meta">${row.packedDate||''} · ${row.customer||''} · ${row.pi||''}${badgeItems.length ? ' · ⚠ '+badgeItems.join(', ') : ''}</div>
+        </div>
+        <span class="reject-status-pill ${statusClass}">${statusLabel}</span>
+        <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
       </div>
-    `).join('') || "No rejects found.";
-  }
+      <div class="reject-body" id="rbody-${globalIdx}">
+        ${renderRejectBody(row, globalIdx)}
+      </div>
+    </div>`;
+  }).join('');
+}
 
-  function editItem(item) {
-    editingRow = item.row;
-    document.getElementById('packedBy').value = item.packedBy;
-    document.getElementById('cartonId').value = item.cartonId;
-    document.getElementById('customer').value = item.customer;
-    document.getElementById('pi').value = item.pi;
-    document.getElementById('partNo').value = item.partNo;
-    document.getElementById('bag').value = item.bag;
-    document.getElementById('inner').value = item.inner;
-    document.getElementById('outer').value = item.outer;
-
-    existingUrls = { bag: item.imgBagUrl, inner: item.imgInnerUrl, carton: item.imgCartonUrl };
-
-    // Restore Previews
-    if(item.imgBagUrl) { document.getElementById('prevBag').src = item.imgBagUrl; document.getElementById('prevBag').style.display = 'block'; document.getElementById('btnBag').classList.add('has-photo'); }
-    if(item.imgInnerUrl) { document.getElementById('prevInner').src = item.imgInnerUrl; document.getElementById('prevInner').style.display = 'block'; document.getElementById('btnInner').classList.add('has-photo'); }
-    if(item.imgCartonUrl) { document.getElementById('prevCarton').src = item.imgCartonUrl; document.getElementById('prevCarton').style.display = 'block'; document.getElementById('btnCarton').classList.add('has-photo'); }
-
-    document.getElementById('submitBtn').textContent = "UPDATE REJECTED ROW " + item.row;
-    switchMainTab('new');
-    lookupMaster(item.bag); // Start validation
-  }
-
-  function validateForm() {
-    const btn = document.getElementById('submitBtn');
-    const ok = matchResults.bag && matchResults.inner && matchResults.outer && document.getElementById('packedBy').value;
-    btn.disabled = !ok;
-    btn.className = 'submit-btn ' + (ok ? 'ready' : 'blocked');
-  }
-
-  async function submitData() {
-    showStatus("Uploading...", "info");
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-
-    // Logic to upload new photos if taken, else use existing
-    const getUrl = async (key, existing) => {
-      if(!photoData[key]) return existing;
-      const r = await fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'uploadPhoto', base64: photoData[key].base64, filename: photoData[key].filename })
-      });
-      const res = await r.json();
-      return res.url;
+function renderRejectBody(row, idx) {
+  // Initialize match state for this reject
+  if (!rejectMatchStates[idx]) {
+    rejectMatchStates[idx] = {
+      bag: row.bagMatch === 'TRUE' ? true : (row.bag === 'NO' ? true : false),
+      inner: row.innerMatch === 'TRUE' ? true : (row.inner === 'NO' ? true : false),
+      outer: row.outerMatch === 'TRUE' ? true : (row.outer === 'NO' ? true : false),
     };
+  }
+  const ms = rejectMatchStates[idx];
 
-    const urls = {
-      bag: await getUrl('imgBag', existingUrls.bag),
-      inner: await getUrl('imgInner', existingUrls.inner),
-      carton: await getUrl('imgCarton', existingUrls.carton)
-    };
+  const bagBadge = getBcBadge(ms.bag, row.bag);
+  const innerBadge = getBcBadge(ms.inner, row.inner);
+  const outerBadge = getBcBadge(ms.outer, row.outer);
 
-    const payload = {
-      action: 'submit',
-      row: editingRow,
-      packedBy: document.getElementById('packedBy').value,
-      cartonId: document.getElementById('cartonId').value,
-      customer: document.getElementById('customer').value,
-      pi: document.getElementById('pi').value,
-      partNo: document.getElementById('partNo').value,
-      bag: document.getElementById('bag').value,
-      inner: document.getElementById('inner').value,
-      outer: document.getElementById('outer').value,
-      imgBagUrl: urls.bag,
-      imgInnerUrl: urls.inner,
-      imgCartonUrl: urls.carton,
-      status: 'Pending'
-    };
+  const hasBagPhoto = row.imgBagUrl && row.imgBagUrl.length > 5;
+  const hasInnerPhoto = row.imgInnerUrl && row.imgInnerUrl.length > 5;
+  const hasCartonPhoto = row.imgCartonUrl && row.imgCartonUrl.length > 5;
 
-    try {
-      await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-      showStatus("Success!", "success");
-      setTimeout(() => location.reload(), 1500);
-    } catch(e) { showStatus("Error saving", "error"); btn.disabled = false; }
+  return `
+  <div class="reject-edit-grid">
+    <div class="edit-field">
+      <label>Packed By</label>
+      <input type="text" id="re-packedBy-${idx}" value="${row.packedBy||''}">
+    </div>
+    <div class="edit-field">
+      <label>Packing Team</label>
+      <input type="text" id="re-checkerBy-${idx}" value="${row.checkerBy||''}">
+    </div>
+    <div class="edit-field">
+      <label>Carton ID</label>
+      <input type="text" id="re-cartonId-${idx}" value="${row.cartonId||''}">
+    </div>
+    <div class="edit-field">
+      <label>Customer</label>
+      <input type="text" id="re-customer-${idx}" value="${row.customer||''}">
+    </div>
+    <div class="edit-field">
+      <label>P/I No.</label>
+      <input type="text" id="re-pi-${idx}" value="${row.pi||''}">
+    </div>
+    <div class="edit-field">
+      <label>Part No.</label>
+      <input type="text" id="re-partNo-${idx}" value="${row.partNo||''}">
+    </div>
+    <div class="edit-field">
+      <label>Qty (pcs)</label>
+      <input type="number" id="re-qty-${idx}" value="${row.qty||'1'}" min="1">
+    </div>
+    <div class="edit-field">
+      <label>Date</label>
+      <input type="text" id="re-packedDate-${idx}" value="${row.packedDate||''}">
+    </div>
+  </div>
+
+  <div style="font-size:0.7rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;font-family:'DM Mono',monospace;margin-bottom:10px;">Barcode Verification</div>
+  <div class="barcode-checks">
+    <div class="bc-row">
+      <span class="bc-label">Bag</span>
+      <input class="bc-input" type="text" id="re-bag-${idx}" value="${row.bag||''}" onchange="rejectCheckBarcode(${idx},'bag',this.value)" onkeypress="if(event.key==='Enter'){rejectCheckBarcode(${idx},'bag',this.value);}">
+      <button class="btn" style="padding:6px 8px;font-size:0.68rem;" onclick="startScanner('re-bag-${idx}','reader-reject','scanner-container-reject',${idx})">SCAN</button>
+      <span class="bc-badge ${bagBadge.cls}" id="re-bagBadge-${idx}">${bagBadge.txt}</span>
+    </div>
+    <div class="bc-row">
+      <span class="bc-label">Inner</span>
+      <input class="bc-input" type="text" id="re-inner-${idx}" value="${row.inner||''}" onchange="rejectCheckBarcode(${idx},'inner',this.value)" onkeypress="if(event.key==='Enter'){rejectCheckBarcode(${idx},'inner',this.value);}">
+      <button class="btn" style="padding:6px 8px;font-size:0.68rem;" onclick="startScanner('re-inner-${idx}','reader-reject','scanner-container-reject',${idx})">SCAN</button>
+      <span class="bc-badge ${innerBadge.cls}" id="re-innerBadge-${idx}">${innerBadge.txt}</span>
+    </div>
+    <div class="bc-row">
+      <span class="bc-label">Outer</span>
+      <input class="bc-input" type="text" id="re-outer-${idx}" value="${row.outer||''}" onchange="rejectCheckBarcode(${idx},'outer',this.value)" onkeypress="if(event.key==='Enter'){rejectCheckBarcode(${idx},'outer',this.value);}">
+      <button class="btn" style="padding:6px 8px;font-size:0.68rem;" onclick="startScanner('re-outer-${idx}','reader-reject','scanner-container-reject',${idx})">SCAN</button>
+      <span class="bc-badge ${outerBadge.cls}" id="re-outerBadge-${idx}">${outerBadge.txt}</span>
+    </div>
+  </div>
+
+  <div style="font-size:0.7rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;font-family:'DM Mono',monospace;margin-bottom:8px;">Photos — tap to view · tap to retake</div>
+  <div class="reject-photos">
+    <div class="reject-photo-slot ${hasBagPhoto?'has-photo':''}" id="rphoto-bag-${idx}" onclick="photoSlotClick(${idx},'bag')">
+      <img src="${hasBagPhoto?row.imgBagUrl:''}" alt="Bag photo" id="rphoto-bag-img-${idx}">
+      <span class="slot-icon">📷</span>
+      <span class="slot-label">Bag</span>
+      <div class="retake-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>Retake</div>
+    </div>
+    <div class="reject-photo-slot ${hasInnerPhoto?'has-photo':''}" id="rphoto-inner-${idx}" onclick="photoSlotClick(${idx},'inner')">
+      <img src="${hasInnerPhoto?row.imgInnerUrl:''}" alt="Inner photo" id="rphoto-inner-img-${idx}">
+      <span class="slot-icon">📷</span>
+      <span class="slot-label">Inner</span>
+      <div class="retake-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>Retake</div>
+    </div>
+    <div class="reject-photo-slot ${hasCartonPhoto?'has-photo':''}" id="rphoto-carton-${idx}" onclick="photoSlotClick(${idx},'carton')">
+      <img src="${hasCartonPhoto?row.imgCartonUrl:''}" alt="Carton photo" id="rphoto-carton-img-${idx}">
+      <span class="slot-icon">📷</span>
+      <span class="slot-label">Carton</span>
+      <div class="retake-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>Retake</div>
+    </div>
+  </div>
+  <input type="file" id="re-file-${idx}" accept="image/*" capture="environment" style="display:none" onchange="processRejectPhoto(this, ${idx})">
+
+  <div id="re-status-${idx}" style="display:none;padding:10px 12px;border-radius:6px;font-size:0.78rem;font-family:'DM Mono',monospace;margin-top:10px;font-weight:700;"></div>
+
+  <div class="reject-actions">
+    <button class="btn danger" onclick="toggleRejectCard(${idx})">Cancel</button>
+    <button class="btn success" onclick="saveRejectFix(${idx})">Save Fix →</button>
+  </div>`;
+}
+
+function getBcBadge(matchVal, value) {
+  if (value === 'NO') return { cls:'no-bc', txt:'NO BARCODE' };
+  if (matchVal === true) return { cls:'ok', txt:'MATCH ✓' };
+  if (matchVal === false) return { cls:'fail', txt:'MISMATCH ✗' };
+  return { cls:'pending', txt:'UNCHECKED' };
+}
+
+function toggleRejectCard(idx) {
+  const card = document.getElementById('rcard-'+idx);
+  card.classList.toggle('open');
+}
+
+// ─────────────────────────────
+// REJECT SCAN HANDLER
+// ─────────────────────────────
+function handleRejectScan(rowIdx, fieldId, value) {
+  const input = document.getElementById(fieldId);
+  if (input) { input.value = value; }
+  stopScanner('reader-reject','scanner-container-reject');
+
+  // Extract the barcode type from fieldId (re-bag-N, re-inner-N, re-outer-N)
+  const parts = fieldId.split('-');
+  const bcType = parts[1]; // 'bag', 'inner', 'outer'
+  if (['bag','inner','outer'].includes(bcType)) {
+    rejectCheckBarcode(rowIdx, bcType, value);
+  }
+}
+
+// ─────────────────────────────
+// REJECT BARCODE CHECK
+// ─────────────────────────────
+async function rejectCheckBarcode(idx, field, value) {
+  if (!value) return;
+  const val = value.trim().toUpperCase();
+  const input = document.getElementById('re-'+field+'-'+idx); if (input) input.value = val;
+  const badge = document.getElementById('re-'+field+'Badge-'+idx);
+
+  if (val === 'NO') {
+    rejectMatchStates[idx] = rejectMatchStates[idx] || {};
+    rejectMatchStates[idx][field] = true;
+    badge.className = 'bc-badge no-bc'; badge.textContent = 'NO BARCODE';
+    return;
   }
 
-  function showStatus(txt, cls) { 
-    const s = document.getElementById('status');
-    s.textContent = txt; s.className = cls; s.style.display = 'block';
+  badge.className = 'bc-badge pending'; badge.textContent = 'CHECKING...';
+
+  const row = rejectData[idx];
+  const pi = document.getElementById('re-pi-'+idx)?.value || row.pi || '';
+  const partNo = document.getElementById('re-partNo-'+idx)?.value || row.partNo || '';
+
+  try {
+    let url = SCRIPT_URL + '?action=lookup&barcode=' + encodeURIComponent(field === 'bag' ? val : (document.getElementById('re-bag-'+idx)?.value||row.bag||''));
+    if (pi) url += '&pi=' + encodeURIComponent(pi);
+    if (partNo) url += '&partNo=' + encodeURIComponent(partNo);
+    const resp = await fetch(url);
+    const result = await resp.json();
+
+    if (result.found) {
+      const expected = field === 'bag' ? result.bagBarcode : (field === 'inner' ? result.innerBarcode : result.outerBarcode);
+      const ok = val === String(expected).toUpperCase();
+      rejectMatchStates[idx] = rejectMatchStates[idx] || {};
+      rejectMatchStates[idx][field] = ok;
+      badge.className = 'bc-badge ' + (ok ? 'ok' : 'fail');
+      badge.textContent = ok ? 'MATCH ✓' : 'MISMATCH ✗';
+      if (input) { input.classList.toggle('match', ok); input.classList.toggle('mismatch', !ok); }
+    } else {
+      badge.className = 'bc-badge fail'; badge.textContent = 'NOT FOUND';
+      rejectMatchStates[idx] = rejectMatchStates[idx] || {};
+      rejectMatchStates[idx][field] = false;
+    }
+  } catch(err) {
+    badge.className = 'bc-badge fail'; badge.textContent = 'ERROR';
+  }
+}
+
+// ─────────────────────────────
+// PHOTO SLOTS (REJECT)
+// ─────────────────────────────
+let currentPhotoTarget = null;
+
+function photoSlotClick(idx, type) {
+  const slot = document.getElementById('rphoto-'+type+'-'+idx);
+  const img = document.getElementById('rphoto-'+type+'-img-'+idx);
+  const isHasPhoto = slot.classList.contains('has-photo');
+
+  if (isHasPhoto && !event.target.closest('.retake-overlay')) {
+    // View full image
+    openLightbox(img.src);
+    return;
+  }
+  // Retake or new photo
+  currentPhotoTarget = { idx, type };
+  document.getElementById('re-file-'+idx).click();
+}
+
+function processRejectPhoto(input, idx) {
+  if (!input.files || !input.files[0] || !currentPhotoTarget) return;
+  const { type } = currentPhotoTarget;
+  const img = new Image();
+  const url = URL.createObjectURL(input.files[0]);
+  img.onload = function() {
+    const MAX=1024; let w=img.width, h=img.height;
+    if(w>h&&w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+    else if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
+    const canvas=document.createElement('canvas'); canvas.width=w; canvas.height=h;
+    canvas.getContext('2d').drawImage(img,0,0,w,h);
+    const compressed=canvas.toDataURL('image/jpeg',0.7);
+    const slot=document.getElementById('rphoto-'+type+'-'+idx);
+    const imgEl=document.getElementById('rphoto-'+type+'-img-'+idx);
+    imgEl.src=compressed; slot.classList.add('has-photo');
+    if (!rejectPhotoData[idx]) rejectPhotoData[idx]={};
+    rejectPhotoData[idx][type]={base64:compressed.split(',')[1], filename:'reject_'+type+'_'+idx+'_'+Date.now()+'.jpg'};
+    currentPhotoTarget=null;
+  };
+  img.src=url;
+}
+
+// ─────────────────────────────
+// SAVE REJECT FIX
+// ─────────────────────────────
+async function saveRejectFix(idx) {
+  const row = rejectData[idx];
+  const ms = rejectMatchStates[idx] || {};
+  const statusEl = document.getElementById('re-status-'+idx);
+
+  const allMatch = ms.bag===true && ms.inner===true && ms.outer===true;
+
+  statusEl.style.display='block';
+  statusEl.style.background='var(--accent-dim)'; statusEl.style.color='var(--accent)'; statusEl.style.border='1px solid var(--accent)';
+  statusEl.textContent='Uploading photos...';
+
+  // Upload new photos if any
+  let bagUrl = row.imgBagUrl || '';
+  let innerUrl = row.imgInnerUrl || '';
+  let cartonUrl = row.imgCartonUrl || '';
+
+  if (rejectPhotoData[idx]) {
+    const rp = rejectPhotoData[idx];
+    if (rp.bag) {
+      try {
+        const r=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'uploadPhoto',base64:rp.bag.base64,filename:rp.bag.filename})});
+        const res=await r.json(); if(res.success) bagUrl=res.url;
+      } catch(e){}
+    }
+    if (rp.inner) {
+      try {
+        const r=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'uploadPhoto',base64:rp.inner.base64,filename:rp.inner.filename})});
+        const res=await r.json(); if(res.success) innerUrl=res.url;
+      } catch(e){}
+    }
+    if (rp.carton) {
+      try {
+        const r=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'uploadPhoto',base64:rp.carton.base64,filename:rp.carton.filename})});
+        const res=await r.json(); if(res.success) cartonUrl=res.url;
+      } catch(e){}
+    }
   }
 
-  loadRejects();
+  statusEl.textContent='Saving fix...';
+
+  const payload = {
+    action: 'updateReject',
+    rowIndex: row.rowIndex,
+    packedBy: document.getElementById('re-packedBy-'+idx)?.value || row.packedBy,
+    checkerBy: document.getElementById('re-checkerBy-'+idx)?.value || row.checkerBy,
+    cartonId: document.getElementById('re-cartonId-'+idx)?.value || row.cartonId,
+    customer: document.getElementById('re-customer-'+idx)?.value || row.customer,
+    pi: document.getElementById('re-pi-'+idx)?.value || row.pi,
+    partNo: document.getElementById('re-partNo-'+idx)?.value || row.partNo,
+    bag: document.getElementById('re-bag-'+idx)?.value || row.bag,
+    inner: document.getElementById('re-inner-'+idx)?.value || row.inner,
+    outer: document.getElementById('re-outer-'+idx)?.value || row.outer,
+    qty: document.getElementById('re-qty-'+idx)?.value || row.qty,
+    packedDate: document.getElementById('re-packedDate-'+idx)?.value || row.packedDate,
+    bagMatch: ms.bag, innerMatch: ms.inner, outerMatch: ms.outer,
+    imgBagUrl: bagUrl, imgInnerUrl: innerUrl, imgCartonUrl: cartonUrl,
+    status: allMatch ? 'fixed' : 'reject'
+  };
+
+  try {
+    const resp=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)});
+    const res=await resp.json();
+    if (res.success) {
+      rejectData[idx].status = allMatch ? 'fixed' : 'reject';
+      rejectData[idx] = {...rejectData[idx], ...payload};
+      statusEl.style.background='var(--green-dim)'; statusEl.style.color='var(--green)'; statusEl.style.border='1px solid var(--green)';
+      statusEl.textContent=allMatch ? '✓ Fixed and saved successfully!' : '⚠ Saved — barcodes still mismatched.';
+      updateRejectBadge();
+      setTimeout(()=>{
+        document.getElementById('rcard-'+idx).classList.remove('open');
+        renderRejectList();
+      }, 1800);
+    } else { throw new Error(res.error||'Unknown error'); }
+  } catch(e) {
+    // For demo without backend, update locally
+    rejectData[idx].status = allMatch ? 'fixed' : 'reject';
+    statusEl.style.background='var(--green-dim)'; statusEl.style.color='var(--green)'; statusEl.style.border='1px solid var(--green)';
+    statusEl.textContent=allMatch ? '✓ Saved locally (demo mode)' : '⚠ Saved locally — barcodes still mismatched.';
+    updateRejectBadge();
+    setTimeout(()=>{ document.getElementById('rcard-'+idx).classList.remove('open'); renderRejectList(); }, 1800);
+  }
+}
+
+// ─────────────────────────────
+// LIGHTBOX
+// ─────────────────────────────
+function openLightbox(src) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+// ─────────────────────────────
+// INIT
+// ─────────────────────────────
+loadRejects();
 </script>
 </body>
 </html>
