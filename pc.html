@@ -11,7 +11,6 @@
     body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#0f0f0f; color:#e0e0e0; margin:0; padding:16px; min-height:100vh; }
     h1 { text-align:center; color:#90caf9; margin:12px 0 4px; font-size:1.5rem; }
     
-    /* TAB STYLING */
     .main-tabs { display:flex; background:#161616; margin-bottom:15px; border-radius:12px; overflow:hidden; border:1px solid #333; }
     .main-tab { flex:1; padding:15px; text-align:center; cursor:pointer; font-weight:bold; color:#666; transition: 0.3s; border-bottom: 3px solid transparent; font-size: 0.85rem; }
     .main-tab.active { color:#90caf9; border-bottom-color:#90caf9; background:#1a1a1a; }
@@ -21,7 +20,7 @@
     .card-title { font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#666; margin-bottom:12px; }
     label { display:block; margin:10px 0 5px; font-weight:600; color:#90caf9; font-size:0.9rem; }
     
-    input, select { width:100%; padding:11px 12px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; font-size:16px; text-transform:uppercase; }
+    input { width:100%; padding:11px 12px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; font-size:16px; text-transform:uppercase; }
     input:focus { outline:none; border-color:#90caf9; }
     
     input.match      { border-color:#4caf50 !important; background:#1a2e1a; }
@@ -39,22 +38,22 @@
     .match-badge.no-bc   { background:#4a3000; color:#ffcc80; }
 
     .photo-btn { width:100%; padding:15px; margin:8px 0; background:#37474f; border-radius:10px; border:none; color:white; cursor:pointer; text-align:left; display:flex; align-items:center; gap:10px; }
-    .photo-btn.has-photo .done-badge { display:inline; background:#2e7d32; padding:2px 8px; border-radius:10px; }
+    .photo-btn.has-photo .done-badge { display:inline; background:#2e7d32; padding:2px 8px; border-radius:10px; font-size: 0.7rem; }
     .done-badge { display:none; }
     
     .preview { width:100%; max-height:250px; object-fit:contain; border-radius:8px; margin-top:10px; display:none; border:1px solid #555; }
     
-    .submit-btn { width:100%; padding:18px; font-size:1.1rem; font-weight:bold; border-radius:10px; border:none; cursor:pointer; margin-top:8px; transition: 0.3s; }
+    .submit-btn { width:100%; padding:18px; font-size:1.1rem; font-weight:bold; border-radius:10px; border:none; cursor:pointer; margin-top:8px; }
     .submit-btn.ready   { background:#2e7d32; color:white; }
     .submit-btn.blocked { background:#333; color:#666; cursor:not-allowed; }
     
     #status { margin:12px 0; padding:12px; border-radius:8px; font-weight:bold; text-align:center; display:none; }
-    #status.info    { background:#1565c0; display:block; }
-    #status.success { background:#2e7d32; display:block; }
-    #status.error   { background:#c62828; display:block; }
+    #status.info    { background:#1565c0; display:block; color:white; }
+    #status.success { background:#2e7d32; display:block; color:white; }
+    #status.error   { background:#c62828; display:block; color:white; }
 
     #scanner-container { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:black; z-index:1000; padding:20px; }
-    .fix-item { background:#1e1e1e; border:1px solid #333; border-left:5px solid #f44336; padding:16px; border-radius:12px; margin-bottom:12px; }
+    .fix-item { background:#1e1e1e; border:1px solid #333; border-left:5px solid #f44336; padding:16px; border-radius:12px; margin-bottom:12px; cursor:pointer; }
   </style>
 </head>
 <body>
@@ -62,15 +61,13 @@
 <h1>MG Logistics System</h1>
 
 <div class="main-tabs">
-  <div class="main-tab active" id="tabNew" onclick="switchMainTab('new')">PACKING</div>
-  <div class="main-tab" id="tabStamp" onclick="switchMainTab('stamp')">STAMPING</div>
+  <div class="main-tab active" id="tabNew" onclick="switchMainTab('new')">NEW ENTRY</div>
   <div class="main-tab" id="tabFix" onclick="switchMainTab('fix')">FIX REJECTS <span id="fixCount" style="display:none;">0</span></div>
 </div>
 
-<!-- 1. PACKING SECTION -->
 <div id="formContainer">
   <div class="card">
-    <div class="card-title">Staff & Carton</div>
+    <div class="card-title">Basic Info</div>
     <label>Packed By</label>
     <div class="scan-row"><input type="text" id="packedBy"><button onclick="startScanner('packedBy')">SCAN</button></div>
     <label>Carton ID</label>
@@ -78,19 +75,17 @@
   </div>
 
   <div class="card">
-    <div class="card-title">Order Information</div>
-    <label>Customer Name</label>
-    <input type="text" id="customer">
-    <label>P/I No.</label>
-    <input type="text" id="pi">
-    <label>Part No.</label>
-    <input type="text" id="partNo">
-    <label>Quantity</label>
+    <div class="card-title">Order Details</div>
+    <label>Customer / PI / Part No</label>
+    <input type="text" id="customer" placeholder="Customer Name" style="margin-bottom:8px;">
+    <input type="text" id="pi" placeholder="PI Number" style="margin-bottom:8px;">
+    <input type="text" id="partNo" placeholder="Part Number">
+    <label>Qty</label>
     <input type="number" id="qty" value="1" style="text-transform:none;">
   </div>
 
   <div class="card">
-    <div class="card-title">Barcodes</div>
+    <div class="card-title">Barcode Verification</div>
     <label>Bag Barcode</label>
     <div class="scan-row"><input type="text" id="bag"><button onclick="startScanner('bag')">SCAN</button></div>
     <div class="match-badge pending" id="bagBadge">Not Checked</div>
@@ -106,45 +101,26 @@
 
   <div class="card">
     <div class="card-title">Photos</div>
-    <button class="photo-btn" id="btnBag" onclick="document.getElementById('fBag').click()">📸 Bag + Part <span class="done-badge">DONE</span></button>
+    <button class="photo-btn" id="btnBag" onclick="document.getElementById('fBag').click()">📸 Bag Photo <span class="done-badge">DONE</span></button>
     <input type="file" id="fBag" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevBag','imgBag','btnBag')">
     <img id="prevBag" class="preview">
 
-    <button class="photo-btn" id="btnInner" onclick="document.getElementById('fInner').click()">📸 Inner Label <span class="done-badge">DONE</span></button>
+    <button class="photo-btn" id="btnInner" onclick="document.getElementById('fInner').click()">📸 Inner Photo <span class="done-badge">DONE</span></button>
     <input type="file" id="fInner" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevInner','imgInner','btnInner')">
     <img id="prevInner" class="preview">
 
-    <button class="photo-btn" id="btnCarton" onclick="document.getElementById('fCarton').click()">📸 Outer Label <span class="done-badge">DONE</span></button>
+    <button class="photo-btn" id="btnCarton" onclick="document.getElementById('fCarton').click()">📸 Outer Photo <span class="done-badge">DONE</span></button>
     <input type="file" id="fCarton" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevCarton','imgCarton','btnCarton')">
     <img id="prevCarton" class="preview">
   </div>
 
-  <button class="submit-btn blocked" id="submitBtn" onclick="submitData()" disabled>SUBMIT PACKING DATA</button>
+  <button class="submit-btn blocked" id="submitBtn" onclick="submitData()" disabled>SUBMIT DATA</button>
 </div>
 
-<!-- 2. STAMPING SECTION -->
-<div id="stampingContainer" style="display:none;">
-  <div class="card">
-    <div class="card-title">Stamping Update</div>
-    <label>Stamping Operator</label>
-    <div class="scan-row"><input type="text" id="stampOp"><button onclick="startScanner('stampOp')">SCAN</button></div>
-    <label>Carton ID</label>
-    <div class="scan-row"><input type="text" id="stampCartonId"><button onclick="startScanner('stampCartonId')">SCAN</button></div>
-    <label>New Status</label>
-    <select id="stampStatus">
-      <option value="Stamping Completed">Stamping Completed</option>
-      <option value="Pending">Pending</option>
-    </select>
-  </div>
-  <button class="submit-btn ready" id="stampBtn" onclick="submitStamping()">UPDATE STAMPING STATUS</button>
-</div>
-
-<!-- 3. FIX REJECTS SECTION -->
 <div id="fixListContainer" style="display:none;">
   <div id="rejectedItemsList"></div>
 </div>
 
-<!-- SHARED ELEMENTS -->
 <div id="scanner-container">
   <div id="reader"></div>
   <button onclick="stopScanner()" style="width:100%; padding:20px; background:#444; margin-top:20px;">CANCEL</button>
@@ -164,26 +140,13 @@
 
   function switchMainTab(mode) {
     document.getElementById('tabNew').classList.toggle('active', mode==='new');
-    document.getElementById('tabStamp').classList.toggle('active', mode==='stamp');
     document.getElementById('tabFix').classList.toggle('active', mode==='fix');
     document.getElementById('formContainer').style.display = (mode==='new' ? 'block' : 'none');
-    document.getElementById('stampingContainer').style.display = (mode==='stamp' ? 'block' : 'none');
     document.getElementById('fixListContainer').style.display = (mode==='fix' ? 'block' : 'none');
     if(mode==='fix') loadRejectedItems();
-    if(mode==='new' && !editingRow) resetForm();
   }
 
-  function resetForm() {
-    editingRow = null;
-    document.querySelectorAll('input').forEach(i => i.value = "");
-    document.querySelectorAll('.preview').forEach(p => p.style.display = "none");
-    document.querySelectorAll('.photo-btn').forEach(b => b.classList.remove('has-photo'));
-    document.getElementById('submitBtn').textContent = "SUBMIT PACKING DATA";
-    matchState = { bag: false, inner: false, outer: false };
-    validateForm();
-  }
-
-  // SCANNER
+  // --- SCAN & MATCH LOGIC ---
   async function startScanner(fId) {
     activeField = fId;
     document.getElementById('scanner-container').style.display = 'block';
@@ -196,21 +159,14 @@
   }
   function stopScanner() { if(html5QrCode) html5QrCode.stop(); document.getElementById('scanner-container').style.display='none'; }
 
-  // BARCODE LOGIC
   async function onBarcodeEntered(id, val) {
-    if (id === 'bag') {
-      await lookupMaster(val);
-    } else if (id === 'inner' || id === 'outer') {
-      checkMatch(id, val);
-    }
+    if (id === 'bag') await lookupMaster(val);
+    else if (id === 'inner' || id === 'outer') checkMatch(id, val);
     validateForm();
   }
 
   async function lookupMaster(barcode) {
-    if (barcode === 'NO') { 
-      matchState.bag = true; setBadge('bag','no-bc','No Barcode'); 
-      return; 
-    }
+    if (barcode === 'NO') { matchState.bag = true; setBadge('bag','no-bc','No Barcode'); return; }
     setBadge('bag','pending','Searching...');
     try {
       const r = await fetch(SCRIPT_URL + '?action=lookup&barcode=' + encodeURIComponent(barcode));
@@ -222,7 +178,7 @@
         if(document.getElementById('inner').value) checkMatch('inner', document.getElementById('inner').value);
         if(document.getElementById('outer').value) checkMatch('outer', document.getElementById('outer').value);
       } else {
-        matchState.bag = false; setBadge('bag','fail','Not in Master');
+        matchState.bag = false; setBadge('bag','fail','Not Found');
       }
     } catch(e) { setBadge('bag','fail','Error'); }
   }
@@ -241,7 +197,7 @@
     b.className = 'match-badge ' + cls; b.textContent = txt;
   }
 
-  // PHOTOS
+  // --- PHOTO LOGIC ---
   function processPhoto(input, prevId, key, btnId) {
     if(!input.files[0]) return;
     const reader = new FileReader();
@@ -265,121 +221,116 @@
     return res.url || "";
   }
 
-  function validateForm() {
-    const btn = document.getElementById('submitBtn');
-    const ok = matchState.bag && matchState.inner && matchState.outer && document.getElementById('packedBy').value;
-    btn.disabled = !ok;
-    btn.className = 'submit-btn ' + (ok ? 'ready' : 'blocked');
-  }
-
-  // SUBMIT PACKING
-  async function submitData() {
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true; btn.textContent = "UPLOADING...";
-    showStatus("Saving data & photos...", "info");
-
-    const urls = {
-      bag: photoData.imgBag ? await uploadPhoto('imgBag') : existingPhotos.bag,
-      inner: photoData.imgInner ? await uploadPhoto('imgInner') : existingPhotos.inner,
-      carton: photoData.imgCarton ? await uploadPhoto('imgCarton') : existingPhotos.carton
-    };
-
-    const payload = {
-      action: 'submit',
-      row: editingRow,
-      packedBy: document.getElementById('packedBy').value,
-      cartonId: document.getElementById('cartonId').value,
-      customer: document.getElementById('customer').value,
-      pi: document.getElementById('pi').value,
-      partNo: document.getElementById('partNo').value,
-      qty: document.getElementById('qty').value,
-      bag: document.getElementById('bag').value,
-      inner: document.getElementById('inner').value,
-      outer: document.getElementById('outer').value,
-      imgBagUrl: urls.bag,
-      imgInnerUrl: urls.inner,
-      imgCartonUrl: urls.carton,
-      status: 'Pending'
-    };
-
-    try {
-      await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-      showStatus("Success! Data recorded.", "success");
-      setTimeout(() => location.reload(), 1500);
-    } catch(e) {
-      showStatus("Error saving data", "error");
-      btn.disabled = false;
-    }
-  }
-
-  // STAMPING LOGIC
-  async function submitStamping() {
-    const op = document.getElementById('stampOp').value;
-    const cid = document.getElementById('stampCartonId').value;
-    if(!op || !cid) { alert("Please fill all fields"); return; }
-    
-    showStatus("Updating stamping...", "info");
-    const payload = {
-      action: 'stamping',
-      operator: op,
-      cartonId: cid,
-      status: document.getElementById('stampStatus').value
-    };
-    
-    try {
-      const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-      const res = await r.json();
-      if(res.success) {
-        showStatus("Stamping Status Updated!", "success");
-        document.getElementById('stampCartonId').value = "";
-      } else {
-        showStatus("Carton ID not found in Packing records", "error");
-      }
-    } catch(e) { showStatus("Connection error", "error"); }
-  }
-
-  // REJECTS LOGIC
+  // --- FIX REJECT LOGIC ---
   async function loadRejectedItems() {
     const list = document.getElementById('rejectedItemsList');
-    list.innerHTML = "<p style='text-align:center'>Loading rejects...</p>";
+    list.innerHTML = "<p style='text-align:center'>Checking for rejects...</p>";
     try {
       const r = await fetch(SCRIPT_URL + "?action=records");
       const data = await r.json();
-      const rejects = data.records.filter(x => x.status.includes("Rejected"));
+      const rejects = data.records.filter(x => (x.status || "").includes("Rejected"));
       document.getElementById('fixCount').textContent = rejects.length;
       document.getElementById('fixCount').style.display = rejects.length ? 'inline' : 'none';
       
       list.innerHTML = rejects.map(item => `
         <div class="fix-item" onclick='editItem(${JSON.stringify(item)})'>
-          <div style="color:#90caf9; font-weight:bold">${item.customer}</div>
+          <div style="color:#90caf9; font-weight:bold">${item.customer || 'No Customer'}</div>
           <div style="font-size:0.8rem">Carton: ${item.cartonId} | PI: ${item.pi}</div>
-          <div style="color:#ef9a9a; font-size:0.8rem; margin-top:5px;">Reason: ${item.remarks}</div>
+          <div style="color:#ef9a9a; font-size:0.8rem; margin-top:5px;">Reason: ${item.remarks || 'Check details'}</div>
         </div>
-      `).join('') || "<p style='text-align:center'>No rejected items found.</p>";
+      `).join('') || "<p style='text-align:center'>No rejected items.</p>";
     } catch(e) { list.innerHTML = "Error loading list"; }
   }
 
   function editItem(item) {
     editingRow = item.row;
-    document.getElementById('packedBy').value = item.packedBy;
-    document.getElementById('cartonId').value = item.cartonId;
-    document.getElementById('customer').value = item.customer;
-    document.getElementById('pi').value = item.pi;
-    document.getElementById('partNo').value = item.partNo;
-    document.getElementById('qty').value = item.qty;
-    document.getElementById('bag').value = item.bag;
-    document.getElementById('inner').value = item.inner;
-    document.getElementById('outer').value = item.outer;
+    // Map data to fields
+    document.getElementById('packedBy').value = item.packedBy || "";
+    document.getElementById('cartonId').value = item.cartonId || "";
+    document.getElementById('customer').value = item.customer || "";
+    document.getElementById('pi').value = item.pi || "";
+    document.getElementById('partNo').value = item.partNo || "";
+    document.getElementById('qty').value = item.qty || 1;
+    document.getElementById('bag').value = item.bag || "";
+    document.getElementById('inner').value = item.inner || "";
+    document.getElementById('outer').value = item.outer || "";
     
-    existingPhotos = { bag: item.imgBagUrl, inner: item.imgInnerUrl, carton: item.imgCartonUrl };
+    // Handle existing photos
+    existingPhotos = { bag: item.imgBagUrl || "", inner: item.imgInnerUrl || "", carton: item.imgCartonUrl || "" };
     
-    if(item.imgBagUrl) { document.getElementById('prevBag').src = item.imgBagUrl; document.getElementById('prevBag').style.display = 'block'; document.getElementById('btnBag').classList.add('has-photo'); }
-    if(item.imgInnerUrl) { document.getElementById('prevInner').src = item.imgInnerUrl; document.getElementById('prevInner').style.display = 'block'; document.getElementById('btnInner').classList.add('has-photo'); }
-    if(item.imgCartonUrl) { document.getElementById('prevCarton').src = item.imgCartonUrl; document.getElementById('prevCarton').style.display = 'block'; document.getElementById('btnCarton').classList.add('has-photo'); }
-    
+    ['Bag', 'Inner', 'Carton'].forEach(type => {
+      const url = item['img' + type + 'Url'];
+      const prev = document.getElementById('prev' + type);
+      const btn = document.getElementById('btn' + type);
+      if(url) {
+        prev.src = url; prev.style.display = 'block';
+        btn.classList.add('has-photo');
+      } else {
+        prev.style.display = 'none';
+        btn.classList.remove('has-photo');
+      }
+    });
+
     document.getElementById('submitBtn').textContent = "FIX & RE-SUBMIT (ROW " + item.row + ")";
     switchMainTab('new');
-    onBarcodeEntered('bag', item.bag);
+    
+    // Auto-trigger master lookup to restore badges
+    if(item.bag) onBarcodeEntered('bag', item.bag);
+  }
+
+  // --- FINAL SUBMISSION ---
+  function validateForm() {
+    const btn = document.getElementById('submitBtn');
+    const hasBagPhoto = photoData.imgBag || existingPhotos.bag;
+    const hasInnerPhoto = photoData.imgInner || existingPhotos.inner;
+    const hasCartonPhoto = photoData.imgCarton || existingPhotos.carton;
+    
+    const ok = matchState.bag && matchState.inner && matchState.outer && 
+               document.getElementById('packedBy').value && 
+               hasBagPhoto && hasInnerPhoto && hasCartonPhoto;
+               
+    btn.disabled = !ok;
+    btn.className = 'submit-btn ' + (ok ? 'ready' : 'blocked');
+  }
+
+  async function submitData() {
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true; btn.textContent = "UPLOADING...";
+    showStatus("Saving updates...", "info");
+
+    try {
+      const urls = {
+        bag: photoData.imgBag ? await uploadPhoto('imgBag') : existingPhotos.bag,
+        inner: photoData.imgInner ? await uploadPhoto('imgInner') : existingPhotos.inner,
+        carton: photoData.imgCarton ? await uploadPhoto('imgCarton') : existingPhotos.carton
+      };
+
+      const payload = {
+        action: 'submit',
+        row: editingRow,
+        packedBy: document.getElementById('packedBy').value,
+        cartonId: document.getElementById('cartonId').value,
+        customer: document.getElementById('customer').value,
+        pi: document.getElementById('pi').value,
+        partNo: document.getElementById('partNo').value,
+        qty: document.getElementById('qty').value,
+        bag: document.getElementById('bag').value,
+        inner: document.getElementById('inner').value,
+        outer: document.getElementById('outer').value,
+        imgBagUrl: urls.bag,
+        imgInnerUrl: urls.inner,
+        imgCartonUrl: urls.carton,
+        status: 'Pending' // Reset to pending after fix
+      };
+
+      await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+      showStatus("Fix Submitted Successfully!", "success");
+      setTimeout(() => location.reload(), 1500);
+    } catch(e) {
+      showStatus("Upload failed", "error");
+      btn.disabled = false;
+      btn.textContent = "SUBMIT DATA";
+    }
   }
 
   function showStatus(txt, cls) {
