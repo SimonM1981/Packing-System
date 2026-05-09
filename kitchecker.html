@@ -314,7 +314,8 @@ const photos = [
 document.getElementById('photosGrid').innerHTML = photos.map(p => {
 const id = (p.url||'').match(/[-\w]{25,}/);
 const thumb = id ? `https://drive.google.com/thumbnail?id=${id[0]}&sz=800` : '';
-return `<div class="photo-wrap"><div class="photo-lbl">${p.lbl}</div><img src="${thumb}" onclick="openLightbox('${thumb}')"></div>`;
+const full = id ? `https://drive.google.com/uc?export=view&id=${id[0]}` : (p.url || '');
+return `<div class="photo-wrap"><div class="photo-lbl">${p.lbl}</div><img src="${thumb}" onclick="openLightbox('${full}')" style="cursor:pointer;"></div>`;
 }).join('');
 
 selectedVerdict = null;
@@ -350,8 +351,14 @@ function closeModal() { document.getElementById('detailModal').style.display='no
 
 // Lightbox
 function openLightbox(s) {
+// s is already the full URL passed from the click handler
+let imgUrl = s || '';
+// If it's a thumbnail URL, convert to full size
 const id = (s||'').match(/[-\w]{25,}/);
-document.getElementById('lightboxImg').src = id ? `https://drive.google.com/uc?export=view&id=${id[0]}` : s;
+if (id && s.includes('thumbnail')) {
+imgUrl = `https://drive.google.com/uc?export=view&id=${id[0]}`;
+}
+document.getElementById('lightboxImg').src = imgUrl;
 document.getElementById('lightbox').style.display = 'flex';
 }
 function closeLightbox() { document.getElementById('lightbox').style.display = 'none'; }
