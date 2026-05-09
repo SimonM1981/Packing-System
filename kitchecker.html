@@ -21,13 +21,15 @@
     .tab-content { display:none; padding:16px; }
     .tab-content.active { display:block; }
 
-    /* STATS */
+    /* STATS BUTTONS */
     .stats-row { display:flex; gap:10px; margin-bottom:15px; }
     .stat-box { flex:1; background:#1e1e1e; border:1px solid #333; border-radius:10px; padding:15px 5px; text-align:center; cursor:pointer; }
     #fAll.active-filter { border: 2px solid #ce93d8; }
     #fPending.active-filter { border: 2px solid #ce93d8; }
     #fVerified.active-filter { border: 2px solid #4caf50; }
     #fRejected.active-filter { border: 2px solid #f44336; }
+    #fsWait.active-filter-stamp { border: 2px solid #ce93d8; }
+    #fsDone.active-filter-stamp { border: 2px solid #4caf50; }
     .stat-num { font-size:1.4rem; font-weight:700; display:block; color:white; }
     .stat-lbl { font-size:0.65rem; color:#888; text-transform:uppercase; margin-top:5px; display:block; }
 
@@ -51,26 +53,40 @@
     .detail-item span { font-size:1.1rem; font-weight:bold; color:#eee; }
 
     /* PARTS TABLE */
-    .parts-table { width:100%; border-collapse:collapse; margin-bottom:20px; }
-    .parts-table th { background:#2a2a2a; color:#ce93d8; font-size:0.75rem; padding:10px; text-align:left; border-bottom:2px solid #444; }
-    .parts-table td { padding:10px; border-bottom:1px solid #333; font-size:0.9rem; }
-    .parts-table td.ok { color:#4caf50; font-weight:bold; }
-    .parts-table td.fail { color:#f44336; font-weight:bold; }
+    .parts-table { width:100%; border-collapse:collapse; margin-bottom:20px; background:#161616; border-radius:8px; overflow:hidden; }
+    .parts-table th { background:#2a2a2a; color:#ce93d8; font-size:0.75rem; padding:12px 10px; text-align:left; text-transform:uppercase; }
+    .parts-table td { padding:12px 10px; border-bottom:1px solid #333; font-size:0.9rem; }
+    .match-tag { font-size:0.7rem; font-weight:bold; padding:3px 8px; border-radius:4px; }
+    .match-ok { background:#1b5e20; color:#c8e6c9; }
+    .match-fail { background:#b71c1c; color:#ffcdd2; }
 
-    /* PHOTOS */
+    /* PHOTOS GRID */
     .photo-row-container { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; justify-content: space-between; overflow: hidden; }
     .photo-wrap { flex: 1; width: calc(33.33% - 7px); text-align:center; background:#111; padding:8px; border-radius:10px; border:1px solid #333; }
     .photo-wrap img { width:100%; height:auto; aspect-ratio: 1/1; object-fit:cover; border-radius:6px; cursor:pointer; }
     .photo-lbl { font-size:0.8rem; font-weight:bold; margin-bottom:5px; color:#ce93d8; text-transform:uppercase; }
+
+    /* VERDICT BUTTONS */
+    .verdict-row { display:flex; gap:12px; margin-bottom:15px; }
+    .verdict-btn { flex:1; padding:20px; border:none; border-radius:10px; font-weight:bold; color:white; cursor:pointer; font-size:1rem; transition: 0.2s; opacity:0.4; }
+    .verdict-btn.v-approve { background:#2e7d32; border: 2px solid #4caf50; }
+    .verdict-btn.v-reject { background:#b71c1c; border: 2px solid #f44336; }
+    .verdict-btn.selected { opacity:1; border-width:3px; outline: 2px solid white; }
+
+    .checker-input { width:100%; padding:15px; background:#1a1a1a; border:1px solid #444; border-radius:8px; color:white; margin-bottom:12px; font-size:1rem; }
+    textarea { width:100%; height:100px; background:#1a1a1a; border:1px solid #444; border-radius:8px; color:white; padding:15px; font-size:1rem; }
+    .submit-btn { width:100%; padding:20px; background:#6a1b9a; color:white; border:none; border-radius:12px; font-weight:bold; font-size:1.1rem; cursor:pointer; }
+
+    /* STAMP CARD */
+    .stamp-card { background:#1e1e1e; border:1px solid #333; border-left:4px solid #ff9800; border-radius:12px; padding:16px; margin-bottom:12px; }
+    .stamp-btn { width:100%; padding:15px; background:#6a1b9a; color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer; margin-top:10px; }
 
     /* LIGHTBOX WITH ZOOM */
     #lightbox { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:1000; display:none; align-items:center; justify-content:center; overflow: hidden; touch-action: none; }
     #lightbox img { max-width:100%; max-height:100%; object-fit: contain; transform-origin: center center; transition: transform 0.1s ease-out; cursor: grab; }
     .close-lb { position: absolute; top: 20px; right: 20px; background: #444; color: white; border: none; padding: 12px 20px; border-radius: 8px; z-index: 1001; font-weight: bold; }
 
-    .submit-btn { width:100%; padding:20px; background:#1565c0; color:white; border:none; border-radius:12px; font-weight:bold; font-size:1.1rem; cursor:pointer; }
-    .checker-input { width:100%; padding:15px; background:#1a1a1a; border:1px solid #444; border-radius:8px; color:white; margin-bottom:12px; }
-    textarea { width:100%; height:100px; background:#1a1a1a; border:1px solid #444; border-radius:8px; color:white; padding:15px; }
+    .toolbar input { width:100%; padding:12px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; margin-bottom:12px; }
   </style>
 </head>
 <body>
@@ -82,8 +98,8 @@
 
 <div id="mainScreen">
   <div class="main-tabs">
-    <div class="main-tab active" onclick="switchTab('verify')">Check List</div>
-    <div class="main-tab" onclick="switchTab('stamp')">Stamping</div>
+    <div class="main-tab active" id="tabVerify" onclick="switchTab('verify')">Check List</div>
+    <div class="main-tab" id="tabStamp" onclick="switchTab('stamp')">Stamping</div>
   </div>
 
   <div class="tab-content active" id="contentVerify">
@@ -93,10 +109,15 @@
       <div class="stat-box" id="fVerified" onclick="setFilter('verified')"><span class="stat-num" id="vStatVerified">-</span><span class="stat-lbl">PASS</span></div>
       <div class="stat-box" id="fRejected" onclick="setFilter('rejected')"><span class="stat-num" id="vStatRejected">-</span><span class="stat-lbl">FAIL</span></div>
     </div>
+    <div class="toolbar"><input type="text" id="vSearch" placeholder="Search Customer or PI..." oninput="renderVerifyList()"></div>
     <div id="verifyList"></div>
   </div>
 
   <div class="tab-content" id="contentStamp">
+    <div class="stats-row">
+      <div class="stat-box active-filter-stamp" id="fsWait" onclick="setStampFilter('wait')"><span class="stat-num" id="sStatWait">-</span><span class="stat-lbl">WAIT STAMP</span></div>
+      <div class="stat-box" id="fsDone" onclick="setStampFilter('done')"><span class="stat-num" id="sStatDone">-</span><span class="stat-lbl">STAMPED</span></div>
+    </div>
     <div id="stampList"></div>
   </div>
 </div>
@@ -105,14 +126,23 @@
   <div class="modal-card">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
       <h2 id="modalTitle" style="margin:0; color:#ce93d8;"></h2>
-      <button onclick="closeModal()">CLOSE</button>
+      <button onclick="closeModal()" style="background:#333; color:white; border:none; padding:10px 20px; border-radius:8px;">CLOSE</button>
     </div>
     <div class="detail-grid" id="detailGrid"></div>
+    
+    <div style="margin: 10px 0 5px 0;"><label class="stat-lbl">PARTS VERIFICATION</label></div>
     <div id="partsSection"></div>
+    
+    <div style="margin: 15px 0 5px 0;"><label class="stat-lbl">PHOTOS</label></div>
     <div class="photo-row-container" id="photosGrid"></div>
+    
     <div style="border-top:1px solid #333; padding-top:20px;">
-      <input type="text" class="checker-input" id="checkerNameInput" placeholder="CHECKER NAME">
-      <textarea id="remarksInput" placeholder="REMARKS"></textarea>
+      <div class="verdict-row">
+        <button class="verdict-btn v-approve" id="btnVerified" onclick="selectVerdict('Verified')">APPROVE</button>
+        <button class="verdict-btn v-reject" id="btnRejected" onclick="selectVerdict('Rejected')">REJECT</button>
+      </div>
+      <input type="text" class="checker-input" id="checkerNameInput" placeholder="CHECKER STAFF NAME">
+      <textarea id="remarksInput" placeholder="REMARKS / REJECTION REASON"></textarea>
       <button class="submit-btn" onclick="saveVerification()">SUBMIT REPORT</button>
     </div>
   </div>
@@ -124,9 +154,14 @@
 </div>
 
 <script>
-  // UPDATED SCRIPT URL FOR YOUR KIT APP
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby2FVQwcyhqkzdqaRl7xfDaFbKoL7AAE-dSKE-WQVs-niQkwept7oUv6vSOiqeEvJ3x/exec";
   let allRecords = [];
+  let currentFilter = 'all';
+  let currentStampFilter = 'wait';
+  let currentRecord = null;
+  let selectedVerdict = null;
+
+  // Zoom Variables
   let scale = 1, posX = 0, posY = 0, lastPosX = 0, lastPosY = 0, isDragging = false;
 
   function checkPin(val) {
@@ -137,54 +172,163 @@
     }
   }
 
+  function switchTab(tab) {
+    document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    if (tab === 'verify') {
+      document.getElementById('tabVerify').classList.add('active');
+      document.getElementById('contentVerify').classList.add('active');
+    } else {
+      document.getElementById('tabStamp').classList.add('active');
+      document.getElementById('contentStamp').classList.add('active');
+      renderStampList();
+    }
+  }
+
+  function setFilter(f) {
+    currentFilter = f;
+    document.querySelectorAll('#contentVerify .stat-box').forEach(b => b.classList.remove('active-filter'));
+    document.getElementById('f' + f.charAt(0).toUpperCase() + f.slice(1)).classList.add('active-filter');
+    renderVerifyList();
+  }
+
+  function setStampFilter(f) {
+    currentStampFilter = f;
+    document.querySelectorAll('#contentStamp .stat-box').forEach(b => b.classList.remove('active-filter-stamp'));
+    document.getElementById('fs' + f.charAt(0).toUpperCase() + f.slice(1)).classList.add('active-filter-stamp');
+    renderStampList();
+  }
+
   async function loadRecords() {
     const r = await fetch(SCRIPT_URL + '?action=records');
     const d = await r.json();
     allRecords = d.records || [];
+    updateStats();
     renderVerifyList();
+    renderStampList();
+  }
+
+  function updateStats() {
+    const total = allRecords.length;
+    const ok = allRecords.filter(r => (r.status||'').includes('Verified')).length;
+    const fail = allRecords.filter(r => (r.status||'').includes('Rejected')).length;
+    document.getElementById('vStatTotal').textContent = total;
+    document.getElementById('vStatPending').textContent = total - ok - fail;
+    document.getElementById('vStatVerified').textContent = ok;
+    document.getElementById('vStatRejected').textContent = fail;
+
+    const vRecs = allRecords.filter(r => (r.status||'').includes('Verified'));
+    document.getElementById('sStatWait').textContent = vRecs.filter(r => !(r.stampStatus||'').includes('Stamped')).length;
+    document.getElementById('sStatDone').textContent = vRecs.filter(r => (r.stampStatus||'').includes('Stamped')).length;
   }
 
   function renderVerifyList() {
-    document.getElementById('verifyList').innerHTML = allRecords.map(r => `
-      <div class="record-card" onclick="openRecord(${r.row})">
-        <div class="record-header"><strong>${r.customer}</strong></div>
-        <div>PI: ${r.pi} | KIT: ${r.kitModel}</div>
-      </div>`).join('');
+    const search = document.getElementById('vSearch').value.toLowerCase();
+    const html = allRecords.filter(r => {
+      const matchesSearch = (r.customer||'').toLowerCase().includes(search) || (r.pi||'').toLowerCase().includes(search);
+      const s = (r.status||'').toLowerCase();
+      if (currentFilter === 'pending') return matchesSearch && !s.includes('verified') && !s.includes('rejected');
+      if (currentFilter === 'verified') return matchesSearch && s.includes('verified');
+      if (currentFilter === 'rejected') return matchesSearch && s.includes('rejected');
+      return matchesSearch;
+    }).map(r => {
+      const s = (r.status||'').toLowerCase();
+      const cls = s.includes('verified') ? 'verified' : s.includes('rejected') ? 'rejected' : 'pending';
+      return `<div class="record-card ${cls}" onclick="openRecord(${r.row})">
+        <div class="record-header"><span class="record-customer">${r.customer}</span><span class="status-pill ${cls}">${r.status || 'Pending'}</span></div>
+        <div style="font-size:0.85rem; color:#eee; margin-top:8px;">PI: ${r.pi} | KIT: ${r.kitModel}</div>
+      </div>`;
+    }).join('');
+    document.getElementById('verifyList').innerHTML = html;
+  }
+
+  function renderStampList() {
+    const verified = allRecords.filter(r => (r.status||'').includes('Verified'));
+    const filtered = verified.filter(r => {
+      const isStamped = (r.stampStatus||'').includes('Stamped');
+      return (currentStampFilter === 'wait') ? !isStamped : isStamped;
+    });
+
+    document.getElementById('stampList').innerHTML = filtered.map(r => `
+      <div class="stamp-card ${currentStampFilter === 'done' ? 'stamped' : ''}">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span class="record-customer" style="color:#ce93d8;">${r.customer}</span>
+          ${currentStampFilter === 'done' ? '<span style="color:#4caf50; font-weight:bold;">STAMPED ✅</span>' : ''}
+        </div>
+        <div style="font-size:0.9rem; color:#eee; margin:10px 0;">KIT: ${r.kitModel} | PI: ${r.pi}</div>
+        ${currentStampFilter === 'wait' ? `<button class="stamp-btn" onclick="markStamped(${r.row})">MARK AS STAMPED</button>` : `<div style="font-size:0.8rem; color:#888;">By: ${r.stampedBy || 'N/A'}</div>`}
+      </div>
+    `).join('') || '<div style="text-align:center; padding:40px; color:#666;">No items found</div>';
   }
 
   async function openRecord(row) {
     document.getElementById('detailModal').style.display = 'block';
     const res = await fetch(SCRIPT_URL + '?action=record&row=' + row);
     const r = await res.json();
+    currentRecord = r;
     document.getElementById('modalTitle').textContent = r.customer;
-    
-    // Build Parts Table
-    let partsHtml = '<table class="parts-table"><tr><th>Part</th><th>Status</th></tr>';
-    if(r.partsJson) {
-      const parts = JSON.parse(r.partsJson);
-      parts.forEach(p => {
-        partsHtml += `<tr><td>${p.partNo}</td><td class="${p.matchState?'ok':'fail'}">${p.matchState?'MATCH':'FAIL'}</td></tr>`;
-      });
-    }
-    partsHtml += '</table>';
-    document.getElementById('partsSection').innerHTML = partsHtml;
+    document.getElementById('detailGrid').innerHTML = `
+      <div class="detail-item"><label>PI</label><span>${r.pi}</span></div>
+      <div class="detail-item"><label>KIT MODEL</label><span>${r.kitModel}</span></div>
+      <div class="detail-item"><label>DATE</label><span>${r.packedDate}</span></div>
+      <div class="detail-item"><label>PACKED BY</label><span>${r.packedBy || 'N/A'}</span></div>
+    `;
 
-    // Build Photos with High-Res Logic
-    const photos = [
-      {lbl:'PARTS', url: r.imgPartsUrl},
-      {lbl:'BOX', url: r.imgBoxUrl},
-      {lbl:'CARTON', url: r.imgCartonUrl}
-    ];
+    // Parts Table
+    let pTable = '<table class="parts-table"><tr><th>PART NO</th><th>QTY</th><th>STATUS</th></tr>';
+    if(r.partsJson) {
+      try {
+        const parts = JSON.parse(r.partsJson);
+        parts.forEach(p => {
+          pTable += `<tr>
+            <td>${p.partNo}</td>
+            <td>${p.qty}</td>
+            <td><span class="match-tag ${p.matchState?'match-ok':'match-fail'}">${p.matchState?'MATCH':'FAIL'}</span></td>
+          </tr>`;
+        });
+      } catch(e) { pTable += '<tr><td colspan="3">Error loading parts</td></tr>'; }
+    }
+    pTable += '</table>';
+    document.getElementById('partsSection').innerHTML = pTable;
+
+    // Photos
+    const photos = [{lbl:'PARTS', url: r.imgPartsUrl}, {lbl:'INNER BOX', url: r.imgBoxUrl}, {lbl:'CARTON', url: r.imgCartonUrl}];
     document.getElementById('photosGrid').innerHTML = photos.map(p => {
       const id = (p.url||'').match(/[-\w]{25,}/);
-      if(!id) return '';
-      const thumb = `https://drive.google.com/thumbnail?id=${id[0]}&sz=800`;
-      return `<div class="photo-wrap">
-                <div class="photo-lbl">${p.lbl}</div>
-                <img src="${thumb}" onclick="openLightbox('${thumb}')">
-              </div>`;
+      const thumb = id ? `https://drive.google.com/thumbnail?id=${id[0]}&sz=800` : '';
+      return `<div class="photo-wrap"><div class="photo-lbl">${p.lbl}</div><img src="${thumb}" onclick="openLightbox('${thumb}')"></div>`;
     }).join('');
+
+    selectedVerdict = null;
+    document.getElementById('btnVerified').classList.remove('selected');
+    document.getElementById('btnRejected').classList.remove('selected');
+    document.getElementById('checkerNameInput').value = r.checker || '';
+    document.getElementById('remarksInput').value = r.remarks || '';
   }
+
+  function selectVerdict(v) {
+    selectedVerdict = v;
+    document.getElementById('btnVerified').classList.toggle('selected', v==='Verified');
+    document.getElementById('btnRejected').classList.toggle('selected', v==='Rejected');
+  }
+
+  async function saveVerification() {
+    const name = document.getElementById('checkerNameInput').value;
+    if(!name || !selectedVerdict) return alert("Required: Checker Name and Decision");
+    await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({
+      action:'verify', row:currentRecord.row, checker:name.toUpperCase(), status:selectedVerdict==='Verified'?'Verified ✅':'Rejected ❌', remarks:document.getElementById('remarksInput').value.toUpperCase()
+    })});
+    closeModal(); loadRecords();
+  }
+
+  async function markStamped(row) {
+    const staff = prompt("ENTER STAMPING STAFF NAME:");
+    if(!staff) return;
+    await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({action:'stamp', row:row, staff:staff.toUpperCase()}) });
+    loadRecords();
+  }
+
+  function closeModal() { document.getElementById('detailModal').style.display='none'; }
 
   // ZOOM & LIGHTBOX LOGIC
   const lb = document.getElementById('lightbox');
@@ -193,19 +337,17 @@
   function openLightbox(s) {
     scale = 1; posX = 0; posY = 0;
     updateTransform();
-    // THE CRITICAL FIX: Tell Drive to give high res version
+    // Swaps low-res thumbnail for high-res source
     lbImg.src = s.replace('sz=800', 'sz=w2000');
     lb.style.display = 'flex';
   }
 
   function closeLightbox() { lb.style.display = 'none'; }
-  function closeModal() { document.getElementById('detailModal').style.display = 'none'; }
 
   function updateTransform() {
     lbImg.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
   }
 
-  // Scroll to Zoom
   lb.addEventListener('wheel', e => {
     e.preventDefault();
     const delta = e.deltaY > 0 ? 0.9 : 1.1;
@@ -213,7 +355,6 @@
     updateTransform();
   });
 
-  // Drag logic
   lb.addEventListener('mousedown', e => {
     isDragging = true;
     lastPosX = e.clientX - posX;
@@ -233,7 +374,7 @@
     lbImg.style.cursor = 'grab';
   });
 
-  // Mobile Touch logic
+  // Mobile Touch Zoom
   let initialDist = 0;
   lb.addEventListener('touchstart', e => {
     if (e.touches.length === 2) {
