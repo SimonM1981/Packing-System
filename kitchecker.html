@@ -1,386 +1,263 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<title>MG KIT Packing — Checker</title>
-<style>
-* { box-sizing:border-box; }
-body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#0f0f0f; color:#e0e0e0; margin:0; padding:0; min-height:100vh; }
-h1 { text-align:center; color:#ce93d8; margin:12px 0 4px; font-size:1.4rem; }
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>MG KIT Packing — Checker</title>
+  <style>
+    * { box-sizing:border-box; }
+    body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#0f0f0f; color:#e0e0e0; margin:0; padding:0; min-height:100vh; }
+    h1 { text-align:center; color:#ce93d8; margin:12px 0 4px; font-size:1.4rem; }
 
-/* PIN SCREEN */
-#pinScreen { max-width:340px; margin:80px auto; background:#1e1e1e; border:1px solid #333; border-radius:16px; padding:32px 24px; text-align:center; }
-#pinInput { width:100%; padding:14px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; font-size:22px; text-align:center; letter-spacing:0.3em; margin-bottom:12px; }
+    /* PIN SCREEN */
+    #pinScreen { max-width:340px; margin:80px auto; background:#1e1e1e; border:1px solid #333; border-radius:16px; padding:32px 24px; text-align:center; }
+    #pinInput { width:100%; padding:14px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; font-size:22px; text-align:center; letter-spacing:0.3em; margin-bottom:12px; }
 
-/* TABS */
-#mainScreen { display:none; }
-.main-tabs { display:flex; background:#161616; border-bottom:1px solid #333; position:sticky; top:0; z-index:50; }
-.main-tab { flex:1; padding:18px 8px; text-align:center; font-size:0.9rem; font-weight:700; color:#666; cursor:pointer; border-bottom:4px solid transparent; text-transform:uppercase; }
-.main-tab.active { color:#ce93d8; border-bottom-color:#ce93d8; background:#1a1a1a; }
-.tab-content { display:none; padding:16px; }
-.tab-content.active { display:block; }
+    /* TABS */
+    #mainScreen { display:none; }
+    .main-tabs { display:flex; background:#161616; border-bottom:1px solid #333; position:sticky; top:0; z-index:50; }
+    .main-tab { flex:1; padding:18px 8px; text-align:center; font-size:0.9rem; font-weight:700; color:#666; cursor:pointer; border-bottom:4px solid transparent; text-transform:uppercase; }
+    .main-tab.active { color:#ce93d8; border-bottom-color:#ce93d8; background:#1a1a1a; }
+    .tab-content { display:none; padding:16px; }
+    .tab-content.active { display:block; }
 
-/* STATS */
-.stats-row { display:flex; gap:10px; margin-bottom:15px; }
-.stat-box { flex:1; background:#1e1e1e; border:1px solid #333; border-radius:10px; padding:15px 5px; text-align:center; cursor:pointer; }
-#fAll.active-filter { border: 2px solid #ce93d8; }
-#fPending.active-filter { border: 2px solid #ce93d8; }
-#fVerified.active-filter { border: 2px solid #4caf50; }
-#fRejected.active-filter { border: 2px solid #f44336; }
-#fsWait.active-filter-stamp { border: 2px solid #ce93d8; }
-#fsDone.active-filter-stamp { border: 2px solid #4caf50; }
-.stat-num { font-size:1.4rem; font-weight:700; display:block; color:white; }
-.stat-lbl { font-size:0.65rem; color:#888; text-transform:uppercase; margin-top:5px; display:block; }
+    /* STATS */
+    .stats-row { display:flex; gap:10px; margin-bottom:15px; }
+    .stat-box { flex:1; background:#1e1e1e; border:1px solid #333; border-radius:10px; padding:15px 5px; text-align:center; cursor:pointer; }
+    #fAll.active-filter { border: 2px solid #ce93d8; }
+    #fPending.active-filter { border: 2px solid #ce93d8; }
+    #fVerified.active-filter { border: 2px solid #4caf50; }
+    #fRejected.active-filter { border: 2px solid #f44336; }
+    .stat-num { font-size:1.4rem; font-weight:700; display:block; color:white; }
+    .stat-lbl { font-size:0.65rem; color:#888; text-transform:uppercase; margin-top:5px; display:block; }
 
-/* LIST CARDS */
-.record-card { background:#1e1e1e; border:1px solid #333; border-left:4px solid #555; border-radius:12px; padding:14px; margin-bottom:10px; cursor:pointer; }
-.record-card.verified { border-left-color:#4caf50; }
-.record-card.rejected { border-left-color:#f44336; }
-.record-card.pending { border-left-color:#ff9800; }
-.record-header { display:flex; justify-content:space-between; align-items:center; }
-.record-customer { font-weight:700; color:#ce93d8; font-size:1.1rem; }
-.status-pill { padding:3px 8px; border-radius:10px; font-size:0.7rem; font-weight:bold; color:white; }
-.status-pill.verified { background:#2e7d32; }
-.status-pill.rejected { background:#b71c1c; }
-.status-pill.pending { background:#e65100; }
+    /* LIST CARDS */
+    .record-card { background:#1e1e1e; border:1px solid #333; border-left:4px solid #555; border-radius:12px; padding:14px; margin-bottom:10px; cursor:pointer; }
+    .record-card.verified { border-left-color:#4caf50; }
+    .record-card.rejected { border-left-color:#f44336; }
+    .record-card.pending  { border-left-color:#ff9800; }
+    .record-header { display:flex; justify-content:space-between; align-items:center; }
+    .record-customer { font-weight:700; color:#ce93d8; font-size:1.1rem; }
+    .status-pill { padding:3px 8px; border-radius:10px; font-size:0.7rem; font-weight:bold; color:white; }
+    .status-pill.verified { background:#2e7d32; }
+    .status-pill.rejected { background:#b71c1c; }
+    .status-pill.pending  { background:#e65100; }
 
-/* DETAIL MODAL */
-#detailModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:100; overflow-y:auto; padding:10px; display:none; }
-.modal-card { background:#1e1e1e; border-radius:14px; padding:20px; max-width:900px; margin:0 auto 40px; border:1px solid #333; }
-.detail-grid { display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:20px; }
-.detail-item label { display:block; font-size:0.65rem; color:#888; text-transform:uppercase; margin-bottom:4px; }
-.detail-item span { font-size:1.1rem; font-weight:bold; color:#eee; }
+    /* DETAIL MODAL */
+    #detailModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:100; overflow-y:auto; padding:10px; display:none; }
+    .modal-card { background:#1e1e1e; border-radius:14px; padding:20px; max-width:900px; margin:0 auto 40px; border:1px solid #333; }
+    .detail-grid { display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:20px; }
+    .detail-item label { display:block; font-size:0.65rem; color:#888; text-transform:uppercase; margin-bottom:4px; }
+    .detail-item span { font-size:1.1rem; font-weight:bold; color:#eee; }
 
-/* PARTS TABLE */
-.parts-table { width:100%; border-collapse:collapse; margin-bottom:20px; }
-.parts-table th { background:#2a2a2a; color:#ce93d8; font-size:0.75rem; padding:10px; text-align:left; border-bottom:2px solid #444; }
-.parts-table td { padding:10px; border-bottom:1px solid #333; font-size:0.9rem; }
-.parts-table td.ok { color:#4caf50; font-weight:bold; }
-.parts-table td.fail { color:#f44336; font-weight:bold; }
+    /* PARTS TABLE */
+    .parts-table { width:100%; border-collapse:collapse; margin-bottom:20px; }
+    .parts-table th { background:#2a2a2a; color:#ce93d8; font-size:0.75rem; padding:10px; text-align:left; border-bottom:2px solid #444; }
+    .parts-table td { padding:10px; border-bottom:1px solid #333; font-size:0.9rem; }
+    .parts-table td.ok { color:#4caf50; font-weight:bold; }
+    .parts-table td.fail { color:#f44336; font-weight:bold; }
 
-/* BARCODE ROWS */
-.barcode-check { display:flex; align-items:center; background:#2a2a2a; border-radius:8px; padding:12px; margin-bottom:8px; justify-content:space-between; }
-.bc-badge { font-size:0.75rem; font-weight:bold; padding:5px 12px; border-radius:6px; border:1px solid #4caf50; color:#4caf50; }
+    /* PHOTOS */
+    .photo-row-container { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; justify-content: space-between; overflow: hidden; }
+    .photo-wrap { flex: 1; width: calc(33.33% - 7px); text-align:center; background:#111; padding:8px; border-radius:10px; border:1px solid #333; }
+    .photo-wrap img { width:100%; height:auto; aspect-ratio: 1/1; object-fit:cover; border-radius:6px; cursor:pointer; }
+    .photo-lbl { font-size:0.8rem; font-weight:bold; margin-bottom:5px; color:#ce93d8; text-transform:uppercase; }
 
-/* PHOTOS */
-.photo-row-container { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; justify-content: space-between; overflow: hidden; }
-.photo-wrap { flex: 1; width: calc(33.33% - 7px); text-align:center; background:#111; padding:8px; border-radius:10px; border:1px solid #333; }
-.photo-wrap img { width:100%; height:auto; aspect-ratio: 1/1; object-fit:cover; border-radius:6px; cursor:pointer; transition: transform 0.2s; }
-.photo-wrap img:active { transform: scale(0.95); }
-.photo-lbl { font-size:0.8rem; font-weight:bold; margin-bottom:5px; color:#ce93d8; text-transform:uppercase; }
+    /* LIGHTBOX WITH ZOOM */
+    #lightbox { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:1000; display:none; align-items:center; justify-content:center; overflow: hidden; touch-action: none; }
+    #lightbox img { max-width:100%; max-height:100%; object-fit: contain; transform-origin: center center; transition: transform 0.1s ease-out; cursor: grab; }
+    .close-lb { position: absolute; top: 20px; right: 20px; background: #444; color: white; border: none; padding: 12px 20px; border-radius: 8px; z-index: 1001; font-weight: bold; }
 
-/* VERDICT */
-.verdict-row { display:flex; gap:12px; margin-bottom:15px; }
-.verdict-btn { flex:1; padding:20px; border:none; border-radius:10px; font-weight:bold; color:white; cursor:pointer; font-size:1rem; transition: 0.2s; opacity:0.6; }
-.verdict-btn.v-approve { background:#2e7d32; border: 2px solid #4caf50; }
-.verdict-btn.v-reject { background:#b71c1c; border: 2px solid #f44336; }
-.verdict-btn.selected { opacity:1; border-width:3px; outline: 2px solid white; }
-
-.checker-input { width:100%; padding:15px; background:#1a1a1a; border:1px solid #444; border-radius:8px; color:white; margin-bottom:12px; font-size:1rem; }
-textarea { width:100%; height:100px; background:#1a1a1a; border:1px solid #444; border-radius:8px; color:white; padding:15px; font-size:1rem; }
-.submit-btn { width:100%; padding:20px; background:#1565c0; color:white; border:none; border-radius:12px; font-weight:bold; font-size:1.1rem; cursor:pointer; }
-
-/* STAMP */
-.stamp-card { background:#1e1e1e; border:1px solid #333; border-left:4px solid #ff9800; border-radius:12px; padding:16px; margin-bottom:12px; }
-.stamp-btn { width:100%; padding:15px; background:#1565c0; color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer; margin-top:10px; }
-
-/* LIGHTBOX */
-#lightbox { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:1000; display:none; align-items:center; justify-content:center; flex-direction: column; }
-#lightbox img { max-width:95%; max-height:85vh; object-fit:contain; border-radius:8px; border: 1px solid #444; }
-.close-lb { position:absolute; top:20px; right:20px; background:#b71c1c; color:white; border:none; padding:12px 20px; border-radius:8px; font-weight:bold; cursor:pointer; z-index: 1001; }
-
-.toolbar input { width:100%; padding:12px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; margin-bottom:12px; }
-</style>
+    .submit-btn { width:100%; padding:20px; background:#1565c0; color:white; border:none; border-radius:12px; font-weight:bold; font-size:1.1rem; cursor:pointer; }
+    .checker-input { width:100%; padding:15px; background:#1a1a1a; border:1px solid #444; border-radius:8px; color:white; margin-bottom:12px; }
+    textarea { width:100%; height:100px; background:#1a1a1a; border:1px solid #444; border-radius:8px; color:white; padding:15px; }
+  </style>
 </head>
 <body>
 
 <div id="pinScreen">
-<h2 style="color:#ce93d8">MG KIT CHECKER</h2>
-<input type="password" id="pinInput" maxlength="4" oninput="checkPin(this.value)" inputmode="numeric" placeholder="PIN">
+  <h2 style="color:#ce93d8">MG KIT CHECKER</h2>
+  <input type="password" id="pinInput" maxlength="4" oninput="checkPin(this.value)" inputmode="numeric" placeholder="PIN">
 </div>
 
 <div id="mainScreen">
-<div class="main-tabs">
-<div class="main-tab active" id="tabVerify" onclick="switchTab('verify')">Check List</div>
-<div class="main-tab" id="tabStamp" onclick="switchTab('stamp')">Stamping</div>
-</div>
+  <div class="main-tabs">
+    <div class="main-tab active" onclick="switchTab('verify')">Check List</div>
+    <div class="main-tab" onclick="switchTab('stamp')">Stamping</div>
+  </div>
 
-<div class="tab-content active" id="contentVerify">
-<div class="stats-row">
-<div class="stat-box active-filter" id="fAll" onclick="setFilter('all')"><span class="stat-num" id="vStatTotal">-</span><span class="stat-lbl">ALL</span></div>
-<div class="stat-box" id="fPending" onclick="setFilter('pending')"><span class="stat-num" id="vStatPending">-</span><span class="stat-lbl">PENDING</span></div>
-<div class="stat-box" id="fVerified" onclick="setFilter('verified')"><span class="stat-num" id="vStatVerified">-</span><span class="stat-lbl">PASS</span></div>
-<div class="stat-box" id="fRejected" onclick="setFilter('rejected')"><span class="stat-num" id="vStatRejected">-</span><span class="stat-lbl">FAIL</span></div>
-</div>
-<div class="toolbar"><input type="text" id="vSearch" placeholder="Search Customer, PI or KIT Model..." oninput="renderVerifyList()"></div>
-<div id="verifyList"></div>
-</div>
+  <div class="tab-content active" id="contentVerify">
+    <div class="stats-row">
+      <div class="stat-box active-filter" id="fAll" onclick="setFilter('all')"><span class="stat-num" id="vStatTotal">-</span><span class="stat-lbl">ALL</span></div>
+      <div class="stat-box" id="fPending" onclick="setFilter('pending')"><span class="stat-num" id="vStatPending">-</span><span class="stat-lbl">PENDING</span></div>
+      <div class="stat-box" id="fVerified" onclick="setFilter('verified')"><span class="stat-num" id="vStatVerified">-</span><span class="stat-lbl">PASS</span></div>
+      <div class="stat-box" id="fRejected" onclick="setFilter('rejected')"><span class="stat-num" id="vStatRejected">-</span><span class="stat-lbl">FAIL</span></div>
+    </div>
+    <div id="verifyList"></div>
+  </div>
 
-<div class="tab-content" id="contentStamp">
-<div class="stats-row">
-<div class="stat-box active-filter-stamp" id="fsWait" onclick="setStampFilter('wait')"><span class="stat-num" id="sStatWait">-</span><span class="stat-lbl">WAIT STAMP</span></div>
-<div class="stat-box" id="fsDone" onclick="setStampFilter('done')"><span class="stat-num" id="sStatDone">-</span><span class="stat-lbl">STAMPED</span></div>
-</div>
-<div id="stampList"></div>
-</div>
+  <div class="tab-content" id="contentStamp">
+    <div id="stampList"></div>
+  </div>
 </div>
 
 <div id="detailModal">
-<div class="modal-card">
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-<h2 id="modalTitle" style="margin:0; color:#ce93d8;"></h2>
-<button onclick="closeModal()" style="background:#333; color:white; border:none; padding:10px 20px; border-radius:8px;">CLOSE</button>
-</div>
-<div class="detail-grid" id="detailGrid"></div>
-
-<div style="margin:15px 0 5px;"><label style="font-size:0.65rem; color:#888; text-transform:uppercase;">KIT PARTS</label></div>
-<div id="partsSection"></div>
-
-<div id="barcodeChecks"></div>
-
-<div style="margin: 15px 0 5px 0;"><label style="font-size:0.65rem; color:#888; text-transform:uppercase;">PHOTOS (Click to view full size)</label></div>
-<div class="photo-row-container" id="photosGrid"></div>
-
-<div style="border-top:1px solid #333; padding-top:20px;">
-<div class="verdict-row">
-<button class="verdict-btn v-approve" id="btnVerified" onclick="selectVerdict('Verified')">APPROVE</button>
-<button class="verdict-btn v-reject" id="btnRejected" onclick="selectVerdict('Rejected')">REJECT</button>
-</div>
-<input type="text" class="checker-input" id="checkerNameInput" placeholder="CHECKER STAFF NAME">
-<textarea id="remarksInput" placeholder="REMARKS / REJECTION REASON"></textarea>
-<button class="submit-btn" onclick="saveVerification()">SUBMIT REPORT</button>
-</div>
-</div>
+  <div class="modal-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <h2 id="modalTitle" style="margin:0; color:#ce93d8;"></h2>
+      <button onclick="closeModal()">CLOSE</button>
+    </div>
+    <div class="detail-grid" id="detailGrid"></div>
+    <div id="partsSection"></div>
+    <div class="photo-row-container" id="photosGrid"></div>
+    <div style="border-top:1px solid #333; padding-top:20px;">
+      <input type="text" class="checker-input" id="checkerNameInput" placeholder="CHECKER NAME">
+      <textarea id="remarksInput" placeholder="REMARKS"></textarea>
+      <button class="submit-btn" onclick="saveVerification()">SUBMIT REPORT</button>
+    </div>
+  </div>
 </div>
 
-<div id="lightbox" onclick="closeLightbox()">
-<button class="close-lb" onclick="closeLightbox()">CLOSE</button>
-<img id="lightboxImg" src="">
-<p id="lbLoading" style="color: white; margin-top: 10px; display:none;">Loading Full Image...</p>
+<div id="lightbox">
+  <button class="close-lb" onclick="closeLightbox()">CLOSE</button>
+  <img id="lightboxImg">
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby2FVQwcyhqkzdqaRl7xfDaFbKoL7AAE-dSKE-WQVs-niQkwept7oUv6vSOiqeEvJ3x/exec";
-let allRecords = [];
-let currentFilter = 'all';
-let currentStampFilter = 'wait';
-let currentRecord = null;
-let selectedVerdict = null;
+  // UPDATED SCRIPT URL FOR YOUR KIT APP
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby2FVQwcyhqkzdqaRl7xfDaFbKoL7AAE-dSKE-WQVs-niQkwept7oUv6vSOiqeEvJ3x/exec";
+  let allRecords = [];
+  let scale = 1, posX = 0, posY = 0, lastPosX = 0, lastPosY = 0, isDragging = false;
 
-function checkPin(val) {
-if (val === "1234") {
-document.getElementById('pinScreen').style.display = 'none';
-document.getElementById('mainScreen').style.display = 'block';
-loadRecords();
-}
-}
+  function checkPin(val) {
+    if (val === "1234") {
+      document.getElementById('pinScreen').style.display = 'none';
+      document.getElementById('mainScreen').style.display = 'block';
+      loadRecords();
+    }
+  }
 
-function switchTab(tab) {
-document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
-document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-if (tab === 'verify') {
-document.getElementById('tabVerify').classList.add('active');
-document.getElementById('contentVerify').classList.add('active');
-} else {
-document.getElementById('tabStamp').classList.add('active');
-document.getElementById('contentStamp').classList.add('active');
-renderStampList();
-}
-}
+  async function loadRecords() {
+    const r = await fetch(SCRIPT_URL + '?action=records');
+    const d = await r.json();
+    allRecords = d.records || [];
+    renderVerifyList();
+  }
 
-function setFilter(f) {
-currentFilter = f;
-document.querySelectorAll('#contentVerify .stat-box').forEach(b => b.classList.remove('active-filter'));
-document.getElementById('f' + f.charAt(0).toUpperCase() + f.slice(1)).classList.add('active-filter');
-renderVerifyList();
-}
+  function renderVerifyList() {
+    document.getElementById('verifyList').innerHTML = allRecords.map(r => `
+      <div class="record-card" onclick="openRecord(${r.row})">
+        <div class="record-header"><strong>${r.customer}</strong></div>
+        <div>PI: ${r.pi} | KIT: ${r.kitModel}</div>
+      </div>`).join('');
+  }
 
-function setStampFilter(f) {
-currentStampFilter = f;
-document.querySelectorAll('#contentStamp .stat-box').forEach(b => b.classList.remove('active-filter-stamp'));
-document.getElementById('fs' + f.charAt(0).toUpperCase() + f.slice(1)).classList.add('active-filter-stamp');
-renderStampList();
-}
+  async function openRecord(row) {
+    document.getElementById('detailModal').style.display = 'block';
+    const res = await fetch(SCRIPT_URL + '?action=record&row=' + row);
+    const r = await res.json();
+    document.getElementById('modalTitle').textContent = r.customer;
+    
+    // Build Parts Table
+    let partsHtml = '<table class="parts-table"><tr><th>Part</th><th>Status</th></tr>';
+    if(r.partsJson) {
+      const parts = JSON.parse(r.partsJson);
+      parts.forEach(p => {
+        partsHtml += `<tr><td>${p.partNo}</td><td class="${p.matchState?'ok':'fail'}">${p.matchState?'MATCH':'FAIL'}</td></tr>`;
+      });
+    }
+    partsHtml += '</table>';
+    document.getElementById('partsSection').innerHTML = partsHtml;
 
-async function loadRecords() {
-try {
-const r = await fetch(SCRIPT_URL + '?action=records');
-const d = await r.json();
-allRecords = d.records || [];
-updateStats();
-renderVerifyList();
-renderStampList();
-} catch(e) { console.error("Error loading records:", e); }
-}
+    // Build Photos with High-Res Logic
+    const photos = [
+      {lbl:'PARTS', url: r.imgPartsUrl},
+      {lbl:'BOX', url: r.imgBoxUrl},
+      {lbl:'CARTON', url: r.imgCartonUrl}
+    ];
+    document.getElementById('photosGrid').innerHTML = photos.map(p => {
+      const id = (p.url||'').match(/[-\w]{25,}/);
+      if(!id) return '';
+      const thumb = `https://drive.google.com/thumbnail?id=${id[0]}&sz=800`;
+      return `<div class="photo-wrap">
+                <div class="photo-lbl">${p.lbl}</div>
+                <img src="${thumb}" onclick="openLightbox('${thumb}')">
+              </div>`;
+    }).join('');
+  }
 
-function updateStats() {
-const total = allRecords.length;
-const ok = allRecords.filter(r => (r.status||'').includes('Verified')).length;
-const fail = allRecords.filter(r => (r.status||'').includes('Rejected')).length;
-document.getElementById('vStatTotal').textContent = total;
-document.getElementById('vStatPending').textContent = total - ok - fail;
-document.getElementById('vStatVerified').textContent = ok;
-document.getElementById('vStatRejected').textContent = fail;
+  // ZOOM & LIGHTBOX LOGIC
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
 
-const vRecs = allRecords.filter(r => (r.status||'').includes('Verified'));
-document.getElementById('sStatWait').textContent = vRecs.filter(r => !(r.stampStatus||'').includes('Stamped')).length;
-document.getElementById('sStatDone').textContent = vRecs.filter(r => (r.stampStatus||'').includes('Stamped')).length;
-}
+  function openLightbox(s) {
+    scale = 1; posX = 0; posY = 0;
+    updateTransform();
+    // THE CRITICAL FIX: Tell Drive to give high res version
+    lbImg.src = s.replace('sz=800', 'sz=w2000');
+    lb.style.display = 'flex';
+  }
 
-function renderVerifyList() {
-const search = document.getElementById('vSearch').value.toLowerCase();
-const html = allRecords.filter(r => {
-const matchesSearch = (r.customer||'').toLowerCase().includes(search) || (r.pi||'').toLowerCase().includes(search) || (r.kitModel||'').toLowerCase().includes(search);
-const s = (r.status||'').toLowerCase();
-if (currentFilter === 'pending') return matchesSearch && !s.includes('verified') && !s.includes('rejected');
-if (currentFilter === 'verified') return matchesSearch && s.includes('verified');
-if (currentFilter === 'rejected') return matchesSearch && s.includes('rejected');
-return matchesSearch;
-}).map(r => {
-const s = (r.status||'').toLowerCase();
-const cls = s.includes('verified') ? 'verified' : s.includes('rejected') ? 'rejected' : 'pending';
-const parts = r.partsJson ? JSON.parse(r.partsJson).length + ' parts' : 'N/A';
-return `<div class="record-card ${cls}" onclick="openRecord(${r.row})">
-<div class="record-header"><span class="record-customer">${r.customer}</span><span class="status-pill ${cls}">${r.status || 'Pending'}</span></div>
-<div style="font-size:0.85rem; color:#eee; margin-top:8px;">PI: ${r.pi} | KIT: ${r.kitModel} | ${parts}</div>
-<div style="font-size:0.8rem; color:#888; margin-top:4px;">Carton: ${r.cartonId} | Qty: ${r.kitQty} sets</div>
-</div>`;
-}).join('');
-document.getElementById('verifyList').innerHTML = html || '<div style="text-align:center; padding:40px; color:#666;">No records found</div>';
-}
+  function closeLightbox() { lb.style.display = 'none'; }
+  function closeModal() { document.getElementById('detailModal').style.display = 'none'; }
 
-function renderStampList() {
-const verified = allRecords.filter(r => (r.status||'').includes('Verified'));
-const filtered = verified.filter(r => {
-const isStamped = (r.stampStatus||'').includes('Stamped');
-return (currentStampFilter === 'wait') ? !isStamped : isStamped;
-});
+  function updateTransform() {
+    lbImg.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+  }
 
-document.getElementById('stampList').innerHTML = filtered.map(r => `
-<div class="stamp-card ${currentStampFilter === 'done' ? 'stamped' : ''}">
-<div style="display:flex; justify-content:space-between; align-items:center;">
-<span class="record-customer" style="color:#ce93d8;">${r.customer}</span>
-${currentStampFilter === 'done' ? '<span style="color:#4caf50; font-weight:bold;">STAMPED ✅</span>' : ''}
-</div>
-<div style="font-size:0.9rem; color:#eee; margin:10px 0;">CARTON: ${r.cartonId} | PI: ${r.pi} | KIT: ${r.kitModel}</div>
-${currentStampFilter === 'wait' ? `<button class="stamp-btn" onclick="markStamped(${r.row})">MARK AS STAMPED</button>` : `<div style="font-size:0.8rem; color:#888;">By: ${r.stampedBy || 'N/A'}</div>`}
-</div>
-`).join('') || '<div style="text-align:center; padding:40px; color:#666;">No items found</div>';
-}
+  // Scroll to Zoom
+  lb.addEventListener('wheel', e => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    scale = Math.min(Math.max(1, scale * delta), 5);
+    updateTransform();
+  });
 
-async function openRecord(row) {
-document.getElementById('detailModal').style.display = 'block';
-const res = await fetch(SCRIPT_URL + '?action=record&row=' + row);
-const r = await res.json();
-currentRecord = r;
-document.getElementById('modalTitle').textContent = r.customer + ' — ' + r.kitModel;
+  // Drag logic
+  lb.addEventListener('mousedown', e => {
+    isDragging = true;
+    lastPosX = e.clientX - posX;
+    lastPosY = e.clientY - posY;
+    lbImg.style.cursor = 'grabbing';
+  });
 
-document.getElementById('detailGrid').innerHTML = `
-<div class="detail-item"><label>PI</label><span>${r.pi}</span></div>
-<div class="detail-item"><label>TEAM</label><span>${r.checkerBy || 'N/A'}</span></div>
-<div class="detail-item"><label>DATE</label><span>${r.packedDate}</span></div>
-<div class="detail-item"><label>CARTON</label><span>${r.cartonId}</span></div>
-<div class="detail-item"><label>PACKED BY</label><span>${r.packedBy || 'N/A'}</span></div>
-<div class="detail-item"><label>QTY</label><span>${r.kitQty || '0'} SETS</span></div>
-`;
+  window.addEventListener('mousemove', e => {
+    if (!isDragging || scale <= 1) return;
+    posX = e.clientX - lastPosX;
+    posY = e.clientY - lastPosY;
+    updateTransform();
+  });
 
-// Parts table logic
-let partsHtml = '<table class="parts-table"><thead><tr><th>Part No.</th><th>Bag Barcode</th><th>Status</th></tr></thead><tbody>';
-if (r.partsJson) {
-try {
-const parts = JSON.parse(r.partsJson);
-parts.forEach(p => {
-const ok = p.matchState === true || p.matchState === "true";
-partsHtml += `<tr><td>${p.partNo}</td><td>${p.bagBarcode}</td><td class="${ok ? 'ok' : 'fail'}">${ok ? '✅ MATCH' : '❌ MISMATCH'}</td></tr>`;
-});
-} catch(e) { console.error("JSON Error", e); }
-}
-partsHtml += '</tbody></table>';
-document.getElementById('partsSection').innerHTML = partsHtml;
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+    lbImg.style.cursor = 'grab';
+  });
 
-// Barcodes
-const barcodes = [{l:'INNER BOX', v:r.innerBox}, {l:'OUTER CARTON', v:r.outerCarton}];
-document.getElementById('barcodeChecks').innerHTML = barcodes.map(b => `
-<div class="barcode-check"><span style="color:#888;">${b.l}</span><span style="font-weight:bold;">${b.v || '-'}</span><span class="bc-badge">CHECKED</span></div>
-`).join('');
+  // Mobile Touch logic
+  let initialDist = 0;
+  lb.addEventListener('touchstart', e => {
+    if (e.touches.length === 2) {
+      initialDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
+    } else {
+      isDragging = true;
+      lastPosX = e.touches[0].pageX - posX;
+      lastPosY = e.touches[0].pageY - posY;
+    }
+  });
 
-// PHOTOS LOGIC - FIXED FOR HIGH RES
-const photoSources = [
-{lbl:'ALL PARTS', url: r.imgPartsUrl},
-{lbl:'INNER BOX', url: r.imgBoxUrl},
-{lbl:'CARTON', url: r.imgCartonUrl}
-];
+  lb.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (e.touches.length === 2) {
+      const dist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
+      scale = Math.min(Math.max(1, (dist / initialDist)), 5);
+    } else if (isDragging && scale > 1) {
+      posX = e.touches[0].pageX - lastPosX;
+      posY = e.touches[0].pageY - lastPosY;
+    }
+    updateTransform();
+  });
 
-document.getElementById('photosGrid').innerHTML = photoSources.map(p => {
-const idMatch = (p.url || '').match(/[-\w]{25,}/);
-const fileId = idMatch ? idMatch[0] : null;
-const thumb = fileId ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w400` : '';
-return `
-<div class="photo-wrap">
-<div class="photo-lbl">${p.lbl}</div>
-<img src="${thumb}" onclick="event.stopPropagation(); openLightbox('${fileId}')" onerror="this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='">
-</div>`;
-}).join('');
-
-selectedVerdict = null;
-document.getElementById('btnVerified').classList.remove('selected');
-document.getElementById('btnRejected').classList.remove('selected');
-document.getElementById('checkerNameInput').value = r.checker || '';
-document.getElementById('remarksInput').value = r.remarks || '';
-}
-
-function selectVerdict(v) {
-selectedVerdict = v;
-document.getElementById('btnVerified').classList.toggle('selected', v==='Verified');
-document.getElementById('btnRejected').classList.toggle('selected', v==='Rejected');
-}
-
-async function saveVerification() {
-const name = document.getElementById('checkerNameInput').value;
-if(!name || !selectedVerdict) return alert("Required: Checker Name and Decision");
-const statusTxt = selectedVerdict==='Verified'?'Verified ✅':'Rejected ❌';
-await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({
-action:'verify', row:currentRecord.row, checker:name.toUpperCase(), status:statusTxt, remarks:document.getElementById('remarksInput').value.toUpperCase()
-})});
-closeModal(); loadRecords();
-}
-
-async function markStamped(row) {
-const staff = prompt("ENTER STAMPING STAFF NAME:");
-if(!staff) return;
-await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({action:'stamp', row:row, staff:staff.toUpperCase()}) });
-loadRecords();
-}
-
-function closeModal() { document.getElementById('detailModal').style.display='none'; }
-
-// LIGHTBOX FIX - ALWAYS SHOWS FULL IMAGE
-function openLightbox(fileId) {
-if (!fileId || fileId === 'null') return;
-const lb = document.getElementById('lightbox');
-const img = document.getElementById('lightboxImg');
-const loader = document.getElementById('lbLoading');
-
-// Force high-res direct view URL
-const fullUrl = `https://drive.google.com/uc?export=view&id=${fileId}`;
-
-img.style.display = 'none';
-loader.style.display = 'block';
-img.src = fullUrl;
-
-img.onload = function() {
-loader.style.display = 'none';
-img.style.display = 'block';
-};
-
-lb.style.display = 'flex';
-}
-
-function closeLightbox() {
-document.getElementById('lightbox').style.display = 'none';
-document.getElementById('lightboxImg').src = "";
-}
+  lb.addEventListener('touchend', () => { isDragging = false; });
 </script>
 </body>
 </html>
