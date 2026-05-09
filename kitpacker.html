@@ -862,10 +862,23 @@ allFilled = false;
 if (!firstEmpty) firstEmpty = el;
 }
 });
-kitParts.forEach((p, idx) => {
-if (!p.partNo.trim() || !p.bagBarcode.trim()) {
+// Only check parts that have been started (have a partNo entered)
+// Empty parts (user added but didn't fill) are ignored
+const activeParts = kitParts.filter(p => p.partNo.trim() !== '');
+if (activeParts.length < MIN_PARTS) {
 allFilled = false;
-if (!firstEmpty) firstEmpty = document.getElementById('partNo_' + idx);
+// Find first empty partNo field
+for (let i = 0; i < kitParts.length; i++) {
+if (!kitParts[i].partNo.trim()) {
+if (!firstEmpty) firstEmpty = document.getElementById('partNo_' + i);
+break;
+}
+}
+}
+activeParts.forEach((p, idx) => {
+if (!p.bagBarcode.trim()) {
+allFilled = false;
+if (!firstEmpty) firstEmpty = document.getElementById('bag_' + idx);
 }
 });
 return { allFilled, firstEmpty };
@@ -873,8 +886,10 @@ return { allFilled, firstEmpty };
 
 function updateSubmitButton() {
 const { allFilled } = validateRequiredFields();
-const allPartsMatch = kitParts.every(p => p.matchState === true);
-const anyPartFail = kitParts.some(p => p.matchState === false);
+// Only check active parts (with partNo entered) for matching
+const activeParts = kitParts.filter(p => p.partNo.trim() !== '');
+const allPartsMatch = activeParts.every(p => p.matchState === true);
+const anyPartFail = activeParts.some(p => p.matchState === false);
 const innerOk = document.getElementById('innerBox')?.classList.contains('match');
 const outerOk = document.getElementById('outerCarton')?.classList.contains('match');
 const boxMatch = innerOk && outerOk;
@@ -893,7 +908,8 @@ document.getElementById('blockerNotice').style.display = (anyPartFail || anyBoxF
 function updateSteps() {
 const staffOk = !!(document.getElementById('packedBy').value && document.getElementById('checkerBy').value);
 const orderOk = !!(document.getElementById('cartonId').value && document.getElementById('kitModel').value);
-const partsOk = kitParts.length >= MIN_PARTS && kitParts.every(p => p.matchState === true);
+const activeParts = kitParts.filter(p => p.partNo.trim() !== '');
+const partsOk = activeParts.length >= MIN_PARTS && activeParts.every(p => p.matchState === true);
 const boxOk = document.getElementById('innerBox')?.classList.contains('match') && document.getElementById('outerCarton')?.classList.contains('match');
 const photosOk = !!(photoData.imgParts && photoData.imgBox && photoData.imgCarton);
 
