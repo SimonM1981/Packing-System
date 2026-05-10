@@ -367,8 +367,15 @@ async function lookupPartMasterByBag(partId, bagValue) {
     if (result.found) {
       pd.masterData = result;
       document.getElementById('partNo_' + partId).value = String(result.partNo || "").toUpperCase();
-      document.getElementById('pi_' + partId).value = String(result.pi || "").toUpperCase();
-      document.getElementById('customer').value = String(result.customer || document.getElementById('customer').value).toUpperCase();
+      // Only auto-fill PI if the master actually has one — MCX rows have empty PI
+      if (result.pi && result.pi.trim() !== "") {
+        document.getElementById('pi_' + partId).value = String(result.pi).toUpperCase();
+      }
+      // Auto-fill customer only if not already set
+      if (result.customer && result.customer.trim() !== "") {
+        const custEl = document.getElementById('customer');
+        if (!custEl.value.trim()) custEl.value = String(result.customer).toUpperCase();
+      }
       document.getElementById('partNoNote_' + partId).style.display = 'block';
 
       const bagOk = String(bagValue).toUpperCase() === String(result.bagBarcode).toUpperCase();
@@ -514,35 +521,40 @@ function validateAll() {
     }
   });
 
-  if (!cartonPhoto.imgCarton) allFilled = false;
-
   const partIds = Object.keys(partsData);
-  if (partIds.length === 0) allFilled = false;
+  // Must have 1–10 parts
+  if (partIds.length === 0 || partIds.length > 10) allFilled = false;
 
   partIds.forEach(pid => {
     const pd = partsData[pid];
-    const fields = ['pi', 'partNo', 'bag', 'inner', 'outer'];
-    fields.forEach(f => {
+
+    // partNo and barcodes are required; PI is optional (some masters have no PI)
+    const requiredFields = ['partNo', 'bag', 'inner', 'outer'];
+    requiredFields.forEach(f => {
       const el = document.getElementById(f + '_' + pid);
-      if (!el.value.trim()) {
+      if (!el || !el.value.trim()) {
         allFilled = false;
-        el.classList.add('required-empty');
+        if (el) el.classList.add('required-empty');
       } else {
         el.classList.remove('required-empty');
       }
     });
 
-    const qtyEl = document.getElementById('qty_' + pid);
-    if (!qtyEl.value || qtyEl.value < 1) allFilled = false;
-    if (!pd.photos.imgBag || !pd.photos.imgInner) allFilled = false;
+    // PI: only required if user typed something or master returned one
+    const piEl = document.getElementById('pi_' + pid);
+    if (piEl) piEl.classList.remove('required-empty'); // PI is optional
 
+    const qtyEl = document.getElementById('qty_' + pid);
+    if (!qtyEl.value || parseInt(qtyEl.value) < 1) allFilled = false;
+
+    // Match states must all be verified (true), not failed (false) or pending (null)
     const ms = pd.matchState;
     if (ms.bag === false || ms.inner === false || ms.outer === false) anyFail = true;
     if (ms.bag !== true || ms.inner !== true || ms.outer !== true) allFilled = false;
   });
 
   const btn = document.getElementById('submitBtn');
-  const canSubmit = allFilled && !anyFail && partIds.length > 0;
+  const canSubmit = allFilled && !anyFail && partIds.length > 0 && partIds.length <= 10;
 
   btn.className = 'submit-btn ' + (canSubmit ? 'ready' : 'blocked');
   btn.disabled = !canSubmit;
@@ -566,12 +578,10 @@ function updateSteps() {
     partIds.forEach(pid => {
       const pd = partsData[pid];
       if (pd.matchState.bag !== true || pd.matchState.inner !== true || pd.matchState.outer !== true) s3 = false;
-      if (!pd.photos.imgBag || !pd.photos.imgInner) s4 = false;
     });
+    // Step 4: all barcodes verified AND part count valid (1-10)
+    s4 = s3 && partIds.length >= 1 && partIds.length <= 10;
   }
-
-  const cartonPhotoOk = !!cartonPhoto.imgCarton;
-  if (!cartonPhotoOk) s4 = false;
 
   const steps = [s1, s2, s3, s4];
   steps.forEach((done, i) => {
