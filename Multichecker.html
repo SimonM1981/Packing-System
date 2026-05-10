@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>MG Multi Checker</title>
+  <style>
+    * { box-sizing:border-box; }
+    body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#0f0f0f; color:#e0e0e0; margin:0; padding:0; min-height:100vh; }
+    h1 { text-align:center; color:#ffb74d; margin:12px 0 4px; font-size:1.4rem; }
+
+    /* PIN SCREEN */
+    #pinScreen { max-width:340px; margin:80px auto; background:#1e1e1e; border:1px solid #333; border-radius:16px; padding:32px 24px; text-align:center; }
+    #pinInput { width:100%; padding:14px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; font-size:22px; text-align:center; letter-spacing:0.3em; margin-bottom:12px; }
+    #pinError { color:#f44336; font-size:0.85rem; margin-top:8px; display:none; }
+
+    /* TABS */
+    #mainScreen { display:none; }
+    .main-tabs { display:flex; background:#161616; border-bottom:1px solid #333; position:sticky; top:0; z-index:50; }
+    .main-tab { flex:1; padding:18px 8px; text-align:center; font-size:0.9rem; font-weight:700; color:#666; cursor:pointer; border-bottom:4px solid transparent; text-transform:uppercase; }
+    .main-tab.active { color:#ffb74d; border-bottom-color:#ffb74d; background:#1a1a1a; }
+    .tab-content { display:none; padding:16px; }
+    .tab-content.active { display:block; }
+
+    /* STATS */
+    .stats-row { display:flex; gap:10px; margin-bottom:15px; }
+    .stat-box { flex:1; background:#1e1e1e; border:1px solid #333; border-radius:10px; padding:15px 5px; text-align:center; cursor:pointer; transition:border 0.2s; }
+    .stat-box.active-filter { border:2px solid #ffb74d; }
+    .stat-box.active-filter-v { border:2px solid #4caf50; }
+    .stat-box.active-filter-r { border:2px solid #f44336; }
+    .stat-box.active-filter-s { border:2px solid #4caf50; }
+    .stat-num { font-size:1.4rem; font-weight:700; display:block; color:white; }
+    .stat-lbl { font-size:0.65rem; color:#888; text-transform:uppercase; margin-top:5px; display:block; }
+
+    /* SEARCH */
+    .search-bar { margin-bottom:12px; }
+    .search-bar input { width:100%; padding:12px 14px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; font-size:15px; }
+    .search-bar input:focus { outline:none; border-color:#ffb74d; }
+    .search-bar input::placeholder { color:#555; }
+
+    /* CARTON CARDS — groups all parts in a carton */
+    .carton-card { background:#1e1e1e; border:1px solid #333; border-left:4px solid #555; border-radius:12px; padding:14px; margin-bottom:12px; cursor:pointer; transition:border-color 0.2s; }
+    .carton-card.verified { border-left-color:#4caf50; }
+    .carton-card.rejected { border-left-color:#f44336; }
+    .carton-card.pending  { border-left-color:#ff9800; }
+    .carton-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+    .carton-customer { font-weight:700; color:#ffb74d; font-size:1.05rem; }
+    .status-pill { padding:3px 10px; border-radius:10px; font-size:0.7rem; font-weight:bold; color:white; white-space:nowrap; }
+    .status-pill.verified { background:#2e7d32; }
+    .status-pill.rejected { background:#b71c1c; }
+    .status-pill.pending  { background:#e65100; }
+    .carton-meta { font-size:0.82rem; color:#aaa; margin-bottom:8px; }
+    .parts-summary { display:flex; flex-wrap:wrap; gap:6px; }
+    .part-chip { background:#2a2a2a; border:1px solid #444; border-radius:6px; padding:4px 10px; font-size:0.75rem; color:#ccc; }
+    .part-chip.ok { border-color:#4caf50; color:#a5d6a7; }
+    .part-chip.fail { border-color:#f44336; color:#ef9a9a; }
+
+    /* DETAIL MODAL */
+    #detailModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:100; overflow-y:auto; padding:10px; display:none; }
+    .modal-card { background:#1e1e1e; border-radius:14px; padding:20px; max-width:960px; margin:0 auto 60px; border:1px solid #333; }
+    .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+    .close-btn { background:#333; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold; }
+
+    /* CARTON INFO */
+    .section-title { font-size:0.7rem; font-weight:700; text-transform:uppercase; color:#666; letter-spacing:0.08em; margin:16px 0 10px; border-top:1px solid #2a2a2a; padding-top:14px; }
+    .detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:8px; }
+    .detail-item label { display:block; font-size:0.65rem; color:#888; text-transform:uppercase; margin-bottom:4px; }
+    .detail-item span { font-size:1rem; font-weight:bold; color:#eee; word-break:break-all; }
+
+    /* PART BLOCKS */
+    .part-block { background:#161616; border:1px solid #333; border-radius:10px; padding:14px; margin-bottom:12px; }
+    .part-block-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+    .part-block-title { font-weight:700; color:#ffb74d; font-size:0.95rem; }
+    .part-status-badge { font-size:0.72rem; font-weight:bold; padding:3px 10px; border-radius:10px; }
+    .part-status-badge.ok { background:#1b5e20; color:#a5d6a7; }
+    .part-status-badge.fail { background:#b71c1c; color:#ef9a9a; }
+    .part-status-badge.pending { background:#333; color:#ffb74d; }
+
+    .barcode-check { display:flex; align-items:center; background:#2a2a2a; border-radius:8px; padding:10px 12px; margin-bottom:6px; justify-content:space-between; gap:8px; }
+    .bc-label { font-size:0.75rem; color:#888; min-width:50px; }
+    .bc-value { font-size:0.82rem; font-weight:bold; flex:1; word-break:break-all; color:#eee; }
+    .bc-badge { font-size:0.72rem; font-weight:bold; padding:4px 10px; border-radius:6px; white-space:nowrap; }
+    .bc-badge.ok { border:1px solid #4caf50; color:#4caf50; }
+    .bc-badge.fail { border:1px solid #f44336; color:#f44336; }
+    .bc-badge.no-bc { border:1px solid #ff9800; color:#ff9800; }
+
+    /* PHOTOS */
+    .photo-row { display:flex; gap:8px; margin:10px 0; }
+    .photo-wrap { flex:1; text-align:center; background:#111; padding:6px; border-radius:8px; border:1px solid #333; }
+    .photo-wrap img { width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:6px; cursor:pointer; }
+    .photo-lbl { font-size:0.72rem; font-weight:bold; margin-bottom:4px; color:#ffb74d; text-transform:uppercase; }
+    .photo-wrap.missing { opacity:0.3; }
+
+    /* VERDICT */
+    .verdict-section { border-top:1px solid #333; padding-top:20px; margin-top:20px; }
+    .verdict-row { display:flex; gap:12px; margin-bottom:14px; }
+    .verdict-btn { flex:1; padding:18px; border:2px solid transparent; border-radius:10px; font-weight:bold; color:white; cursor:pointer; font-size:1rem; opacity:0.55; transition:opacity 0.2s; }
+    .verdict-btn.v-approve { background:#2e7d32; border-color:#4caf50; }
+    .verdict-btn.v-reject  { background:#b71c1c; border-color:#f44336; }
+    .verdict-btn.selected  { opacity:1; outline:2px solid white; }
+    .checker-input { width:100%; padding:14px; background:#1a1a1a; border:1px solid #444; border-radius:8px; color:white; margin-bottom:12px; font-size:1rem; }
+    textarea.remarks-input { width:100%; height:90px; background:#1a1a1a; border:1px solid #444; border-radius:8px; color:white; padding:12px; font-size:1rem; resize:vertical; }
+    .submit-btn { width:100%; padding:18px; background:#1565c0; color:white; border:none; border-radius:12px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top:12px; }
+    .submit-btn:disabled { background:#333; color:#666; cursor:not-allowed; }
+
+    /* STAMP TAB */
+    .stamp-card { background:#1e1e1e; border:1px solid #333; border-left:4px solid #ff9800; border-radius:12px; padding:16px; margin-bottom:12px; }
+    .stamp-card.stamped { border-left-color:#4caf50; }
+    .stamp-btn { width:100%; padding:14px; background:#1565c0; color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer; margin-top:10px; font-size:0.95rem; }
+
+    /* LIGHTBOX */
+    #lightbox { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:1000; display:none; align-items:center; justify-content:center; touch-action:none; }
+    #lightboxImg { max-width:100%; max-height:100%; object-fit:contain; transform-origin:center center; cursor:grab; }
+    .close-lb { position:absolute; top:20px; right:20px; background:#444; color:white; border:none; padding:12px 20px; border-radius:8px; z-index:1001; font-weight:bold; cursor:pointer; }
+
+    .empty-msg { text-align:center; padding:48px 20px; color:#555; font-size:0.95rem; }
+    .loading-msg { text-align:center; padding:40px; color:#666; }
+  </style>
+</head>
+<body>
+
+<!-- PIN SCREEN -->
+<div id="pinScreen">
+  <h2 style="color:#ffb74d; margin-bottom:20px;">MG MULTI CHECKER</h2>
+  <p style="color:#888; font-size:0.85rem; margin-bottom:20px;">Enter PIN to continue</p>
+  <input type="password" id="pinInput" maxlength="4" oninput="checkPin(this.value)" inputmode="numeric" placeholder="● ● ● ●">
+  <div id="pinError">Wrong PIN. Try again.</div>
+</div>
+
+<!-- MAIN SCREEN -->
+<div id="mainScreen">
+  <div class="main-tabs">
+    <div class="main-tab active" id="tabVerify" onclick="switchTab('verify')">Check List</div>
+    <div class="main-tab" id="tabStamp" onclick="switchTab('stamp')">Stamping</div>
+  </div>
+
+  <!-- CHECK LIST TAB -->
+  <div class="tab-content active" id="contentVerify">
+    <div class="stats-row">
+      <div class="stat-box active-filter" id="fAll" onclick="setFilter('all')">
+        <span class="stat-num" id="vStatTotal">-</span><span class="stat-lbl">ALL</span>
+      </div>
+      <div class="stat-box" id="fPending" onclick="setFilter('pending')">
+        <span class="stat-num" id="vStatPending">-</span><span class="stat-lbl">PENDING</span>
+      </div>
+      <div class="stat-box" id="fVerified" onclick="setFilter('verified')">
+        <span class="stat-num" id="vStatVerified">-</span><span class="stat-lbl">PASS</span>
+      </div>
+      <div class="stat-box" id="fRejected" onclick="setFilter('rejected')">
+        <span class="stat-num" id="vStatRejected">-</span><span class="stat-lbl">FAIL</span>
+      </div>
+    </div>
+    <div class="search-bar">
+      <input type="text" id="vSearch" placeholder="🔍  Search Customer, P/I No., or Carton ID..." oninput="renderVerifyList()">
+    </div>
+    <div id="verifyList"><div class="loading-msg">Loading records...</div></div>
+  </div>
+
+  <!-- STAMP TAB -->
+  <div class="tab-content" id="contentStamp">
+    <div class="stats-row">
+      <div class="stat-box active-filter" id="fsWait" onclick="setStampFilter('wait')">
+        <span class="stat-num" id="sStatWait">-</span><span class="stat-lbl">WAIT STAMP</span>
+      </div>
+      <div class="stat-box" id="fsDone" onclick="setStampFilter('done')">
+        <span class="stat-num" id="sStatDone">-</span><span class="stat-lbl">STAMPED</span>
+      </div>
+    </div>
+    <div class="search-bar">
+      <input type="text" id="sSearch" placeholder="🔍  Search Customer, P/I No., or Carton ID..." oninput="renderStampList()">
+    </div>
+    <div id="stampList"><div class="loading-msg">Loading...</div></div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div id="detailModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div>
+        <h2 id="modalTitle" style="margin:0; color:#ffb74d;"></h2>
+        <div id="modalSub" style="color:#888; font-size:0.85rem; margin-top:4px;"></div>
+      </div>
+      <button class="close-btn" onclick="closeModal()">✕ CLOSE</button>
+    </div>
+
+    <!-- Carton Header Info -->
+    <div class="section-title">Carton Info</div>
+    <div class="detail-grid" id="cartonInfoGrid"></div>
+
+    <!-- Carton Photo -->
+    <div class="section-title">Carton Photo</div>
+    <div id="cartonPhotoWrap" style="max-width:220px;"></div>
+
+    <!-- Parts -->
+    <div class="section-title">Parts in this Carton</div>
+    <div id="partsDetail"></div>
+
+    <!-- Verdict Section -->
+    <div class="verdict-section">
+      <div style="font-size:0.75rem; color:#888; text-transform:uppercase; margin-bottom:12px; font-weight:700;">Checker Decision</div>
+      <div class="verdict-row">
+        <button class="verdict-btn v-approve" id="btnVerified" onclick="selectVerdict('Verified')">✅ APPROVE</button>
+        <button class="verdict-btn v-reject"  id="btnRejected" onclick="selectVerdict('Rejected')">❌ REJECT</button>
+      </div>
+      <input type="text" class="checker-input" id="checkerNameInput" placeholder="CHECKER STAFF NAME">
+      <textarea class="remarks-input" id="remarksInput" placeholder="REMARKS / REJECTION REASON (optional)"></textarea>
+      <button class="submit-btn" id="submitVerdict" onclick="saveVerification()">SUBMIT REPORT</button>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <button class="close-lb" onclick="closeLightbox()">CLOSE ✕</button>
+  <img id="lightboxImg" alt="Photo">
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzN9vkrRCGET4VqTSGSHNa72Kqsceord8xLy17Rp1CZxjxv-s9BmccfwoFlm_Dnsgrg/exec";
+
+let allRecords    = [];   // flat rows from sheet
+let cartonGroups  = {};   // grouped by cartonId
+let currentFilter = 'all';
+let currentStampFilter = 'wait';
+let currentCartonId = null;  // carton open in modal
+let selectedVerdict = null;
+
+// ── PIN ──────────────────────────────────────────────────────
+function checkPin(val) {
+  if (val === "1234") {
+    document.getElementById('pinScreen').style.display = 'none';
+    document.getElementById('mainScreen').style.display = 'block';
+    loadRecords();
+  } else if (val.length === 4) {
+    document.getElementById('pinError').style.display = 'block';
+    setTimeout(() => {
+      document.getElementById('pinInput').value = '';
+      document.getElementById('pinError').style.display = 'none';
+    }, 1200);
+  }
+}
+
+// ── TABS ─────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab' + capitalize(tab)).classList.add('active');
+  document.getElementById('content' + capitalize(tab)).classList.add('active');
+  if (tab === 'stamp') renderStampList();
+}
+
+function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+// ── FILTER BUTTONS ───────────────────────────────────────────
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('#contentVerify .stat-box').forEach(b => {
+    b.classList.remove('active-filter','active-filter-v','active-filter-r');
+  });
+  const map = { all:'active-filter', pending:'active-filter', verified:'active-filter-v', rejected:'active-filter-r' };
+  document.getElementById('f' + capitalize(f)).classList.add(map[f]);
+  renderVerifyList();
+}
+
+function setStampFilter(f) {
+  currentStampFilter = f;
+  document.querySelectorAll('#contentStamp .stat-box').forEach(b => {
+    b.classList.remove('active-filter','active-filter-s');
+  });
+  document.getElementById('fs' + capitalize(f)).classList.add(f === 'done' ? 'active-filter-s' : 'active-filter');
+  renderStampList();
+}
+
+// ── DATA LOADING ─────────────────────────────────────────────
+async function loadRecords() {
+  try {
+    const r = await fetch(SCRIPT_URL + '?action=records');
+    const d = await r.json();
+    allRecords = d.records || [];
+    buildCartonGroups();
+    updateStats();
+    renderVerifyList();
+    renderStampList();
+  } catch(e) {
+    document.getElementById('verifyList').innerHTML = '<div class="empty-msg">⚠️ Failed to load records. Check connection.</div>';
+  }
+}
+
+// Group flat rows by cartonId — each carton may have 1-10 parts
+function buildCartonGroups() {
+  cartonGroups = {};
+  allRecords.forEach(row => {
+    const cid = row.cartonId || 'NO-CARTON';
+    if (!cartonGroups[cid]) {
+      cartonGroups[cid] = {
+        cartonId: cid,
+        customer: row.customer,
+        packedDate: row.packedDate,
+        packedBy: row.packedBy,
+        checkerBy: row.checkerBy,
+        imgCartonUrl: row.imgCartonUrl,
+        // Take the last checker/status/remarks (all rows in carton share same verdict)
+        checker: row.checker,
+        status: row.status,
+        remarks: row.remarks,
+        stampStatus: row.stampStatus || '',
+        rows: []
+      };
+    }
+    // Update shared fields in case later rows have them
+    if (row.checker)  cartonGroups[cid].checker = row.checker;
+    if (row.status)   cartonGroups[cid].status = row.status;
+    if (row.remarks)  cartonGroups[cid].remarks = row.remarks;
+    if (row.stampStatus) cartonGroups[cid].stampStatus = row.stampStatus;
+    cartonGroups[cid].rows.push(row);
+  });
+}
+
+// ── STATS ────────────────────────────────────────────────────
+function updateStats() {
+  const groups = Object.values(cartonGroups);
+  const total    = groups.length;
+  const verified = groups.filter(g => (g.status||'').includes('Verified')).length;
+  const rejected = groups.filter(g => (g.status||'').includes('Rejected')).length;
+  const pending  = total - verified - rejected;
+
+  document.getElementById('vStatTotal').textContent    = total;
+  document.getElementById('vStatPending').textContent  = pending;
+  document.getElementById('vStatVerified').textContent = verified;
+  document.getElementById('vStatRejected').textContent = rejected;
+
+  const vGroups = groups.filter(g => (g.status||'').includes('Verified'));
+  document.getElementById('sStatWait').textContent = vGroups.filter(g => !(g.stampStatus||'').includes('Stamped')).length;
+  document.getElementById('sStatDone').textContent = vGroups.filter(g =>  (g.stampStatus||'').includes('Stamped')).length;
+}
+
+// ── VERIFY LIST ───────────────────────────────────────────────
+function renderVerifyList() {
+  const search = (document.getElementById('vSearch').value || '').toLowerCase().trim();
+  const groups = Object.values(cartonGroups);
+
+  const filtered = groups.filter(g => {
+    // Search: customer, PI (any part), carton ID
+    const piList = g.rows.map(r => (r.pi||'').toLowerCase()).join(' ');
+    const matchSearch = !search ||
+      (g.customer||'').toLowerCase().includes(search) ||
+      (g.cartonId||'').toLowerCase().includes(search) ||
+      piList.includes(search);
+
+    const s = (g.status||'').toLowerCase();
+    const matchFilter =
+      currentFilter === 'all' ? true :
+      currentFilter === 'pending'  ? (!s.includes('verified') && !s.includes('rejected')) :
+      currentFilter === 'verified' ? s.includes('verified') :
+      s.includes('rejected');
+
+    return matchSearch && matchFilter;
+  });
+
+  if (filtered.length === 0) {
+    document.getElementById('verifyList').innerHTML = '<div class="empty-msg">No records found.</div>';
+    return;
+  }
+
+  document.getElementById('verifyList').innerHTML = filtered.map(g => {
+    const s = (g.status||'').toLowerCase();
+    const cls = s.includes('verified') ? 'verified' : s.includes('rejected') ? 'rejected' : 'pending';
+    const statusText = g.status || 'Pending';
+
+    // Collect all unique PIs
+    const piSet = [...new Set(g.rows.map(r => r.pi).filter(Boolean))];
+
+    // Part chips showing each part's match status
+    const chips = g.rows.map(r => {
+      const ok = (r.matchStatus||'').includes('Bag:✅') && (r.matchStatus||'').includes('Inner:✅') && (r.matchStatus||'').includes('Outer:✅');
+      const fail = (r.matchStatus||'').includes('❌');
+      return `<span class="part-chip ${ok ? 'ok' : fail ? 'fail' : ''}">${r.partNo || '?'}</span>`;
+    }).join('');
+
+    return `<div class="carton-card ${cls}" onclick="openCarton('${escHtml(g.cartonId)}')">
+      <div class="carton-header">
+        <span class="carton-customer">${escHtml(g.customer)}</span>
+        <span class="status-pill ${cls}">${escHtml(statusText)}</span>
+      </div>
+      <div class="carton-meta">
+        📦 Carton: <strong>${escHtml(g.cartonId)}</strong> &nbsp;|&nbsp;
+        📋 PI: ${piSet.map(p => escHtml(p)||'—').join(', ')} &nbsp;|&nbsp;
+        🗓 ${g.packedDate || '—'} &nbsp;|&nbsp;
+        ${g.rows.length} part(s)
+      </div>
+      <div class="parts-summary">${chips}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── STAMP LIST ────────────────────────────────────────────────
+function renderStampList() {
+  const search = (document.getElementById('sSearch').value || '').toLowerCase().trim();
+  const groups = Object.values(cartonGroups).filter(g => (g.status||'').includes('Verified'));
+
+  const filtered = groups.filter(g => {
+    const isStamped = (g.stampStatus||'').includes('Stamped');
+    const matchFilter = currentStampFilter === 'wait' ? !isStamped : isStamped;
+
+    const piList = g.rows.map(r => (r.pi||'').toLowerCase()).join(' ');
+    const matchSearch = !search ||
+      (g.customer||'').toLowerCase().includes(search) ||
+      (g.cartonId||'').toLowerCase().includes(search) ||
+      piList.includes(search);
+
+    return matchFilter && matchSearch;
+  });
+
+  if (filtered.length === 0) {
+    document.getElementById('stampList').innerHTML = '<div class="empty-msg">No items found.</div>';
+    return;
+  }
+
+  document.getElementById('stampList').innerHTML = filtered.map(g => {
+    const piSet = [...new Set(g.rows.map(r => r.pi).filter(Boolean))];
+    const isDone = currentStampFilter === 'done';
+    return `<div class="stamp-card ${isDone ? 'stamped' : ''}">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:700; color:#ffb74d; font-size:1rem;">${escHtml(g.customer)}</span>
+        ${isDone ? '<span style="color:#4caf50; font-weight:bold; font-size:0.85rem;">STAMPED ✅</span>' : ''}
+      </div>
+      <div style="font-size:0.85rem; color:#aaa; margin:8px 0;">
+        📦 Carton: <strong style="color:#eee;">${escHtml(g.cartonId)}</strong><br>
+        📋 PI: ${piSet.map(p => escHtml(p)||'—').join(', ')}<br>
+        ${g.rows.length} part(s) &nbsp;|&nbsp; Packed: ${g.packedDate || '—'}
+      </div>
+      ${isDone
+        ? `<div style="font-size:0.8rem; color:#666;">Stamped by: ${escHtml(g.stampedBy||'N/A')}</div>`
+        : `<button class="stamp-btn" onclick="markStamped('${escHtml(g.cartonId)}')">MARK AS STAMPED</button>`}
+    </div>`;
+  }).join('');
+}
+
+// ── OPEN CARTON DETAIL ────────────────────────────────────────
+function openCarton(cartonId) {
+  const g = cartonGroups[cartonId];
+  if (!g) return;
+  currentCartonId = cartonId;
+
+  document.getElementById('detailModal').style.display = 'block';
+  document.getElementById('modalTitle').textContent = g.customer;
+  document.getElementById('modalSub').textContent = '📦 Carton: ' + g.cartonId + '  |  ' + g.rows.length + ' part(s)';
+
+  // Carton info
+  document.getElementById('cartonInfoGrid').innerHTML = `
+    <div class="detail-item"><label>Carton ID</label><span>${escHtml(g.cartonId)}</span></div>
+    <div class="detail-item"><label>Packed Date</label><span>${g.packedDate || '—'}</span></div>
+    <div class="detail-item"><label>Packed By</label><span>${escHtml(g.packedBy || '—')}</span></div>
+    <div class="detail-item"><label>Packing Team</label><span>${escHtml(g.checkerBy || '—')}</span></div>
+  `;
+
+  // Carton photo
+  const cartonThumb = driveThumb(g.imgCartonUrl);
+  document.getElementById('cartonPhotoWrap').innerHTML = cartonThumb
+    ? `<div class="photo-wrap"><div class="photo-lbl">Carton Label</div><img src="${cartonThumb}" onclick="openLightbox('${cartonThumb}')"></div>`
+    : `<div style="color:#555; font-size:0.85rem;">No carton photo</div>`;
+
+  // Parts
+  document.getElementById('partsDetail').innerHTML = g.rows.map((r, i) => {
+    const ms = r.matchStatus || '';
+    const bagOk   = ms.includes('Bag:✅');
+    const innerOk = ms.includes('Inner:✅');
+    const outerOk = ms.includes('Outer:✅');
+    const allOk = bagOk && innerOk && outerOk;
+    const anyFail = ms.includes('❌');
+    const badgeCls = allOk ? 'ok' : anyFail ? 'fail' : 'pending';
+    const badgeText = allOk ? 'VERIFIED' : anyFail ? 'MISMATCH' : 'PENDING';
+
+    const bagThumb   = driveThumb(r.imgBagUrl);
+    const innerThumb = driveThumb(r.imgInnerUrl);
+
+    return `<div class="part-block">
+      <div class="part-block-header">
+        <span class="part-block-title">Part ${i+1}: ${escHtml(r.partNo)}</span>
+        <span class="part-status-badge ${badgeCls}">${badgeText}</span>
+      </div>
+      <div style="font-size:0.8rem; color:#888; margin-bottom:10px;">
+        PI: ${escHtml(r.pi || '—')} &nbsp;|&nbsp; Qty: ${r.qty || '—'} pcs
+      </div>
+
+      ${barcodeRow('BAG',   r.bag,   bagOk)}
+      ${barcodeRow('INNER', r.inner, innerOk)}
+      ${barcodeRow('OUTER', r.outer, outerOk)}
+
+      <div class="photo-row">
+        ${photoWrap('Bag', bagThumb)}
+        ${photoWrap('Inner', innerThumb)}
+      </div>
+    </div>`;
+  }).join('');
+
+  // Pre-fill verdict if already checked
+  selectedVerdict = null;
+  document.getElementById('btnVerified').classList.remove('selected');
+  document.getElementById('btnRejected').classList.remove('selected');
+  document.getElementById('checkerNameInput').value = g.checker || '';
+  document.getElementById('remarksInput').value = g.remarks || '';
+
+  if ((g.status||'').includes('Verified')) selectVerdict('Verified');
+  else if ((g.status||'').includes('Rejected')) selectVerdict('Rejected');
+}
+
+function barcodeRow(label, value, isOk) {
+  const v = value || '—';
+  const isNo = String(value||'').toUpperCase() === 'NO';
+  const cls = isNo ? 'no-bc' : isOk ? 'ok' : 'fail';
+  const txt = isNo ? 'NO BARCODE' : isOk ? 'MATCH ✅' : 'CHECK ❌';
+  return `<div class="barcode-check">
+    <span class="bc-label">${label}</span>
+    <span class="bc-value">${escHtml(v)}</span>
+    <span class="bc-badge ${cls}">${txt}</span>
+  </div>`;
+}
+
+function photoWrap(label, thumb) {
+  if (thumb) {
+    return `<div class="photo-wrap"><div class="photo-lbl">${label}</div><img src="${thumb}" onclick="openLightbox('${thumb}')"></div>`;
+  }
+  return `<div class="photo-wrap missing"><div class="photo-lbl">${label}</div><div style="padding:20px; color:#555; font-size:0.75rem;">No photo</div></div>`;
+}
+
+function driveThumb(url) {
+  if (!url) return '';
+  const m = String(url).match(/[-\w]{25,}/);
+  return m ? `https://drive.google.com/thumbnail?id=${m[0]}&sz=800` : '';
+}
+
+// ── VERDICT ───────────────────────────────────────────────────
+function selectVerdict(v) {
+  selectedVerdict = v;
+  document.getElementById('btnVerified').classList.toggle('selected', v === 'Verified');
+  document.getElementById('btnRejected').classList.toggle('selected', v === 'Rejected');
+}
+
+async function saveVerification() {
+  const name = document.getElementById('checkerNameInput').value.trim();
+  if (!name) { alert('Please enter Checker Staff Name'); return; }
+  if (!selectedVerdict) { alert('Please select APPROVE or REJECT'); return; }
+
+  const g = cartonGroups[currentCartonId];
+  if (!g) return;
+
+  const btn = document.getElementById('submitVerdict');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  const rowNums = g.rows.map(r => r.row);
+  const statusStr = selectedVerdict === 'Verified' ? 'Verified ✅' : 'Rejected ❌';
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        action: 'verifyMulti',
+        rows: rowNums,
+        checker: name.toUpperCase(),
+        status: statusStr,
+        remarks: document.getElementById('remarksInput').value.trim().toUpperCase()
+      })
+    });
+    closeModal();
+    await loadRecords();
+  } catch(e) {
+    alert('Submit failed: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'SUBMIT REPORT';
+  }
+}
+
+// ── STAMP ────────────────────────────────────────────────────
+async function markStamped(cartonId) {
+  const staff = prompt('ENTER STAMPING STAFF NAME:');
+  if (!staff) return;
+  const g = cartonGroups[cartonId];
+  if (!g) return;
+
+  const rowNums = g.rows.map(r => r.row);
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        action: 'stamp',
+        rows: rowNums,
+        staff: staff.toUpperCase()
+      })
+    });
+    await loadRecords();
+  } catch(e) {
+    alert('Stamp failed: ' + e.message);
+  }
+}
+
+// ── HELPERS ──────────────────────────────────────────────────
+function closeModal() { document.getElementById('detailModal').style.display = 'none'; }
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── LIGHTBOX ─────────────────────────────────────────────────
+const lb = document.getElementById('lightbox');
+const lbImg = document.getElementById('lightboxImg');
+let scale=1, posX=0, posY=0, lastPX=0, lastPY=0, isDragging=false, initialDist=0;
+
+function openLightbox(src) {
+  scale=1; posX=0; posY=0;
+  lbImg.style.transform = '';
+  lbImg.src = src.replace('sz=800','sz=w2000');
+  lb.style.display = 'flex';
+}
+function closeLightbox() { lb.style.display = 'none'; }
+function updateTransform() { lbImg.style.transform = `translate(${posX}px,${posY}px) scale(${scale})`; }
+
+lb.addEventListener('wheel', e => {
+  e.preventDefault();
+  scale = Math.min(Math.max(1, scale * (e.deltaY > 0 ? 0.9 : 1.1)), 5);
+  updateTransform();
+});
+lb.addEventListener('mousedown', e => { isDragging=true; lastPX=e.clientX-posX; lastPY=e.clientY-posY; lbImg.style.cursor='grabbing'; });
+window.addEventListener('mousemove', e => { if(!isDragging||scale<=1) return; posX=e.clientX-lastPX; posY=e.clientY-lastPY; updateTransform(); });
+window.addEventListener('mouseup', () => { isDragging=false; lbImg.style.cursor='grab'; });
+lb.addEventListener('touchstart', e => {
+  if(e.touches.length===2) initialDist=Math.hypot(e.touches[0].pageX-e.touches[1].pageX, e.touches[0].pageY-e.touches[1].pageY);
+  else { isDragging=true; lastPX=e.touches[0].pageX-posX; lastPY=e.touches[0].pageY-posY; }
+});
+lb.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if(e.touches.length===2) { const d=Math.hypot(e.touches[0].pageX-e.touches[1].pageX,e.touches[0].pageY-e.touches[1].pageY); scale=Math.min(Math.max(1,d/initialDist),5); }
+  else if(isDragging&&scale>1) { posX=e.touches[0].pageX-lastPX; posY=e.touches[0].pageY-lastPY; }
+  updateTransform();
+}, { passive:false });
+lb.addEventListener('touchend', () => { isDragging=false; });
+</script>
+</body>
+</html>
