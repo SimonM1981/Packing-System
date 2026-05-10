@@ -12,7 +12,7 @@
     /* PIN SCREEN REMOVED */
     #pinScreen { display: none; } 
 
-    /* MAIN SCREEN - NOW VISIBLE BY DEFAULT */
+    /* MAIN SCREEN */
     #mainScreen { display:block; }
     
     .main-tabs { display:flex; background:#161616; border-bottom:1px solid #333; position:sticky; top:0; z-index:50; }
@@ -87,7 +87,6 @@
 </head>
 <body>
 
-<!-- PIN SCREEN DIV IS NOW EMPTY/HIDDEN -->
 <div id="pinScreen"></div>
 
 <div id="mainScreen">
@@ -112,12 +111,12 @@
       <div class="stat-box active-filter-stamp" id="fsWait" onclick="setStampFilter('wait')"><span class="stat-num" id="sStatWait">-</span><span class="stat-lbl">WAIT STAMP</span></div>
       <div class="stat-box" id="fsDone" onclick="setStampFilter('done')"><span class="stat-num" id="sStatDone">-</span><span class="stat-lbl">STAMPED</span></div>
     </div>
+    <!-- STAMPING SEARCH ADDED HERE -->
     <div class="toolbar"><input type="text" id="sSearch" placeholder="Search Customer, Part, PI, or Carton..." oninput="renderStampList()"></div>
     <div id="stampList"></div>
   </div>
 </div>
 
-<!-- Modal and Lightbox code remains exactly the same... -->
 <div id="detailModal">
   <div class="modal-card">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
@@ -153,7 +152,10 @@
   let currentRecord = null;
   let selectedVerdict = null;
 
-  // AUTO-LOAD DATA ON PAGE START (Replaces the PIN requirement)
+  // Zoom Variables
+  let scale = 1, posX = 0, posY = 0, lastPosX = 0, lastPosY = 0, isDragging = false;
+
+  // AUTO-LOAD DATA
   window.onload = loadRecords;
 
   function switchTab(tab) {
@@ -233,7 +235,11 @@
     const filtered = verified.filter(r => {
       const isStamped = (r.stampStatus||'').includes('Stamped');
       const matchesStatus = (currentStampFilter === 'wait') ? !isStamped : isStamped;
-      const matchesSearch = (r.customer||'').toLowerCase().includes(search) || (r.pi||'').toLowerCase().includes(search) || (r.cartonId||'').toLowerCase().includes(search) || (r.partNo||'').toLowerCase().includes(search);
+      const matchesSearch = 
+        (r.customer||'').toLowerCase().includes(search) || 
+        (r.pi||'').toLowerCase().includes(search) || 
+        (r.cartonId||'').toLowerCase().includes(search) ||
+        (r.partNo||'').toLowerCase().includes(search);
       return matchesStatus && matchesSearch;
     });
 
@@ -307,7 +313,6 @@
 
   function closeModal() { document.getElementById('detailModal').style.display='none'; }
 
-  // ZOOM & LIGHTBOX LOGIC
   const lb = document.getElementById('lightbox');
   const lbImg = document.getElementById('lightboxImg');
 
@@ -350,7 +355,6 @@
     lbImg.style.cursor = 'grab';
   });
 
-  // Mobile Touch Zoom
   let initialDist = 0;
   lb.addEventListener('touchstart', e => {
     if (e.touches.length === 2) {
