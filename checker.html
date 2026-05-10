@@ -114,6 +114,7 @@
       <div class="stat-box active-filter-stamp" id="fsWait" onclick="setStampFilter('wait')"><span class="stat-num" id="sStatWait">-</span><span class="stat-lbl">WAIT STAMP</span></div>
       <div class="stat-box" id="fsDone" onclick="setStampFilter('done')"><span class="stat-num" id="sStatDone">-</span><span class="stat-lbl">STAMPED</span></div>
     </div>
+    <div class="toolbar"><input type="text" id="sSearch" placeholder="Search Customer, Part, PI, or Carton..." oninput="renderStampList()"></div>
     <div id="stampList"></div>
   </div>
 </div>
@@ -235,10 +236,20 @@
   }
 
   function renderStampList() {
+    const search = document.getElementById('sSearch').value.toLowerCase();
     const verified = allRecords.filter(r => (r.status||'').includes('Verified'));
+    
     const filtered = verified.filter(r => {
       const isStamped = (r.stampStatus||'').includes('Stamped');
-      return (currentStampFilter === 'wait') ? !isStamped : isStamped;
+      const matchesStatus = (currentStampFilter === 'wait') ? !isStamped : isStamped;
+      
+      const matchesSearch = 
+        (r.customer||'').toLowerCase().includes(search) || 
+        (r.pi||'').toLowerCase().includes(search) || 
+        (r.cartonId||'').toLowerCase().includes(search) ||
+        (r.partNo||'').toLowerCase().includes(search); // Assumes partNo is available in the data record
+
+      return matchesStatus && matchesSearch;
     });
 
     document.getElementById('stampList').innerHTML = filtered.map(r => `
