@@ -76,6 +76,10 @@ button.success { background:#2e7d32; }
 .add-part-btn { width:100%; padding:16px; background:#1a237e; color:white; border:none; border-radius:10px; font-weight:bold; font-size:1rem; cursor:pointer; margin-bottom:16px; display:flex; align-items:center; justify-content:center; gap:10px; }
 .add-part-btn:hover { background:#283593; }
 .qty-input { max-width:120px; }
+
+/* Debug console */
+#debugConsole { background:#000; color:#0f0; font-family:monospace; font-size:0.75rem; padding:10px; border-radius:8px; margin:10px 0; max-height:150px; overflow-y:auto; display:none; }
+#debugConsole.show { display:block; }
 </style>
 <base target="_blank">
 </head>
@@ -89,6 +93,9 @@ button.success { background:#2e7d32; }
   <div class="step" id="step3"></div>
   <div class="step" id="step4"></div>
 </div>
+
+<!-- DEBUG CONSOLE -->
+<div id="debugConsole"></div>
 
 <!-- STAFF & CARTON INFO -->
 <div class="card">
@@ -133,16 +140,24 @@ button.success { background:#2e7d32; }
 <div id="status"></div>
 
 <script>
+// YOUR DEPLOYED SCRIPT URL
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbznlhODNjZ_Ho0HgMqs19Q01iz60Op1JNneUjaXW-MNq3FhJpUApbeE5MTPHmisdMqd/exec";
 
 let html5QrCode = null;
 let activeField = null;
 let partCounter = 0;
 let partsData = {};
-
 let cartonPhoto = { imgCarton: null };
-
 const headerFields = ['packedBy', 'checkerBy', 'cartonId', 'customer'];
+
+// DEBUG LOGGING
+function debug(msg) {
+  console.log('[MULTI-PACK]', msg);
+  const dc = document.getElementById('debugConsole');
+  dc.classList.add('show');
+  dc.innerHTML += '> ' + msg + '<br>';
+  dc.scrollTop = dc.scrollHeight;
+}
 
 // AUTO UPPERCASE
 document.querySelectorAll('input[type="text"]').forEach(inp => {
@@ -229,7 +244,6 @@ function addPartRow() {
 
   container.appendChild(div);
 
-  // Add listeners for this part
   partsData[partId] = {
     masterData: null,
     matchState: { bag: null, inner: null, outer: null },
@@ -245,11 +259,9 @@ function addPartRow() {
           const v = this.value.trim().toUpperCase();
           this.value = v;
           onPartBarcodeEntered(partId, field, v);
-          // Focus next field
           if (field === 'bag') document.getElementById('inner_' + partId).focus();
           else if (field === 'inner') document.getElementById('outer_' + partId).focus();
           else {
-            // Find next part or qty
             const qtyEl = document.getElementById('qty_' + partId);
             if (qtyEl) qtyEl.focus();
           }
@@ -303,6 +315,7 @@ function focusField(id) { document.getElementById(id).focus(); }
 // ── BARCODE LOGIC (Same as original packer.html) ─────────
 async function onPartBarcodeEntered(partId, field, value) {
   if (!value) return;
+  debug('onPartBarcodeEntered: partId=' + partId + ', field=' + field + ', value=' + value);
   if (field === 'bag') await lookupPartMasterByBag(partId, value);
   else checkPartBarcode(partId, field, value);
   validateAll();
@@ -311,13 +324,13 @@ async function onPartBarcodeEntered(partId, field, value) {
 
 async function lookupPartMasterByBag(partId, bagValue) {
   const pd = partsData[partId];
+  debug('lookupPartMasterByBag: bagValue=' + bagValue);
 
   if (bagValue === 'NO') {
     pd.matchState.bag = true;
     setPartBadge(partId, 'bag', 'no-bc', 'No barcode — accepted');
     document.getElementById('bag_' + partId).className = 'no-barcode';
 
-    // Still try to lookup by PI + PartNo if available for inner/outer verification
     const pi = document.getElementById('pi_' + partId).value.trim();
     const partNo = document.getElementById('partNo_' + partId).value.trim();
     if (pi && partNo) {
@@ -338,13 +351,23 @@ async function lookupPartMasterByBag(partId, bagValue) {
     if (pi) url += '&pi=' + encodeURIComponent(pi);
     if (partNo) url += '&partNo=' + encodeURIComponent(partNo);
 
+    debug('Fetching: ' + url);
+
     const resp = await fetch(url);
+    debug('Response status: ' + resp.status);
+
+    if (!resp.ok) {
+      throw new Error('HTTP ' + resp.status + ' ' + resp.statusText);
+    }
+
     const result = await resp.json();
+    debug('Lookup result: ' + JSON.stringify(result));
 
     if (result.found) {
       pd.masterData = result;
       document.getElementById('partNo_' + partId).value = String(result.partNo || "").toUpperCase();
       document.getElementById('pi_' + partId).value = String(result.pi || "").toUpperCase();
+      document.getElementById('customer').value = String(result.customer || document.getElementById('customer').value).toUpperCase();
       document.getElementById('partNoNote_' + partId).style.display = 'block';
 
       const bagOk = String(bagValue).toUpperCase() === String(result.bagBarcode).toUpperCase();
@@ -366,6 +389,7 @@ async function lookupPartMasterByBag(partId, bagValue) {
       document.getElementById('bag_' + partId).classList.add('mismatch');
     }
   } catch(err) {
+    debug('Lookup ERROR: ' + err.message);
     setPartBadge(partId, 'bag', 'fail', 'Lookup failed: ' + err.message);
   }
   validateAll();
@@ -376,8 +400,10 @@ async function lookupPartMasterByBag(partId, bagValue) {
 async function lookupPartMasterByPIPartNo(partId, pi, partNo) {
   try {
     let url = SCRIPT_URL + '?action=lookup&barcode=NO&pi=' + encodeURIComponent(pi) + '&partNo=' + encodeURIComponent(partNo);
+    debug('Fallback lookup: ' + url);
     const resp = await fetch(url);
     const result = await resp.json();
+    debug('Fallback result: ' + JSON.stringify(result));
 
     if (result.found) {
       partsData[partId].masterData = result;
@@ -387,14 +413,13 @@ async function lookupPartMasterByPIPartNo(partId, pi, partNo) {
         document.getElementById('partNoNote_' + partId).style.display = 'block';
       }
 
-      // Check inner/outer if already filled
       const iv = document.getElementById('inner_' + partId).value.trim();
       const ov = document.getElementById('outer_' + partId).value.trim();
       if (iv) checkPartBarcode(partId, 'inner', iv);
       if (ov) checkPartBarcode(partId, 'outer', ov);
     }
   } catch(err) {
-    console.log('Lookup by P/I+PartNo failed:', err);
+    debug('Fallback lookup ERROR: ' + err.message);
   }
 }
 
@@ -477,7 +502,6 @@ function validateAll() {
   let allFilled = true;
   let anyFail = false;
 
-  // Check header fields
   headerFields.forEach(id => {
     const el = document.getElementById(id);
     if (!el.value.trim()) {
@@ -488,10 +512,8 @@ function validateAll() {
     }
   });
 
-  // Check carton photo
   if (!cartonPhoto.imgCarton) allFilled = false;
 
-  // Check parts
   const partIds = Object.keys(partsData);
   if (partIds.length === 0) allFilled = false;
 
@@ -509,14 +531,9 @@ function validateAll() {
     });
 
     const qtyEl = document.getElementById('qty_' + pid);
-    if (!qtyEl.value || qtyEl.value < 1) {
-      allFilled = false;
-    }
-
-    // Check photos
+    if (!qtyEl.value || qtyEl.value < 1) allFilled = false;
     if (!pd.photos.imgBag || !pd.photos.imgInner) allFilled = false;
 
-    // Check match state
     const ms = pd.matchState;
     if (ms.bag === false || ms.inner === false || ms.outer === false) anyFail = true;
     if (ms.bag !== true || ms.inner !== true || ms.outer !== true) allFilled = false;
@@ -586,7 +603,6 @@ function processPhoto(input, previewId, dataKey, btnId, statusId) {
     if (dataKey === 'imgCarton') {
       cartonPhoto.imgCarton = photoObj;
     } else {
-      // dataKey format: imgBag_part_XXX or imgInner_part_XXX
       const match = dataKey.match(/^img(Bag|Inner)_(part_.+)$/);
       if (match && partsData[match[2]]) {
         partsData[match[2]].photos['img' + match[1]] = photoObj;
@@ -641,10 +657,8 @@ async function submitData() {
   btn.textContent = 'Uploading Photos...';
   showStatus('Uploading photos to Drive...', 'info');
 
-  // Upload carton photo
   const cartonUrl = await uploadPhoto(cartonPhoto.imgCarton, 'uploadCarton');
 
-  // Upload part photos and build parts array
   const partIds = Object.keys(partsData);
   const parts = [];
 
