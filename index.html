@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>MG Packing System</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f0f0f;
+      color: #e0e0e0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+    }
+
+    .header-logo {
+      margin-bottom: 40px;
+    }
+
+    h1 {
+      color: #ce93d8;
+      font-size: 2rem;
+      margin: 0;
+      letter-spacing: 1.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .sub-header {
+      color: #888;
+      font-size: 0.9rem;
+      margin-top: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    .menu-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .app-card {
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-left: 5px solid #ce93d8;
+      border-radius: 14px;
+      padding: 22px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .app-card:active {
+      transform: scale(0.97);
+      background: #252525;
+      border-color: #ce93d8;
+    }
+
+    .eng-name {
+      color: #ce93d8;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .thai-name {
+      font-size: 0.95rem;
+      color: #ffffff;
+      font-weight: 500;
+    }
+
+    .arrow {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #444;
+      font-size: 1.5rem;
+    }
+
+    .footer {
+      margin-top: 60px;
+      font-size: 0.75rem;
+      color: #444;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header-logo">
+      <h1>MG Packing System</h1>
+      <div class="sub-header">Select Packing Method / เลือกวิธีการแพ็ค</div>
+    </div>
+
+    <div class="menu-grid">
+      <!-- PPC APP -->
+      <a href="packer.html" class="app-card">
+        <div class="eng-name">Standard Packing-PPC</div>
+        <div class="thai-name">แพ็คตามมาตรฐาน PPC</div>
+        <div class="arrow">›</div>
+      </a>
+
+      <!-- KIT APP -->
+      <a href="kitpacker.html" class="app-card">
+        <div class="eng-name">Standard Packing-KIT</div>
+        <div class="thai-name">แพ็คตามมาตรฐานชุดเซ็ต KIT</div>
+        <div class="arrow">›</div>
+      </a>
+
+      <!-- MULTI-PART APP -->
+      <a href="Multipacker.html" class="app-card">
+        <div class="eng-name">Multi Part Pack</div>
+        <div class="thai-name">การแพ็คหลายชิ้นส่วนใน 1 กล่องลัง MP</div>
+        <div class="arrow">›</div>
+      </a>
+    </div>
+
+    <div class="footer">
+      MCHANIX QUALITY CONTROL SYSTEM
+    </div>
+  </div>
+
+</body>
+</html>
