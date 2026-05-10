@@ -81,7 +81,6 @@ button.success { background:#2e7d32; }
 #debugConsole { background:#000; color:#0f0; font-family:monospace; font-size:0.75rem; padding:10px; border-radius:8px; margin:10px 0; max-height:150px; overflow-y:auto; display:none; }
 #debugConsole.show { display:block; }
 </style>
-<base target="_blank">
 </head>
 <body>
 <h1>MG Multi-Part Packing</h1>
@@ -153,10 +152,6 @@ const headerFields = ['packedBy', 'checkerBy', 'cartonId', 'customer'];
 // DEBUG LOGGING
 function debug(msg) {
   console.log('[MULTI-PACK]', msg);
-  const dc = document.getElementById('debugConsole');
-  dc.classList.add('show');
-  dc.innerHTML += '> ' + msg + '<br>';
-  dc.scrollTop = dc.scrollHeight;
 }
 
 // AUTO UPPERCASE
@@ -293,7 +288,8 @@ async function startScanner(fieldId) {
   document.getElementById('scanner-container').style.display = 'block';
   if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
   try {
-    if (html5QrCode.isScanning) await html5QrCode.stop();
+    const state = html5QrCode.getState ? html5QrCode.getState() : null;
+    if (state === 2) await html5QrCode.stop(); // 2 = SCANNING
     await html5QrCode.start({ facingMode:"environment" }, { fps:20, qrbox:250 }, (decoded) => {
       const val = decoded.trim().toUpperCase();
       const tf = activeField;
@@ -305,7 +301,10 @@ async function startScanner(fieldId) {
 }
 
 function stopScanner() {
-  if (html5QrCode && html5QrCode.isScanning) html5QrCode.stop().catch(()=>{});
+  if (html5QrCode) {
+    const state = html5QrCode.getState ? html5QrCode.getState() : null;
+    if (state === 2) html5QrCode.stop().catch(()=>{});
+  }
   document.getElementById('scanner-container').style.display = 'none';
   activeField = null;
 }
@@ -329,7 +328,9 @@ async function lookupPartMasterByBag(partId, bagValue) {
   if (bagValue === 'NO') {
     pd.matchState.bag = true;
     setPartBadge(partId, 'bag', 'no-bc', 'No barcode — accepted');
-    document.getElementById('bag_' + partId).className = 'no-barcode';
+    const bagEl = document.getElementById('bag_' + partId);
+    bagEl.classList.remove('match', 'mismatch', 'required-empty');
+    bagEl.classList.add('no-barcode');
 
     const pi = document.getElementById('pi_' + partId).value.trim();
     const partNo = document.getElementById('partNo_' + partId).value.trim();
@@ -430,7 +431,8 @@ function checkPartBarcode(partId, field, value) {
 
   if (value === 'NO') {
     pd.matchState[field] = true;
-    el.className = 'no-barcode';
+    el.classList.remove('match', 'mismatch', 'required-empty');
+    el.classList.add('no-barcode');
     setPartBadge(partId, field, 'no-bc', 'No barcode — accepted');
     return;
   }
@@ -546,7 +548,7 @@ function validateAll() {
   btn.disabled = !canSubmit;
 
   document.getElementById('blockerNotice').style.display = anyFail ? 'block' : 'none';
-  document.getElementById('missingNotice').style.display = (!allFilled && (canSubmit || anyFail)) ? 'block' : 'none';
+  document.getElementById('missingNotice').style.display = (!allFilled && !anyFail && !canSubmit) ? 'block' : 'none';
 
   return canSubmit;
 }
