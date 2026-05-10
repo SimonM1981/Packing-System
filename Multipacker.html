@@ -77,14 +77,57 @@ button.success { background:#2e7d32; }
 .add-part-btn:hover { background:#283593; }
 .qty-input { max-width:120px; }
 
-/* Debug console */
-#debugConsole { background:#000; color:#0f0; font-family:monospace; font-size:0.75rem; padding:10px; border-radius:8px; margin:10px 0; max-height:150px; overflow-y:auto; display:none; }
-#debugConsole.show { display:block; }
+/* === TABS === */
+.main-tabs { display:flex; background:#161616; border-bottom:1px solid #333; position:sticky; top:0; z-index:50; margin:-16px -16px 16px -16px; }
+.main-tab { flex:1; padding:16px 8px; text-align:center; font-size:0.9rem; font-weight:700; color:#666; cursor:pointer; border-bottom:4px solid transparent; text-transform:uppercase; }
+.main-tab.active { color:#90caf9; border-bottom-color:#90caf9; background:#1a1a1a; }
+.tab-content { display:none; }
+.tab-content.active { display:block; }
+
+/* === EDIT BANNER === */
+.edit-banner { background:#1565c0; color:white; padding:12px 16px; border-radius:8px; margin-bottom:16px; display:none; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+.edit-banner.active { display:flex; }
+.edit-banner .edit-info { font-weight:600; font-size:0.9rem; }
+.edit-banner button { background:#0d47a1; padding:8px 16px; font-size:0.85rem; }
+
+/* === REJECT LIST === */
+.reject-stats { display:flex; gap:10px; margin-bottom:15px; }
+.reject-stat { flex:1; background:#1e1e1e; border:1px solid #333; border-radius:10px; padding:15px 5px; text-align:center; }
+.reject-stat-num { font-size:1.4rem; font-weight:700; display:block; color:white; }
+.reject-stat-lbl { font-size:0.65rem; color:#888; text-transform:uppercase; margin-top:5px; display:block; }
+.reject-card { background:#1e1e1e; border:1px solid #333; border-left:4px solid #f44336; border-radius:12px; padding:14px; margin-bottom:10px; cursor:pointer; transition:transform 0.2s; }
+.reject-card:hover { transform:translateX(4px); }
+.reject-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+.reject-customer { font-weight:700; color:#ef9a9a; font-size:1.05rem; }
+.reject-status-pill { padding:3px 10px; border-radius:10px; font-size:0.7rem; font-weight:bold; color:white; background:#b71c1c; }
+.reject-info { font-size:0.82rem; color:#ccc; margin-top:6px; line-height:1.7; }
+.reject-parts { display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; }
+.reject-part-chip { background:#2a2a2a; border:1px solid #555; border-radius:5px; padding:3px 8px; font-size:0.75rem; color:#aaa; }
+.reject-reason { font-size:0.8rem; color:#ffab91; margin-top:8px; font-style:italic; }
+.reject-photos { display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
+.reject-photos img { width:60px; height:60px; object-fit:cover; border-radius:6px; border:1px solid #444; cursor:pointer; }
+.empty-state { text-align:center; padding:40px; color:#666; font-size:1rem; }
+#debugConsole { display:none; }
 </style>
 </head>
 <body>
 <h1>MG Multi-Part Packing</h1>
 <p class="subtitle">Pack Multiple Parts in One Carton</p>
+
+<!-- EDIT BANNER -->
+<div class="edit-banner" id="editBanner">
+  <span class="edit-info">🔧 EDITING REJECTED CARTON — <span id="editCartonLabel"></span></span>
+  <button onclick="cancelEdit()">CANCEL EDIT</button>
+</div>
+
+<!-- MAIN TABS -->
+<div class="main-tabs">
+  <div class="main-tab active" id="tabEntry" onclick="switchTab('entry')">New Entry</div>
+  <div class="main-tab" id="tabReject" onclick="switchTab('reject')">Reject List</div>
+</div>
+
+<!-- TAB 1: ENTRY -->
+<div class="tab-content active" id="contentEntry">
 
 <div class="step-bar">
   <div class="step" id="step1"></div>
@@ -137,6 +180,29 @@ button.success { background:#2e7d32; }
 
 <button class="submit-btn blocked" id="submitBtn" onclick="submitData()" disabled>SUBMIT MULTI-PART PACKING</button>
 <div id="status"></div>
+
+</div><!-- end contentEntry -->
+
+<!-- TAB 2: REJECT LIST -->
+<div class="tab-content" id="contentReject">
+  <div class="reject-stats">
+    <div class="reject-stat">
+      <span class="reject-stat-num" id="rStatTotal">-</span>
+      <span class="reject-stat-lbl">TOTAL REJECTED</span>
+    </div>
+    <div class="reject-stat">
+      <span class="reject-stat-num" id="rStatRecent">-</span>
+      <span class="reject-stat-lbl">LAST 7 DAYS</span>
+    </div>
+  </div>
+  <div id="rejectList"><div class="empty-state">Loading...</div></div>
+</div>
+
+<!-- PHOTO LIGHTBOX -->
+<div id="packerLightbox" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:1000;display:none;align-items:center;justify-content:center;">
+  <button onclick="closePhotoLightbox()" style="position:absolute;top:20px;right:20px;background:#444;color:white;border:none;padding:12px 20px;border-radius:8px;font-weight:bold;cursor:pointer;">CLOSE</button>
+  <img id="packerLbImg" style="max-width:95%;max-height:90%;object-fit:contain;border-radius:8px;">
+</div>
 
 <script>
 // YOUR DEPLOYED SCRIPT URL
@@ -733,6 +799,311 @@ function showStatus(msg, type) {
 
 // Initialize with one part row
 addPartRow();
+
+// ── TAB SWITCHING ──────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  if (tab === 'entry') {
+    document.getElementById('tabEntry').classList.add('active');
+    document.getElementById('contentEntry').classList.add('active');
+  } else {
+    document.getElementById('tabReject').classList.add('active');
+    document.getElementById('contentReject').classList.add('active');
+    loadRejectList();
+  }
+}
+
+// ── REJECT LIST ────────────────────────────────────────────
+let allRejectedCartons = [];
+
+async function loadRejectList() {
+  const listEl = document.getElementById('rejectList');
+  listEl.innerHTML = '<div class="empty-state">Loading rejected records...</div>';
+  try {
+    const resp = await fetch(SCRIPT_URL + '?action=records');
+    const result = await resp.json();
+    const records = result.records || [];
+
+    // Group by cartonId, then filter cartons where checker rejected them
+    const cartonMap = {};
+    records.forEach(r => {
+      const cid = r.cartonId || 'NO-CARTON';
+      if (!cartonMap[cid]) cartonMap[cid] = { cartonId: cid, customer: r.customer, packedDate: r.packedDate, packedBy: r.packedBy, checkerBy: r.checkerBy, imgCartonUrl: r.imgCartonUrl, status: r.status, remarks: r.remarks, timestamp: r.timestamp, rows: [] };
+      if (r.status) cartonMap[cid].status = r.status;
+      if (r.remarks) cartonMap[cid].remarks = r.remarks;
+      cartonMap[cid].rows.push(r);
+    });
+
+    // Only rejected cartons
+    allRejectedCartons = Object.values(cartonMap).filter(g => (g.status || '').toLowerCase().includes('rejected'));
+
+    // Stats
+    document.getElementById('rStatTotal').textContent = allRejectedCartons.length;
+    const now = new Date();
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const recent = allRejectedCartons.filter(g => g.timestamp && new Date(g.timestamp) >= sevenDaysAgo).length;
+    document.getElementById('rStatRecent').textContent = recent;
+
+    if (allRejectedCartons.length === 0) {
+      listEl.innerHTML = '<div class="empty-state">No rejected cartons found. Good job! 👍</div>';
+      return;
+    }
+
+    listEl.innerHTML = allRejectedCartons.map(g => {
+      const piSet = [...new Set(g.rows.map(r => r.pi).filter(Boolean))];
+      const chips = g.rows.map(r => `<span class="reject-part-chip">${r.partNo || '?'}</span>`).join('');
+
+      // Carton photo thumbnail
+      let photoHtml = '';
+      if (g.imgCartonUrl) {
+        const idM = (g.imgCartonUrl || '').match(/[-\w]{25,}/);
+        const thumb = idM ? `https://drive.google.com/thumbnail?id=${idM[0]}&sz=400` : '';
+        if (thumb) photoHtml = `<div class="reject-photos"><img src="${thumb}" onclick="event.stopPropagation();openPhotoLightbox('${g.imgCartonUrl}')" alt="Carton"></div>`;
+      }
+
+      return `<div class="reject-card" onclick="loadRejectCartonForEdit('${escapeForAttr(g.cartonId)}')">
+        <div class="reject-header">
+          <span class="reject-customer">${g.customer || 'Unknown'}</span>
+          <span class="reject-status-pill">REJECTED</span>
+        </div>
+        <div class="reject-info">
+          📦 Carton: <strong>${g.cartonId}</strong><br>
+          📋 PI: ${piSet.join(', ') || '—'} &nbsp;|&nbsp; ${g.rows.length} part(s)<br>
+          👷 Packed by: ${g.packedBy || '—'} &nbsp;|&nbsp; 🗓 ${g.packedDate || '—'}
+        </div>
+        <div class="reject-parts">${chips}</div>
+        ${g.remarks ? `<div class="reject-reason">💬 ${g.remarks}</div>` : ''}
+        ${photoHtml}
+      </div>`;
+    }).join('');
+  } catch(err) {
+    listEl.innerHTML = '<div class="empty-state">Error loading records: ' + err.message + '</div>';
+  }
+}
+
+// ── EDIT MODE ──────────────────────────────────────────────
+let editMode = false;
+let editCartonId = null;
+let editRowNums = [];
+
+async function loadRejectCartonForEdit(cartonId) {
+  const g = allRejectedCartons.find(x => x.cartonId === cartonId);
+  if (!g) return;
+
+  switchTab('entry');
+
+  editMode = true;
+  editCartonId = cartonId;
+  editRowNums = g.rows.map(r => r.row);
+
+  // Show edit banner
+  document.getElementById('editBanner').classList.add('active');
+  document.getElementById('editCartonLabel').textContent = cartonId + ' (' + g.rows.length + ' parts)';
+
+  // Fill header fields
+  document.getElementById('packedBy').value = g.packedBy || '';
+  document.getElementById('checkerBy').value = g.checkerBy || '';
+  document.getElementById('cartonId').value = g.cartonId || '';
+  document.getElementById('customer').value = g.customer || '';
+
+  // Load carton photo if exists
+  if (g.imgCartonUrl) {
+    loadExistingPhoto(g.imgCartonUrl, 'prevCarton', 'imgCarton', 'btnCarton', 'uploadCarton');
+  }
+
+  // Clear existing parts and rebuild from rejected rows
+  document.getElementById('partsContainer').innerHTML = '';
+  partsData = {};
+  partCounter = 0;
+
+  for (const row of g.rows) {
+    addPartRow();
+    // Get the last added partId
+    const pid = Object.keys(partsData)[Object.keys(partsData).length - 1];
+
+    document.getElementById('pi_' + pid).value = row.pi || '';
+    document.getElementById('partNo_' + pid).value = row.partNo || '';
+    document.getElementById('bag_' + pid).value = row.bag || '';
+    document.getElementById('inner_' + pid).value = row.inner || '';
+    document.getElementById('outer_' + pid).value = row.outer || '';
+    document.getElementById('qty_' + pid).value = row.qty || 1;
+
+    // Load existing part photos
+    if (row.imgBagUrl) loadExistingPhoto(row.imgBagUrl, 'prevBag_' + pid, 'imgBag_' + pid, 'btnBag_' + pid, 'uploadBag_' + pid);
+    if (row.imgInnerUrl) loadExistingPhoto(row.imgInnerUrl, 'prevInner_' + pid, 'imgInner_' + pid, 'btnInner_' + pid, 'uploadInner_' + pid);
+
+    // Re-verify barcodes
+    if (row.bag) await onPartBarcodeEntered(pid, 'bag', row.bag.toUpperCase());
+    if (row.inner) await onPartBarcodeEntered(pid, 'inner', row.inner.toUpperCase());
+    if (row.outer) await onPartBarcodeEntered(pid, 'outer', row.outer.toUpperCase());
+  }
+
+  // Update submit button text
+  document.getElementById('submitBtn').textContent = 'RESUBMIT CORRECTED DATA';
+  showStatus('Loaded rejected carton for editing. Fix issues then resubmit.', 'info');
+  validateAll();
+  updateSteps();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function loadExistingPhoto(url, previewId, dataKey, btnId, statusId) {
+  // Store existing photo reference
+  const idM = (url || '').match(/[-\w]{25,}/);
+  const thumb = idM ? `https://drive.google.com/thumbnail?id=${idM[0]}&sz=800` : url;
+
+  const preview = document.getElementById(previewId);
+  const btn = document.getElementById(btnId);
+  const status = document.getElementById(statusId);
+  if (!preview || !btn || !status) return;
+
+  preview.src = thumb;
+  preview.style.display = 'block';
+  btn.classList.add('has-photo');
+  status.textContent = 'Existing photo — tap to retake';
+  status.className = 'upload-status ok';
+
+  // Store in the right place
+  if (dataKey === 'imgCarton') {
+    cartonPhoto.imgCarton = { existingUrl: url, base64: null };
+  } else {
+    const match = dataKey.match(/^img(Bag|Inner)_(part_.+)$/);
+    if (match && partsData[match[2]]) {
+      partsData[match[2]].photos['img' + match[1]] = { existingUrl: url, base64: null };
+    }
+  }
+}
+
+function cancelEdit() {
+  editMode = false;
+  editCartonId = null;
+  editRowNums = [];
+  document.getElementById('editBanner').classList.remove('active');
+
+  // Clear all header fields
+  ['packedBy','checkerBy','cartonId','customer'].forEach(id => {
+    document.getElementById(id).value = '';
+    document.getElementById(id).classList.remove('required-empty');
+  });
+
+  // Clear carton photo
+  document.getElementById('prevCarton').style.display = 'none';
+  document.getElementById('prevCarton').src = '';
+  document.getElementById('btnCarton').classList.remove('has-photo');
+  document.getElementById('uploadCarton').textContent = '';
+  cartonPhoto = { imgCarton: null };
+
+  // Clear parts
+  document.getElementById('partsContainer').innerHTML = '';
+  partsData = {};
+  partCounter = 0;
+  addPartRow();
+
+  document.getElementById('submitBtn').textContent = 'SUBMIT MULTI-PART PACKING';
+  showStatus('Edit cancelled. Form cleared.', 'info');
+  setTimeout(() => { document.getElementById('status').style.display = 'none'; }, 2000);
+  validateAll();
+  updateSteps();
+}
+
+// ── PHOTO LIGHTBOX ─────────────────────────────────────────
+function openPhotoLightbox(url) {
+  const idM = (url || '').match(/[-\w]{25,}/);
+  const fullUrl = idM ? `https://drive.google.com/uc?export=view&id=${idM[0]}` : url;
+  document.getElementById('packerLbImg').src = fullUrl;
+  document.getElementById('packerLightbox').style.display = 'flex';
+}
+function closePhotoLightbox() {
+  document.getElementById('packerLightbox').style.display = 'none';
+}
+
+function escapeForAttr(s) {
+  return String(s||'').replace(/'/g, "\'");
+}
+
+// ── OVERRIDE uploadPhoto to handle existing photos ─────────
+const _origUploadPhoto = uploadPhoto;
+uploadPhoto = async function(dataObj, statusId) {
+  if (!dataObj) return "";
+  // If it's an existing photo not retaken, return the existing URL
+  if (dataObj.existingUrl && !dataObj.base64) {
+    const statusEl = document.getElementById(statusId);
+    if (statusEl) { statusEl.textContent = 'Using existing photo'; statusEl.className = 'upload-status ok'; }
+    return dataObj.existingUrl;
+  }
+  return _origUploadPhoto(dataObj, statusId);
+};
+
+// ── OVERRIDE submitData to handle edit/resubmit ───────────
+const _origSubmitData = submitData;
+submitData = async function() {
+  if (!editMode) { return _origSubmitData(); }
+
+  // Edit mode: delete old rows, submit fresh
+  if (!validateAll()) {
+    showStatus('Please complete all required fields and fix mismatches', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Resubmitting...';
+  showStatus('Uploading photos...', 'info');
+
+  const cartonUrl = await uploadPhoto(cartonPhoto.imgCarton, 'uploadCarton');
+  const partIds = Object.keys(partsData);
+  const parts = [];
+
+  for (const pid of partIds) {
+    const pd = partsData[pid];
+    const bagUrl   = await uploadPhoto(pd.photos.imgBag,   'uploadBag_' + pid);
+    const innerUrl = await uploadPhoto(pd.photos.imgInner, 'uploadInner_' + pid);
+    parts.push({
+      pi:         document.getElementById('pi_' + pid).value.trim(),
+      partNo:     document.getElementById('partNo_' + pid).value.trim(),
+      bag:        document.getElementById('bag_' + pid).value.trim(),
+      inner:      document.getElementById('inner_' + pid).value.trim(),
+      outer:      document.getElementById('outer_' + pid).value.trim(),
+      qty:        document.getElementById('qty_' + pid).value,
+      bagMatch:   pd.matchState.bag,
+      innerMatch: pd.matchState.inner,
+      outerMatch: pd.matchState.outer,
+      imgBagUrl:  bagUrl,
+      imgInnerUrl: innerUrl
+    });
+  }
+
+  const payload = {
+    action: 'resubmitMulti',
+    oldRows: editRowNums,
+    packedDate: getFormattedDate(),
+    packedBy:   document.getElementById('packedBy').value.trim(),
+    checkerBy:  document.getElementById('checkerBy').value.trim(),
+    cartonId:   document.getElementById('cartonId').value.trim(),
+    customer:   document.getElementById('customer').value.trim(),
+    imgCartonUrl: cartonUrl,
+    parts: parts
+  };
+
+  try {
+    const resp = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload)
+    });
+    const res = await resp.json();
+    if (res.success) {
+      showStatus('Success! Rejected carton corrected and resubmitted.', 'success');
+      setTimeout(() => location.reload(), 3000);
+    } else {
+      throw new Error(res.error || 'Unknown error');
+    }
+  } catch(e) {
+    showStatus('Resubmit error: ' + e.message, 'error');
+    btn.disabled = false;
+    btn.textContent = 'RETRY RESUBMIT';
+  }
+};
 </script>
 </body>
 </html>
