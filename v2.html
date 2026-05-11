@@ -13,7 +13,7 @@
 * { box-sizing: border-box; }
 body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#0f0f0f; color:#e0e0e0; margin:0; padding:16px; min-height:100vh; }
 
-/* === Back Button Styles - Only Addition === */
+/* === Back Button Styles (Only Addition) === */
 .header {
     display: flex;
     align-items: center;
@@ -131,12 +131,13 @@ button.danger { background:#c62828; }
 </head>
 <body>
 
-<!-- Back Button Added -->
+<!-- === Back Button to Main Menu (Only Addition) === -->
 <div class="header">
     <button class="back-btn" onclick="goBackToMainMenu()" title="Back to Main Menu">←</button>
     <h1 style="margin:0; flex:1; text-align:center;">MG KIT Packing System</h1>
 </div>
 
+<h1>MG KIT Packing System</h1>
 <p class="subtitle">KIT Assembly & Packing</p>
 <div class="edit-banner" id="editBanner">
 <span class="edit-info">🔧 EDITING REJECTED KIT — Row #<span id="editRowNum"></span></span>
@@ -244,6 +245,13 @@ button.danger { background:#c62828; }
 </div>
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby2FVQwcyhqkzdqaRl7xfDaFbKoL7AAE-dSKE-WQVs-niQkwept7oUv6vSOiqeEvJ3x/exec";
+
+// ==================== Back to Main Menu (Only Addition) ====================
+function goBackToMainMenu() {
+    window.location.href = "https://simonm1981.github.io/Packing-System/index.html";
+}
+// =========================================================================
+
 let html5QrCode = null;
 let activeField = null;
 let kitMasterData = null;
@@ -254,16 +262,13 @@ let editRowNum = null;
 let allRejectedRecords = [];
 const MAX_PARTS = 12;
 const MIN_PARTS = 1;
-
-// ==================== Back to Main Menu (Only Addition) ====================
-function goBackToMainMenu() {
-    window.location.href = "https://simonm1981.github.io/Packing-System/index.html";
-}
-// =========================================================================
-
 // Debug logging
 function debug(msg) {
 // Debug logging disabled in production
+// const panel = document.getElementById('debugPanel');
+// const content = document.getElementById('debugContent');
+// content.innerHTML += '<div>' + new Date().toLocaleTimeString() + ' — ' + msg + '</div>';
+// panel.classList.add('active');
 console.log('[KIT DEBUG]', msg);
 }
 // Init with 2 empty parts
@@ -345,10 +350,6 @@ try { this.setSelectionRange(pos,pos); } catch(e){}
 });
 });
 }
-// All your original code continues from here without any change...
-
-// (The rest of your script is exactly as you sent me - I did not cut anything)
-
 async function onPartNoChange(idx, value) {
 const v = value.trim().toUpperCase();
 kitParts[idx].partNo = v;
@@ -363,7 +364,6 @@ updateSubmitButton();
 updateSteps();
 updateKitSummary();
 }
-
 async function onBagBarcodeChange(idx, value) {
 const v = value.trim().toUpperCase();
 kitParts[idx].bagBarcode = v;
@@ -374,7 +374,6 @@ updateSubmitButton();
 updateSteps();
 updateKitSummary();
 }
-
 async function lookupKitPart(idx, partNo, kitModel, pi) {
 try {
 debug('lookupKitPart: partNo=' + partNo + ', kitModel=' + kitModel + ', pi=' + (pi || 'EMPTY'));
@@ -389,6 +388,7 @@ kitParts[idx].expectedBagBarcode = result.bagBarcode || '';
 kitParts[idx].hasNoBarcode = result.hasNoBarcode || false;
 kitParts[idx].innerBoxBarcode = result.innerBoxBarcode || '';
 kitParts[idx].outerCartonBarcode = result.outerCartonBarcode || '';
+// Auto-fill box/carton if empty and we have them from master
 if (result.innerBoxBarcode && !document.getElementById('innerBox').value) {
 document.getElementById('innerBox').value = result.innerBoxBarcode;
 checkSharedBarcode('innerBox', result.innerBoxBarcode);
@@ -412,7 +412,6 @@ debug('lookupKitPart ERROR: ' + err.message);
 console.error('Lookup failed:', err);
 }
 }
-
 async function checkKitPartBarcode(idx, barcode) {
 const part = kitParts[idx];
 const el = document.getElementById(`bag_${idx}`);
@@ -423,10 +422,12 @@ setPartBadge(idx, 'pending', 'Not checked');
 el.className = '';
 return;
 }
+// Handle NO barcode case
 if (barcode === 'NO') {
 const partNo = part.partNo;
 const kitModel = document.getElementById('kitModel').value.trim();
 if (partNo && kitModel) {
+// Ensure lookup is done
 if (!part.expectedBagBarcode && !part.hasNoBarcode) {
 await lookupKitPart(idx, partNo, kitModel, document.getElementById('pi').value.trim());
 }
@@ -448,6 +449,7 @@ updateSteps();
 updateKitSummary();
 return;
 }
+// Normal barcode check
 if (part.expectedBagBarcode) {
 const ok = barcode === part.expectedBagBarcode.toUpperCase();
 part.matchState = ok;
@@ -456,6 +458,7 @@ el.classList.toggle('match', ok);
 el.classList.toggle('mismatch', !ok);
 setPartBadge(idx, ok ? 'ok' : 'fail', ok ? 'Match ✓' : 'Mismatch ✗');
 } else {
+// No master data — try lookup
 const partNo = part.partNo;
 const kitModel = document.getElementById('kitModel').value.trim();
 const pi = document.getElementById('pi').value.trim();
@@ -809,9 +812,12 @@ allFilled = false;
 if (!firstEmpty) firstEmpty = el;
 }
 });
+// Only check parts that have been started (have a partNo entered)
+// Empty parts (user added but didn't fill) are ignored
 const activeParts = kitParts.filter(p => p.partNo.trim() !== '');
 if (activeParts.length < MIN_PARTS) {
 allFilled = false;
+// Find first empty partNo field
 for (let i = 0; i < kitParts.length; i++) {
 if (!kitParts[i].partNo.trim()) {
 if (!firstEmpty) firstEmpty = document.getElementById('partNo_' + i);
@@ -829,6 +835,7 @@ return { allFilled, firstEmpty };
 }
 function updateSubmitButton() {
 const { allFilled } = validateRequiredFields();
+// Only check active parts (with partNo entered) for matching
 const activeParts = kitParts.filter(p => p.partNo.trim() !== '');
 const allPartsMatch = activeParts.every(p => p.matchState === true);
 const anyPartFail = activeParts.some(p => p.matchState === false);
