@@ -8,7 +8,8 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>MG Packing System</title>
-<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<!-- PINNED STABLE VERSION -->
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
 <style>
 * { box-sizing: border-box; }
 body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#0f0f0f; color:#e0e0e0; margin:0; padding:16px; min-height:100vh; }
@@ -45,7 +46,7 @@ label { display:block; margin:10px 0 5px; font-weight:600; color:#90caf9; font-s
 input[type="text"],input[type="number"] { width:100%; padding:11px 12px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; font-size:16px; text-transform:uppercase; }
 input[type="number"] { text-transform:none; }
 input::placeholder { text-transform:none; color:#555; }
-input:focus { outline:none; border-color:#90caf9; }
+input:focus { outline:none; border-color:#90cafaf; }
 input.match { border-color:#4caf50 !important; background:#1a2e1a; }
 input.mismatch { border-color:#f44336 !important; background:#2e1a1a; }
 input.no-barcode{ border-color:#ff9800 !important; background:#2e2200; }
@@ -61,7 +62,13 @@ button:disabled { opacity:0.4; cursor:not-allowed; }
 .match-badge.pending { background:#333; color:#888; }
 .match-badge.no-bc { background:#4a3000; color:#ffcc80; }
 #scanner-container { margin:12px 0; text-align:center; }
-#reader { width:100%; max-width:480px; margin:0 auto; border:2px solid #444; border-radius:10px; overflow:hidden; background:#000; }
+#reader { width:100%; max-width:480px; margin:0 auto; border:2px solid #444; border-radius:10px; overflow:hidden; background:#000; min-height: 300px; }
+/* FIX: Ensure video renders properly */
+#reader video {
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+}
 .photo-btn { width:100%; padding:15px; margin:8px 0; font-size:1rem; background:#37474f; border-radius:10px; border:none; color:white; cursor:pointer; text-align:left; display:flex; align-items:center; gap:10px; }
 .photo-btn .icon { font-size:1.3rem; }
 .photo-btn .photo-label { flex:1; }
@@ -240,6 +247,9 @@ let editMode = false;
 let editRowNum = null;
 let editOriginalData = null;
 let allRejectedRecords = [];
+// Scanner retry counter
+let scannerRetryCount = 0;
+const MAX_SCANNER_RETRIES = 2;
 // List of all required field IDs
 const requiredFields = ['packedBy', 'checkerBy', 'cartonId', 'customer', 'pi', 'partNo', 'bag', 'inner', 'outer', 'qty'];
 
@@ -357,8 +367,6 @@ ${photoHtml}
 }).join('');
 }
 
-// All your other functions (loadRejectForEdit, cancelEdit, scanner, barcode logic, submitData, etc.) remain 100% unchanged below...
-
 // ── LOAD REJECTED RECORD FOR EDITING ───────────────────
 async function loadRejectForEdit(rowNum) {
 try {
@@ -470,27 +478,115 @@ const lb = document.getElementById('packerLightbox');
 if (lb) lb.style.display = 'none';
 }
 
+// ==================== FIXED SCANNER FUNCTIONS ====================
 async function startScanner(fieldId) {
-activeField = fieldId;
-document.getElementById('scanner-container').style.display = 'block';
-if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
-try {
-if (html5QrCode.isScanning) await html5QrCode.stop();
-await html5QrCode.start({ facingMode:"environment" }, { fps:20, qrbox:250 }, (decoded) => {
-const val = decoded.trim().toUpperCase();
-const tf = activeField;
-document.getElementById(tf).value = val;
-stopScanner();
-onBarcodeEntered(tf, val);
-});
-} catch(err) { showStatus("Camera error: "+err.message,'error'); stopScanner(); }
+    activeField = fieldId;
+    document.getElementById('scanner-container').style.display = 'block';
+    
+    // Ensure any old instance is fully cleaned up
+    if (html5QrCode) {
+        try {
+            if (html5QrCode.isScanning) {
+                await html5QrCode.stop();
+            }
+            await html5QrCode.clear();
+        } catch (e) {
+            console.log('Cleanup error:', e);
+        }
+        html5QrCode = null;
+    }
+    
+    // Small delay to let DOM settle
+    await new Promise(r => setTimeout(r, 300));
+    
+    try {
+        // Check if Html5Qrcode is available
+        if (typeof Html5Qrcode === 'undefined') {
+            throw new Error('Scanner library not loaded. Check internet connection.');
+        }
+        
+        html5QrCode = new Html5Qrcode("reader");
+        
+        // Request camera permissions first
+        const devices = await Html5Qrcode.getCameras();
+        if (!devices || devices.length === 0) {
+            throw new Error('No camera found on this device.');
+        }
+        
+        // Find back/environment camera
+        let cameraId = null;
+        const envCamera = devices.find(d => 
+            d.label.toLowerCase().includes('back') || 
+            d.label.toLowerCase().includes('environment') ||
+            d.label.toLowerCase().includes('rear')
+        );
+        cameraId = envCamera ? { deviceId: envCamera.id } : { facingMode: "environment" };
+        
+        const config = {
+            fps: 15,
+            qrbox: { width: 250, height: 250 },
+            aspectRatio: 1.0
+        };
+        
+        await html5QrCode.start(
+            cameraId,
+            config,
+            (decodedText, decodedResult) => {
+                const val = decodedText.trim().toUpperCase();
+                const tf = activeField;
+                if (tf && document.getElementById(tf)) {
+                    document.getElementById(tf).value = val;
+                    stopScanner();
+                    onBarcodeEntered(tf, val);
+                }
+            },
+            (errorMessage) => {
+                // Scan failure callback - ignore frequent errors, they're normal
+                // console.log('Scan error:', errorMessage);
+            }
+        );
+        
+        scannerRetryCount = 0;
+        showStatus('Camera active — point at barcode', 'info');
+        
+    } catch (err) {
+        console.error('Scanner error:', err);
+        
+        // Retry with fallback
+        if (scannerRetryCount < MAX_SCANNER_RETRIES) {
+            scannerRetryCount++;
+            console.log(`Retrying scanner... attempt ${scannerRetryCount}`);
+            stopScanner();
+            setTimeout(() => startScanner(fieldId), 500);
+            return;
+        }
+        
+        showStatus('Camera error: ' + err.message, 'error');
+        stopScanner();
+        
+        // Fallback: let user type manually
+        focusField(fieldId);
+    }
 }
 
 function stopScanner() {
-if (html5QrCode && html5QrCode.isScanning) html5QrCode.stop().catch(()=>{});
-document.getElementById('scanner-container').style.display = 'none';
-activeField = null;
+    document.getElementById('scanner-container').style.display = 'none';
+    
+    if (html5QrCode) {
+        try {
+            if (html5QrCode.isScanning) {
+                html5QrCode.stop().catch(() => {});
+            }
+            html5QrCode.clear().catch(() => {});
+        } catch (e) {
+            console.log('Stop error:', e);
+        }
+        // Don't null it immediately - let cleanup finish
+        setTimeout(() => { html5QrCode = null; }, 100);
+    }
+    activeField = null;
 }
+// ============================================================
 
 function focusField(id) { document.getElementById(id).focus(); }
 
