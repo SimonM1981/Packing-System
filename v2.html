@@ -97,33 +97,34 @@ button:disabled { opacity:0.4; cursor:not-allowed; }
 /* === BACK TO TOP BUTTON === */
 #backToTopBtn {
   position: fixed;
-  bottom: 24px;
+  bottom: 28px;
   right: 20px;
-  z-index: 999;
+  z-index: 9999;
   background: #3f51b5;
   color: white;
   border: none;
   border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  font-size: 1.3rem;
+  width: 52px;
+  height: 52px;
+  font-size: 1.5rem;
+  line-height: 1;
   cursor: pointer;
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
-  transition: background 0.2s, transform 0.2s, opacity 0.3s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.6);
   opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity 0.3s, transform 0.3s;
 }
 #backToTopBtn.visible {
-  display: flex;
   opacity: 1;
-}
-#backToTopBtn:hover {
-  background: #5c6bc0;
-  transform: translateY(-3px);
+  pointer-events: auto;
+  transform: translateY(0);
 }
 #backToTopBtn:active {
+  background: #5c6bc0;
   transform: scale(0.92);
 }
 </style>
@@ -134,7 +135,7 @@ button:disabled { opacity:0.4; cursor:not-allowed; }
 <p class="subtitle">Packer Entry</p>
 
 <!-- Back to Top Button -->
-<button id="backToTopBtn" onclick="scrollToTop()" title="Back to top">&#8679;</button>
+<button id="backToTopBtn" onclick="scrollToTop()" title="Back to top">▲</button>
 
 <!-- Edit Mode Banner -->
 <div class="edit-banner" id="editBanner">
@@ -277,17 +278,21 @@ requiredFields.forEach(id => {
 });
 
 // === BACK TO TOP ===
-window.addEventListener('scroll', function() {
+function handleScroll() {
   const btn = document.getElementById('backToTopBtn');
-  if (window.scrollY > 300) {
+  const scrolled = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+  if (scrolled > 200) {
     btn.classList.add('visible');
   } else {
     btn.classList.remove('visible');
   }
-});
+}
+window.addEventListener('scroll', handleScroll, { passive: true });
 
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
 }
 
 // ── TAB SWITCHING ──────────────────────────────────────
