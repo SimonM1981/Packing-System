@@ -14,21 +14,6 @@
 body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#0f0f0f; color:#e0e0e0; margin:0; padding:16px; min-height:100vh; }
 h1 { text-align:center; color:#90caf9; margin:12px 0 4px; font-size:1.5rem; }
 .subtitle { text-align:center; color:#888; font-size:0.85rem; margin-bottom:20px; }
-
-/* NEW: Style for the navigation link */
-.nav-link-container { text-align: center; margin: 10px 0; }
-.nav-link { 
-    display: inline-block; 
-    padding: 8px 16px; 
-    background: #333; 
-    color: #90caf9; 
-    text-decoration: none; 
-    border-radius: 8px; 
-    font-size: 0.85rem; 
-    font-weight: bold;
-    border: 1px solid #444;
-}
-
 .card { background:#1e1e1e; border:1px solid #333; border-radius:12px; padding:16px; margin-bottom:16px; }
 .card-title { font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#666; margin-bottom:12px; }
 label { display:block; margin:10px 0 5px; font-weight:600; color:#90caf9; font-size:0.9rem; }
@@ -78,7 +63,7 @@ button:disabled { opacity:0.4; cursor:not-allowed; }
 .required-label::after { content:" *"; color:#ff5722; }
 .missing-notice { background:#4a2000; color:#ffab91; border-radius:8px; padding:10px 14px; font-size:0.85rem; font-weight:600; margin-top:10px; display:none; }
 
-/* === REJECT LIST STYLES === */
+/* === NEW: REJECT LIST STYLES === */
 .main-tabs { display:flex; background:#161616; border-bottom:1px solid #333; position:sticky; top:0; z-index:50; margin:-16px -16px 16px -16px; }
 .main-tab { flex:1; padding:18px 8px; text-align:center; font-size:0.9rem; font-weight:700; color:#666; cursor:pointer; border-bottom:4px solid transparent; text-transform:uppercase; }
 .main-tab.active { color:#90caf9; border-bottom-color:#90caf9; background:#1a1a1a; }
@@ -115,9 +100,9 @@ button:disabled { opacity:0.4; cursor:not-allowed; }
 <body>
 <h1>MG Packing System</h1>
 
-<!-- ADDED: TOP BUTTON -->
-<div class="nav-link-container">
-    <a href="index.html" class="nav-link" target="_self">← BACK TO MAIN MENU</a>
+<!-- BACK TO MAIN MENU BUTTON (TOP) -->
+<div style="text-align:center; margin-bottom: 20px;">
+    <a href="index.html" target="_self" style="background:#333; color:#90caf9; padding:10px 20px; border-radius:8px; text-decoration:none; font-weight:bold; border:1px solid #444;">← BACK TO MAIN MENU</a>
 </div>
 
 <p class="subtitle">Packer Entry</p>
@@ -211,6 +196,12 @@ button:disabled { opacity:0.4; cursor:not-allowed; }
 
 <button class="submit-btn blocked" id="submitBtn" onclick="submitData()" disabled>SUBMIT PACKING DATA</button>
 <div id="status"></div>
+
+<!-- BACK TO MAIN MENU BUTTON (BOTTOM) -->
+<div style="text-align:center; margin-top: 30px; margin-bottom: 20px;">
+    <a href="index.html" target="_self" style="background:#333; color:#90caf9; padding:10px 20px; border-radius:8px; text-decoration:none; font-weight:bold; border:1px solid #444;">← BACK TO MAIN MENU</a>
+</div>
+
 </div>
 
 <!-- TAB 2: REJECT LIST -->
@@ -226,11 +217,6 @@ button:disabled { opacity:0.4; cursor:not-allowed; }
 </div>
 </div>
 <div id="rejectList"></div>
-</div>
-
-<!-- ADDED: BOTTOM BUTTON -->
-<div class="nav-link-container" style="margin-top: 30px;">
-    <a href="index.html" class="nav-link" target="_self">← BACK TO MAIN MENU</a>
 </div>
 
 <script>
@@ -625,6 +611,7 @@ updateSubmitButton();
 updateSteps();
 }
 
+// CHANGED: New function to lookup master by P/I + Part No. when Bag = "NO"
 async function lookupMasterByPIPartNo(pi, partNo) {
 try {
 let url = SCRIPT_URL + '?action=lookup&barcode=NO&pi=' + encodeURIComponent(pi) + '&partNo=' + encodeURIComponent(partNo);
@@ -633,11 +620,13 @@ const result = await resp.json();
 
 if (result.found) {
 masterData = result;
+// Auto-fill Part No. if empty
 if (!document.getElementById('partNo').value) {
 document.getElementById('partNo').value = String(result.partNo || "").toUpperCase();
 document.getElementById('partNoNote').style.display = 'block';
 }
 
+// Now check inner/outer if already filled
 const iv = document.getElementById('inner').value.trim();
 const ov = document.getElementById('outer').value.trim();
 if (iv) checkBarcode('inner', iv);
@@ -648,6 +637,7 @@ console.log('Lookup by P/I+PartNo failed:', err);
 }
 }
 
+// CHANGED: Updated to handle Bag = "NO" case
 function checkBarcode(fieldId, value) {
 const el = document.getElementById(fieldId);
 const label = fieldId === 'inner' ? 'Inner' : 'Outer';
@@ -659,11 +649,14 @@ setBadge(fieldId, 'no-bc', 'No barcode — accepted');
 return;
 }
 
+// If no masterData, try to lookup first using P/I + Part No.
 if (!masterData) {
 const pi = document.getElementById('pi').value.trim();
 const partNo = document.getElementById('partNo').value.trim();
 if (pi && partNo) {
+// Will trigger async lookup, then re-check
 lookupMasterByPIPartNo(pi, partNo).then(() => {
+// Re-run check after lookup completes
 if (masterData) {
 checkBarcode(fieldId, value);
 } else {
@@ -672,7 +665,7 @@ matchState[fieldId] = false;
 }
 updateSubmitButton();
 });
-return;
+return; // Wait for async
 }
 setBadge(fieldId, 'pending', 'Scan Bag barcode first');
 matchState[fieldId] = null;
@@ -682,37 +675,6 @@ return;
 const expected = fieldId === 'inner' ? masterData.innerBarcode : masterData.outerBarcode;
 const ok = String(value).toUpperCase() === String(expected).toUpperCase();
 matchState[fieldId] = ok;
-// Finishing logic and closing tags
-el.classList.toggle('match', ok);
-el.classList.toggle('mismatch', !ok);
-setBadge(fieldId, ok ? 'ok' : 'fail', ok ? `Match — ${label} OK` : `Mismatch — Wrong ${label}`);
-updateSubmitButton();
-}
-
-function setBadge(id, status, text) {
-    const b = document.getElementById(id + 'Badge');
-    if(b) {
-        b.className = 'match-badge ' + status;
-        b.textContent = text;
-    }
-}
-
-function updateSubmitButton() {
-    // Logic to enable/disable button based on validation
-    const btn = document.getElementById('submitBtn');
-    const isValid = matchState.bag && matchState.inner && matchState.outer;
-    btn.disabled = !isValid;
-    btn.className = isValid ? 'submit-btn ready' : 'submit-btn blocked';
-}
-
-function updateSteps() {
-    // Logic for visual step bar
-}
-
-function showStatus(msg, type) {
-    const s = document.getElementById('status');
-    s.textContent = msg;
-    s.className = type;
 }
 </script>
 </body>
