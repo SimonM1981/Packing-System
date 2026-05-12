@@ -227,7 +227,7 @@
       const cls = s.includes('verified') ? 'verified' : s.includes('rejected') ? 'rejected' : 'pending';
       return `<div class="record-card ${cls}" onclick="openRecord(${r.row})">
         <div class="record-header"><span class="record-customer">${r.customer}</span><span class="status-pill ${cls}">${r.status || 'Pending'}</span></div>
-        <div style="font-size:0.85rem; color:#eee; margin-top:8px;">PI: ${r.pi} | KIT: ${r.kitModel} | QTY: ${r.qty || '-'} | CTN: ${r.cartonId || '-'}</div>
+        <div style="font-size:0.85rem; color:#eee; margin-top:8px;">PI: ${r.pi} | KIT: ${r.kitModel} | QTY: ${r.kitQty || '-'} | CTN: ${r.cartonId || '-'}</div>
       </div>`;
     }).join('');
     document.getElementById('verifyList').innerHTML = html;
@@ -249,7 +249,7 @@
           <span class="record-customer" style="color:#ce93d8;">${r.customer}</span>
           ${currentStampFilter === 'done' ? '<span style="color:#4caf50; font-weight:bold;">STAMPED ✅</span>' : ''}
         </div>
-        <div style="font-size:0.9rem; color:#eee; margin:10px 0;">KIT: ${r.kitModel} | PI: ${r.pi} | QTY: ${r.qty || '-'} | CTN: ${r.cartonId || '-'}</div>
+        <div style="font-size:0.9rem; color:#eee; margin:10px 0;">KIT: ${r.kitModel} | PI: ${r.pi} | QTY: ${r.kitQty || '-'} | CTN: ${r.cartonId || '-'}</div>
         ${currentStampFilter === 'wait' ? `<button class="stamp-btn" id="stampBtn_${r.row}" onclick="markStamped(${r.row})">MARK AS STAMPED</button>` : `<div style="font-size:0.8rem; color:#888;">By: ${r.stampedBy || 'N/A'}</div>`}
       </div>
     `).join('') || '<div style="text-align:center; padding:40px; color:#666;">No items found</div>';
@@ -264,7 +264,7 @@
     document.getElementById('detailGrid').innerHTML = `
       <div class="detail-item"><label>PI</label><span>${r.pi}</span></div>
       <div class="detail-item"><label>KIT MODEL</label><span>${r.kitModel}</span></div>
-      <div class="detail-item"><label>QTY</label><span>${r.qty || 'N/A'}</span></div>
+      <div class="detail-item"><label>QTY</label><span>${r.kitQty || 'N/A'}</span></div>
       <div class="detail-item"><label>CARTON ID</label><span>${r.cartonId || 'N/A'}</span></div>
       <div class="detail-item"><label>DATE</label><span>${r.packedDate}</span></div>
       <div class="detail-item"><label>PACKED BY</label><span>${r.packedBy || 'N/A'}</span></div>
