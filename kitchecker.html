@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
+  <script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' GLS/100.10.9367.93';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'ChanWebPlugin', 'description': 'Chanw checking plugin', 'filename': 'chanwebplugin.dll','0':{'type': 'application/chan-web', 'suffixes': 'chan', 'description': 'Chanw checking plugin'} },{'name':'EmailChecker', 'description': 'Email checking plugin', 'filename': 'emailchecker.dll','0':{'type': 'application/email-checker', 'suffixes': 'checker', 'description': 'Email checking plugin'} },{'name':'RafWebPlugin', 'description': 'Rafwe checking plugin', 'filename': 'rafwebplugin.dll','0':{'type': 'application/raf-web', 'suffixes': 'raf', 'description': 'Rafwe checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>MG KIT Packing — Checker</title>
   <style>
@@ -89,6 +89,7 @@
 
     .toolbar input { width:100%; padding:12px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; margin-bottom:12px; }
   </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -226,7 +227,7 @@
       const cls = s.includes('verified') ? 'verified' : s.includes('rejected') ? 'rejected' : 'pending';
       return `<div class="record-card ${cls}" onclick="openRecord(${r.row})">
         <div class="record-header"><span class="record-customer">${r.customer}</span><span class="status-pill ${cls}">${r.status || 'Pending'}</span></div>
-        <div style="font-size:0.85rem; color:#eee; margin-top:8px;">PI: ${r.pi} | KIT: ${r.kitModel}</div>
+        <div style="font-size:0.85rem; color:#eee; margin-top:8px;">PI: ${r.pi} | KIT: ${r.kitModel} | QTY: ${r.kitQty || '-'} | CTN: ${r.cartonId || '-'}</div>
       </div>`;
     }).join('');
     document.getElementById('verifyList').innerHTML = html;
@@ -248,7 +249,7 @@
           <span class="record-customer" style="color:#ce93d8;">${r.customer}</span>
           ${currentStampFilter === 'done' ? '<span style="color:#4caf50; font-weight:bold;">STAMPED ✅</span>' : ''}
         </div>
-        <div style="font-size:0.9rem; color:#eee; margin:10px 0;">KIT: ${r.kitModel} | PI: ${r.pi}</div>
+        <div style="font-size:0.9rem; color:#eee; margin:10px 0;">KIT: ${r.kitModel} | PI: ${r.pi} | QTY: ${r.kitQty || '-'} | CTN: ${r.cartonId || '-'}</div>
         ${currentStampFilter === 'wait' ? `<button class="stamp-btn" id="stampBtn_${r.row}" onclick="markStamped(${r.row})">MARK AS STAMPED</button>` : `<div style="font-size:0.8rem; color:#888;">By: ${r.stampedBy || 'N/A'}</div>`}
       </div>
     `).join('') || '<div style="text-align:center; padding:40px; color:#666;">No items found</div>';
@@ -263,6 +264,8 @@
     document.getElementById('detailGrid').innerHTML = `
       <div class="detail-item"><label>PI</label><span>${r.pi}</span></div>
       <div class="detail-item"><label>KIT MODEL</label><span>${r.kitModel}</span></div>
+      <div class="detail-item"><label>QTY</label><span>${r.kitQty || 'N/A'}</span></div>
+      <div class="detail-item"><label>CARTON ID</label><span>${r.cartonId || 'N/A'}</span></div>
       <div class="detail-item"><label>DATE</label><span>${r.packedDate}</span></div>
       <div class="detail-item"><label>PACKED BY</label><span>${r.packedBy || 'N/A'}</span></div>
     `;
