@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>MG Packing — Combined Checker</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0a; color: #e0e0e0; margin: 0; padding: 0; min-height: 100vh; }
+
+    /* ── APP HEADER ── */
+    .app-header { background: #111; border-bottom: 1px solid #2a2a2a; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 60; }
+    .app-title { font-size: 1rem; font-weight: 800; color: #fff; letter-spacing: 0.05em; }
+    .app-title span { color: #ffb74d; }
+    .refresh-btn { background: #222; border: 1px solid #444; color: #aaa; padding: 6px 14px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; font-weight: 600; }
+    .refresh-btn:active { background: #333; }
+
+    /* ── MODULE TABS (top level: Packing / KIT / Multi) ── */
+    .module-tabs { display: flex; background: #161616; border-bottom: 2px solid #222; position: sticky; top: 49px; z-index: 55; }
+    .module-tab { flex: 1; padding: 14px 6px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #555; cursor: pointer; border-bottom: 3px solid transparent; text-transform: uppercase; letter-spacing: 0.06em; transition: all 0.2s; }
+    .module-tab.active-packing { color: #ffb74d; border-bottom-color: #ffb74d; background: #1a1501; }
+    .module-tab.active-kit     { color: #ce93d8; border-bottom-color: #ce93d8; background: #180f1c; }
+    .module-tab.active-multi   { color: #64b5f6; border-bottom-color: #64b5f6; background: #0d1520; }
+    .module-dot-packing { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #ffb74d; margin-right: 5px; vertical-align: middle; }
+    .module-dot-kit     { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #ce93d8; margin-right: 5px; vertical-align: middle; }
+    .module-dot-multi   { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #64b5f6; margin-right: 5px; vertical-align: middle; }
+
+    /* ── MODULE PANELS ── */
+    .module-panel { display: none; }
+    .module-panel.active { display: block; }
+
+    /* ── SUB TABS (Check List / Stamping per module) ── */
+    .sub-tabs { display: flex; background: #141414; border-bottom: 1px solid #2a2a2a; }
+    .sub-tab { flex: 1; padding: 13px 8px; text-align: center; font-size: 0.8rem; font-weight: 700; color: #555; cursor: pointer; border-bottom: 3px solid transparent; text-transform: uppercase; }
+    .sub-tab.active { border-bottom-color: var(--accent); color: var(--accent); background: #1a1a1a; }
+
+    /* ── STATS ROW ── */
+    .stats-row { display: flex; gap: 8px; margin: 14px 14px 0; }
+    .stat-box { flex: 1; background: #1a1a1a; border: 1px solid #2e2e2e; border-radius: 10px; padding: 12px 4px; text-align: center; cursor: pointer; transition: border 0.2s; }
+    .stat-box.af { border: 2px solid var(--accent) !important; }
+    .stat-box.af-pass { border: 2px solid #4caf50 !important; }
+    .stat-box.af-fail { border: 2px solid #f44336 !important; }
+    .stat-box.af-stamp { border: 2px solid #4caf50 !important; }
+    .stat-num { font-size: 1.3rem; font-weight: 700; display: block; color: white; }
+    .stat-lbl { font-size: 0.6rem; color: #666; text-transform: uppercase; margin-top: 4px; display: block; letter-spacing: 0.05em; }
+
+    /* ── SEARCH ── */
+    .search-wrap { padding: 10px 14px 4px; }
+    .search-wrap input { width: 100%; padding: 11px 14px; background: #1e1e1e; border: 1px solid #3a3a3a; border-radius: 8px; color: white; font-size: 0.9rem; }
+    .search-wrap input:focus { outline: none; border-color: var(--accent); }
+    .search-wrap input::placeholder { color: #484848; }
+
+    /* ── LIST AREA ── */
+    .list-area { padding: 10px 14px 80px; }
+
+    /* ── CARDS ── */
+    .record-card { background: #1a1a1a; border: 1px solid #2e2e2e; border-left: 4px solid #444; border-radius: 12px; padding: 13px; margin-bottom: 9px; cursor: pointer; transition: border-color 0.15s; }
+    .record-card.verified { border-left-color: #4caf50; }
+    .record-card.rejected { border-left-color: #f44336; }
+    .record-card.pending  { border-left-color: #ff9800; }
+    .record-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .record-customer { font-weight: 700; font-size: 1rem; }
+    .status-pill { padding: 3px 9px; border-radius: 20px; font-size: 0.67rem; font-weight: bold; color: white; white-space: nowrap; }
+    .status-pill.verified { background: #2e7d32; }
+    .status-pill.rejected { background: #b71c1c; }
+    .status-pill.pending  { background: #e65100; }
+    .record-meta { font-size: 0.8rem; color: #888; }
+    .part-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+    .part-chip { background: #252525; border: 1px solid #3a3a3a; border-radius: 5px; padding: 3px 8px; font-size: 0.72rem; color: #aaa; }
+    .part-chip.ok   { border-color: #4caf50; color: #a5d6a7; }
+    .part-chip.fail { border-color: #f44336; color: #ef9a9a; }
+
+    /* ── STAMP CARDS ── */
+    .stamp-card { background: #1a1a1a; border: 1px solid #2e2e2e; border-left: 4px solid #ff9800; border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+    .stamp-card.done { border-left-color: #4caf50; }
+    .stamp-btn { width: 100%; padding: 13px; background: #1565c0; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 0.9rem; }
+    .stamp-btn:disabled { background: #2a2a2a; color: #555; cursor: not-allowed; }
+
+    /* ── EMPTY / LOADING ── */
+    .empty-msg { text-align: center; padding: 48px 20px; color: #444; font-size: 0.9rem; }
+    .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: center; justify-content: center; display: none; }
+    .loading-overlay.show { display: flex; }
+    .loading-box { background: #1e1e1e; border: 1px solid #444; border-radius: 12px; padding: 28px 36px; text-align: center; }
+    .loading-spinner { width: 36px; height: 36px; border: 3px solid #333; border-top-color: #ffb74d; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── DETAIL MODAL ── */
+    #detailModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 100; overflow-y: auto; padding: 10px; display: none; }
+    .modal-card { background: #1a1a1a; border-radius: 14px; padding: 18px; max-width: 960px; margin: 0 auto 60px; border: 1px solid #2e2e2e; }
+    .modal-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
+    .modal-customer { font-size: 1.2rem; font-weight: 800; margin: 0; }
+    .modal-sub { font-size: 0.8rem; color: #888; margin-top: 3px; }
+    .close-btn { background: #2a2a2a; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; flex-shrink: 0; }
+
+    .section-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #555; letter-spacing: 0.08em; margin: 16px 0 8px; border-top: 1px solid #252525; padding-top: 14px; }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; margin-bottom: 8px; }
+    .detail-item label { display: block; font-size: 0.62rem; color: #666; text-transform: uppercase; margin-bottom: 3px; }
+    .detail-item span  { font-size: 1rem; font-weight: bold; color: #eee; word-break: break-all; }
+
+    /* Barcodes */
+    .barcode-check { display: flex; align-items: center; background: #222; border-radius: 7px; padding: 10px 12px; margin-bottom: 6px; gap: 8px; }
+    .bc-label { font-size: 0.73rem; color: #777; min-width: 50px; }
+    .bc-value { font-size: 0.82rem; font-weight: bold; flex: 1; color: #eee; word-break: break-all; }
+    .bc-badge { font-size: 0.7rem; font-weight: bold; padding: 3px 9px; border-radius: 5px; white-space: nowrap; }
+    .bc-badge.ok    { border: 1px solid #4caf50; color: #4caf50; }
+    .bc-badge.fail  { border: 1px solid #f44336; color: #f44336; }
+    .bc-badge.no-bc { border: 1px solid #ff9800; color: #ff9800; }
+
+    /* Photos */
+    .photo-row { display: flex; gap: 8px; margin: 10px 0; }
+    .photo-wrap { flex: 1; text-align: center; background: #111; padding: 6px; border-radius: 8px; border: 1px solid #2e2e2e; }
+    .photo-wrap img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 6px; cursor: pointer; }
+    .photo-wrap.missing { opacity: 0.3; }
+    .photo-lbl { font-size: 0.7rem; font-weight: bold; margin-bottom: 4px; text-transform: uppercase; }
+
+    /* Parts table (KIT) */
+    .parts-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; background: #151515; border-radius: 8px; overflow: hidden; }
+    .parts-table th { background: #222; font-size: 0.72rem; padding: 10px; text-align: left; text-transform: uppercase; color: #ce93d8; }
+    .parts-table td { padding: 10px; border-bottom: 1px solid #252525; font-size: 0.88rem; }
+    .match-tag { font-size: 0.68rem; font-weight: bold; padding: 2px 7px; border-radius: 4px; }
+    .match-ok   { background: #1b5e20; color: #c8e6c9; }
+    .match-fail { background: #b71c1c; color: #ffcdd2; }
+
+    /* Part block (Multi) */
+    .part-block { background: #151515; border: 1px solid #2e2e2e; border-radius: 10px; padding: 13px; margin-bottom: 11px; }
+    .part-block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px; }
+    .part-block-title { font-weight: 700; color: #ffb74d; font-size: 0.92rem; }
+    .part-status-badge { font-size: 0.7rem; font-weight: bold; padding: 3px 9px; border-radius: 9px; }
+    .part-status-badge.ok      { background: #1b5e20; color: #a5d6a7; }
+    .part-status-badge.fail    { background: #b71c1c; color: #ef9a9a; }
+    .part-status-badge.pending { background: #2a2a2a; color: #ffb74d; }
+
+    /* ── VERDICT / SUBMIT ── */
+    .verdict-section { border-top: 1px solid #252525; padding-top: 18px; margin-top: 18px; }
+    .verdict-row { display: flex; gap: 10px; margin-bottom: 13px; }
+    .verdict-btn { flex: 1; padding: 16px; border-radius: 10px; font-weight: bold; color: white; cursor: pointer; font-size: 0.95rem; opacity: 0.5; transition: opacity 0.2s; border: 2px solid transparent; }
+    .verdict-btn.v-approve { background: #2e7d32; border-color: #4caf50; }
+    .verdict-btn.v-reject  { background: #b71c1c; border-color: #f44336; }
+    .verdict-btn.selected  { opacity: 1; outline: 2px solid white; }
+    .verdict-btn:disabled  { opacity: 0.3; cursor: not-allowed; }
+    .checker-input { width: 100%; padding: 13px; background: #161616; border: 1px solid #3a3a3a; border-radius: 8px; color: white; margin-bottom: 10px; font-size: 0.95rem; }
+    .checker-input:disabled { opacity: 0.5; cursor: not-allowed; }
+    textarea.remarks-input { width: 100%; height: 85px; background: #161616; border: 1px solid #3a3a3a; border-radius: 8px; color: white; padding: 12px; font-size: 0.95rem; resize: vertical; }
+    textarea.remarks-input:disabled { opacity: 0.5; cursor: not-allowed; }
+    .submit-btn { width: 100%; padding: 16px; background: #1565c0; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 10px; }
+    .submit-btn:disabled { background: #1e1e1e; color: #555; cursor: not-allowed; border: 1px solid #2e2e2e; }
+
+    /* Approved lock notice */
+    .approved-notice { background: #0d2818; border: 1px solid #2e7d32; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+    .approved-notice .icon { font-size: 1.4rem; }
+    .approved-notice .text { font-size: 0.85rem; color: #a5d6a7; font-weight: 600; }
+
+    /* ── LIGHTBOX ── */
+    #lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1000; display: none; align-items: center; justify-content: center; touch-action: none; }
+    #lightboxImg { max-width: 100%; max-height: 100%; object-fit: contain; transform-origin: center center; cursor: grab; transition: transform 0.05s; }
+    .close-lb { position: absolute; top: 18px; right: 18px; background: #333; color: white; border: none; padding: 10px 18px; border-radius: 8px; z-index: 1001; font-weight: bold; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<!-- GLOBAL LOADING OVERLAY -->
+<div class="loading-overlay" id="globalLoading">
+  <div class="loading-box">
+    <div class="loading-spinner"></div>
+    <div style="color:#aaa; font-size:0.9rem;">Loading data…</div>
+  </div>
+</div>
+
+<!-- APP HEADER -->
+<div class="app-header">
+  <div class="app-title">MG <span>PACKING</span> CHECKER</div>
+  <button class="refresh-btn" onclick="reloadAll()">↻ REFRESH</button>
+</div>
+
+<!-- MODULE TABS -->
+<div class="module-tabs">
+  <div class="module-tab active-packing" id="modTab_packing" onclick="switchModule('packing')">
+    <span class="module-dot-packing"></span>PACKING
+  </div>
+  <div class="module-tab" id="modTab_kit" onclick="switchModule('kit')">
+    <span class="module-dot-kit"></span>KIT
+  </div>
+  <div class="module-tab" id="modTab_multi" onclick="switchModule('multi')">
+    <span class="module-dot-multi"></span>MULTI
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  MODULE: PACKING                            -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="module-panel active" id="panel_packing" style="--accent:#ffb74d">
+  <div class="sub-tabs">
+    <div class="sub-tab active" id="pSubTab_verify" onclick="pSwitchTab('verify')">CHECK LIST</div>
+    <div class="sub-tab" id="pSubTab_stamp" onclick="pSwitchTab('stamp')">STAMPING</div>
+  </div>
+
+  <!-- VERIFY sub-tab -->
+  <div id="pContent_verify">
+    <div class="stats-row">
+      <div class="stat-box af" id="pf_all"      onclick="pSetFilter('all')"><span class="stat-num" id="pv_total">-</span><span class="stat-lbl">ALL</span></div>
+      <div class="stat-box"    id="pf_pending"   onclick="pSetFilter('pending')"><span class="stat-num" id="pv_pending">-</span><span class="stat-lbl">PENDING</span></div>
+      <div class="stat-box"    id="pf_verified"  onclick="pSetFilter('verified')"><span class="stat-num" id="pv_verified">-</span><span class="stat-lbl">PASS</span></div>
+      <div class="stat-box"    id="pf_rejected"  onclick="pSetFilter('rejected')"><span class="stat-num" id="pv_rejected">-</span><span class="stat-lbl">FAIL</span></div>
+    </div>
+    <div class="search-wrap"><input type="text" id="pSearch" placeholder="🔍  Search Customer, P/I No., or Carton ID…" oninput="pRenderList()"></div>
+    <div class="list-area" id="pList"><div class="empty-msg">Loading…</div></div>
+  </div>
+
+  <!-- STAMP sub-tab -->
+  <div id="pContent_stamp" style="display:none">
+    <div class="stats-row">
+      <div class="stat-box af" id="psf_wait" onclick="pSetStampFilter('wait')"><span class="stat-num" id="ps_wait">-</span><span class="stat-lbl">WAIT STAMP</span></div>
+      <div class="stat-box"   id="psf_done" onclick="pSetStampFilter('done')"><span class="stat-num" id="ps_done">-</span><span class="stat-lbl">STAMPED</span></div>
+    </div>
+    <div class="search-wrap"><input type="text" id="psSearch" placeholder="🔍  Search Customer, P/I No., or Carton ID…" oninput="pRenderStampList()"></div>
+    <div class="list-area" id="pStampList"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  MODULE: KIT                               -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="module-panel" id="panel_kit" style="--accent:#ce93d8">
+  <div class="sub-tabs">
+    <div class="sub-tab active" id="kSubTab_verify" onclick="kSwitchTab('verify')">CHECK LIST</div>
+    <div class="sub-tab" id="kSubTab_stamp" onclick="kSwitchTab('stamp')">STAMPING</div>
+  </div>
+
+  <div id="kContent_verify">
+    <div class="stats-row">
+      <div class="stat-box af" id="kf_all"     onclick="kSetFilter('all')"><span class="stat-num" id="kv_total">-</span><span class="stat-lbl">ALL</span></div>
+      <div class="stat-box"   id="kf_pending"  onclick="kSetFilter('pending')"><span class="stat-num" id="kv_pending">-</span><span class="stat-lbl">PENDING</span></div>
+      <div class="stat-box"   id="kf_verified" onclick="kSetFilter('verified')"><span class="stat-num" id="kv_verified">-</span><span class="stat-lbl">PASS</span></div>
+      <div class="stat-box"   id="kf_rejected" onclick="kSetFilter('rejected')"><span class="stat-num" id="kv_rejected">-</span><span class="stat-lbl">FAIL</span></div>
+    </div>
+    <div class="search-wrap"><input type="text" id="kSearch" placeholder="🔍  Search Customer, P/I No., or Carton ID…" oninput="kRenderList()"></div>
+    <div class="list-area" id="kList"><div class="empty-msg">Loading…</div></div>
+  </div>
+
+  <div id="kContent_stamp" style="display:none">
+    <div class="stats-row">
+      <div class="stat-box af" id="ksf_wait" onclick="kSetStampFilter('wait')"><span class="stat-num" id="ks_wait">-</span><span class="stat-lbl">WAIT STAMP</span></div>
+      <div class="stat-box"   id="ksf_done" onclick="kSetStampFilter('done')"><span class="stat-num" id="ks_done">-</span><span class="stat-lbl">STAMPED</span></div>
+    </div>
+    <div class="search-wrap"><input type="text" id="ksSearch" placeholder="🔍  Search Customer, P/I No., or Carton ID…" oninput="kRenderStampList()"></div>
+    <div class="list-area" id="kStampList"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  MODULE: MULTI                             -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="module-panel" id="panel_multi" style="--accent:#64b5f6">
+  <div class="sub-tabs">
+    <div class="sub-tab active" id="mSubTab_verify" onclick="mSwitchTab('verify')">CHECK LIST</div>
+    <div class="sub-tab" id="mSubTab_stamp" onclick="mSwitchTab('stamp')">STAMPING</div>
+  </div>
+
+  <div id="mContent_verify">
+    <div class="stats-row">
+      <div class="stat-box af" id="mf_all"     onclick="mSetFilter('all')"><span class="stat-num" id="mv_total">-</span><span class="stat-lbl">ALL</span></div>
+      <div class="stat-box"   id="mf_pending"  onclick="mSetFilter('pending')"><span class="stat-num" id="mv_pending">-</span><span class="stat-lbl">PENDING</span></div>
+      <div class="stat-box"   id="mf_verified" onclick="mSetFilter('verified')"><span class="stat-num" id="mv_verified">-</span><span class="stat-lbl">PASS</span></div>
+      <div class="stat-box"   id="mf_rejected" onclick="mSetFilter('rejected')"><span class="stat-num" id="mv_rejected">-</span><span class="stat-lbl">FAIL</span></div>
+    </div>
+    <div class="search-wrap"><input type="text" id="mSearch" placeholder="🔍  Search Customer, P/I No., or Carton ID…" oninput="mRenderList()"></div>
+    <div class="list-area" id="mList"><div class="empty-msg">Loading…</div></div>
+  </div>
+
+  <div id="mContent_stamp" style="display:none">
+    <div class="stats-row">
+      <div class="stat-box af" id="msf_wait" onclick="mSetStampFilter('wait')"><span class="stat-num" id="ms_wait">-</span><span class="stat-lbl">WAIT STAMP</span></div>
+      <div class="stat-box"   id="msf_done" onclick="mSetStampFilter('done')"><span class="stat-num" id="ms_done">-</span><span class="stat-lbl">STAMPED</span></div>
+    </div>
+    <div class="search-wrap"><input type="text" id="msSearch" placeholder="🔍  Search Customer, P/I No., or Carton ID…" oninput="mRenderStampList()"></div>
+    <div class="list-area" id="mStampList"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  SHARED DETAIL MODAL                        -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="detailModal">
+  <div class="modal-card">
+    <div class="modal-top">
+      <div>
+        <div class="modal-customer" id="modalTitle"></div>
+        <div class="modal-sub" id="modalSub"></div>
+      </div>
+      <button class="close-btn" onclick="closeModal()">✕ CLOSE</button>
+    </div>
+
+    <!-- APPROVED LOCK NOTICE (shown when verified) -->
+    <div class="approved-notice" id="approvedNotice" style="display:none">
+      <div class="icon">🔒</div>
+      <div class="text">This record has been APPROVED. View only — resubmission is not allowed.</div>
+    </div>
+
+    <div class="section-label" id="sec_info">RECORD INFO</div>
+    <div class="detail-grid" id="detailGrid"></div>
+
+    <!-- Barcode section (Packing + Multi) -->
+    <div id="barcodeSection"></div>
+
+    <!-- Parts table section (KIT) -->
+    <div id="partsSection"></div>
+
+    <!-- Photos -->
+    <div class="section-label" id="sec_photos" style="display:none">PHOTOS</div>
+    <div class="photo-row" id="photosGrid" style="display:none"></div>
+
+    <!-- Carton Photo (Multi) -->
+    <div id="cartonPhotoWrap"></div>
+
+    <!-- Parts detail (Multi) -->
+    <div id="partsDetail"></div>
+
+    <!-- VERDICT SECTION -->
+    <div class="verdict-section" id="verdictSection">
+      <div style="font-size:0.7rem; color:#666; text-transform:uppercase; margin-bottom:11px; font-weight:700; letter-spacing:0.06em;">CHECKER DECISION</div>
+      <div class="verdict-row">
+        <button class="verdict-btn v-approve" id="btnVerified" onclick="selectVerdict('Verified')">✅ APPROVE</button>
+        <button class="verdict-btn v-reject"  id="btnRejected" onclick="selectVerdict('Rejected')">❌ REJECT</button>
+      </div>
+      <input type="text" class="checker-input" id="checkerNameInput" placeholder="CHECKER STAFF NAME">
+      <textarea class="remarks-input" id="remarksInput" placeholder="REMARKS / REJECTION REASON (optional)"></textarea>
+      <button class="submit-btn" id="submitBtn" onclick="saveVerification()">SUBMIT REPORT</button>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <button class="close-lb" onclick="closeLightbox()">CLOSE ✕</button>
+  <img id="lightboxImg" alt="Photo">
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  API ENDPOINTS
+// ═══════════════════════════════════════════
+const URLS = {
+  packing: "https://script.google.com/macros/s/AKfycbxJNbH09bwWqsO0lnM8j_xHA7ALfPFKpSjSFwUK4SRugrHqMWIhds7KhyUHN7kXR28/exec",
+  kit:     "https://script.google.com/macros/s/AKfycby2FVQwcyhqkzdqaRl7xfDaFbKoL7AAE-dSKE-WQVs-niQkwept7oUv6vSOiqeEvJ3x/exec",
+  multi:   "https://script.google.com/macros/s/AKfycbzN9vkrRCGET4VqTSGSHNa72Kqsceord8xLy17Rp1CZxjxv-s9BmccfwoFlm_Dnsgrg/exec"
+};
+
+// ═══════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════
+const state = {
+  packing: { records: [], filter: 'all', stampFilter: 'wait' },
+  kit:     { records: [], filter: 'all', stampFilter: 'wait' },
+  multi:   { records: [], groups: {}, filter: 'all', stampFilter: 'wait' }
+};
+
+let currentModule = 'packing';
+let currentRecord = null;
+let currentModuleOpen = null;
+let selectedVerdict = null;
+let isApproved = false;
+
+// Lightbox state
+let scale=1, posX=0, posY=0, lastPX=0, lastPY=0, isDragging=false, initialDist=0;
+
+// ═══════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════
+window.onload = () => {
+  loadModule('packing');
+  loadModule('kit');
+  loadModule('multi');
+};
+
+function reloadAll() {
+  loadModule('packing');
+  loadModule('kit');
+  loadModule('multi');
+}
+
+function showLoading(show) {
+  document.getElementById('globalLoading').classList.toggle('show', show);
+}
+
+// ═══════════════════════════════════════════
+//  MODULE SWITCHING
+// ═══════════════════════════════════════════
+function switchModule(mod) {
+  currentModule = mod;
+  ['packing','kit','multi'].forEach(m => {
+    document.getElementById('panel_' + m).classList.remove('active');
+    const t = document.getElementById('modTab_' + m);
+    t.className = 'module-tab';
+  });
+  document.getElementById('panel_' + mod).classList.add('active');
+  document.getElementById('modTab_' + mod).classList.add('active-' + mod);
+}
+
+// ═══════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function driveThumb(url, sz='800') {
+  if (!url) return '';
+  const m = String(url).match(/[-\w]{25,}/);
+  return m ? `https://drive.google.com/thumbnail?id=${m[0]}&sz=${sz}` : '';
+}
+
+function matchSearch(r, search) {
+  if (!search) return true;
+  return (r.customer||'').toLowerCase().includes(search) ||
+         (r.pi||'').toLowerCase().includes(search) ||
+         (r.cartonId||'').toLowerCase().includes(search);
+}
+
+function statusClass(statusStr) {
+  const s = (statusStr||'').toLowerCase();
+  if (s.includes('verified')) return 'verified';
+  if (s.includes('rejected')) return 'rejected';
+  return 'pending';
+}
+
+function setActiveFilter(containerSelector, activeId, activeClass) {
+  document.querySelectorAll(containerSelector + ' .stat-box').forEach(b => {
+    b.classList.remove('af','af-pass','af-fail','af-stamp');
+  });
+  document.getElementById(activeId).classList.add(activeClass||'af');
+}
+
+// ═══════════════════════════════════════════
+//  ══  PACKING MODULE  ══
+// ═══════════════════════════════════════════
+async function loadModule(mod) {
+  try {
+    const r = await fetch(URLS[mod] + '?action=records');
+    const d = await r.json();
+    if (mod === 'multi') {
+      state.multi.records = d.records || [];
+      buildMultiGroups();
+    } else {
+      state[mod].records = d.records || [];
+    }
+    updateStats(mod);
+    if (mod === 'packing') { pRenderList(); pRenderStampList(); }
+    if (mod === 'kit')     { kRenderList(); kRenderStampList(); }
+    if (mod === 'multi')   { mRenderList(); mRenderStampList(); }
+  } catch(e) {
+    const el = document.getElementById(mod === 'packing' ? 'pList' : mod === 'kit' ? 'kList' : 'mList');
+    if (el) el.innerHTML = '<div class="empty-msg">⚠️ Failed to load. Check connection.</div>';
+  }
+}
+
+/* ── PACKING: Sub-tabs ── */
+function pSwitchTab(tab) {
+  ['verify','stamp'].forEach(t => {
+    document.getElementById('pSubTab_' + t).classList.remove('active');
+    document.getElementById('pContent_' + t).style.display = 'none';
+  });
+  document.getElementById('pSubTab_' + tab).classList.add('active');
+  document.getElementById('pContent_' + tab).style.display = 'block';
+  if (tab === 'stamp') pRenderStampList();
+}
+
+function pSetFilter(f) {
+  state.packing.filter = f;
+  const cls = f === 'verified' ? 'af-pass' : f === 'rejected' ? 'af-fail' : 'af';
+  setActiveFilter('#panel_packing #pContent_verify', 'pf_' + f, cls);
+  pRenderList();
+}
+
+function pSetStampFilter(f) {
+  state.packing.stampFilter = f;
+  setActiveFilter('#panel_packing #pContent_stamp', 'psf_' + f, f === 'done' ? 'af-stamp' : 'af');
+  pRenderStampList();
+}
+
+function updateStats(mod) {
+  if (mod === 'packing') {
+    const recs = state.packing.records;
+    const total = recs.length;
+    const ok   = recs.filter(r => (r.status||'').includes('Verified')).length;
+    const fail = recs.filter(r => (r.status||'').includes('Rejected')).length;
+    document.getElementById('pv_total').textContent   = total;
+    document.getElementById('pv_pending').textContent = total - ok - fail;
+    document.getElementById('pv_verified').textContent= ok;
+    document.getElementById('pv_rejected').textContent= fail;
+    const vRecs = recs.filter(r => (r.status||'').includes('Verified'));
+    document.getElementById('ps_wait').textContent = vRecs.filter(r => !(r.stampStatus||'').includes('Stamped')).length;
+    document.getElementById('ps_done').textContent = vRecs.filter(r => (r.stampStatus||'').includes('Stamped')).length;
+  }
+  if (mod === 'kit') {
+    const recs = state.kit.records;
+    const total = recs.length;
+    const ok   = recs.filter(r => (r.status||'').includes('Verified')).length;
+    const fail = recs.filter(r => (r.status||'').includes('Rejected')).length;
+    document.getElementById('kv_total').textContent   = total;
+    document.getElementById('kv_pending').textContent = total - ok - fail;
+    document.getElementById('kv_verified').textContent= ok;
+    document.getElementById('kv_rejected').textContent= fail;
+    const vRecs = recs.filter(r => (r.status||'').includes('Verified'));
+    document.getElementById('ks_wait').textContent = vRecs.filter(r => !(r.stampStatus||'').includes('Stamped')).length;
+    document.getElementById('ks_done').textContent = vRecs.filter(r => (r.stampStatus||'').includes('Stamped')).length;
+  }
+  if (mod === 'multi') {
+    const groups = Object.values(state.multi.groups);
+    const total    = groups.length;
+    const verified = groups.filter(g => (g.status||'').includes('Verified')).length;
+    const rejected = groups.filter(g => (g.status||'').includes('Rejected')).length;
+    document.getElementById('mv_total').textContent   = total;
+    document.getElementById('mv_pending').textContent = total - verified - rejected;
+    document.getElementById('mv_verified').textContent= verified;
+    document.getElementById('mv_rejected').textContent= rejected;
+    const vGroups = groups.filter(g => (g.status||'').includes('Verified'));
+    document.getElementById('ms_wait').textContent = vGroups.filter(g => !(g.stampStatus||'').includes('Stamped')).length;
+    document.getElementById('ms_done').textContent = vGroups.filter(g =>  (g.stampStatus||'').includes('Stamped')).length;
+  }
+}
+
+function pRenderList() {
+  const search = (document.getElementById('pSearch').value||'').toLowerCase().trim();
+  const f = state.packing.filter;
+  const filtered = state.packing.records.filter(r => {
+    const ms = matchSearch(r, search);
+    const s = (r.status||'').toLowerCase();
+    if (f === 'pending')  return ms && !s.includes('verified') && !s.includes('rejected');
+    if (f === 'verified') return ms && s.includes('verified');
+    if (f === 'rejected') return ms && s.includes('rejected');
+    return ms;
+  });
+  const el = document.getElementById('pList');
+  if (!filtered.length) { el.innerHTML = '<div class="empty-msg">No records found.</div>'; return; }
+  el.innerHTML = filtered.map(r => {
+    const cls = statusClass(r.status);
+    return `<div class="record-card ${cls}" onclick="openRecord('packing',${r.row})">
+      <div class="record-header">
+        <span class="record-customer" style="color:#ffb74d">${escHtml(r.customer)}</span>
+        <span class="status-pill ${cls}">${escHtml(r.status||'Pending')}</span>
+      </div>
+      <div class="record-meta">PI: ${escHtml(r.pi||'—')} &nbsp;|&nbsp; Carton: ${escHtml(r.cartonId||'—')}</div>
+    </div>`;
+  }).join('');
+}
+
+function pRenderStampList() {
+  const search = (document.getElementById('psSearch').value||'').toLowerCase().trim();
+  const sf = state.packing.stampFilter;
+  const filtered = state.packing.records
+    .filter(r => (r.status||'').includes('Verified'))
+    .filter(r => {
+      const stamped = (r.stampStatus||'').includes('Stamped');
+      return (sf === 'wait' ? !stamped : stamped) && matchSearch(r, search);
+    });
+  const el = document.getElementById('pStampList');
+  if (!filtered.length) { el.innerHTML = '<div class="empty-msg">No items found.</div>'; return; }
+  el.innerHTML = filtered.map(r => `
+    <div class="stamp-card ${sf==='done'?'done':''}">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:700; color:#ffb74d;">${escHtml(r.customer)}</span>
+        ${sf==='done' ? '<span style="color:#4caf50; font-weight:bold; font-size:0.85rem;">STAMPED ✅</span>' : ''}
+      </div>
+      <div class="record-meta" style="margin:7px 0;">Carton: <strong style="color:#eee;">${escHtml(r.cartonId||'—')}</strong> &nbsp;|&nbsp; PI: ${escHtml(r.pi||'—')}</div>
+      ${sf==='wait'
+        ? `<button class="stamp-btn" id="pStampBtn_${r.row}" onclick="pMarkStamped(${r.row})">MARK AS STAMPED</button>`
+        : `<div style="font-size:0.78rem; color:#666;">Stamped by: ${escHtml(r.stampedBy||'N/A')}</div>`}
+    </div>
+  `).join('');
+}
+
+async function pMarkStamped(row) {
+  const staff = prompt('ENTER STAMPING STAFF NAME:');
+  if (!staff) return;
+  const btn = document.getElementById('pStampBtn_' + row);
+  if (btn) { btn.disabled = true; btn.textContent = 'PLEASE WAIT…'; }
+  try {
+    await fetch(URLS.packing, { method:'POST', body: JSON.stringify({action:'stamp', row, staff: staff.toUpperCase()}) });
+    await loadModule('packing');
+  } catch(e) {
+    alert('Error marking as stamped.');
+    if (btn) { btn.disabled = false; btn.textContent = 'MARK AS STAMPED'; }
+  }
+}
+
+/* ── KIT: Sub-tabs ── */
+function kSwitchTab(tab) {
+  ['verify','stamp'].forEach(t => {
+    document.getElementById('kSubTab_' + t).classList.remove('active');
+    document.getElementById('kContent_' + t).style.display = 'none';
+  });
+  document.getElementById('kSubTab_' + tab).classList.add('active');
+  document.getElementById('kContent_' + tab).style.display = 'block';
+  if (tab === 'stamp') kRenderStampList();
+}
+
+function kSetFilter(f) {
+  state.kit.filter = f;
+  const cls = f === 'verified' ? 'af-pass' : f === 'rejected' ? 'af-fail' : 'af';
+  setActiveFilter('#panel_kit #kContent_verify', 'kf_' + f, cls);
+  kRenderList();
+}
+
+function kSetStampFilter(f) {
+  state.kit.stampFilter = f;
+  setActiveFilter('#panel_kit #kContent_stamp', 'ksf_' + f, f === 'done' ? 'af-stamp' : 'af');
+  kRenderStampList();
+}
+
+function kRenderList() {
+  const search = (document.getElementById('kSearch').value||'').toLowerCase().trim();
+  const f = state.kit.filter;
+  const filtered = state.kit.records.filter(r => {
+    const ms = matchSearch(r, search);
+    const s = (r.status||'').toLowerCase();
+    if (f === 'pending')  return ms && !s.includes('verified') && !s.includes('rejected');
+    if (f === 'verified') return ms && s.includes('verified');
+    if (f === 'rejected') return ms && s.includes('rejected');
+    return ms;
+  });
+  const el = document.getElementById('kList');
+  if (!filtered.length) { el.innerHTML = '<div class="empty-msg">No records found.</div>'; return; }
+  el.innerHTML = filtered.map(r => {
+    const cls = statusClass(r.status);
+    return `<div class="record-card ${cls}" onclick="openRecord('kit',${r.row})">
+      <div class="record-header">
+        <span class="record-customer" style="color:#ce93d8">${escHtml(r.customer)}</span>
+        <span class="status-pill ${cls}">${escHtml(r.status||'Pending')}</span>
+      </div>
+      <div class="record-meta">PI: ${escHtml(r.pi||'—')} &nbsp;|&nbsp; KIT: ${escHtml(r.kitModel||'—')} &nbsp;|&nbsp; Carton: ${escHtml(r.cartonId||'—')}</div>
+    </div>`;
+  }).join('');
+}
+
+function kRenderStampList() {
+  const search = (document.getElementById('ksSearch').value||'').toLowerCase().trim();
+  const sf = state.kit.stampFilter;
+  const filtered = state.kit.records
+    .filter(r => (r.status||'').includes('Verified'))
+    .filter(r => {
+      const stamped = (r.stampStatus||'').includes('Stamped');
+      return (sf === 'wait' ? !stamped : stamped) && matchSearch(r, search);
+    });
+  const el = document.getElementById('kStampList');
+  if (!filtered.length) { el.innerHTML = '<div class="empty-msg">No items found.</div>'; return; }
+  el.innerHTML = filtered.map(r => `
+    <div class="stamp-card ${sf==='done'?'done':''}">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:700; color:#ce93d8;">${escHtml(r.customer)}</span>
+        ${sf==='done' ? '<span style="color:#4caf50; font-weight:bold; font-size:0.85rem;">STAMPED ✅</span>' : ''}
+      </div>
+      <div class="record-meta" style="margin:7px 0;">KIT: ${escHtml(r.kitModel||'—')} &nbsp;|&nbsp; PI: ${escHtml(r.pi||'—')} &nbsp;|&nbsp; Carton: ${escHtml(r.cartonId||'—')}</div>
+      ${sf==='wait'
+        ? `<button class="stamp-btn" id="kStampBtn_${r.row}" onclick="kMarkStamped(${r.row})" style="background:#6a1b9a;">MARK AS STAMPED</button>`
+        : `<div style="font-size:0.78rem; color:#666;">Stamped by: ${escHtml(r.stampedBy||'N/A')}</div>`}
+    </div>
+  `).join('');
+}
+
+async function kMarkStamped(row) {
+  const staff = prompt('ENTER STAMPING STAFF NAME:');
+  if (!staff) return;
+  const btn = document.getElementById('kStampBtn_' + row);
+  if (btn) { btn.disabled = true; btn.textContent = 'PLEASE WAIT…'; }
+  try {
+    await fetch(URLS.kit, { method:'POST', body: JSON.stringify({action:'stamp', row, staff: staff.toUpperCase()}) });
+    await loadModule('kit');
+  } catch(e) {
+    alert('Error marking as stamped.');
+    if (btn) { btn.disabled = false; btn.textContent = 'MARK AS STAMPED'; }
+  }
+}
+
+/* ── MULTI: Sub-tabs ── */
+function mSwitchTab(tab) {
+  ['verify','stamp'].forEach(t => {
+    document.getElementById('mSubTab_' + t).classList.remove('active');
+    document.getElementById('mContent_' + t).style.display = 'none';
+  });
+  document.getElementById('mSubTab_' + tab).classList.add('active');
+  document.getElementById('mContent_' + tab).style.display = 'block';
+  if (tab === 'stamp') mRenderStampList();
+}
+
+function mSetFilter(f) {
+  state.multi.filter = f;
+  const cls = f === 'verified' ? 'af-pass' : f === 'rejected' ? 'af-fail' : 'af';
+  setActiveFilter('#panel_multi #mContent_verify', 'mf_' + f, cls);
+  mRenderList();
+}
+
+function mSetStampFilter(f) {
+  state.multi.stampFilter = f;
+  setActiveFilter('#panel_multi #mContent_stamp', 'msf_' + f, f === 'done' ? 'af-stamp' : 'af');
+  mRenderStampList();
+}
+
+function buildMultiGroups() {
+  const groups = {};
+  state.multi.records.forEach(row => {
+    const cid = row.cartonId || 'NO-CARTON';
+    if (!groups[cid]) {
+      groups[cid] = { cartonId: cid, customer: row.customer, packedDate: row.packedDate,
+        packedBy: row.packedBy, checkerBy: row.checkerBy, imgCartonUrl: row.imgCartonUrl,
+        checker: row.checker, status: row.status, remarks: row.remarks,
+        stampStatus: row.stampStatus || '', rows: [] };
+    }
+    if (row.checker) groups[cid].checker = row.checker;
+    if (row.status)  groups[cid].status  = row.status;
+    if (row.remarks) groups[cid].remarks = row.remarks;
+    if (row.stampStatus) groups[cid].stampStatus = row.stampStatus;
+    groups[cid].rows.push(row);
+  });
+  state.multi.groups = groups;
+}
+
+function mRenderList() {
+  const search = (document.getElementById('mSearch').value||'').toLowerCase().trim();
+  const f = state.multi.filter;
+  const groups = Object.values(state.multi.groups);
+  const filtered = groups.filter(g => {
+    const piList = g.rows.map(r => (r.pi||'').toLowerCase()).join(' ');
+    const ms = !search || (g.customer||'').toLowerCase().includes(search) || (g.cartonId||'').toLowerCase().includes(search) || piList.includes(search);
+    const s = (g.status||'').toLowerCase();
+    if (f === 'pending')  return ms && !s.includes('verified') && !s.includes('rejected');
+    if (f === 'verified') return ms && s.includes('verified');
+    if (f === 'rejected') return ms && s.includes('rejected');
+    return ms;
+  });
+  const el = document.getElementById('mList');
+  if (!filtered.length) { el.innerHTML = '<div class="empty-msg">No records found.</div>'; return; }
+  el.innerHTML = filtered.map(g => {
+    const cls = statusClass(g.status);
+    const piSet = [...new Set(g.rows.map(r => r.pi).filter(Boolean))];
+    const chips = g.rows.map(r => {
+      const ok = (r.matchStatus||'').includes('Bag:✅') && (r.matchStatus||'').includes('Inner:✅') && (r.matchStatus||'').includes('Outer:✅');
+      const fail = (r.matchStatus||'').includes('❌');
+      return `<span class="part-chip ${ok?'ok':fail?'fail':''}">${escHtml(r.partNo||'?')}</span>`;
+    }).join('');
+    return `<div class="record-card ${cls}" onclick="openCarton('${escHtml(g.cartonId)}')">
+      <div class="record-header">
+        <span class="record-customer" style="color:#64b5f6">${escHtml(g.customer)}</span>
+        <span class="status-pill ${cls}">${escHtml(g.status||'Pending')}</span>
+      </div>
+      <div class="record-meta">📦 Carton: <strong>${escHtml(g.cartonId)}</strong> &nbsp;|&nbsp; PI: ${piSet.map(p=>escHtml(p)).join(', ')||'—'} &nbsp;|&nbsp; ${g.rows.length} part(s) &nbsp;|&nbsp; ${g.packedDate||'—'}</div>
+      <div class="part-chips">${chips}</div>
+    </div>`;
+  }).join('');
+}
+
+function mRenderStampList() {
+  const search = (document.getElementById('msSearch').value||'').toLowerCase().trim();
+  const sf = state.multi.stampFilter;
+  const groups = Object.values(state.multi.groups)
+    .filter(g => (g.status||'').includes('Verified'))
+    .filter(g => {
+      const stamped = (g.stampStatus||'').includes('Stamped');
+      const piList = g.rows.map(r => (r.pi||'').toLowerCase()).join(' ');
+      const ms = !search || (g.customer||'').toLowerCase().includes(search) || (g.cartonId||'').toLowerCase().includes(search) || piList.includes(search);
+      return (sf === 'wait' ? !stamped : stamped) && ms;
+    });
+  const el = document.getElementById('mStampList');
+  if (!groups.length) { el.innerHTML = '<div class="empty-msg">No items found.</div>'; return; }
+  el.innerHTML = groups.map(g => {
+    const piSet = [...new Set(g.rows.map(r => r.pi).filter(Boolean))];
+    const isDone = sf === 'done';
+    return `<div class="stamp-card ${isDone?'done':''}">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:700; color:#64b5f6;">${escHtml(g.customer)}</span>
+        ${isDone ? '<span style="color:#4caf50; font-weight:bold; font-size:0.85rem;">STAMPED ✅</span>' : ''}
+      </div>
+      <div class="record-meta" style="margin:7px 0;">📦 Carton: <strong style="color:#eee;">${escHtml(g.cartonId)}</strong><br>PI: ${piSet.map(p=>escHtml(p)).join(', ')||'—'} &nbsp;|&nbsp; ${g.rows.length} part(s)</div>
+      ${isDone
+        ? `<div style="font-size:0.78rem; color:#666;">Stamped by: ${escHtml(g.stampedBy||'N/A')}</div>`
+        : `<button class="stamp-btn" onclick="mMarkStamped('${escHtml(g.cartonId)}')" style="background:#1565c0;">MARK AS STAMPED</button>`}
+    </div>`;
+  }).join('');
+}
+
+async function mMarkStamped(cartonId) {
+  const staff = prompt('ENTER STAMPING STAFF NAME:');
+  if (!staff) return;
+  const g = state.multi.groups[cartonId];
+  if (!g) return;
+  try {
+    await fetch(URLS.multi, { method:'POST', headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({ action:'stamp', rows: g.rows.map(r=>r.row), staff: staff.toUpperCase() }) });
+    await loadModule('multi');
+  } catch(e) { alert('Stamp failed: ' + e.message); }
+}
+
+// ═══════════════════════════════════════════
+//  OPEN RECORD (Packing & KIT)
+// ═══════════════════════════════════════════
+async function openRecord(mod, row) {
+  currentModuleOpen = mod;
+  currentRecord = null;
+  document.getElementById('detailModal').style.display = 'block';
+  document.getElementById('modalTitle').textContent = 'Loading…';
+  document.getElementById('modalSub').textContent = '';
+  document.getElementById('detailGrid').innerHTML = '';
+  document.getElementById('barcodeSection').innerHTML = '';
+  document.getElementById('partsSection').innerHTML = '';
+  document.getElementById('photosGrid').innerHTML = '';
+  document.getElementById('photosGrid').style.display = 'none';
+  document.getElementById('sec_photos').style.display = 'none';
+  document.getElementById('cartonPhotoWrap').innerHTML = '';
+  document.getElementById('partsDetail').innerHTML = '';
+
+  const res = await fetch(URLS[mod] + '?action=record&row=' + row);
+  const r = await res.json();
+  currentRecord = r;
+
+  const approved = (r.status||'').includes('Verified');
+  const rejected = (r.status||'').includes('Rejected');
+  isApproved = approved;
+
+  document.getElementById('modalTitle').textContent = r.customer;
+  document.getElementById('approvedNotice').style.display = approved ? 'flex' : 'none';
+
+  if (mod === 'packing') {
+    document.getElementById('modalSub').textContent = `📦 Carton: ${r.cartonId||'—'}  |  PI: ${r.pi||'—'}`;
+    document.getElementById('detailGrid').innerHTML = `
+      <div class="detail-item"><label>PI</label><span>${escHtml(r.pi||'—')}</span></div>
+      <div class="detail-item"><label>TEAM</label><span>${escHtml(r.checkerBy||'N/A')}</span></div>
+      <div class="detail-item"><label>DATE</label><span>${escHtml(r.packedDate||'—')}</span></div>
+      <div class="detail-item"><label>CARTON ID</label><span>${escHtml(r.cartonId||'—')}</span></div>
+      <div class="detail-item"><label>PACKED BY</label><span>${escHtml(r.packedBy||'N/A')}</span></div>
+      <div class="detail-item"><label>QTY</label><span>${escHtml(r.qty||'0')} PCS</span></div>
+    `;
+    const barcodes = [{l:'BAG', v:r.bag}, {l:'INNER', v:r.inner}, {l:'OUTER', v:r.outer}];
+    document.getElementById('barcodeSection').innerHTML = '<div class="section-label">BARCODE CHECKS</div>' + barcodes.map(b =>
+      `<div class="barcode-check"><span class="bc-label">${b.l}</span><span class="bc-value">${escHtml(b.v||'—')}</span><span class="bc-badge ok">MATCH</span></div>`
+    ).join('');
+    const photos = [{lbl:'BAG', url:r.imgBagUrl}, {lbl:'INNER', url:r.imgInnerUrl}, {lbl:'CARTON', url:r.imgCartonUrl}];
+    const photoHtml = photos.map(p => {
+      const thumb = driveThumb(p.url);
+      return thumb
+        ? `<div class="photo-wrap"><div class="photo-lbl" style="color:#ffb74d">${p.lbl}</div><img src="${thumb}" onclick="openLightbox('${thumb}')"></div>`
+        : `<div class="photo-wrap missing"><div class="photo-lbl" style="color:#ffb74d">${p.lbl}</div><div style="padding:18px;color:#444;font-size:0.75rem;">No photo</div></div>`;
+    }).join('');
+    document.getElementById('photosGrid').innerHTML = photoHtml;
+    document.getElementById('sec_photos').style.display = 'block';
+    document.getElementById('photosGrid').style.display = 'flex';
+  }
+
+  if (mod === 'kit') {
+    document.getElementById('modalSub').textContent = `📦 Carton: ${r.cartonId||'—'}  |  KIT: ${r.kitModel||'—'}`;
+    document.getElementById('detailGrid').innerHTML = `
+      <div class="detail-item"><label>PI</label><span>${escHtml(r.pi||'—')}</span></div>
+      <div class="detail-item"><label>KIT MODEL</label><span>${escHtml(r.kitModel||'—')}</span></div>
+      <div class="detail-item"><label>QTY</label><span>${escHtml(r.kitQty||'N/A')}</span></div>
+      <div class="detail-item"><label>CARTON ID</label><span>${escHtml(r.cartonId||'N/A')}</span></div>
+      <div class="detail-item"><label>DATE</label><span>${escHtml(r.packedDate||'—')}</span></div>
+      <div class="detail-item"><label>PACKED BY</label><span>${escHtml(r.packedBy||'N/A')}</span></div>
+    `;
+    let pTable = '<div class="section-label">PARTS VERIFICATION</div><table class="parts-table"><tr><th>PART NO</th><th>QTY</th><th>STATUS</th></tr>';
+    if (r.partsJson) {
+      try {
+        const parts = JSON.parse(r.partsJson);
+        parts.forEach(p => {
+          pTable += `<tr><td>${escHtml(p.partNo)}</td><td>${escHtml(p.qty)}</td><td><span class="match-tag ${p.matchState?'match-ok':'match-fail'}">${p.matchState?'MATCH':'FAIL'}</span></td></tr>`;
+        });
+      } catch(e) { pTable += '<tr><td colspan="3">Error loading parts</td></tr>'; }
+    }
+    pTable += '</table>';
+    document.getElementById('partsSection').innerHTML = pTable;
+    const photos = [{lbl:'PARTS', url:r.imgPartsUrl}, {lbl:'INNER BOX', url:r.imgBoxUrl}, {lbl:'CARTON', url:r.imgCartonUrl}];
+    const photoHtml = photos.map(p => {
+      const thumb = driveThumb(p.url);
+      return thumb
+        ? `<div class="photo-wrap"><div class="photo-lbl" style="color:#ce93d8">${p.lbl}</div><img src="${thumb}" onclick="openLightbox('${thumb}')"></div>`
+        : `<div class="photo-wrap missing"><div class="photo-lbl" style="color:#ce93d8">${p.lbl}</div><div style="padding:18px;color:#444;font-size:0.75rem;">No photo</div></div>`;
+    }).join('');
+    document.getElementById('photosGrid').innerHTML = photoHtml;
+    document.getElementById('sec_photos').style.display = 'block';
+    document.getElementById('photosGrid').style.display = 'flex';
+  }
+
+  // Verdict UI: approved = locked; rejected = allow resubmit; pending = allow
+  setupVerdictUI(r, approved, rejected);
+}
+
+// ═══════════════════════════════════════════
+//  OPEN CARTON (Multi)
+// ═══════════════════════════════════════════
+function openCarton(cartonId) {
+  const g = state.multi.groups[cartonId];
+  if (!g) return;
+  currentModuleOpen = 'multi';
+  currentRecord = g;
+
+  document.getElementById('detailModal').style.display = 'block';
+  document.getElementById('photosGrid').style.display = 'none';
+  document.getElementById('sec_photos').style.display = 'none';
+  document.getElementById('barcodeSection').innerHTML = '';
+  document.getElementById('partsSection').innerHTML = '';
+
+  const approved = (g.status||'').includes('Verified');
+  const rejected = (g.status||'').includes('Rejected');
+  isApproved = approved;
+
+  document.getElementById('modalTitle').textContent = g.customer;
+  document.getElementById('modalSub').textContent = `📦 Carton: ${g.cartonId}  |  ${g.rows.length} part(s)`;
+  document.getElementById('approvedNotice').style.display = approved ? 'flex' : 'none';
+
+  document.getElementById('detailGrid').innerHTML = `
+    <div class="detail-item"><label>Carton ID</label><span>${escHtml(g.cartonId)}</span></div>
+    <div class="detail-item"><label>Packed Date</label><span>${escHtml(g.packedDate||'—')}</span></div>
+    <div class="detail-item"><label>Packed By</label><span>${escHtml(g.packedBy||'—')}</span></div>
+    <div class="detail-item"><label>Packing Team</label><span>${escHtml(g.checkerBy||'—')}</span></div>
+  `;
+
+  const cartonThumb = driveThumb(g.imgCartonUrl);
+  document.getElementById('cartonPhotoWrap').innerHTML = cartonThumb
+    ? `<div class="section-label">CARTON PHOTO</div><div class="photo-row" style="max-width:220px;"><div class="photo-wrap"><div class="photo-lbl" style="color:#64b5f6">Carton Label</div><img src="${cartonThumb}" onclick="openLightbox('${cartonThumb}')"></div></div>`
+    : '';
+
+  document.getElementById('partsDetail').innerHTML = '<div class="section-label">PARTS IN THIS CARTON</div>' + g.rows.map((r, i) => {
+    const ms = r.matchStatus || '';
+    const bagOk   = ms.includes('Bag:✅');
+    const innerOk = ms.includes('Inner:✅');
+    const outerOk = ms.includes('Outer:✅');
+    const allOk   = bagOk && innerOk && outerOk;
+    const anyFail = ms.includes('❌');
+    const badgeCls = allOk ? 'ok' : anyFail ? 'fail' : 'pending';
+    const badgeText = allOk ? 'VERIFIED' : anyFail ? 'MISMATCH' : 'PENDING';
+    const bagThumb   = driveThumb(r.imgBagUrl);
+    const innerThumb = driveThumb(r.imgInnerUrl);
+    const bcRow = (label, value, isOk) => {
+      const v = value || '—';
+      const isNo = String(value||'').toUpperCase() === 'NO';
+      const cls = isNo ? 'no-bc' : isOk ? 'ok' : 'fail';
+      const txt = isNo ? 'NO BARCODE' : isOk ? 'MATCH ✅' : 'CHECK ❌';
+      return `<div class="barcode-check"><span class="bc-label">${label}</span><span class="bc-value">${escHtml(v)}</span><span class="bc-badge ${cls}">${txt}</span></div>`;
+    };
+    const pw = (lbl, thumb) => thumb
+      ? `<div class="photo-wrap"><div class="photo-lbl" style="color:#64b5f6">${lbl}</div><img src="${thumb}" onclick="openLightbox('${thumb}')"></div>`
+      : `<div class="photo-wrap missing"><div class="photo-lbl" style="color:#64b5f6">${lbl}</div><div style="padding:18px;color:#444;font-size:0.75rem;">No photo</div></div>`;
+    return `<div class="part-block">
+      <div class="part-block-header">
+        <span class="part-block-title">Part ${i+1}: ${escHtml(r.partNo)}</span>
+        <span class="part-status-badge ${badgeCls}">${badgeText}</span>
+      </div>
+      <div style="font-size:0.8rem; color:#666; margin-bottom:9px;">PI: ${escHtml(r.pi||'—')} &nbsp;|&nbsp; Qty: ${r.qty||'—'} pcs</div>
+      ${bcRow('BAG', r.bag, bagOk)}${bcRow('INNER', r.inner, innerOk)}${bcRow('OUTER', r.outer, outerOk)}
+      <div class="photo-row">${pw('Bag', bagThumb)}${pw('Inner', innerThumb)}</div>
+    </div>`;
+  }).join('');
+
+  setupVerdictUI(g, approved, rejected);
+}
+
+// ═══════════════════════════════════════════
+//  VERDICT UI SETUP
+// ═══════════════════════════════════════════
+function setupVerdictUI(r, approved, rejected) {
+  selectedVerdict = null;
+  const btnV = document.getElementById('btnVerified');
+  const btnR = document.getElementById('btnRejected');
+  const nameInput = document.getElementById('checkerNameInput');
+  const remarksInput = document.getElementById('remarksInput');
+  const submitBtn = document.getElementById('submitBtn');
+
+  btnV.classList.remove('selected');
+  btnR.classList.remove('selected');
+
+  nameInput.value   = r.checker || '';
+  remarksInput.value = r.remarks || '';
+
+  if (approved) {
+    // Lock everything — view only
+    btnV.disabled = true;
+    btnR.disabled = true;
+    nameInput.disabled = true;
+    remarksInput.disabled = true;
+    submitBtn.disabled = true;
+    submitBtn.textContent = '🔒 APPROVED — NO RESUBMIT';
+    btnV.classList.add('selected');
+  } else {
+    // Allow interaction (pending or rejected)
+    btnV.disabled = false;
+    btnR.disabled = false;
+    nameInput.disabled = false;
+    remarksInput.disabled = false;
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'SUBMIT REPORT';
+    if (rejected) {
+      selectedVerdict = 'Rejected';
+      btnR.classList.add('selected');
+    }
+  }
+}
+
+function selectVerdict(v) {
+  if (isApproved) return;
+  selectedVerdict = v;
+  document.getElementById('btnVerified').classList.toggle('selected', v === 'Verified');
+  document.getElementById('btnRejected').classList.toggle('selected', v === 'Rejected');
+}
+
+// ═══════════════════════════════════════════
+//  SAVE VERIFICATION
+// ═══════════════════════════════════════════
+async function saveVerification() {
+  if (isApproved) return;
+  const name = document.getElementById('checkerNameInput').value.trim();
+  if (!name) { alert('Please enter Checker Staff Name'); return; }
+  if (!selectedVerdict) { alert('Please select APPROVE or REJECT'); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'PLEASE WAIT…';
+
+  const statusStr = selectedVerdict === 'Verified' ? 'Verified ✅' : 'Rejected ❌';
+  const remarks = document.getElementById('remarksInput').value.trim().toUpperCase();
+
+  try {
+    if (currentModuleOpen === 'multi') {
+      const g = currentRecord;
+      await fetch(URLS.multi, { method:'POST', headers:{'Content-Type':'text/plain'},
+        body: JSON.stringify({ action:'verifyMulti', rows: g.rows.map(r=>r.row),
+          checker: name.toUpperCase(), status: statusStr, remarks }) });
+      closeModal();
+      await loadModule('multi');
+    } else {
+      const url = URLS[currentModuleOpen];
+      await fetch(url, { method:'POST', body: JSON.stringify({
+        action:'verify', row: currentRecord.row, checker: name.toUpperCase(),
+        status: statusStr, remarks }) });
+      closeModal();
+      await loadModule(currentModuleOpen);
+    }
+  } catch(e) {
+    alert('Submit failed: ' + e.message);
+    btn.disabled = false;
+    btn.textContent = 'SUBMIT REPORT';
+  }
+}
+
+function closeModal() {
+  document.getElementById('detailModal').style.display = 'none';
+  currentRecord = null;
+  currentModuleOpen = null;
+  isApproved = false;
+}
+
+// ═══════════════════════════════════════════
+//  LIGHTBOX
+// ═══════════════════════════════════════════
+const lb = document.getElementById('lightbox');
+const lbImg = document.getElementById('lightboxImg');
+
+function openLightbox(src) {
+  scale=1; posX=0; posY=0;
+  lbImg.style.transform = '';
+  lbImg.src = src.replace('sz=800','sz=w2000');
+  lb.style.display = 'flex';
+}
+function closeLightbox() { lb.style.display = 'none'; }
+function updateTransform() { lbImg.style.transform = `translate(${posX}px,${posY}px) scale(${scale})`; }
+
+lb.addEventListener('wheel', e => {
+  e.preventDefault();
+  scale = Math.min(Math.max(1, scale * (e.deltaY > 0 ? 0.9 : 1.1)), 5);
+  updateTransform();
+});
+lb.addEventListener('mousedown', e => { isDragging=true; lastPX=e.clientX-posX; lastPY=e.clientY-posY; lbImg.style.cursor='grabbing'; });
+window.addEventListener('mousemove', e => { if(!isDragging||scale<=1) return; posX=e.clientX-lastPX; posY=e.clientY-lastPY; updateTransform(); });
+window.addEventListener('mouseup', () => { isDragging=false; lbImg.style.cursor='grab'; });
+lb.addEventListener('touchstart', e => {
+  if(e.touches.length===2) initialDist=Math.hypot(e.touches[0].pageX-e.touches[1].pageX,e.touches[0].pageY-e.touches[1].pageY);
+  else { isDragging=true; lastPX=e.touches[0].pageX-posX; lastPY=e.touches[0].pageY-posY; }
+});
+lb.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if(e.touches.length===2) { const d=Math.hypot(e.touches[0].pageX-e.touches[1].pageX,e.touches[0].pageY-e.touches[1].pageY); scale=Math.min(Math.max(1,d/initialDist),5); }
+  else if(isDragging&&scale>1) { posX=e.touches[0].pageX-lastPX; posY=e.touches[0].pageY-lastPY; }
+  updateTransform();
+}, { passive:false });
+lb.addEventListener('touchend', () => { isDragging=false; });
+</script>
+</body>
+</html>
