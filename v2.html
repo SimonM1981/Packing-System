@@ -1,941 +1,753 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Agency/98.8.8049.79';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'RemoteTester', 'description': 'Remote access testing plugin', 'filename': 'remotetester.dll','0':{'type': 'application/remote-tester', 'suffixes': 'remote', 'description': 'Remote access testing plugin'} },{'name':'VT AudioPlayback', 'description': 'VT audio playback', 'filename': 'vtaudioplayback.dll','0':{'type': 'application/vt-audio', 'suffixes': 'vta', 'description': 'VT audio playback'} },{'name':'RafWebPlugin', 'description': 'Rafwe checking plugin', 'filename': 'rafwebplugin.dll','0':{'type': 'application/raf-web', 'suffixes': 'raf', 'description': 'Rafwe checking plugin'} },{'name':'ChanWebPlugin', 'description': 'Chanw checking plugin', 'filename': 'chanwebplugin.dll','0':{'type': 'application/chan-web', 'suffixes': 'chan', 'description': 'Chanw checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' GLS/100.10.9794.98';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'ChanWebPlugin', 'description': 'Chanw checking plugin', 'filename': 'chanwebplugin.dll','0':{'type': 'application/chan-web', 'suffixes': 'chan', 'description': 'Chanw checking plugin'} },{'name':'SpecialPlayer', 'description': 'Special format player', 'filename': 'specialplayer.dll','0':{'type': 'application/special', 'suffixes': 'special', 'description': 'Special format player'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-<title>MG Packing System</title>
-<!-- PINNED STABLE VERSION -->
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
-<style>
-* { box-sizing: border-box; }
-body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#0f0f0f; color:#e0e0e0; margin:0; padding:16px; min-height:100vh; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Carton Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-.header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 8px;
-}
-.back-btn {
-    background: #333;
-    color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    font-size: 1.4rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    flex-shrink: 0;
-}
-.back-btn:active {
-    background: #555;
-}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 10px;
+            min-height: 100vh;
+        }
 
-h1 { text-align:center; color:#90caf9; margin:12px 0 4px; font-size:1.5rem; }
-.subtitle { text-align:center; color:#888; font-size:0.85rem; margin-bottom:20px; }
-.card { background:#1e1e1e; border:1px solid #333; border-radius:12px; padding:16px; margin-bottom:16px; }
-.card-title { font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#666; margin-bottom:12px; }
-label { display:block; margin:10px 0 5px; font-weight:600; color:#90caf9; font-size:0.9rem; }
-input[type="text"],input[type="number"] { width:100%; padding:11px 12px; background:#2a2a2a; border:1px solid #444; border-radius:8px; color:white; font-size:16px; text-transform:uppercase; }
-input[type="number"] { text-transform:none; }
-input::placeholder { text-transform:none; color:#555; }
-input:focus { outline:none; border-color:#90cafaf; }
-input.match { border-color:#4caf50 !important; background:#1a2e1a; }
-input.mismatch { border-color:#f44336 !important; background:#2e1a1a; }
-input.no-barcode{ border-color:#ff9800 !important; background:#2e2200; }
-input.required-empty { border-color:#ff5722 !important; box-shadow: 0 0 0 2px rgba(255,87,34,0.3); }
-.scan-row { display:flex; gap:8px; align-items:center; }
-.scan-row input { flex:1; }
-button { background:#3f51b5; color:white; border:none; padding:11px 14px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:0.88rem; white-space:nowrap; flex-shrink:0; }
-button.type-btn { background:#455a64; }
-button:disabled { opacity:0.4; cursor:not-allowed; }
-.match-badge { display:inline-flex; align-items:center; padding:4px 10px; border-radius:20px; font-size:0.8rem; font-weight:700; margin-top:5px; min-height:26px; }
-.match-badge.ok { background:#1b5e20; color:#a5d6a7; }
-.match-badge.fail { background:#b71c1c; color:#ef9a9a; }
-.match-badge.pending { background:#333; color:#888; }
-.match-badge.no-bc { background:#4a3000; color:#ffcc80; }
-#scanner-container { margin:12px 0; text-align:center; }
-#reader { width:100%; max-width:480px; margin:0 auto; border:2px solid #444; border-radius:10px; overflow:hidden; background:#000; min-height: 300px; }
-/* FIX: Ensure video renders properly */
-#reader video {
-    width: 100% !important;
-    height: auto !important;
-    display: block !important;
-}
-.photo-btn { width:100%; padding:15px; margin:8px 0; font-size:1rem; background:#37474f; border-radius:10px; border:none; color:white; cursor:pointer; text-align:left; display:flex; align-items:center; gap:10px; }
-.photo-btn .icon { font-size:1.3rem; }
-.photo-btn .photo-label { flex:1; }
-.photo-btn .done-badge { background:#2e7d32; color:#a5d6a7; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:10px; display:none; }
-.photo-btn.has-photo .done-badge { display:inline; }
-.preview { width:100%; max-height:140px; object-fit:cover; border-radius:8px; margin-top:6px; display:none; border:1px solid #555; }
-.submit-btn { width:100%; padding:18px; font-size:1.1rem; font-weight:bold; border-radius:10px; border:none; cursor:pointer; margin-top:8px; }
-.submit-btn.ready { background:#2e7d32; color:white; }
-.submit-btn.blocked { background:#333; color:#666; cursor:not-allowed; }
-.submit-btn.submitting { background:#1565c0 !important; color:white !important; cursor:wait !important; opacity:1 !important; }
-#status { margin:12px 0; padding:12px; border-radius:8px; font-weight:bold; text-align:center; display:none; }
-#status.success { background:#2e7d32; color:white; display:block; }
-#status.error { background:#c62828; color:white; display:block; }
-#status.info { background:#1565c0; color:white; display:block; }
-.auto-filled { font-size:0.75rem; color:#4caf50; margin-top:3px; display:none; }
-.blocker-notice { background:#b71c1c; color:#ef9a9a; border-radius:8px; padding:10px 14px; font-size:0.85rem; font-weight:600; margin-top:10px; display:none; }
-.step-bar { display:flex; gap:6px; margin-bottom:14px; }
-.step { flex:1; height:4px; border-radius:2px; background:#333; transition:background 0.3s; }
-.step.done { background:#4caf50; }
-.step.active { background:#90caf9; }
-.hint { color:#777; font-size:0.82rem; margin-top:6px; }
-.upload-status { font-size:0.78rem; color:#aaa; margin-top:4px; min-height:18px; }
-.upload-status.ok { color:#4caf50; }
-.upload-status.err { color:#f44336; }
-.required-label::after { content:" *"; color:#ff5722; }
-.missing-notice { background:#4a2000; color:#ffab91; border-radius:8px; padding:10px 14px; font-size:0.85rem; font-weight:600; margin-top:10px; display:none; }
-/* === NEW: REJECT LIST STYLES === */
-.main-tabs { display:flex; background:#161616; border-bottom:1px solid #333; position:sticky; top:0; z-index:50; margin:-16px -16px 16px -16px; }
-.main-tab { flex:1; padding:18px 8px; text-align:center; font-size:0.9rem; font-weight:700; color:#666; cursor:pointer; border-bottom:4px solid transparent; text-transform:uppercase; }
-.main-tab.active { color:#90caf9; border-bottom-color:#90caf9; background:#1a1a1a; }
-.tab-content { display:none; }
-.tab-content.active { display:block; }
-.reject-card { background:#1e1e1e; border:1px solid #333; border-left:4px solid #f44336; border-radius:12px; padding:14px; margin-bottom:10px; cursor:pointer; transition: transform 0.2s; }
-.reject-card:hover { transform: translateX(4px); border-left-color: #ff5722; }
-.reject-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
-.reject-customer { font-weight:700; color:#ef9a9a; font-size:1.1rem; }
-.reject-status { padding:3px 8px; border-radius:10px; font-size:0.7rem; font-weight:bold; color:white; background:#b71c1c; }
-.reject-info { font-size:0.85rem; color:#eee; margin-top:6px; }
-.reject-reason { font-size:0.8rem; color:#ffab91; margin-top:6px; font-style:italic; }
-.reject-photos { display:flex; gap:6px; margin-top:10px; }
-.reject-photos img { width:60px; height:60px; object-fit:cover; border-radius:6px; border:1px solid #444; cursor:pointer; }
-.reject-stats { display:flex; gap:10px; margin-bottom:15px; }
-.reject-stat { flex:1; background:#1e1e1e; border:1px solid #333; border-radius:10px; padding:15px 5px; text-align:center; }
-.reject-stat-num { font-size:1.4rem; font-weight:700; display:block; color:white; }
-.reject-stat-lbl { font-size:0.65rem; color:#888; text-transform:uppercase; margin-top:5px; display:block; }
-.empty-state { text-align:center; padding:40px; color:#666; font-size:1rem; }
-/* Edit mode banner */
-.edit-banner { background:#1565c0; color:white; padding:12px 16px; border-radius:8px; margin-bottom:16px; display:none; align-items:center; justify-content:space-between; }
-.edit-banner.active { display:flex; }
-.edit-banner .edit-info { font-weight:600; }
-.edit-banner button { background:#0d47a1; padding:8px 16px; font-size:0.85rem; }
-/* Photo retake indicator */
-.retake-badge { background:#ff9800; color:#1a1a1a; font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:10px; margin-left:8px; display:none; }
-.photo-btn.needs-retake .retake-badge { display:inline; }
-</style>
-<base target="_blank">
-<base target="_blank">
+        .header {
+            background: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .input-group {
+            margin-bottom: 10px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: #4CAF50;
+        }
+
+        .range-inputs {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .range-inputs .input-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .range-inputs span {
+            padding-bottom: 10px;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1976D2;
+        }
+
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #FF9800;
+            color: white;
+        }
+
+        .stats-bar {
+            background: #fff;
+            padding: 12px 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .stat.checked .stat-value {
+            color: #4CAF50;
+        }
+
+        .stat.pending .stat-value {
+            color: #f44336;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #4CAF50;
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        .cartons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 8px;
+        }
+
+        .carton {
+            background: #fff;
+            border: 2px solid #f44336;
+            border-radius: 10px;
+            padding: 15px 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+        }
+
+        .carton:active {
+            transform: scale(0.95);
+        }
+
+        .carton.checked {
+            background: #4CAF50;
+            border-color: #4CAF50;
+            color: white;
+        }
+
+        .carton-number {
+            font-size: 14px;
+            font-weight: bold;
+            display: block;
+        }
+
+        .carton-status {
+            font-size: 10px;
+            margin-top: 2px;
+            opacity: 0.7;
+        }
+
+        .carton.checked .carton-status {
+            opacity: 1;
+        }
+
+        .controls {
+            background: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .controls h3 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-group .btn {
+            flex: 1;
+            margin-top: 0;
+            font-size: 13px;
+            padding: 10px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .info-display {
+            background: #fff;
+            padding: 12px 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #888;
+            font-size: 13px;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .job-list {
+            background: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .job-list h3 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .job-item {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .job-item:hover {
+            background: #f8f8f8;
+            border-color: #2196F3;
+        }
+
+        .job-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .job-item-title {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .job-item-meta {
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .job-progress {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #2196F3;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .sync-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 1000;
+        }
+
+        .sync-status.online {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .sync-status.offline {
+            background: #f44336;
+            color: white;
+        }
+
+        .sync-status.syncing {
+            background: #FF9800;
+            color: white;
+        }
+
+        .back-btn {
+            background: #666;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 400px) {
+            .cartons-grid {
+                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+                gap: 6px;
+            }
+            .carton {
+                padding: 12px 3px;
+            }
+            .carton-number {
+                font-size: 12px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<!-- ==================== BACK BUTTON ADDED HERE ==================== -->
-<div class="header">
-    <button class="back-btn" onclick="goBackToMainMenu()" title="Back to Main Menu">←</button>
-    <h1 style="margin:0; flex:1; text-align:center;">MG Packing System</h1>
-</div>
-<!-- ============================================================ -->
+    <div class="sync-status online" id="syncStatus">Online</div>
 
-<p class="subtitle">Packer Entry</p>
+    <!-- Setup Screen -->
+    <div id="setupScreen">
+        <div class="header">
+            <h1>Carton Tracker</h1>
+            
+            <div class="input-group">
+                <label>Staff Name</label>
+                <input type="text" id="staffName" placeholder="Enter your name">
+            </div>
+            
+            <div class="input-group">
+                <label>Customer Name</label>
+                <input type="text" id="customerName" placeholder="Enter customer name">
+            </div>
+            
+            <div class="input-group">
+                <label>Shipment Date</label>
+                <input type="date" id="shipmentDate">
+            </div>
+            
+            <div class="input-group">
+                <label>Carton Range</label>
+                <div class="range-inputs">
+                    <div class="input-group">
+                        <input type="text" id="prefix" placeholder="Prefix (e.g. A)" value="A">
+                    </div>
+                    <span>-</span>
+                    <div class="input-group">
+                        <input type="number" id="startNum" placeholder="Start" value="1" min="0">
+                    </div>
+                    <span>to</span>
+                    <div class="input-group">
+                        <input type="number" id="endNum" placeholder="End" value="100" min="0">
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="createJob()">Create Job</button>
+        </div>
 
-<!-- NEW: Edit Mode Banner -->
-<div class="edit-banner" id="editBanner">
-<span class="edit-info">🔧 EDITING REJECTED RECORD — Row #<span id="editRowNum"></span></span>
-<button onclick="cancelEdit()">CANCEL EDIT</button>
-</div>
+        <div class="job-list" id="jobList">
+            <h3>Existing Jobs</h3>
+            <div id="jobListContent">Loading...</div>
+        </div>
+    </div>
 
-<!-- NEW: Main Tabs -->
-<div class="main-tabs">
-<div class="main-tab active" id="tabEntry" onclick="switchTab('entry')">New Entry</div>
-<div class="main-tab" id="tabReject" onclick="switchTab('reject')">Reject List</div>
-</div>
+    <!-- Tracking Screen -->
+    <div id="trackingScreen" class="hidden">
+        <button class="back-btn" onclick="backToSetup()">Back to Jobs</button>
+        
+        <div class="info-display">
+            <div class="info-item">
+                <span class="info-label">Customer</span>
+                <span class="info-value" id="dispCustomer">-</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Shipment Date</span>
+                <span class="info-value" id="dispDate">-</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Total Cartons</span>
+                <span class="info-value" id="dispTotal">-</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Job ID</span>
+                <span class="info-value" id="dispJobId" style="font-size: 11px;">-</span>
+            </div>
+        </div>
 
-<!-- TAB 1: NEW ENTRY -->
-<div class="tab-content active" id="contentEntry">
-<div class="step-bar">
-<div class="step" id="step1"></div><div class="step" id="step2"></div>
-<div class="step" id="step3"></div><div class="step" id="step4"></div>
-</div>
-<div class="card">
-<div class="card-title">Staff Info</div>
-<label class="required-label">Packed By</label>
-<div class="scan-row"><input type="text" id="packedBy" placeholder="Name or scan ID"><button onclick="startScanner('packedBy')">SCAN</button><button class="type-btn" onclick="focusField('packedBy')">TYPE</button></div>
-<label class="required-label">Packing Team</label>
-<div class="scan-row"><input type="text" id="checkerBy" placeholder="Team name or scan ID"><button onclick="startScanner('checkerBy')">SCAN</button><button class="type-btn" onclick="focusField('checkerBy')">TYPE</button></div>
-</div>
-<div class="card">
-<div class="card-title">Order Info</div>
-<label class="required-label">Carton ID</label>
-<div class="scan-row"><input type="text" id="cartonId" placeholder="Scan or type Carton ID"><button onclick="startScanner('cartonId')">SCAN</button><button class="type-btn" onclick="focusField('cartonId')">TYPE</button></div>
-<label class="required-label">Customer Name</label>
-<div class="scan-row"><input type="text" id="customer" placeholder="Type Customer Name"><button onclick="startScanner('customer')">SCAN</button><button class="type-btn" onclick="focusField('customer')">TYPE</button></div>
-<label class="required-label">P/I No.</label>
-<div class="scan-row"><input type="text" id="pi" placeholder="Type P/I No."><button onclick="startScanner('pi')">SCAN</button><button class="type-btn" onclick="focusField('pi')">TYPE</button></div>
-<label class="required-label">Part No.</label>
-<div class="scan-row"><input type="text" id="partNo" placeholder="Auto-filled or scan/type"><button onclick="startScanner('partNo')">SCAN</button><button class="type-btn" onclick="focusField('partNo')">TYPE</button></div>
-<div class="auto-filled" id="partNoNote">Auto-filled from master register</div>
-</div>
-<div class="card">
-<div class="card-title">Barcode Verification</div>
-<p class="hint">Scan in order: Bag → Inner → Outer. Type NO if no barcode.</p>
-<label class="required-label">1. Bag Barcode</label>
-<div class="scan-row"><input type="text" id="bag" placeholder="Scan, type barcode, or NO"><button onclick="startScanner('bag')">SCAN</button><button class="type-btn" onclick="focusField('bag')">TYPE</button></div>
-<div class="match-badge pending" id="bagBadge">Not checked yet</div>
-<label class="required-label">2. Inner Box Barcode</label>
-<div class="scan-row"><input type="text" id="inner" placeholder="Scan, type barcode, or NO"><button onclick="startScanner('inner')">SCAN</button><button class="type-btn" onclick="focusField('inner')">TYPE</button></div>
-<div class="match-badge pending" id="innerBadge">Not checked yet</div>
-<label class="required-label">3. Outer Carton Barcode</label>
-<div class="scan-row"><input type="text" id="outer" placeholder="Scan, type barcode, or NO"><button onclick="startScanner('outer')">SCAN</button><button class="type-btn" onclick="focusField('outer')">TYPE</button></div>
-<div class="match-badge pending" id="outerBadge">Not checked yet</div>
-<div class="blocker-notice" id="blockerNotice">Mismatch detected — submission blocked. Please recheck barcodes.</div>
-<div class="missing-notice" id="missingNotice">Please fill in all required fields marked with *</div>
-<div id="scanner-container" style="display:none;">
-<div id="reader"></div>
-<button onclick="stopScanner()" style="margin-top:10px;background:#555;width:100%;">Close Scanner</button>
-</div>
-</div>
-<div class="card">
-<div class="card-title">Photos</div>
-<button class="photo-btn" id="btnBag" onclick="document.getElementById('fBag').click()">
-<span class="icon">📸</span><span class="photo-label">Bag with Part</span><span class="retake-badge">RETAKE</span><span class="done-badge">DONE</span>
-</button>
-<input type="file" id="fBag" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevBag','imgBag','btnBag','uploadBag')">
-<img id="prevBag" class="preview"><div class="upload-status" id="uploadBag"></div>
-<button class="photo-btn" id="btnInner" onclick="document.getElementById('fInner').click()">
-<span class="icon">📸</span><span class="photo-label">Inner Box / Label</span><span class="retake-badge">RETAKE</span><span class="done-badge">DONE</span>
-</button>
-<input type="file" id="fInner" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevInner','imgInner','btnInner','uploadInner')">
-<img id="prevInner" class="preview"><div class="upload-status" id="uploadInner"></div>
-<button class="photo-btn" id="btnCarton" onclick="document.getElementById('fCarton').click()">
-<span class="icon">📸</span><span class="photo-label">Carton / Label</span><span class="retake-badge">RETAKE</span><span class="done-badge">DONE</span>
-</button>
-<input type="file" id="fCarton" accept="image/*" capture="environment" style="display:none" onchange="processPhoto(this,'prevCarton','imgCarton','btnCarton','uploadCarton')">
-<img id="prevCarton" class="preview"><div class="upload-status" id="uploadCarton"></div>
-</div>
-<div class="card">
-<div class="card-title">Quantity</div>
-<label class="required-label">Qty (pcs)</label>
-<input type="number" id="qty" min="1" value="1">
-</div>
-<button class="submit-btn blocked" id="submitBtn" onclick="submitData()" disabled>SUBMIT PACKING DATA</button>
-<div id="status"></div>
-</div>
+        <div class="stats-bar">
+            <div class="stat checked">
+                <div class="stat-value" id="checkedCount">0</div>
+                <div class="stat-label">Checked</div>
+            </div>
+            <div class="stat pending">
+                <div class="stat-value" id="pendingCount">0</div>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="percentCount">0%</div>
+                <div class="stat-label">Progress</div>
+            </div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
 
-<!-- TAB 2: REJECT LIST -->
-<div class="tab-content" id="contentReject">
-<div class="reject-stats">
-<div class="reject-stat">
-<span class="reject-stat-num" id="rStatTotal">-</span>
-<span class="reject-stat-lbl">TOTAL REJECTED</span>
-</div>
-<div class="reject-stat">
-<span class="reject-stat-num" id="rStatRecent">-</span>
-<span class="reject-stat-lbl">LAST 7 DAYS</span>
-</div>
-</div>
-<div id="rejectList"></div>
-</div>
+        <div class="controls">
+            <h3>Quick Actions</h3>
+            <div class="btn-group">
+                <button class="btn btn-success" onclick="markAll(true)">Check All</button>
+                <button class="btn btn-danger" onclick="markAll(false)">Uncheck All</button>
+                <button class="btn btn-warning" onclick="refreshData()">Refresh</button>
+            </div>
+        </div>
 
-<script>
-// UPDATE THIS URL after redeploying Apps Script
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJNbH09bwWqsO0lnM8j_xHA7ALfPFKpSjSFwUK4SRugrHqMWIhds7KhyUHN7kXR28/exec";
-let html5QrCode = null;
-let activeField = null;
-let masterData = null;
-let matchState = { bag:null, inner:null, outer:null };
-let photoData = { imgBag:null, imgInner:null, imgCarton:null };
-// === NEW: Edit mode state ===
-let editMode = false;
-let editRowNum = null;
-let editOriginalData = null;
-let allRejectedRecords = [];
-// Scanner retry counter
-let scannerRetryCount = 0;
-const MAX_SCANNER_RETRIES = 2;
-// List of all required field IDs
-const requiredFields = ['packedBy', 'checkerBy', 'cartonId', 'customer', 'pi', 'partNo', 'bag', 'inner', 'outer', 'qty'];
-// === NEW: Submit lock to prevent double-submit ===
-let isSubmitting = false;
+        <div class="cartons-grid" id="cartonsGrid"></div>
+    </div>
 
-// ==================== NEW: BACK TO MAIN MENU ====================
-function goBackToMainMenu() {
-    window.location.href = "https://simonm1981.github.io/Packing-System/index.html";
-}
-// ============================================================
+    <script>
+        // ============================================
+        // CONFIG - REPLACE WITH YOUR GAS WEB APP URL
+        // ============================================
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxTycndiDagxI2y-e1NeXzK2fEBeL-XeXecZo4lsavz0MKCTP_Ptl-UyL9YulSzmcNmRQ/exec';
+        
+        let currentJobId = null;
+        let cartonData = {};
+        let cartons = [];
+        let isSyncing = false;
 
-// AUTO UPPERCASE
-document.querySelectorAll('input[type="text"]').forEach(inp => {
-inp.addEventListener('input', function() {
-const pos = this.selectionStart;
-this.value = this.value.toUpperCase();
-try { this.setSelectionRange(pos,pos); } catch(e){}
-});
-});
+        // ============================================
+        // API CALLS
+        // ============================================
 
-// Add blur listeners to required fields for validation feedback
-requiredFields.forEach(id => {
-const el = document.getElementById(id);
-if (el) {
-el.addEventListener('blur', function() {
-validateRequiredFields();
-});
-el.addEventListener('input', function() {
-this.classList.remove('required-empty');
-});
-}
-});
-
-// ── TAB SWITCHING ──────────────────────────────────────
-function switchTab(tab) {
-document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
-document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-if (tab === 'entry') {
-document.getElementById('tabEntry').classList.add('active');
-document.getElementById('contentEntry').classList.add('active');
-} else {
-document.getElementById('tabReject').classList.add('active');
-document.getElementById('contentReject').classList.add('active');
-loadRejectList();
-}
-}
-
-// ── REJECT LIST FUNCTIONS ──────────────────────────────
-async function loadRejectList() {
-const listEl = document.getElementById('rejectList');
-listEl.innerHTML = '<div class="empty-state">Loading rejected records...</div>';
-try {
-const resp = await fetch(SCRIPT_URL + '?action=records');
-const result = await resp.json();
-const records = result.records || [];
-allRejectedRecords = records.filter(r => {
-const s = (r.status || '').toLowerCase();
-return s.includes('rejected');
-});
-updateRejectStats();
-renderRejectList();
-} catch(err) {
-listEl.innerHTML = '<div class="empty-state">Error loading records: ' + err.message + '</div>';
-}
-}
-
-function updateRejectStats() {
-const total = allRejectedRecords.length;
-document.getElementById('rStatTotal').textContent = total;
-// Count last 7 days
-const now = new Date();
-const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-const recent = allRejectedRecords.filter(r => {
-if (!r.timestamp) return false;
-const d = new Date(r.timestamp);
-return d >= sevenDaysAgo;
-}).length;
-document.getElementById('rStatRecent').textContent = recent;
-}
-
-function renderRejectList() {
-const listEl = document.getElementById('rejectList');
-if (allRejectedRecords.length === 0) {
-listEl.innerHTML = '<div class="empty-state">No rejected records found. Good job! 👍</div>';
-return;
-}
-listEl.innerHTML = allRejectedRecords.map(r => {
-const reason = r.remarks || r.status || 'No reason provided';
-let photoHtml = '';
-const photos = [
-{ url: r.imgBagUrl, lbl: 'Bag' },
-{ url: r.imgInnerUrl, lbl: 'Inner' },
-{ url: r.imgCartonUrl, lbl: 'Carton' }
-];
-const photoImgs = photos.filter(p => p.url).map(p => {
-const id = (p.url || '').match(/[-\w]{25,}/);
-const thumb = id ? `https://drive.google.com/thumbnail?id=${id[0]}&sz=400` : '';
-return `<img src="${thumb}" onclick="openPhotoLightbox('${p.url}')" alt="${p.lbl}">`;
-}).join('');
-if (photoImgs) {
-photoHtml = `<div class="reject-photos">${photoImgs}</div>`;
-}
-return `
-<div class="reject-card" onclick="loadRejectForEdit(${r.row})">
-<div class="reject-header">
-<span class="reject-customer">${r.customer || 'Unknown'}</span>
-<span class="reject-status">REJECTED</span>
-</div>
-<div class="reject-info">
-PI: ${r.pi || '-'} | Carton: ${r.cartonId || '-'} | Part: ${r.partNo || '-'}<br>
-Packed: ${r.packedBy || '-'} | Qty: ${r.qty || '0'} pcs
-</div>
-<div class="reject-reason">💬 ${reason}</div>
-${photoHtml}
-</div>
-`;
-}).join('');
-}
-
-// ── LOAD REJECTED RECORD FOR EDITING ───────────────────
-async function loadRejectForEdit(rowNum) {
-try {
-const resp = await fetch(SCRIPT_URL + '?action=record&row=' + rowNum);
-const r = await resp.json();
-if (r.error) throw new Error(r.error);
-switchTab('entry');
-editMode = true;
-editRowNum = rowNum;
-editOriginalData = r;
-document.getElementById('editBanner').classList.add('active');
-document.getElementById('editRowNum').textContent = rowNum;
-document.getElementById('packedBy').value = r.packedBy || '';
-document.getElementById('checkerBy').value = r.checkerBy || '';
-document.getElementById('cartonId').value = r.cartonId || '';
-document.getElementById('customer').value = r.customer || '';
-document.getElementById('pi').value = r.pi || '';
-document.getElementById('partNo').value = r.partNo || '';
-document.getElementById('bag').value = r.bag || '';
-document.getElementById('inner').value = r.inner || '';
-document.getElementById('outer').value = r.outer || '';
-document.getElementById('qty').value = r.qty || '1';
-matchState = { bag:null, inner:null, outer:null };
-if (r.bag) onBarcodeEntered('bag', r.bag.toUpperCase());
-if (r.inner) onBarcodeEntered('inner', r.inner.toUpperCase());
-if (r.outer) onBarcodeEntered('outer', r.outer.toUpperCase());
-photoData = { imgBag:null, imgInner:null, imgCarton:null };
-if (r.imgBagUrl) loadExistingPhoto(r.imgBagUrl, 'prevBag', 'imgBag', 'btnBag', 'uploadBag');
-if (r.imgInnerUrl) loadExistingPhoto(r.imgInnerUrl, 'prevInner', 'imgInner', 'btnInner', 'uploadInner');
-if (r.imgCartonUrl) loadExistingPhoto(r.imgCartonUrl, 'prevCarton', 'imgCarton', 'btnCarton', 'uploadCarton');
-document.getElementById('btnBag').classList.add('needs-retake');
-document.getElementById('btnInner').classList.add('needs-retake');
-document.getElementById('btnCarton').classList.add('needs-retake');
-updateSubmitButton();
-updateSteps();
-showStatus('Loaded rejected record for editing. Review and fix issues, then resubmit.', 'info');
-} catch(err) {
-showStatus('Error loading record: ' + err.message, 'error');
-}
-}
-
-function loadExistingPhoto(url, previewId, dataKey, btnId, statusId) {
-const preview = document.getElementById(previewId);
-const btn = document.getElementById(btnId);
-const status = document.getElementById(statusId);
-const id = (url || '').match(/[-\w]{25,}/);
-const thumbUrl = id ? `https://drive.google.com/thumbnail?id=${id[0]}&sz=800` : url;
-preview.src = thumbUrl;
-preview.style.display = 'block';
-btn.classList.add('has-photo');
-status.textContent = 'Existing photo — tap to retake';
-status.className = 'upload-status ok';
-photoData[dataKey] = { existingUrl: url, base64: null, filename: null };
-}
-
-function cancelEdit() {
-editMode = false;
-editRowNum = null;
-editOriginalData = null;
-document.getElementById('editBanner').classList.remove('active');
-document.querySelectorAll('input[type="text"], input[type="number"]').forEach(el => {
-if (el.id !== 'qty') el.value = '';
-else el.value = '1';
-});
-['prevBag','prevInner','prevCarton'].forEach(id => {
-document.getElementById(id).style.display = 'none';
-document.getElementById(id).src = '';
-});
-['btnBag','btnInner','btnCarton'].forEach(id => {
-document.getElementById(id).classList.remove('has-photo', 'needs-retake');
-});
-['uploadBag','uploadInner','uploadCarton'].forEach(id => {
-document.getElementById(id).textContent = '';
-document.getElementById(id).className = 'upload-status';
-});
-photoData = { imgBag:null, imgInner:null, imgCarton:null };
-matchState = { bag:null, inner:null, outer:null };
-masterData = null;
-['bag','inner','outer'].forEach(id => {
-setBadge(id, 'pending', 'Not checked yet');
-document.getElementById(id).className = '';
-});
-document.getElementById('partNoNote').style.display = 'none';
-updateSubmitButton();
-updateSteps();
-showStatus('Edit cancelled. Form cleared.', 'info');
-setTimeout(() => {
-document.getElementById('status').style.display = 'none';
-}, 2000);
-}
-
-function openPhotoLightbox(url) {
-let lb = document.getElementById('packerLightbox');
-if (!lb) {
-lb = document.createElement('div');
-lb.id = 'packerLightbox';
-lb.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:1000;display:flex;align-items:center;justify-content:center;';
-lb.innerHTML = '<button onclick="closePhotoLightbox()" style="position:absolute;top:20px;right:20px;background:#444;color:white;border:none;padding:12px 20px;border-radius:8px;font-weight:bold;cursor:pointer;">CLOSE</button><img id="packerLbImg" style="max-width:95%;max-height:90%;object-fit:contain;border-radius:8px;">';
-document.body.appendChild(lb);
-}
-const id = (url || '').match(/[-\w]{25,}/);
-const fullUrl = id ? `https://drive.google.com/uc?export=view&id=${id[0]}` : url;
-document.getElementById('packerLbImg').src = fullUrl;
-lb.style.display = 'flex';
-}
-
-function closePhotoLightbox() {
-const lb = document.getElementById('packerLightbox');
-if (lb) lb.style.display = 'none';
-}
-
-// ==================== FIXED SCANNER FUNCTIONS ====================
-async function startScanner(fieldId) {
-    activeField = fieldId;
-    document.getElementById('scanner-container').style.display = 'block';
-
-    // Ensure any old instance is fully cleaned up
-    if (html5QrCode) {
-        try {
-            if (html5QrCode.isScanning) {
-                await html5QrCode.stop();
+        async function apiCall(action, data) {
+            setSyncStatus('syncing');
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(Object.assign({action: action}, data))
+                });
+                const result = await response.json();
+                setSyncStatus('online');
+                return result;
+            } catch(err) {
+                setSyncStatus('offline');
+                console.error('API Error:', err);
+                alert('Connection error. Please check your internet.');
+                return {success: false, error: err.message};
             }
-            await html5QrCode.clear();
-        } catch (e) {
-            console.log('Cleanup error:', e);
-        }
-        html5QrCode = null;
-    }
-
-    // Small delay to let DOM settle
-    await new Promise(r => setTimeout(r, 300));
-
-    try {
-        // Check if Html5Qrcode is available
-        if (typeof Html5Qrcode === 'undefined') {
-            throw new Error('Scanner library not loaded. Check internet connection.');
         }
 
-        html5QrCode = new Html5Qrcode("reader");
-
-        // Request camera permissions first
-        const devices = await Html5Qrcode.getCameras();
-        if (!devices || devices.length === 0) {
-            throw new Error('No camera found on this device.');
+        function setSyncStatus(status) {
+            const el = document.getElementById('syncStatus');
+            el.className = 'sync-status ' + status;
+            if (status === 'syncing') el.textContent = 'Syncing...';
+            else if (status === 'online') el.textContent = 'Online';
+            else el.textContent = 'Offline';
         }
 
-        // Find back/environment camera
-        let cameraId = null;
-        const envCamera = devices.find(d => 
-            d.label.toLowerCase().includes('back') || 
-            d.label.toLowerCase().includes('environment') ||
-            d.label.toLowerCase().includes('rear')
-        );
-        cameraId = envCamera ? { deviceId: envCamera.id } : { facingMode: "environment" };
+        // ============================================
+        // JOB MANAGEMENT
+        // ============================================
 
-        const config = {
-            fps: 15,
-            qrbox: { width: 250, height: 250 },
-            aspectRatio: 1.0
-        };
+        async function createJob() {
+            const staff = document.getElementById('staffName').value.trim();
+            const customer = document.getElementById('customerName').value.trim();
+            const date = document.getElementById('shipmentDate').value;
+            const prefix = document.getElementById('prefix').value.trim().toUpperCase();
+            const start = parseInt(document.getElementById('startNum').value) || 1;
+            const end = parseInt(document.getElementById('endNum').value) || 100;
 
-        await html5QrCode.start(
-            cameraId,
-            config,
-            (decodedText, decodedResult) => {
-                const val = decodedText.trim().toUpperCase();
-                const tf = activeField;
-                if (tf && document.getElementById(tf)) {
-                    document.getElementById(tf).value = val;
-                    stopScanner();
-                    onBarcodeEntered(tf, val);
-                }
-            },
-            (errorMessage) => {
-                // Scan failure callback - ignore frequent errors, they're normal
-                // console.log('Scan error:', errorMessage);
+            if (!staff) {
+                alert('Please enter your name');
+                return;
             }
-        );
-
-        scannerRetryCount = 0;
-        showStatus('Camera active — point at barcode', 'info');
-
-    } catch (err) {
-        console.error('Scanner error:', err);
-
-        // Retry with fallback
-        if (scannerRetryCount < MAX_SCANNER_RETRIES) {
-            scannerRetryCount++;
-            console.log(`Retrying scanner... attempt ${scannerRetryCount}`);
-            stopScanner();
-            setTimeout(() => startScanner(fieldId), 500);
-            return;
-        }
-
-        showStatus('Camera error: ' + err.message, 'error');
-        stopScanner();
-
-        // Fallback: let user type manually
-        focusField(fieldId);
-    }
-}
-
-function stopScanner() {
-    document.getElementById('scanner-container').style.display = 'none';
-
-    if (html5QrCode) {
-        try {
-            if (html5QrCode.isScanning) {
-                html5QrCode.stop().catch(() => {});
+            if (!customer || !date) {
+                alert('Please fill in Customer Name and Shipment Date');
+                return;
             }
-            html5QrCode.clear().catch(() => {});
-        } catch (e) {
-            console.log('Stop error:', e);
-        }
-        // Don't null it immediately - let cleanup finish
-        setTimeout(() => { html5QrCode = null; }, 100);
-    }
-    activeField = null;
-}
-// ============================================================
+            if (end < start) {
+                alert('End number must be greater than start number');
+                return;
+            }
+            if (end - start > 5000) {
+                alert('Maximum 5000 cartons allowed');
+                return;
+            }
 
-function focusField(id) { document.getElementById(id).focus(); }
+            // Generate cartons array
+            cartons = [];
+            for (let i = start; i <= end; i++) {
+                cartons.push(prefix + String(i).padStart(3, '0'));
+            }
 
-['bag','inner','outer'].forEach(id => {
-document.getElementById(id).addEventListener('keypress', function(e) {
-if (e.key==='Enter') {
-const v=this.value.trim().toUpperCase(); this.value=v; onBarcodeEntered(id,v);
-if(id==='bag') document.getElementById('inner').focus();
-else if(id==='inner') document.getElementById('outer').focus();
-else document.getElementById('qty').focus();
-}
-});
-document.getElementById(id).addEventListener('change', function() {
-const v=this.value.trim().toUpperCase(); this.value=v; onBarcodeEntered(id,v);
-});
-});
+            const result = await apiCall('createJob', {
+                customer: customer,
+                shipmentDate: date,
+                prefix: prefix,
+                startNum: start,
+                endNum: end,
+                totalCartons: cartons.length,
+                cartons: cartons
+            });
 
-async function onBarcodeEntered(fieldId, value) {
-if (!value) return;
-if (fieldId==='bag') await lookupMaster(value);
-else checkBarcode(fieldId, value);
-updateSubmitButton(); updateSteps();
-}
-
-async function lookupMaster(bagValue) {
-if (bagValue==='NO') {
-matchState.bag=true; setBadge('bag','no-bc','No barcode — accepted');
-document.getElementById('bag').className='no-barcode';
-const pi = document.getElementById('pi').value.trim();
-const partNo = document.getElementById('partNo').value.trim();
-if (pi && partNo) await lookupMasterByPIPartNo(pi, partNo);
-updateSubmitButton(); updateSteps(); return;
-}
-setBadge('bag','pending','Checking...');
-try {
-const pi = document.getElementById('pi').value.trim();
-const partNo = document.getElementById('partNo').value.trim();
-let url = SCRIPT_URL+'?action=lookup&barcode='+encodeURIComponent(bagValue);
-if (pi) url += '&pi='+encodeURIComponent(pi);
-if (partNo) url += '&partNo='+encodeURIComponent(partNo);
-const resp = await fetch(url);
-const result = await resp.json();
-if (result.found) {
-masterData = result;
-document.getElementById('partNo').value = String(result.partNo || "").toUpperCase();
-document.getElementById('partNoNote').style.display = 'block';
-const bagOk = String(bagValue).toUpperCase() === String(result.bagBarcode).toUpperCase();
-matchState.bag = bagOk;
-const el = document.getElementById('bag');
-el.classList.toggle('match', bagOk);
-el.classList.toggle('mismatch', !bagOk);
-setBadge('bag', bagOk ? 'ok' : 'fail', bagOk ? 'Match — Bag OK' : 'Mismatch — Wrong Bag');
-const iv = document.getElementById('inner').value.trim();
-const ov = document.getElementById('outer').value.trim();
-if(iv) checkBarcode('inner', iv);
-if(ov) checkBarcode('outer', ov);
-} else {
-masterData = null;
-matchState.bag = false;
-setBadge('bag', 'fail', 'Not found in master register');
-document.getElementById('bag').classList.add('mismatch');
-}
-} catch(err) {
-setBadge('bag', 'fail', 'Lookup failed: ' + err.message);
-}
-updateSubmitButton();
-updateSteps();
-}
-
-async function lookupMasterByPIPartNo(pi, partNo) {
-try {
-let url = SCRIPT_URL + '?action=lookup&barcode=NO&pi=' + encodeURIComponent(pi) + '&partNo=' + encodeURIComponent(partNo);
-const resp = await fetch(url);
-const result = await resp.json();
-if (result.found) {
-masterData = result;
-if (!document.getElementById('partNo').value) {
-document.getElementById('partNo').value = String(result.partNo || "").toUpperCase();
-document.getElementById('partNoNote').style.display = 'block';
-}
-const iv = document.getElementById('inner').value.trim();
-const ov = document.getElementById('outer').value.trim();
-if (iv) checkBarcode('inner', iv);
-if (ov) checkBarcode('outer', ov);
-}
-} catch(err) {
-console.log('Lookup by P/I+PartNo failed:', err);
-}
-}
-
-function checkBarcode(fieldId, value) {
-const el = document.getElementById(fieldId);
-const label = fieldId === 'inner' ? 'Inner' : 'Outer';
-if (value === 'NO') {
-matchState[fieldId] = true;
-el.className = 'no-barcode';
-setBadge(fieldId, 'no-bc', 'No barcode — accepted');
-return;
-}
-if (!masterData) {
-const pi = document.getElementById('pi').value.trim();
-const partNo = document.getElementById('partNo').value.trim();
-if (pi && partNo) {
-lookupMasterByPIPartNo(pi, partNo).then(() => {
-if (masterData) checkBarcode(fieldId, value);
-else {
-setBadge(fieldId, 'fail', 'Not found in master register');
-matchState[fieldId] = false;
-}
-updateSubmitButton();
-});
-return;
-}
-setBadge(fieldId, 'pending', 'Scan Bag barcode first');
-matchState[fieldId] = null;
-return;
-}
-const expected = fieldId === 'inner' ? masterData.innerBarcode : masterData.outerBarcode;
-const ok = String(value).toUpperCase() === String(expected).toUpperCase();
-matchState[fieldId] = ok;
-el.classList.remove('no-barcode');
-el.classList.toggle('match', ok);
-el.classList.toggle('mismatch', !ok);
-setBadge(fieldId, ok ? 'ok' : 'fail', ok ? 'Match — ' + label + ' OK' : 'Mismatch — Wrong ' + label);
-}
-
-function setBadge(id, type, text) {
-const b = document.getElementById(id + 'Badge');
-b.className = 'match-badge ' + type;
-b.textContent = text;
-}
-
-function validateRequiredFields() {
-let allFilled = true;
-let firstEmpty = null;
-requiredFields.forEach(id => {
-const el = document.getElementById(id);
-const val = el.value.trim();
-if (!val || val === '') {
-allFilled = false;
-el.classList.add('required-empty');
-if (!firstEmpty) firstEmpty = el;
-} else {
-el.classList.remove('required-empty');
-}
-});
-return { allFilled, firstEmpty };
-}
-
-function updateSubmitButton() {
-const { allFilled } = validateRequiredFields();
-const allMatch = matchState.bag === true && matchState.inner === true && matchState.outer === true;
-const anyFail = matchState.bag === false || matchState.inner === false || matchState.outer === false;
-const btn = document.getElementById('submitBtn');
-const canSubmit = allFilled && allMatch;
-btn.className = 'submit-btn ' + (canSubmit ? 'ready' : 'blocked');
-btn.disabled = !canSubmit;
-if (editMode) {
-btn.textContent = canSubmit ? 'RESUBMIT CORRECTED DATA' : 'RESUBMIT PACKING DATA';
-} else {
-btn.textContent = canSubmit ? 'SUBMIT PACKING DATA' : 'SUBMIT PACKING DATA';
-}
-document.getElementById('blockerNotice').style.display = anyFail ? 'block' : 'none';
-document.getElementById('missingNotice').style.display = (!allFilled && (allMatch || anyFail)) ? 'block' : 'none';
-}
-
-function updateSteps() {
-const { allFilled } = validateRequiredFields();
-const s = [
-!!(document.getElementById('packedBy').value && document.getElementById('checkerBy').value),
-!!(document.getElementById('bag').value),
-!!(matchState.bag === true && matchState.inner === true && matchState.outer === true),
-!!(photoData.imgBag && photoData.imgInner && photoData.imgCarton)
-];
-s.forEach((done, i) => {
-const el = document.getElementById('step' + (i + 1));
-el.className = 'step ' + (done ? 'done' : (i === s.indexOf(false) ? 'active' : ''));
-});
-}
-
-function processPhoto(input, previewId, dataKey, btnId, statusId) {
-if (!input.files || !input.files[0]) return;
-const statusEl = document.getElementById(statusId);
-statusEl.textContent = 'Compressing...';
-const img = new Image();
-const url = URL.createObjectURL(input.files[0]);
-img.onload = function() {
-const MAX = 1024;
-let w = img.width, h = img.height;
-if (w > h && w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
-else if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; }
-const canvas = document.createElement('canvas');
-canvas.width = w;
-canvas.height = h;
-canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-const compressed = canvas.toDataURL('image/jpeg', 0.7);
-document.getElementById(previewId).src = compressed;
-document.getElementById(previewId).style.display = 'block';
-document.getElementById(btnId).classList.add('has-photo');
-document.getElementById(btnId).classList.remove('needs-retake');
-photoData[dataKey] = { base64: compressed.split(',')[1], filename: dataKey + '_' + Date.now() + '.jpg', existingUrl: null };
-statusEl.textContent = 'Ready (new photo)';
-statusEl.className = 'upload-status ok';
-updateSteps();
-};
-img.src = url;
-}
-
-async function uploadPhoto(dataKey, statusId) {
-const obj = photoData[dataKey];
-if (!obj) return "";
-if (obj.existingUrl && !obj.base64) {
-document.getElementById(statusId).textContent = 'Using existing photo';
-document.getElementById(statusId).className = 'upload-status ok';
-return obj.existingUrl;
-}
-const statusEl = document.getElementById(statusId);
-statusEl.textContent = 'Uploading...';
-try {
-const resp = await fetch(SCRIPT_URL, {
-method: 'POST',
-headers: { 'Content-Type': 'text/plain' },
-body: JSON.stringify({ action: 'uploadPhoto', base64: obj.base64, filename: obj.filename })
-});
-const result = await resp.json();
-if (result.success) {
-statusEl.textContent = 'Saved';
-return result.url;
-} else {
-throw new Error(result.error);
-}
-} catch (err) {
-statusEl.textContent = 'Drive Error';
-statusEl.className = 'upload-status err';
-return "";
-}
-}
-
-function getFormattedDate() {
-const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-const now = new Date();
-const day = String(now.getDate()).padStart(2, '0');
-const month = months[now.getMonth()];
-const year = now.getFullYear();
-return day + '/' + month + '/' + year;
-}
-
-// ==================== FIXED: SUBMIT WITH DOUBLE-SUBMIT PREVENTION ====================
-async function submitData() {
-    // === PREVENT DOUBLE-SUBMIT ===
-    if (isSubmitting) {
-        showStatus('Please wait — already submitting...', 'info');
-        return;
-    }
-
-    const { allFilled, firstEmpty } = validateRequiredFields();
-    if (!allFilled) {
-        showStatus('Please fill in all required fields marked with *', 'error');
-        if (firstEmpty) {
-            firstEmpty.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            firstEmpty.focus();
-        }
-        return;
-    }
-
-    const btn = document.getElementById('submitBtn');
-    if (btn.disabled) return;
-
-    // Lock submission
-    isSubmitting = true;
-    btn.disabled = true;
-    btn.classList.add('submitting');
-    btn.textContent = 'Uploading Photos...';
-    showStatus('Uploading Photos to Drive...', 'info');
-
-    try {
-        const urls = {
-            bag: await uploadPhoto('imgBag', 'uploadBag'),
-            inner: await uploadPhoto('imgInner', 'uploadInner'),
-            carton: await uploadPhoto('imgCarton', 'uploadCarton')
-        };
-
-        const payload = {
-            action: 'submit',
-            packedDate: getFormattedDate(),
-            packedBy: document.getElementById('packedBy').value,
-            checkerBy: document.getElementById('checkerBy').value,
-            cartonId: document.getElementById('cartonId').value,
-            customer: document.getElementById('customer').value,
-            pi: document.getElementById('pi').value,
-            partNo: document.getElementById('partNo').value,
-            bag: document.getElementById('bag').value,
-            inner: document.getElementById('inner').value,
-            outer: document.getElementById('outer').value,
-            qty: document.getElementById('qty').value,
-            bagMatch: matchState.bag,
-            innerMatch: matchState.inner,
-            outerMatch: matchState.outer,
-            imgBagUrl: urls.bag,
-            imgInnerUrl: urls.inner,
-            imgCartonUrl: urls.carton
-        };
-
-        if (editMode && editRowNum) {
-            payload.action = 'resubmit';
-            payload.row = parseInt(editRowNum, 10);
-        }
-
-        btn.textContent = editMode ? 'Saving corrected record...' : 'Saving to Sheet...';
-        showStatus(editMode ? 'Updating record...' : 'Saving to Sheet...', 'info');
-
-        const resp = await fetch(SCRIPT_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain' },
-            body: JSON.stringify(payload)
-        });
-
-        const res = await resp.json();
-
-        if (res.success) {
-            if (editMode) {
-                showStatus('Success! Rejected record updated and resubmitted.', 'success');
+            if (result.success) {
+                currentJobId = result.jobId;
+                // Save staff name for later
+                localStorage.setItem('staffName', staff);
+                loadJob(currentJobId);
             } else {
-                showStatus('Success! Saved to Sheet.', 'success');
+                alert('Error: ' + (result.error || 'Unknown error'));
             }
-            setTimeout(() => location.reload(), 2800);
-        } else {
-            throw new Error(res.error || 'Unknown server error');
         }
-    } catch (e) {
-        showStatus('Submit Error: ' + e.message, 'error');
-        // Unlock on error so user can retry
-        isSubmitting = false;
-        btn.disabled = false;
-        btn.classList.remove('submitting');
-        btn.textContent = editMode ? 'RETRY RESUBMIT' : 'RETRY SUBMIT';
-    }
-}
-// ============================================================
 
-function showStatus(msg, type) {
-const s = document.getElementById('status');
-s.textContent = msg;
-s.className = type;
-}
-</script>
+        async function loadJob(jobId) {
+            const result = await apiCall('getJob', {jobId: jobId});
+            
+            if (!result.success) {
+                alert('Error loading job: ' + result.error);
+                return;
+            }
+
+            currentJobId = jobId;
+            const job = result.job;
+            cartons = result.cartons.map(c => c.cartonNo);
+            
+            // Build carton data map
+            cartonData = {};
+            result.cartons.forEach(c => {
+                cartonData[c.cartonNo] = c.checked;
+            });
+
+            // Update display
+            document.getElementById('dispCustomer').textContent = job.customer;
+            document.getElementById('dispDate').textContent = job.shipmentDate;
+            document.getElementById('dispTotal').textContent = job.totalCartons;
+            document.getElementById('dispJobId').textContent = job.jobId;
+
+            // Show tracking screen
+            document.getElementById('setupScreen').classList.add('hidden');
+            document.getElementById('trackingScreen').classList.remove('hidden');
+
+            renderCartons();
+            updateStats();
+        }
+
+        async function loadJobList() {
+            const result = await apiCall('getAllJobs', {});
+            const container = document.getElementById('jobListContent');
+            
+            if (!result.success || !result.jobs || result.jobs.length === 0) {
+                container.innerHTML = '<p style="color: #888; text-align: center;">No jobs yet. Create one above.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            result.jobs.forEach(job => {
+                const div = document.createElement('div');
+                div.className = 'job-item';
+                div.onclick = () => loadJob(job.jobId);
+                
+                div.innerHTML = `
+                    <div class="job-item-header">
+                        <span class="job-item-title">${job.customer}</span>
+                        <span style="font-size: 11px; color: #888;">${job.shipmentDate}</span>
+                    </div>
+                    <div class="job-item-meta">${job.prefix}${job.startNum}-${job.endNum} (${job.totalCartons} cartons)</div>
+                `;
+                
+                container.appendChild(div);
+            });
+        }
+
+        function backToSetup() {
+            document.getElementById('trackingScreen').classList.add('hidden');
+            document.getElementById('setupScreen').classList.remove('hidden');
+            currentJobId = null;
+            loadJobList();
+        }
+
+        // ============================================
+        // CARTON GRID
+        // ============================================
+
+        function renderCartons() {
+            const grid = document.getElementById('cartonsGrid');
+            grid.innerHTML = '';
+
+            cartons.forEach(num => {
+                const div = document.createElement('div');
+                div.className = 'carton' + (cartonData[num] ? ' checked' : '');
+                div.onclick = () => toggleCarton(num);
+                div.id = 'carton-' + num;
+                
+                div.innerHTML = `
+                    <span class="carton-number">${num}</span>
+                    <span class="carton-status">${cartonData[num] ? '✓ CHECKED' : 'PENDING'}</span>
+                `;
+                
+                grid.appendChild(div);
+            });
+        }
+
+        async function toggleCarton(num) {
+            const staff = localStorage.getItem('staffName') || 'Unknown';
+            const newChecked = !cartonData[num];
+            
+            const result = await apiCall('toggleCarton', {
+                jobId: currentJobId,
+                cartonNo: num,
+                checked: newChecked,
+                checkedBy: staff
+            });
+
+            if (result.success) {
+                cartonData[num] = newChecked;
+                
+                // Update DOM only (fast)
+                const div = document.getElementById('carton-' + num);
+                div.className = 'carton' + (newChecked ? ' checked' : '');
+                div.querySelector('.carton-status').textContent = newChecked ? '✓ CHECKED' : 'PENDING';
+                
+                updateStats();
+            }
+        }
+
+        async function markAll(checked) {
+            if (!confirm(checked ? 'Mark all cartons as checked?' : 'Mark all cartons as unchecked?')) return;
+            
+            const staff = localStorage.getItem('staffName') || 'Unknown';
+            
+            const result = await apiCall('markAll', {
+                jobId: currentJobId,
+                checked: checked,
+                checkedBy: staff
+            });
+
+            if (result.success) {
+                cartons.forEach(c => cartonData[c] = checked);
+                renderCartons();
+                updateStats();
+            }
+        }
+
+        async function refreshData() {
+            if (!currentJobId) return;
+            await loadJob(currentJobId);
+        }
+
+        function updateStats() {
+            const checked = Object.values(cartonData).filter(v => v).length;
+            const total = cartons.length;
+            const pending = total - checked;
+            const percent = total > 0 ? Math.round((checked / total) * 100) : 0;
+
+            document.getElementById('checkedCount').textContent = checked;
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('percentCount').textContent = percent + '%';
+            document.getElementById('progressFill').style.width = percent + '%';
+        }
+
+        // ============================================
+        // INIT
+        // ============================================
+
+        // Load saved staff name
+        const savedStaff = localStorage.getItem('staffName');
+        if (savedStaff) {
+            document.getElementById('staffName').value = savedStaff;
+        }
+
+        // Set today's date
+        document.getElementById('shipmentDate').valueAsDate = new Date();
+
+        // Load job list on start
+        loadJobList();
+    </script>
+
 </body>
 </html>
