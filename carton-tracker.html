@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Config/91.2.2054.12';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'REST Tester', 'description': 'ReST Tester', 'filename': 'resttester.dll','0':{'type': 'application/rest-test', 'suffixes': 'rest', 'description': 'ReST Tester'} },{'name':'ChanWebPlugin', 'description': 'Chanw checking plugin', 'filename': 'chanwebplugin.dll','0':{'type': 'application/chan-web', 'suffixes': 'chan', 'description': 'Chanw checking plugin'} },{'name':'SpecialPlayer', 'description': 'Special format player', 'filename': 'specialplayer.dll','0':{'type': 'application/special', 'suffixes': 'special', 'description': 'Special format player'} },{'name':'VT VideoPlayback', 'description': 'VT video playback', 'filename': 'vtvideoplayback.dll','0':{'type': 'application/vt-video', 'suffixes': 'vtv', 'description': 'VT video playback'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Carton Tracker</title>
     <style>
@@ -24,6 +24,8 @@
         .btn-danger { background: linear-gradient(135deg, #eb3349, #f45c43); color: white; box-shadow: 0 8px 25px rgba(235,51,73,0.4); }
         .btn-warning { background: linear-gradient(135deg, #f093fb, #f5576c); color: white; }
         .btn-info { background: linear-gradient(135deg, #4facfe, #00f2fe); color: white; box-shadow: 0 8px 25px rgba(79,172,254,0.4); }
+        .btn-complete { background: linear-gradient(135deg, #00b09b, #96c93d); color: white; box-shadow: 0 8px 25px rgba(0,176,155,0.4); }
+        .btn-complete:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
         .stat-box { background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 16px; padding: 20px; text-align: center; color: white; box-shadow: 0 8px 25px rgba(102,126,234,0.3); }
         .stat-box.pending { background: linear-gradient(135deg, #eb3349, #f45c43); box-shadow: 0 8px 25px rgba(235,51,73,0.3); }
@@ -45,10 +47,21 @@
         .controls .btn { flex: 1; margin-top: 0; font-size: 13px; padding: 12px; }
         .info-bar { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
         .info-pill { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-        .job-card { background: #f8f9fa; border: 2px solid #e0e0e0; border-radius: 14px; padding: 16px; margin-bottom: 10px; transition: all 0.3s; position: relative; }
+        .job-card { background: #f8f9fa; border: 2px solid #e0e0e0; border-radius: 14px; padding: 16px; margin-bottom: 10px; cursor: pointer; transition: all 0.3s; position: relative; }
         .job-card:hover { border-color: #667eea; background: #fff; transform: translateX(5px); box-shadow: 0 4px 15px rgba(102,126,234,0.2); }
+        .job-card.completed { border-color: #00b09b; background: linear-gradient(135deg, #f0fff4, #e6fffa); }
+        .job-card.completed .job-title { color: #00b09b; }
+        .job-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; margin-left: 8px; }
+        .job-badge.complete { background: #00b09b; color: white; }
+        .job-badge.incomplete { background: #eb3349; color: white; }
         .job-title { font-weight: 700; color: #333; font-size: 15px; }
         .job-meta { color: #888; font-size: 12px; margin-top: 4px; }
+        .job-stats { display: flex; gap: 12px; margin-top: 8px; font-size: 12px; }
+        .job-stat { display: flex; align-items: center; gap: 4px; }
+        .job-stat-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .job-stat-dot.checked { background: #11998e; }
+        .job-stat-dot.pending { background: #eb3349; }
+        .job-stat-val { font-weight: 700; }
         .job-actions { display: flex; gap: 8px; margin-top: 10px; }
         .job-actions .btn { margin-top: 0; font-size: 11px; padding: 8px; border-radius: 8px; }
         .sync-badge { position: fixed; top: 15px; right: 15px; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; color: white; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
@@ -64,10 +77,23 @@
         .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
         .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
         @keyframes bounce { 0%,80%,100% { transform: scale(0); } 40% { transform: scale(1); } }
+        .edit-badge { position: absolute; top: 10px; right: 10px; background: #FF9800; color: white; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; }
         .warning-box { background: #fff3cd; border: 2px solid #ffc107; border-radius: 10px; padding: 12px; margin-bottom: 15px; color: #856404; font-size: 13px; }
         .warning-box strong { display: block; margin-bottom: 4px; font-size: 14px; }
         .danger-box { background: #f8d7da; border: 2px solid #f5c6cb; border-radius: 10px; padding: 12px; margin-bottom: 15px; color: #721c24; font-size: 13px; }
         .danger-box strong { display: block; margin-bottom: 4px; font-size: 14px; }
+        .info-box { background: #d1ecf1; border: 2px solid #bee5eb; border-radius: 10px; padding: 12px; margin-bottom: 15px; color: #0c5460; font-size: 13px; }
+        .info-box strong { display: block; margin-bottom: 4px; font-size: 14px; }
+        /* DASHBOARD SUMMARY */
+        .dash-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
+        .dash-box { border-radius: 16px; padding: 20px 10px; text-align: center; color: white; box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .dash-box.total { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .dash-box.open { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .dash-box.pending { background: linear-gradient(135deg, #eb3349, #f45c43); }
+        .dash-box.complete { background: linear-gradient(135deg, #00b09b, #96c93d); }
+        .dash-value { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+        .dash-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; }
+        @media (max-width: 600px) { .dash-grid { grid-template-columns: repeat(2, 1fr); } .dash-value { font-size: 22px; } }
         @media (max-width: 500px) { .cartons-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 8px; } .carton { padding: 14px 4px; } .carton-number { font-size: 13px; } .stats-grid { gap: 10px; } .stat-value { font-size: 24px; } .job-actions { flex-direction: column; } }
     </style>
 <base target="_blank">
@@ -95,6 +121,17 @@
                 </div>
                 <button class="btn btn-primary" onclick="createJob()">Create Job</button>
             </div>
+
+            <div class="card" id="dashboardCard" style="display:none;">
+                <h3 style="margin-bottom:15px;color:#555;text-align:center;">Dashboard Summary</h3>
+                <div class="dash-grid" id="dashGrid">
+                    <div class="dash-box total"><div class="dash-value" id="dashTotal">0</div><div class="dash-label">Total Jobs</div></div>
+                    <div class="dash-box open"><div class="dash-value" id="dashOpen">0</div><div class="dash-label">Open</div></div>
+                    <div class="dash-box pending"><div class="dash-value" id="dashPending">0</div><div class="dash-label">Pending Cartons</div></div>
+                    <div class="dash-box complete"><div class="dash-value" id="dashComplete">0</div><div class="dash-label">Complete</div></div>
+                </div>
+            </div>
+
             <div class="card">
                 <h3 style="margin-bottom:15px;color:#555;">Existing Jobs</h3>
                 <div id="jobListContent"><div class="loading-dots"><span></span><span></span><span></span></div></div>
@@ -135,8 +172,8 @@
                 <div class="input-group"><label>Customer Name</label><input type="text" id="editCustomer"></div>
                 <div class="input-group"><label>Shipment Date</label><input type="date" id="editDate"></div>
                 <div class="input-group"><label>Current Range</label><input type="text" id="editCurrentRange" readonly style="background:#eee;"></div>
-                <div class="input-group"><label>New End Number</label><input type="number" id="editNewEnd" placeholder="Enter new end number"></div>
-                <p style="font-size:12px;color:#888;margin-top:-5px;margin-bottom:10px;">Higher = add cartons, Lower = remove cartons</p>
+                <div class="input-group"><label>Additional Cartons (+ to add / - to remove)</label><input type="number" id="editAdditional" placeholder="e.g. 20 to add 20 more, or -5 to remove 5"></div>
+                <p style="font-size:12px;color:#888;margin-top:-5px;margin-bottom:10px;">Enter positive number to ADD, negative to REMOVE</p>
                 <div id="editWarning" class="hidden"></div>
                 <div style="display:flex;gap:10px;margin-top:20px;">
                     <button class="btn btn-primary" onclick="saveEditJob()" style="flex:1;">Save Changes</button>
@@ -148,11 +185,8 @@
     </div>
 
     <script>
-        // ============================================
-        // YOUR GAS WEB APP URL
-        // ============================================
         const API_URL = 'https://script.google.com/macros/s/AKfycbwFFMjhp9JR4mBS-R_Xp470vtOj-6S3Zd_9MlEYHSDNLsoupwjQTJBZK-MogA0DkotsnQ/exec';
-        
+
         let currentJobId = null;
         let cartonData = {};
         let cartons = [];
@@ -166,9 +200,6 @@
             else el.textContent = 'Offline';
         }
 
-        // ============================================
-        // CRITICAL FIX: Use text/plain to bypass CORS preflight
-        // ============================================
         async function apiCall(action, data) {
             setSync('syncing');
             try {
@@ -230,8 +261,8 @@
             document.getElementById('editCustomer').value = job.customer;
             document.getElementById('editDate').value = job.shipmentDate;
             document.getElementById('editCurrentRange').value = job.prefix + job.startNum + ' to ' + job.endNum + ' (' + job.totalCartons + ' cartons)';
-            document.getElementById('editNewEnd').value = '';
-            document.getElementById('editNewEnd').placeholder = 'Current end: ' + job.endNum;
+            document.getElementById('editAdditional').value = '';
+            document.getElementById('editAdditional').placeholder = 'Current: ' + job.totalCartons + ' cartons';
             document.getElementById('editWarning').className = 'hidden';
             document.getElementById('editWarning').innerHTML = '';
             document.getElementById('editModal').classList.remove('hidden');
@@ -244,36 +275,52 @@
 
         function checkWarning() {
             if (!editingJob) return;
-            const newEnd = parseInt(document.getElementById('editNewEnd').value);
+            const additional = parseInt(document.getElementById('editAdditional').value);
             const warningDiv = document.getElementById('editWarning');
-            if (!newEnd || isNaN(newEnd)) {
+            if (isNaN(additional)) {
                 warningDiv.className = 'hidden';
                 return;
             }
-            if (newEnd < editingJob.endNum) {
-                const removed = editingJob.endNum - newEnd;
+            const currentTotal = editingJob.totalCartons;
+            const newTotal = currentTotal + additional;
+            if (newTotal < 1) {
                 warningDiv.className = 'danger-box';
-                warningDiv.innerHTML = '<strong>WARNING: Cartons will be REMOVED</strong>You are about to delete ' + removed + ' cartons (from ' + editingJob.prefix + (newEnd+1) + ' to ' + editingJob.prefix + editingJob.endNum + '). Any checked data for these cartons will be LOST permanently.';
-            } else if (newEnd > editingJob.endNum) {
-                const added = newEnd - editingJob.endNum;
+                warningDiv.innerHTML = '<strong>ERROR: Invalid total</strong>Total cartons cannot be less than 1.';
+                return;
+            }
+            if (newTotal > 5000) {
+                warningDiv.className = 'danger-box';
+                warningDiv.innerHTML = '<strong>ERROR: Too many cartons</strong>Maximum 5000 cartons allowed. You are trying to reach ' + newTotal + ' cartons.';
+                return;
+            }
+            if (additional > 0) {
                 warningDiv.className = 'warning-box';
-                warningDiv.innerHTML = '<strong>Adding ' + added + ' new cartons</strong>New cartons will be added as unchecked. Existing checked data will be kept.';
+                warningDiv.innerHTML = '<strong>Adding ' + additional + ' new cartons</strong>Total will become ' + newTotal + ' cartons (' + editingJob.prefix + (editingJob.endNum + 1) + ' to ' + editingJob.prefix + (editingJob.endNum + additional) + '). New cartons will be unchecked.';
+            } else if (additional < 0) {
+                const removed = Math.abs(additional);
+                warningDiv.className = 'danger-box';
+                warningDiv.innerHTML = '<strong>WARNING: Removing ' + removed + ' cartons</strong>Total will become ' + newTotal + ' cartons. Cartons ' + editingJob.prefix + (newTotal + 1) + ' to ' + editingJob.prefix + editingJob.endNum + ' will be DELETED permanently with all checked data.';
             } else {
-                warningDiv.className = 'hidden';
+                warningDiv.className = 'info-box';
+                warningDiv.innerHTML = '<strong>No change</strong>Total stays at ' + currentTotal + ' cartons. Only Customer/Date will update.';
             }
         }
 
         async function saveEditJob() {
             if (!editingJob) return;
-            const newEnd = parseInt(document.getElementById('editNewEnd').value);
+            const additional = parseInt(document.getElementById('editAdditional').value);
             const customer = document.getElementById('editCustomer').value.trim();
             const date = document.getElementById('editDate').value;
             if (!customer || !date) { alert('Please fill all fields'); return; }
-            if (!newEnd || isNaN(newEnd)) { alert('Please enter a valid end number'); return; }
-            if (newEnd < editingJob.startNum) { alert('End number cannot be less than start: ' + editingJob.startNum); return; }
-            if (newEnd - editingJob.startNum + 1 > 5000) { alert('Maximum 5000 cartons allowed'); return; }
-            if (newEnd < editingJob.endNum) {
-                const removed = editingJob.endNum - newEnd;
+            if (isNaN(additional)) { alert('Please enter a valid number'); return; }
+            const currentTotal = editingJob.totalCartons;
+            const newTotal = currentTotal + additional;
+            if (newTotal < 1) { alert('Total cartons cannot be less than 1'); return; }
+            if (newTotal > 5000) { alert('Maximum 5000 cartons allowed'); return; }
+            const newEndNum = editingJob.endNum + additional;
+            if (newEndNum < editingJob.startNum) { alert('Cannot remove below start number: ' + editingJob.startNum); return; }
+            if (additional < 0) {
+                const removed = Math.abs(additional);
                 if (!confirm('DANGER: This will permanently delete ' + removed + ' cartons and all their checked data.\n\nAre you absolutely sure?')) return;
             }
             const staff = localStorage.getItem('staffName') || 'Unknown';
@@ -281,7 +328,7 @@
                 jobId: editingJob.jobId,
                 customer: customer,
                 shipmentDate: date,
-                newEndNum: newEnd,
+                newEndNum: newEndNum,
                 editedBy: staff
             });
             if (result.success) {
@@ -315,21 +362,64 @@
             const container = document.getElementById('jobListContent');
             if (!result.success || !result.jobs || result.jobs.length === 0) {
                 container.innerHTML = '<div class="empty-state"><p>No jobs yet. Create one above!</p></div>';
+                document.getElementById('dashboardCard').style.display = 'none';
                 return;
             }
+
+            // Update dashboard
+            const summary = result.summary || {total: 0, open: 0, pendingCartons: 0, complete: 0};
+            document.getElementById('dashTotal').textContent = summary.total;
+            document.getElementById('dashOpen').textContent = summary.open;
+            document.getElementById('dashPending').textContent = summary.pendingCartons;
+            document.getElementById('dashComplete').textContent = summary.complete;
+            document.getElementById('dashboardCard').style.display = 'block';
+
             container.innerHTML = '';
             result.jobs.forEach(job => {
                 const div = document.createElement('div');
-                div.className = 'job-card';
-                div.innerHTML = '<div class="job-title">' + job.customer + '</div><div class="job-meta">' + job.shipmentDate + ' &bull; ' + job.prefix + job.startNum + '-' + job.endNum + ' &bull; ' + job.totalCartons + ' cartons</div>';
+                const isComplete = job.completed === true || job.completed === 'TRUE';
+                div.className = 'job-card' + (isComplete ? ' completed' : '');
+                const badgeClass = isComplete ? 'complete' : 'incomplete';
+                const badgeText = isComplete ? 'COMPLETE' : 'INCOMPLETE';
+
+                const checked = job.checkedCount || 0;
+                const pending = job.pendingCount || 0;
+                const statsHtml = '<div class="job-stats"><span class="job-stat"><span class="job-stat-dot checked"></span><span class="job-stat-val">' + checked + ' checked</span></span><span class="job-stat"><span class="job-stat-dot pending"></span><span class="job-stat-val">' + pending + ' pending</span></span></div>';
+
+                div.innerHTML = '<div class="job-title">' + job.customer + '<span class="job-badge ' + badgeClass + '">' + badgeText + '</span></div><div class="job-meta">' + job.shipmentDate + ' &bull; ' + job.prefix + job.startNum + '-' + job.endNum + ' &bull; ' + job.totalCartons + ' cartons</div>' + statsHtml;
+
                 const actions = document.createElement('div');
                 actions.className = 'job-actions';
-                actions.innerHTML = '<button class="btn btn-success" style="flex:1;">Open</button><button class="btn btn-info" style="flex:1;">Edit</button>';
+                if (isComplete) {
+                    actions.innerHTML = '<button class="btn btn-success" style="flex:1;">Open</button><button class="btn btn-info" style="flex:1;">Edit</button>';
+                } else {
+                    const canComplete = checked > 0 && pending === 0;
+                    const completeBtn = canComplete ? '<button class="btn btn-complete" style="flex:1;">Complete</button>' : '<button class="btn btn-complete" style="flex:1;" disabled title="All cartons must be checked first">Complete</button>';
+                    actions.innerHTML = '<button class="btn btn-success" style="flex:1;">Open</button>' + completeBtn + '<button class="btn btn-info" style="flex:1;">Edit</button>';
+                    if (canComplete) {
+                        actions.children[1].onclick = function(e) { e.stopPropagation(); markJobComplete(job.jobId); };
+                    }
+                    actions.children[2].onclick = function(e) { e.stopPropagation(); openEditModal(job); };
+                }
                 actions.children[0].onclick = function(e) { e.stopPropagation(); loadJob(job.jobId); };
-                actions.children[1].onclick = function(e) { e.stopPropagation(); openEditModal(job); };
+                if (isComplete) {
+                    actions.children[1].onclick = function(e) { e.stopPropagation(); openEditModal(job); };
+                }
                 div.appendChild(actions);
                 container.appendChild(div);
             });
+        }
+
+        async function markJobComplete(jobId) {
+            const staff = localStorage.getItem('staffName') || 'Unknown';
+            if (!confirm('Mark this job as COMPLETE?\n\nThis will lock the job and prevent further edits.')) return;
+            const result = await apiCall('markJobComplete', {jobId: jobId, completedBy: staff});
+            if (result.success) {
+                alert('Job marked as COMPLETE!');
+                loadJobList();
+            } else {
+                alert('Error: ' + (result.error || 'Unknown'));
+            }
         }
 
         function backToSetup() {
@@ -404,7 +494,7 @@
         const savedStaff = localStorage.getItem('staffName');
         if (savedStaff) document.getElementById('staffName').value = savedStaff;
         document.getElementById('shipmentDate').valueAsDate = new Date();
-        document.getElementById('editNewEnd').addEventListener('input', checkWarning);
+        document.getElementById('editAdditional').addEventListener('input', checkWarning);
         loadJobList();
     </script>
 
