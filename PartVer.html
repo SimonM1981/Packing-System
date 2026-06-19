@@ -656,7 +656,7 @@
     // ============================================================
     // STATE VARIABLES
     // ============================================================
-    var GAS_URL = 'https://script.google.com/macros/s/AKfycby78Kp_NlB5aegZVC1n7m2rCMawwOTBrQgRhjQfCn5vkocpLEyQ4kFKfUSJNKte5TYSHw/exec';
+    var GAS_URL = 'https://script.google.com/macros/s/AKfycbxgEWHDnmkZ_EGg0X4GIkbjSKEMAn1svBoxd2_1ssmNWyOeMP2LvIM8rbqkrvTe8iSZjA/exec';
     var currentRole = null;
     var currentTab = 'entry';
     var capturedPhotos = { photoDoc: [], photoPartBag: [], photoInnerBox: [], photoCarton: [] };
@@ -889,7 +889,9 @@
       var url = GAS_URL + '?action=' + encodeURIComponent(action);
       var xhr = new XMLHttpRequest();
       xhr.open('POST', url, true);
-      xhr.setRequestHeader('Content-Type', 'application/json');
+      // Use text/plain to avoid CORS preflight OPTIONS request
+      // GAS reads e.postData.contents regardless of Content-Type
+      xhr.setRequestHeader('Content-Type', 'text/plain;charset=UTF-8');
       xhr.timeout = 60000;
       xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
@@ -906,7 +908,7 @@
           }
         }
       };
-      xhr.onerror = function() { hideLoading(); callback({ success: false, error: 'Network error' }); };
+      xhr.onerror = function() { hideLoading(); callback({ success: false, error: 'Network error - Check GAS URL and CORS' }); };
       xhr.ontimeout = function() { hideLoading(); callback({ success: false, error: 'Timeout' }); };
       xhr.send(JSON.stringify(data));
     }
