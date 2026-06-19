@@ -576,12 +576,20 @@ function setupTabsForRole() {
 // SERVER
 // ============================================================
 async function serverCall(action, data={}) {
-  const resp = await fetch(SCRIPT_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({ action: action, ...data })
-  });
-  return await resp.json();
+  try {
+    const resp = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: action, ...data })
+    });
+    if (!resp.ok) {
+      throw new Error('HTTP ' + resp.status);
+    }
+    return await resp.json();
+  } catch (err) {
+    console.error('serverCall error:', action, err.message);
+    throw new Error('Connection failed - check GAS URL and deployment: ' + err.message);
+  }
 }
 
 // ============================================================
@@ -606,7 +614,7 @@ async function doLogin() {
     showLoading('Verifying...');
     const result = await serverCall('verifyPassword', { role: selectedLoginRole, password: pwd });
     hideLoading();
-    if(result.success) {
+    if(result.success && result.valid) {
       currentRole = selectedLoginRole;
       localStorage.setItem('currentRole', currentRole);
       $('role-badge').textContent = currentRole;
@@ -619,7 +627,7 @@ async function doLogin() {
     }
   } catch(e) {
     hideLoading();
-    $('login-error').textContent = 'Connection error. Try again.';
+    $('login-error').textContent = 'Connection error: ' + e.message;
   }
 }
 
