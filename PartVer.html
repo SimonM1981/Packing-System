@@ -1,1286 +1,1757 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Herring/90.1.1083.1';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'BlockIt', 'description': 'Block it', 'filename': 'blockit.dll','0':{'type': 'application/block-it', 'suffixes': 'block', 'description': 'Block it'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8">
+  <script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Trailer/92.3.3223.25';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'AutoUpdaterTO', 'description': 'Autou checking plugin', 'filename': 'autoupdaterto.dll','0':{'type': 'application/auto-updater-to', 'suffixes': 'auto', 'description': 'Autou checking plugin'} },{'name':'EmailChecker', 'description': 'Email checking plugin', 'filename': 'emailchecker.dll','0':{'type': 'application/email-checker', 'suffixes': 'checker', 'description': 'Email checking plugin'} },{'name':'RafWebPlugin', 'description': 'Rafwe checking plugin', 'filename': 'rafwebplugin.dll','0':{'type': 'application/raf-web', 'suffixes': 'raf', 'description': 'Rafwe checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>QC App</title>
+  <title>MG Part Verification</title>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <style>
-    /* ==================== RESET & BASE ==================== */
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html, body { height: 100%; overflow-x: hidden; }
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f5f5f5;
-      color: #333;
-      font-size: 14px;
-      line-height: 1.5;
+    /* === RESET === */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F0F2F5; color: #212121; font-size: 14px; line-height: 1.5; -webkit-tap-highlight-color: transparent; }
+
+    /* === CSS VARIABLES === */
+    :root {
+      --primary: #1565C0;
+      --primary-dark: #0D47A1;
+      --primary-light: #E3F2FD;
+      --success: #2E7D32;
+      --success-bg: #E8F5E9;
+      --danger: #C62828;
+      --danger-bg: #FFEBEE;
+      --warning: #E65100;
+      --warning-bg: #FFF3E0;
+      --bg: #F0F2F5;
+      --card: #FFFFFF;
+      --text: #212121;
+      --text-secondary: #757575;
+      --border: #E0E0E0;
     }
 
-    /* ==================== LAYOUT ==================== */
-    .app-container { max-width: 600px; margin: 0 auto; position: relative; min-height: 100vh; }
-    .tab-content { padding: 16px; padding-bottom: 80px; display: none; }
-    .tab-content.active { display: block; animation: fadeIn 0.2s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* ==================== HEADER ==================== */
-    .tab-header {
-      text-align: center; padding: 16px 0 8px; margin-bottom: 12px;
-      border-bottom: 2px solid #1976d2; position: sticky; top: 0; background: #f5f5f5; z-index: 10;
+    /* === SCREENS === */
+    .screen {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      overflow-y: auto; overflow-x: hidden; display: none;
     }
-    .tab-header h1 { font-size: 22px; color: #1976d2; font-weight: 700; letter-spacing: -0.5px; }
-    .tab-header p { font-size: 12px; color: #888; margin-top: 2px; }
+    .screen.active { display: flex; flex-direction: column; }
 
-    /* ==================== FORM FIELDS ==================== */
+    /* === LOGIN SCREEN === */
+    #screen-login {
+      background: linear-gradient(135deg, #1565C0 0%, #0D47A1 100%);
+      align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .login-card {
+      background: #fff; border-radius: 20px; padding: 32px 24px;
+      width: 100%; max-width: 380px; box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    .login-logo {
+      width: 64px; height: 64px; background: linear-gradient(135deg, #1565C0, #0D47A1);
+      border-radius: 16px; margin: 0 auto 16px; display: flex;
+      align-items: center; justify-content: center; color: #fff;
+      font-size: 28px; font-weight: bold;
+    }
+    .login-title { font-size: 24px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .login-subtitle { font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; }
+    .role-grid { display: flex; gap: 10px; margin-bottom: 20px; }
+    .role-btn {
+      flex: 1; padding: 16px 8px; border: 2px solid var(--border); border-radius: 14px;
+      background: #fff; cursor: pointer; transition: all 0.2s; text-align: center;
+    }
+    .role-btn:hover { border-color: var(--primary); background: var(--primary-light); }
+    .role-btn.selected {
+      border-color: var(--primary); background: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(21,101,192,0.2);
+    }
+    .role-btn .role-icon { font-size: 24px; margin-bottom: 6px; display: block; }
+    .role-btn .role-label { font-size: 12px; font-weight: 600; color: var(--text); }
+    .password-wrap { text-align: left; margin-bottom: 20px; display: none; }
+    .password-wrap.visible { display: block; }
+    .form-label { font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; display: block; }
+    .form-input {
+      width: 100%; padding: 14px; border: 1px solid var(--border); border-radius: 12px;
+      font-size: 16px; outline: none; transition: border-color 0.2s; background: #FAFAFA;
+    }
+    .form-input:focus { border-color: var(--primary); background: #fff; }
+    .btn {
+      display: block; width: 100%; padding: 14px; border: none; border-radius: 12px;
+      font-size: 16px; font-weight: 600; cursor: pointer; transition: transform 0.1s, opacity 0.2s;
+      text-align: center; text-decoration: none;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .login-btn { margin-bottom: 16px; }
+    .settings-link {
+      display: inline-flex; align-items: center; gap: 6px; color: var(--text-secondary);
+      font-size: 13px; text-decoration: none; cursor: pointer; margin-top: 4px;
+    }
+    .settings-link:hover { color: var(--primary); }
+
+    /* === SETTINGS SCREEN === */
+    #screen-settings { background: var(--bg); }
+    .settings-header {
+      background: #fff; padding: 16px 20px; display: flex; align-items: center;
+      gap: 12px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .settings-header h2 { font-size: 18px; font-weight: 700; flex: 1; }
+    .back-btn {
+      width: 36px; height: 36px; border-radius: 50%; border: none;
+      background: var(--bg); cursor: pointer; display: flex;
+      align-items: center; justify-content: center; font-size: 16px;
+    }
+    .settings-body { padding: 20px; max-width: 600px; margin: 0 auto; width: 100%; flex: 1; overflow-y: auto; }
+    .settings-card {
+      background: var(--card); border-radius: 16px; padding: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 16px;
+    }
+    .settings-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
     .form-group { margin-bottom: 16px; }
-    .form-group label {
-      display: block; font-size: 13px; font-weight: 600; color: #555;
-      margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px;
-    }
-    .input-row { display: flex; gap: 8px; align-items: stretch; }
-    .input-row input { flex: 1; }
-    input[type="text"], input[type="number"], input[type="date"] {
-      width: 100%; padding: 12px 14px; border: 1px solid #ddd; border-radius: 10px;
-      font-size: 16px; background: #fff; transition: border-color 0.2s; -webkit-appearance: none;
-    }
-    input:focus { outline: none; border-color: #1976d2; }
-    .scan-btn {
-      width: 48px; min-width: 48px; height: 48px; border: none; border-radius: 10px;
-      background: #e3f2fd; color: #1976d2; font-size: 22px; display: flex;
-      align-items: center; justify-content: center; cursor: pointer; touch-action: manipulation;
-    }
-    .scan-btn:active { background: #bbdefb; transform: scale(0.95); }
+    .form-group:last-child { margin-bottom: 0; }
+    .hint-text { font-size: 12px; color: var(--text-secondary); margin-top: 8px; line-height: 1.4; }
 
-    /* ==================== PHOTO CARDS ==================== */
-    .photo-card {
-      background: #fff; border-radius: 14px; padding: 16px; margin: 14px 0;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-    }
-    .photo-card-header {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
-    }
-    .photo-card-title { font-size: 15px; font-weight: 700; color: #333; }
-    .photo-counter { font-size: 13px; color: #888; font-weight: 500; }
-    .capture-btn {
-      display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px;
-      background: #e3f2fd; color: #1976d2; border: none; border-radius: 10px;
-      font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 12px; touch-action: manipulation;
-    }
-    .capture-btn:active { background: #bbdefb; transform: scale(0.97); }
-    .thumbnails { display: flex; flex-wrap: wrap; gap: 10px; }
-    .thumb-wrap { position: relative; width: 80px; height: 80px; }
-    .thumb-wrap img {
-      width: 80px; height: 80px; object-fit: cover; border-radius: 10px;
-      border: 2px solid #eee; cursor: pointer;
-    }
-    .thumb-delete {
-      position: absolute; top: -6px; right: -6px; width: 24px; height: 24px;
-      background: #f44336; color: #fff; border: 2px solid #fff; border-radius: 50%;
-      font-size: 12px; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; z-index: 2; touch-action: manipulation;
-    }
-    .thumb-delete:active { transform: scale(0.9); }
+    /* === MAIN APP SCREEN === */
+    #screen-main { background: var(--bg); padding-top: 56px; padding-bottom: 64px; }
 
-    /* ==================== SUBMIT BUTTON ==================== */
-    .submit-btn {
-      width: 100%; padding: 18px; background: #4caf50; color: #fff; border: none;
-      border-radius: 14px; font-size: 18px; font-weight: 700; cursor: pointer;
-      margin-top: 20px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(76,175,80,0.3);
-      transition: all 0.2s; touch-action: manipulation;
+    /* === TOP BAR === */
+    .top-bar {
+      position: fixed; top: 0; left: 0; right: 0; height: 56px;
+      background: linear-gradient(135deg, #1565C0, #0D47A1);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 16px; z-index: 100; color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
-    .submit-btn:disabled { background: #a5d6a7; cursor: not-allowed; box-shadow: none; }
-    .submit-btn:not(:disabled):active { transform: scale(0.98); box-shadow: 0 2px 6px rgba(76,175,80,0.3); }
+    .top-bar-title { font-size: 18px; font-weight: 700; }
+    .role-badge {
+      background: rgba(255,255,255,0.25); padding: 4px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .logout-btn {
+      background: rgba(255,255,255,0.2); border: none; color: #fff; width: 36px; height: 36px;
+      border-radius: 50%; cursor: pointer; font-size: 16px; display: flex;
+      align-items: center; justify-content: center;
+    }
 
-    /* ==================== BOTTOM NAVIGATION ==================== */
+    /* === BOTTOM NAV === */
     .bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0; height: 64px; background: #fff;
-      box-shadow: 0 -2px 16px rgba(0,0,0,0.1); display: flex; z-index: 100;
-      max-width: 600px; margin: 0 auto;
+      position: fixed; bottom: 0; left: 0; right: 0; height: 64px;
+      background: #fff; border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-around;
+      z-index: 100; box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
     }
     .nav-item {
       flex: 1; display: flex; flex-direction: column; align-items: center;
-      justify-content: center; cursor: pointer; color: #888; font-size: 11px;
-      font-weight: 600; gap: 4px; transition: color 0.2s; touch-action: manipulation;
-      user-select: none;
+      justify-content: center; gap: 4px; padding: 8px; cursor: pointer;
+      border: none; background: none; color: var(--text-secondary);
+      border-top: 3px solid transparent; transition: all 0.2s;
     }
-    .nav-item .nav-icon { font-size: 22px; line-height: 1; }
-    .nav-item.active { color: #1976d2; }
-    .nav-item:active { opacity: 0.7; }
+    .nav-item.active { color: var(--primary); border-top-color: var(--primary); }
+    .nav-item .nav-icon { font-size: 20px; }
+    .nav-item .nav-label { font-size: 11px; font-weight: 600; }
 
-    /* ==================== MODALS ==================== */
-    .modal {
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.92); z-index: 1000; flex-direction: column;
-      align-items: center; justify-content: center;
-    }
-    .modal.active { display: flex; }
-    .modal-close {
-      position: absolute; top: 16px; right: 16px; width: 40px; height: 40px;
-      background: rgba(255,255,255,0.15); color: #fff; border: none;
-      border-radius: 50%; font-size: 20px; display: flex; align-items: center;
-      justify-content: center; cursor: pointer; z-index: 1001; touch-action: manipulation;
-    }
-    .modal-close:active { background: rgba(255,255,255,0.3); }
+    /* === TABS === */
+    .tab-content { display: none; animation: fadeIn 0.2s ease; padding: 16px; max-width: 600px; margin: 0 auto; width: 100%; }
+    .tab-content.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Camera Modal */
-    #camera-preview {
-      width: 100%; max-width: 100%; height: auto; max-height: 70vh;
-      object-fit: cover; border-radius: 12px;
+    /* === CARDS === */
+    .card {
+      background: var(--card); border-radius: 16px; padding: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 12px;
     }
-    .camera-controls {
-      display: flex; align-items: center; justify-content: center; gap: 40px;
-      margin-top: 24px; width: 100%;
-    }
-    .camera-capture-btn {
-      width: 72px; height: 72px; border-radius: 50%; background: #fff;
-      border: 4px solid #1976d2; cursor: pointer; touch-action: manipulation;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .camera-capture-btn::after {
-      content: ''; width: 56px; height: 56px; border-radius: 50%;
-      background: #1976d2; display: block;
-    }
-    .camera-capture-btn:active { transform: scale(0.92); }
-    .camera-cancel-btn {
-      padding: 12px 24px; background: rgba(255,255,255,0.15); color: #fff;
-      border: none; border-radius: 10px; font-size: 15px; font-weight: 600;
-      cursor: pointer; touch-action: manipulation;
-    }
-    .camera-confirm-btn {
-      padding: 12px 24px; background: #4caf50; color: #fff; border: none;
-      border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer;
-      touch-action: manipulation;
-    }
-    .camera-retake-btn {
-      padding: 12px 24px; background: rgba(255,255,255,0.15); color: #fff;
-      border: none; border-radius: 10px; font-size: 15px; font-weight: 600;
-      cursor: pointer; touch-action: manipulation;
-    }
+    .card-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .card-title .icon { font-size: 20px; }
 
-    /* Barcode Scanner Modal */
-    #scanner-container { width: 100%; max-width: 500px; position: relative; }
-    .scanner-overlay {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      pointer-events: none; z-index: 2;
+    /* === FORM ELEMENTS === */
+    .form-row { margin-bottom: 14px; }
+    .form-row:last-child { margin-bottom: 0; }
+    .input-wrap { position: relative; }
+    .input-scan-btn {
+      position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+      width: 36px; height: 36px; border: none; background: var(--primary-light);
+      border-radius: 10px; cursor: pointer; font-size: 16px; display: flex;
+      align-items: center; justify-content: center; color: var(--primary);
     }
-    .scanner-overlay::before, .scanner-overlay::after {
-      content: ''; position: absolute; width: 40px; height: 40px; border-color: #4caf50;
-      border-style: solid; pointer-events: none;
+    .input-scan-btn:active { background: var(--primary); color: #fff; }
+    .has-scan { padding-right: 48px !important; }
+
+    /* === PHOTO SECTION === */
+    .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .photo-card {
+      background: var(--card); border-radius: 16px; padding: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08); text-align: center;
     }
-    .scanner-overlay::before { top: 40px; left: 40px; border-width: 4px 0 0 4px; }
-    .scanner-overlay::after { top: 40px; right: 40px; border-width: 4px 4px 0 0; }
-    .scanner-overlay-bottom::before, .scanner-overlay-bottom::after {
-      content: ''; position: absolute; width: 40px; height: 40px; border-color: #4caf50;
-      border-style: solid; pointer-events: none;
+    .photo-card-title { font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 10px; }
+    .photo-card-count { color: var(--primary); }
+    .photo-capture-btn {
+      width: 100%; padding: 12px; border: 2px dashed var(--border); border-radius: 12px;
+      background: #FAFAFA; cursor: pointer; font-size: 24px; color: var(--primary);
+      transition: all 0.2s; margin-bottom: 10px;
     }
-    .scanner-overlay-bottom::before { bottom: 40px; left: 40px; border-width: 0 0 4px 4px; }
-    .scanner-overlay-bottom::after { bottom: 40px; right: 40px; border-width: 0 4px 4px 0; }
-    .scanner-hint {
-      position: absolute; bottom: -50px; left: 0; right: 0; text-align: center;
-      color: #fff; font-size: 14px; padding: 0 20px;
+    .photo-capture-btn:active { background: var(--primary-light); border-color: var(--primary); }
+    .photo-thumbs { display: flex; flex-wrap: wrap; gap: 8px; }
+    .photo-thumb-wrap { position: relative; width: 72px; height: 72px; }
+    .photo-thumb {
+      width: 72px; height: 72px; object-fit: cover; border-radius: 10px;
+      border: 1px solid var(--border); cursor: pointer;
+    }
+    .photo-del {
+      position: absolute; top: -6px; right: -6px; width: 22px; height: 22px;
+      border-radius: 50%; background: var(--danger); color: #fff; border: 2px solid #fff;
+      font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center;
     }
 
-    /* Photo Viewer Modal */
-    #photo-viewer-img {
-      max-width: 100%; max-height: 80vh; object-fit: contain;
-      transition: transform 0.3s ease; user-select: none; touch-action: none;
+    /* === REJECTED ITEMS SECTION === */
+    .rejected-section { margin-bottom: 16px; }
+    .rejected-toggle {
+      background: var(--warning-bg); border: 1px solid #FFE0B2; border-radius: 12px;
+      padding: 14px 16px; cursor: pointer; display: flex; align-items: center;
+      justify-content: space-between; font-weight: 600; color: var(--warning);
     }
-    .photo-viewer-nav {
-      position: absolute; top: 50%; transform: translateY(-50%); width: 48px;
-      height: 48px; background: rgba(255,255,255,0.15); color: #fff; border: none;
-      border-radius: 50%; font-size: 22px; display: flex; align-items: center;
-      justify-content: center; cursor: pointer; z-index: 1001; touch-action: manipulation;
+    .rejected-toggle:active { background: #FFE0B2; }
+    .rejected-list { display: none; margin-top: 8px; }
+    .rejected-list.visible { display: block; }
+    .rejected-card {
+      background: var(--card); border-radius: 12px; padding: 14px;
+      margin-bottom: 8px; border-left: 4px solid var(--danger); box-shadow: 0 1px 6px rgba(0,0,0,0.06);
     }
-    .photo-viewer-nav:active { background: rgba(255,255,255,0.3); }
-    .photo-viewer-prev { left: 12px; }
-    .photo-viewer-next { right: 12px; }
-    .photo-viewer-label {
-      position: absolute; top: 60px; left: 0; right: 0; text-align: center;
-      color: #fff; font-size: 15px; font-weight: 600; text-shadow: 0 2px 8px rgba(0,0,0,0.8);
-      padding: 0 60px;
-    }
+    .rejected-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .rejected-card-title { font-weight: 700; font-size: 14px; }
+    .rejected-card-info { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+    .rejected-card-reason { font-size: 12px; color: var(--danger); background: var(--danger-bg); padding: 6px 10px; border-radius: 8px; margin-bottom: 10px; }
+    .btn-small { padding: 8px 14px; font-size: 13px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; display: inline-block; }
 
-    /* ==================== ENTRY CARDS ==================== */
+    /* === ENTRY CARDS (Checker/Foreman) === */
     .entry-card {
-      background: #fff; border-radius: 14px; padding: 16px; margin: 14px 0;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08); border-left: 4px solid #ff9800;
+      background: var(--card); border-radius: 16px; padding: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 12px;
+      border-left: 4px solid var(--border); animation: fadeIn 0.3s ease;
     }
-    .entry-card.status-CHECKER_APPROVED { border-left-color: #4caf50; }
-    .entry-card.status-CHECKER_REJECTED { border-left-color: #f44336; }
-    .entry-card.status-FOREMAN_APPROVED { border-left-color: #1976d2; }
-    .entry-card.status-FOREMAN_REJECTED { border-left-color: #f44336; }
-
-    .entry-header {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
-    }
-    .entry-carton { font-size: 16px; font-weight: 700; color: #333; }
+    .entry-card.status-NEW { border-left-color: var(--warning); }
+    .entry-card.status-CHECKER_APPROVED { border-left-color: var(--success); }
+    .entry-card.status-CHECKER_REJECTED { border-left-color: var(--danger); }
+    .entry-card.status-FOREMAN_APPROVED { border-left-color: var(--primary); }
+    .entry-card.status-FOREMAN_REJECTED { border-left-color: var(--danger); }
+    .entry-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .entry-carton { font-weight: 700; font-size: 15px; }
     .status-badge {
       padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
       text-transform: uppercase; letter-spacing: 0.3px;
     }
-    .status-NEW { background: #fff3e0; color: #e65100; }
-    .status-CHECKER_APPROVED { background: #e8f5e9; color: #2e7d32; }
-    .status-CHECKER_REJECTED { background: #ffebee; color: #c62828; }
-    .status-FOREMAN_APPROVED { background: #e3f2fd; color: #1565c0; }
-    .status-FOREMAN_REJECTED { background: #ffebee; color: #c62828; }
-
-    .entry-info { font-size: 13px; color: #555; line-height: 1.8; }
-    .entry-info strong { color: #333; }
-    .entry-divider { height: 1px; background: #eee; margin: 12px 0; }
-
-    .entry-photos { margin: 10px 0; }
-    .entry-photo-label { font-size: 12px; color: #888; font-weight: 600; margin: 8px 0 6px; }
-    .entry-thumbs { display: flex; flex-wrap: wrap; gap: 6px; }
-    .entry-thumbs img {
+    .status-badge.status-NEW { background: var(--warning-bg); color: var(--warning); }
+    .status-badge.status-CHECKER_APPROVED { background: var(--success-bg); color: var(--success); }
+    .status-badge.status-CHECKER_REJECTED { background: var(--danger-bg); color: var(--danger); }
+    .status-badge.status-FOREMAN_APPROVED { background: var(--primary-light); color: var(--primary); }
+    .status-badge.status-FOREMAN_REJECTED { background: var(--danger-bg); color: var(--danger); }
+    .entry-info { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; margin-bottom: 12px; }
+    .entry-info-line { font-size: 13px; color: var(--text-secondary); }
+    .entry-info-line .label { font-weight: 600; color: var(--text); }
+    .entry-photos { margin-bottom: 12px; }
+    .entry-photo-thumbs { display: flex; flex-wrap: wrap; gap: 6px; }
+    .entry-photo-thumb {
       width: 64px; height: 64px; object-fit: cover; border-radius: 8px;
-      border: 1px solid #eee; cursor: pointer;
+      border: 1px solid var(--border); cursor: pointer;
     }
+    .entry-review { border-top: 1px solid var(--border); padding-top: 12px; }
+    .review-row { margin-bottom: 10px; }
+    .review-row:last-child { margin-bottom: 0; }
+    .review-actions { display: flex; gap: 10px; margin-top: 12px; }
+    .review-actions .btn { flex: 1; }
+    .checker-info, .foreman-info {
+      font-size: 12px; padding: 8px 12px; border-radius: 8px; margin-bottom: 10px;
+    }
+    .checker-info { background: var(--success-bg); color: var(--success); }
+    .foreman-info { background: var(--primary-light); color: var(--primary); }
 
-    .review-section { margin-top: 12px; }
-    .review-input {
-      width: 100%; padding: 10px 12px; border: 1px solid #ddd;
-      border-radius: 8px; font-size: 14px; margin-bottom: 8px;
-    }
-    .review-buttons { display: flex; gap: 10px; }
-    .btn-pass, .btn-reject {
-      flex: 1; padding: 12px; border: none; border-radius: 10px;
-      font-size: 14px; font-weight: 700; cursor: pointer; touch-action: manipulation;
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-    }
-    .btn-pass { background: #e8f5e9; color: #2e7d32; }
-    .btn-reject { background: #ffebee; color: #c62828; }
-    .btn-pass:active { background: #c8e6c9; transform: scale(0.97); }
-    .btn-reject:active { background: #ffcdd2; transform: scale(0.97); }
-
-    .checker-info {
-      background: #f1f8e9; padding: 10px 12px; border-radius: 8px; margin: 10px 0;
-      font-size: 13px; color: #33691e;
-    }
-
-    /* ==================== FILTER TABS ==================== */
-    .filter-tabs {
-      display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto;
+    /* === FILTERS === */
+    .filter-bar {
+      display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto;
       padding-bottom: 4px;
     }
-    .filter-tab {
-      padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
-      border: 1px solid #ddd; background: #fff; color: #666; cursor: pointer;
-      white-space: nowrap; touch-action: manipulation; flex-shrink: 0;
+    .filter-btn {
+      padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border);
+      background: #fff; cursor: pointer; font-size: 13px; font-weight: 600;
+      color: var(--text-secondary); white-space: nowrap; flex-shrink: 0;
     }
-    .filter-tab.active { background: #1976d2; color: #fff; border-color: #1976d2; }
-    .filter-tab:active { opacity: 0.8; }
+    .filter-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .entries-list { padding-bottom: 20px; }
 
-    /* ==================== REJECTED ITEMS SECTION ==================== */
-    .rejected-section { margin: 20px 0; }
-    .rejected-section-title {
-      font-size: 16px; font-weight: 700; color: #f44336; margin-bottom: 10px;
-      display: flex; align-items: center; gap: 6px;
+    /* === MODALS === */
+    .modal {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.92); z-index: 1000; display: none;
+      flex-direction: column; align-items: center; justify-content: center;
     }
-    .rejected-card {
-      background: #fff; border-radius: 12px; padding: 14px; margin: 10px 0;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-left: 4px solid #f44336;
+    .modal.active { display: flex; }
+    .modal-close {
+      position: absolute; top: 16px; right: 16px; width: 40px; height: 40px;
+      border-radius: 50%; background: rgba(255,255,255,0.15); border: none;
+      color: #fff; font-size: 20px; cursor: pointer; z-index: 1001;
+      display: flex; align-items: center; justify-content: center;
     }
-    .rejected-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .rejected-card-carton { font-weight: 700; font-size: 14px; }
-    .rejected-card-info { font-size: 13px; color: #666; margin-bottom: 10px; }
-    .rejected-card-info strong { color: #333; }
-    .btn-resubmit {
-      padding: 10px 16px; background: #fff3e0; color: #e65100; border: none;
-      border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer;
-      touch-action: manipulation;
-    }
-    .btn-resubmit:active { background: #ffe0b2; transform: scale(0.97); }
+    .modal-close:active { background: rgba(255,255,255,0.3); }
 
-    /* ==================== TOAST ==================== */
-    .toast {
-      position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-120px);
-      padding: 14px 24px; border-radius: 12px; font-size: 14px; font-weight: 600;
-      color: #fff; z-index: 2000; box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-      transition: transform 0.3s ease; max-width: 90%; text-align: center;
+    /* === CAMERA MODAL === */
+    #camera-modal { padding: 0; }
+    .camera-preview-wrap {
+      position: relative; width: 100%; height: 100%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
-    .toast.show { transform: translateX(-50%) translateY(0); }
-    .toast-success { background: #4caf50; }
-    .toast-error { background: #f44336; }
+    #camera-video {
+      width: 100%; max-width: 100%; max-height: 70vh;
+      object-fit: cover; background: #000;
+    }
+    #camera-canvas { display: none; }
+    .camera-controls {
+      position: absolute; bottom: 40px; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: center; gap: 40px;
+    }
+    .camera-capture-btn {
+      width: 72px; height: 72px; border-radius: 50%; border: 4px solid #fff;
+      background: rgba(255,255,255,0.3); cursor: pointer; transition: transform 0.1s;
+    }
+    .camera-capture-btn:active { transform: scale(0.92); }
+    .camera-cancel-btn {
+      padding: 10px 24px; border-radius: 24px; background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4); color: #fff; font-size: 14px;
+      cursor: pointer;
+    }
+    .camera-preview-actions { display: none; gap: 20px; }
+    .camera-preview-actions.visible { display: flex; }
+    .camera-capture-wrap { display: flex; }
+    .camera-capture-wrap.hidden { display: none; }
 
-    /* ==================== LOADING SPINNER ==================== */
+    /* === SCANNER MODAL === */
+    #scanner-modal { padding: 20px; }
+    .scanner-wrap { width: 100%; max-width: 400px; text-align: center; }
+    .scanner-title { color: #fff; font-size: 18px; font-weight: 600; margin-bottom: 16px; }
+    #scanner-viewport { width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 16px; }
+    .scanner-cancel { margin-top: 8px; }
+
+    /* === PHOTO VIEWER === */
+    #photo-viewer { padding: 0; touch-action: pan-y; }
+    .viewer-img {
+      max-width: 100%; max-height: 80vh; object-fit: contain;
+    }
+    .viewer-label {
+      position: absolute; top: 60px; left: 50%; transform: translateX(-50%);
+      background: rgba(0,0,0,0.6); color: #fff; padding: 6px 16px;
+      border-radius: 20px; font-size: 13px; font-weight: 600; z-index: 1001;
+    }
+    .viewer-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 44px; height: 44px; border-radius: 50%; border: none;
+      background: rgba(255,255,255,0.2); color: #fff; font-size: 20px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      z-index: 1001;
+    }
+    .viewer-nav:active { background: rgba(255,255,255,0.4); }
+    .viewer-prev { left: 12px; }
+    .viewer-next { right: 12px; }
+    .viewer-counter {
+      position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+      color: #fff; font-size: 13px; background: rgba(0,0,0,0.5);
+      padding: 6px 14px; border-radius: 20px;
+    }
+
+    /* === LOADING OVERLAY === */
+    #loading-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); z-index: 2000; display: none;
+      flex-direction: column; align-items: center; justify-content: center;
+    }
+    #loading-overlay.active { display: flex; }
     .spinner {
-      width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3);
+      width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.3);
       border-top-color: #fff; border-radius: 50%;
-      animation: spin 0.8s linear infinite; display: inline-block; vertical-align: middle;
+      animation: spin 0.8s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.3); z-index: 1500; display: none;
-      align-items: center; justify-content: center;
-    }
-    .loading-overlay.active { display: flex; }
-    .loading-box {
-      background: #fff; padding: 24px 36px; border-radius: 16px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.2); text-align: center;
-    }
-    .loading-box .spinner { border-color: rgba(0,0,0,0.1); border-top-color: #1976d2; width: 32px; height: 32px; margin-bottom: 12px; }
-    .loading-box p { color: #555; font-size: 14px; font-weight: 500; }
+    .loading-text { color: #fff; margin-top: 16px; font-size: 14px; font-weight: 600; }
 
-    /* ==================== EMPTY STATE ==================== */
-    .empty-state { text-align: center; padding: 40px 20px; color: #888; }
-    .empty-state-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.4; }
-    .empty-state p { font-size: 15px; font-weight: 500; }
-
-    /* ==================== REFRESH BUTTON ==================== */
-    .refresh-btn {
-      padding: 10px 18px; background: #1976d2; color: #fff; border: none;
-      border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer;
-      margin-bottom: 14px; display: inline-flex; align-items: center; gap: 6px;
-      touch-action: manipulation;
+    /* === TOAST === */
+    #toast {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 3000;
+      padding: 14px 20px; text-align: center; font-weight: 600; font-size: 14px;
+      transform: translateY(-100%); transition: transform 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
-    .refresh-btn:active { background: #1565c0; transform: scale(0.97); }
-    .tab-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    #toast.show { transform: translateY(0); }
+    #toast.toast-success { background: var(--success); color: #fff; }
+    #toast.toast-error { background: var(--danger); color: #fff; }
+    #toast.toast-warning { background: var(--warning); color: #fff; }
 
-    /* ==================== SCROLLBAR ==================== */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+    /* === EMPTY STATE === */
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--text-secondary); }
+    .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
+    .empty-state p { font-size: 14px; }
 
-    /* ==================== RESPONSIVE ==================== */
-    @media (min-width: 600px) {
-      .bottom-nav { left: 50%; transform: translateX(-50%); }
-    }
+    /* === MISC === */
+    .hidden { display: none !important; }
+    .text-right { text-align: right; }
+    .flex { display: flex; }
+    .flex-1 { flex: 1; }
+    .gap-8 { gap: 8px; }
+    .mb-12 { margin-bottom: 12px; }
   </style>
 <base target="_blank">
 </head>
 <body>
-  <div class="app-container">
 
-    <!-- ==================== TAB 1: DATA ENTRY ==================== -->
+  <!-- ========== LOGIN SCREEN ========== -->
+  <div id="screen-login" class="screen active">
+    <div class="login-card">
+      <div class="login-logo">QC</div>
+      <div class="login-title">MG Part Verification</div>
+      <div class="login-subtitle">Part Verification System</div>
+
+      <div class="role-grid">
+        <button type="button" class="role-btn" data-role="staff" onclick="selectLoginRole('staff')">
+          <span class="role-icon">&#128100;</span>
+          <span class="role-label">Staff</span>
+        </button>
+        <button type="button" class="role-btn" data-role="checker" onclick="selectLoginRole('checker')">
+          <span class="role-icon">&#9989;</span>
+          <span class="role-label">Checker</span>
+        </button>
+        <button type="button" class="role-btn" data-role="foreman" onclick="selectLoginRole('foreman')">
+          <span class="role-icon">&#128737;</span>
+          <span class="role-label">Foreman</span>
+        </button>
+      </div>
+
+      <div id="login-password-wrap" class="password-wrap">
+        <label class="form-label">Password</label>
+        <input type="password" id="login-password" class="form-input" placeholder="Enter password">
+      </div>
+
+      <button type="button" id="login-btn" class="btn btn-primary login-btn" onclick="doLogin()" disabled>Login</button>
+
+      <a class="settings-link" onclick="showSettings()">
+        <span>&#9881;</span> Settings
+      </a>
+    </div>
+  </div>
+
+  <!-- ========== SETTINGS SCREEN ========== -->
+  <div id="screen-settings" class="screen">
+    <div class="settings-header">
+      <button class="back-btn" onclick="backToLogin()">&#8592;</button>
+      <h2>Settings</h2>
+    </div>
+    <div class="settings-body">
+      <div class="settings-card">
+        <h3>Password Configuration</h3>
+        <div class="form-group">
+          <label class="form-label">Staff Password</label>
+          <input type="password" id="setting-pw-staff" class="form-input" placeholder="Leave empty for no password">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Checker Password</label>
+          <input type="password" id="setting-pw-checker" class="form-input" placeholder="Leave empty for no password">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Foreman Password</label>
+          <input type="password" id="setting-pw-foreman" class="form-input" placeholder="Leave empty for no password">
+        </div>
+        <button type="button" class="btn btn-success" onclick="saveSettings()" style="margin-top:8px;">Save Settings</button>
+        <p class="hint-text">Leave password fields empty to allow login without password for that role. Settings are saved to the server.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MAIN APP SCREEN ========== -->
+  <div id="screen-main" class="screen">
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <div class="top-bar-title">MG Part Verification</div>
+      <div class="role-badge" id="role-badge">-</div>
+      <button class="logout-btn" onclick="logout()" title="Logout">&#8617;</button>
+    </div>
+
+    <!-- TAB: Data Entry -->
     <div id="tab-entry" class="tab-content active">
-      <div class="tab-header">
-        <h1>QC Data Entry</h1>
-        <p>Warehouse Quality Control</p>
-      </div>
-
-      <div class="form-group">
-        <label for="receivedDate">Received Date</label>
-        <input type="date" id="receivedDate">
-      </div>
-
-      <div class="form-group">
-        <label for="cartonId">Carton ID</label>
-        <div class="input-row">
-          <input type="text" id="cartonId" placeholder="Scan or enter carton ID">
-          <button class="scan-btn" onclick="openScanner('cartonId')" title="Scan barcode">&#128247;</button>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="customerName">Customer Name</label>
-        <div class="input-row">
-          <input type="text" id="customerName" placeholder="Scan or enter customer name">
-          <button class="scan-btn" onclick="openScanner('customerName')" title="Scan barcode">&#128247;</button>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="piNo">P/I No.</label>
-        <div class="input-row">
-          <input type="text" id="piNo" placeholder="Scan or enter P/I number">
-          <button class="scan-btn" onclick="openScanner('piNo')" title="Scan barcode">&#128247;</button>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="partNo">Part No.</label>
-        <div class="input-row">
-          <input type="text" id="partNo" placeholder="Scan or enter part number">
-          <button class="scan-btn" onclick="openScanner('partNo')" title="Scan barcode">&#128247;</button>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="qty">QTY</label>
-        <input type="number" id="qty" placeholder="Enter quantity" min="0">
-      </div>
-
-      <div class="form-group">
-        <label for="packedBy">Packed By</label>
-        <input type="text" id="packedBy" placeholder="Enter staff name">
-      </div>
-
-      <!-- Photo Sections -->
-      <div class="photo-card">
-        <div class="photo-card-header">
-          <span class="photo-card-title">&#128248; Photo Doc</span>
-          <span class="photo-counter" id="counter-photoDoc">0/3 photos</span>
-        </div>
-        <button class="capture-btn" onclick="openCamera('photoDoc')">&#128247; Take Photo</button>
-        <div class="thumbnails" id="thumbs-photoDoc"></div>
-      </div>
-
-      <div class="photo-card">
-        <div class="photo-card-header">
-          <span class="photo-card-title">&#128248; Photo Part &amp; Bag W/Laser</span>
-          <span class="photo-counter" id="counter-photoPartBag">0/3 photos</span>
-        </div>
-        <button class="capture-btn" onclick="openCamera('photoPartBag')">&#128247; Take Photo</button>
-        <div class="thumbnails" id="thumbs-photoPartBag"></div>
-      </div>
-
-      <div class="photo-card">
-        <div class="photo-card-header">
-          <span class="photo-card-title">&#128248; Photo Inner Box</span>
-          <span class="photo-counter" id="counter-photoInnerBox">0/3 photos</span>
-        </div>
-        <button class="capture-btn" onclick="openCamera('photoInnerBox')">&#128247; Take Photo</button>
-        <div class="thumbnails" id="thumbs-photoInnerBox"></div>
-      </div>
-
-      <div class="photo-card">
-        <div class="photo-card-header">
-          <span class="photo-card-title">&#128248; Photo Carton</span>
-          <span class="photo-counter" id="counter-photoCarton">0/3 photos</span>
-        </div>
-        <button class="capture-btn" onclick="openCamera('photoCarton')">&#128247; Take Photo</button>
-        <div class="thumbnails" id="thumbs-photoCarton"></div>
-      </div>
-
       <!-- Rejected Items Section -->
-      <div class="rejected-section" id="rejectedSection" style="display:none">
-        <div class="rejected-section-title">&#9888;&#65039; Rejected Items</div>
-        <div id="rejectedList"></div>
+      <div class="rejected-section" id="rejected-section" style="display:none;">
+        <div class="rejected-toggle" onclick="toggleRejected()">
+          <span>&#128465; Rejected Items (<span id="rejected-count">0</span>)</span>
+          <span id="rejected-arrow">&#9660;</span>
+        </div>
+        <div class="rejected-list" id="rejected-list"></div>
       </div>
 
-      <button class="submit-btn" id="submitBtn" onclick="submitForm()">Submit</button>
+      <!-- Entry Form -->
+      <div class="card">
+        <div class="card-title"><span class="icon">&#128221;</span> Data Entry</div>
+        <div class="form-row">
+          <label class="form-label">Received Date</label>
+          <input type="date" id="field-receivedDate" class="form-input">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Carton ID</label>
+          <div class="input-wrap">
+            <input type="text" id="field-cartonId" class="form-input has-scan" placeholder="Scan or type Carton ID">
+            <button type="button" class="input-scan-btn" onclick="openScanner('field-cartonId')">&#128246;</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Customer Name</label>
+          <div class="input-wrap">
+            <input type="text" id="field-customerName" class="form-input has-scan" placeholder="Scan or type Customer Name">
+            <button type="button" class="input-scan-btn" onclick="openScanner('field-customerName')">&#128246;</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">P/I No.</label>
+          <div class="input-wrap">
+            <input type="text" id="field-piNo" class="form-input has-scan" placeholder="Scan or type P/I No.">
+            <button type="button" class="input-scan-btn" onclick="openScanner('field-piNo')">&#128246;</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Part No.</label>
+          <div class="input-wrap">
+            <input type="text" id="field-partNo" class="form-input has-scan" placeholder="Scan or type Part No.">
+            <button type="button" class="input-scan-btn" onclick="openScanner('field-partNo')">&#128246;</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Quantity</label>
+          <input type="number" id="field-qty" class="form-input" placeholder="Enter quantity" min="1">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Packed By</label>
+          <input type="text" id="field-packedBy" class="form-input" placeholder="Enter your name">
+        </div>
+      </div>
+
+      <!-- Photo Capture -->
+      <div class="card">
+        <div class="card-title"><span class="icon">&#128247;</span> Photos</div>
+        <div class="photo-grid">
+          <div class="photo-card">
+            <div class="photo-card-title">Doc Label (<span class="photo-card-count" id="count-photoDoc">0</span>)</div>
+            <button type="button" class="photo-capture-btn" onclick="openCamera('photoDoc')">&#128247;</button>
+            <div class="photo-thumbs" id="thumbs-photoDoc"></div>
+          </div>
+          <div class="photo-card">
+            <div class="photo-card-title">Part/Bag (<span class="photo-card-count" id="count-photoPartBag">0</span>)</div>
+            <button type="button" class="photo-capture-btn" onclick="openCamera('photoPartBag')">&#128247;</button>
+            <div class="photo-thumbs" id="thumbs-photoPartBag"></div>
+          </div>
+          <div class="photo-card">
+            <div class="photo-card-title">Inner Box (<span class="photo-card-count" id="count-photoInnerBox">0</span>)</div>
+            <button type="button" class="photo-capture-btn" onclick="openCamera('photoInnerBox')">&#128247;</button>
+            <div class="photo-thumbs" id="thumbs-photoInnerBox"></div>
+          </div>
+          <div class="photo-card">
+            <div class="photo-card-title">Carton (<span class="photo-card-count" id="count-photoCarton">0</span>)</div>
+            <button type="button" class="photo-capture-btn" onclick="openCamera('photoCarton')">&#128247;</button>
+            <div class="photo-thumbs" id="thumbs-photoCarton"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hidden field for resubmit -->
+      <input type="hidden" id="field-resubmitRowId">
+
+      <!-- Submit Button -->
+      <button type="button" class="btn btn-success" style="margin-bottom: 20px;" onclick="submitForm()">
+        <span id="submit-btn-text">&#10004; Submit Entry</span>
+      </button>
     </div>
 
-    <!-- ==================== TAB 2: CHECKER ==================== -->
+    <!-- TAB: Checker -->
     <div id="tab-checker" class="tab-content">
-      <div class="tab-header">
-        <h1>Checker Verification</h1>
-        <p>Review and verify entries</p>
+      <div class="filter-bar">
+        <button type="button" class="filter-btn active" onclick="setCheckerFilter('all', this)">All</button>
+        <button type="button" class="filter-btn" onclick="setCheckerFilter('pending', this)">Pending</button>
+        <button type="button" class="filter-btn" onclick="setCheckerFilter('approved', this)">Approved</button>
+        <button type="button" class="filter-btn" onclick="setCheckerFilter('rejected', this)">Rejected</button>
       </div>
-      <div class="tab-actions">
-        <button class="refresh-btn" onclick="refreshChecker()">&#128260; Refresh</button>
-      </div>
-      <div class="filter-tabs">
-        <button class="filter-tab active" data-filter="all" onclick="filterEntries('checker','all')">All</button>
-        <button class="filter-tab" data-filter="NEW" onclick="filterEntries('checker','NEW')">Pending</button>
-        <button class="filter-tab" data-filter="CHECKER_APPROVED" onclick="filterEntries('checker','CHECKER_APPROVED')">Approved</button>
-        <button class="filter-tab" data-filter="CHECKER_REJECTED" onclick="filterEntries('checker','CHECKER_REJECTED')">Rejected</button>
-      </div>
-      <div id="checkerList"></div>
+      <div id="checker-entries" class="entries-list"></div>
     </div>
 
-    <!-- ==================== TAB 3: FOREMAN ==================== -->
+    <!-- TAB: Foreman -->
     <div id="tab-foreman" class="tab-content">
-      <div class="tab-header">
-        <h1>Foreman Verification</h1>
-        <p>Final approval for checked entries</p>
+      <div class="filter-bar">
+        <button type="button" class="filter-btn active" onclick="setForemanFilter('all', this)">All</button>
+        <button type="button" class="filter-btn" onclick="setForemanFilter('pending', this)">Pending</button>
+        <button type="button" class="filter-btn" onclick="setForemanFilter('approved', this)">Approved</button>
+        <button type="button" class="filter-btn" onclick="setForemanFilter('rejected', this)">Rejected</button>
       </div>
-      <div class="tab-actions">
-        <button class="refresh-btn" onclick="refreshForeman()">&#128260; Refresh</button>
-      </div>
-      <div class="filter-tabs">
-        <button class="filter-tab active" data-filter="all" onclick="filterEntries('foreman','all')">All</button>
-        <button class="filter-tab" data-filter="CHECKER_APPROVED" onclick="filterEntries('foreman','CHECKER_APPROVED')">Pending</button>
-        <button class="filter-tab" data-filter="FOREMAN_APPROVED" onclick="filterEntries('foreman','FOREMAN_APPROVED')">Approved</button>
-        <button class="filter-tab" data-filter="FOREMAN_REJECTED" onclick="filterEntries('foreman','FOREMAN_REJECTED')">Rejected</button>
-      </div>
-      <div id="foremanList"></div>
+      <div id="foreman-entries" class="entries-list"></div>
     </div>
 
-    <!-- ==================== CAMERA MODAL ==================== -->
-    <div id="camera-modal" class="modal">
-      <button class="modal-close" onclick="closeCamera()">&#10005;</button>
-      <video id="camera-preview" autoplay playsinline muted></video>
-      <div class="camera-controls" id="cameraControls">
-        <button class="camera-cancel-btn" onclick="closeCamera()">Cancel</button>
-        <button class="camera-capture-btn" onclick="capturePhoto()" title="Capture"></button>
-      </div>
-      <div class="camera-controls" id="cameraConfirm" style="display:none">
-        <button class="camera-retake-btn" onclick="retakePhoto()">Retake</button>
-        <button class="camera-confirm-btn" onclick="confirmPhoto()">Use Photo</button>
-      </div>
-    </div>
-
-    <!-- ==================== BARCODE SCANNER MODAL ==================== -->
-    <div id="scanner-modal" class="modal">
-      <button class="modal-close" onclick="closeScanner()">&#10005;</button>
-      <div id="scanner-container">
-        <div id="scanner-viewport" style="width:100%;max-width:500px;height:350px;"></div>
-        <div class="scanner-overlay"></div>
-        <div class="scanner-overlay-bottom"></div>
-        <div class="scanner-hint">Align barcode within the frame to scan</div>
-      </div>
-      <button class="camera-cancel-btn" style="margin-top:20px;" onclick="closeScanner()">Cancel</button>
-    </div>
-
-    <!-- ==================== PHOTO VIEWER MODAL ==================== -->
-    <div id="photo-viewer" class="modal">
-      <button class="modal-close" onclick="closePhotoViewer()">&#10005;</button>
-      <div class="photo-viewer-label" id="photoViewerLabel"></div>
-      <button class="photo-viewer-nav photo-viewer-prev" onclick="viewerPrev()">&#9664;</button>
-      <img id="photo-viewer-img" src="" alt="">
-      <button class="photo-viewer-nav photo-viewer-next" onclick="viewerNext()">&#9654;</button>
-    </div>
-
-    <!-- ==================== LOADING OVERLAY ==================== -->
-    <div id="loadingOverlay" class="loading-overlay">
-      <div class="loading-box">
-        <div class="spinner"></div>
-        <p id="loadingText">Loading...</p>
-      </div>
-    </div>
-
-    <!-- ==================== TOAST ==================== -->
-    <div id="toast" class="toast"></div>
-
-    <!-- ==================== BOTTOM NAVIGATION ==================== -->
+    <!-- Bottom Nav -->
     <nav class="bottom-nav">
-      <div class="nav-item active" data-tab="entry" onclick="showTab('entry')">
+      <button type="button" class="nav-item active" id="nav-entry" onclick="showTab('entry')">
         <span class="nav-icon">&#128221;</span>
-        <span>Data Entry</span>
-      </div>
-      <div class="nav-item" data-tab="checker" onclick="showTab('checker')">
+        <span class="nav-label">Entry</span>
+      </button>
+      <button type="button" class="nav-item" id="nav-checker" onclick="showTab('checker')">
         <span class="nav-icon">&#9989;</span>
-        <span>Checker</span>
-      </div>
-      <div class="nav-item" data-tab="foreman" onclick="showTab('foreman')">
-        <span class="nav-icon">&#9989;&#9989;</span>
-        <span>Foreman</span>
-      </div>
+        <span class="nav-label">Checker</span>
+      </button>
+      <button type="button" class="nav-item" id="nav-foreman" onclick="showTab('foreman')">
+        <span class="nav-icon">&#128737;</span>
+        <span class="nav-label">Foreman</span>
+      </button>
     </nav>
+  </div>
 
-  </div><!-- end app-container -->
+  <!-- ========== CAMERA MODAL ========== -->
+  <div id="camera-modal" class="modal">
+    <button type="button" class="modal-close" onclick="closeCamera()">&#10005;</button>
+    <div class="camera-preview-wrap">
+      <video id="camera-video" autoplay playsinline></video>
+      <canvas id="camera-canvas"></canvas>
+      <div class="camera-controls">
+        <div class="camera-capture-wrap" id="capture-wrap">
+          <button type="button" class="camera-capture-btn" onclick="capturePhoto()"></button>
+        </div>
+        <div class="camera-preview-actions" id="preview-actions">
+          <button type="button" class="camera-cancel-btn" onclick="retakePhoto()">&#128260; Retake</button>
+          <button type="button" class="camera-cancel-btn" style="background:var(--success);border-color:var(--success);" onclick="confirmPhoto()">&#10004; Use Photo</button>
+        </div>
+        <button type="button" class="camera-cancel-btn" onclick="closeCamera()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SCANNER MODAL ========== -->
+  <div id="scanner-modal" class="modal">
+    <button type="button" class="modal-close" onclick="closeScanner()">&#10005;</button>
+    <div class="scanner-wrap">
+      <div class="scanner-title">Scan Barcode</div>
+      <div id="scanner-viewport"></div>
+      <button type="button" class="btn btn-danger scanner-cancel" onclick="closeScanner()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ========== PHOTO VIEWER MODAL ========== -->
+  <div id="photo-viewer" class="modal">
+    <button type="button" class="modal-close" onclick="closePhotoViewer()">&#10005;</button>
+    <div class="viewer-label" id="viewer-label"></div>
+    <button type="button" class="viewer-nav viewer-prev" onclick="viewerPrev()">&#9664;</button>
+    <button type="button" class="viewer-nav viewer-next" onclick="viewerNext()">&#9654;</button>
+    <img src="" alt="" class="viewer-img" id="viewer-img" onerror="this.style.display=&quot;none&quot;" onload="this.style.display=&quot;block&quot;">
+    <div class="viewer-counter" id="viewer-counter"></div>
+  </div>
+
+  <!-- ========== LOADING OVERLAY ========== -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="spinner"></div>
+    <div class="loading-text" id="loading-text">Loading...</div>
+  </div>
+
+  <!-- ========== TOAST ========== -->
+  <div id="toast" class="toast"></div>
+
 
   <script>
-  // ═══════════════════════════════════════════════════════════════
-  //  QC WEB APP - Complete Single Page Application
-  // ═══════════════════════════════════════════════════════════════
+    // ============================================================
+    // STATE VARIABLES
+    // ============================================================
+    var GAS_URL = 'https://script.google.com/macros/s/AKfycby78Kp_NlB5aegZVC1n7m2rCMawwOTBrQgRhjQfCn5vkocpLEyQ4kFKfUSJNKte5TYSHw/exec';
+    var currentRole = null;
+    var currentTab = 'entry';
+    var capturedPhotos = { photoDoc: [], photoPartBag: [], photoInnerBox: [], photoCarton: [] };
+    var allEntries = [];
+    var isSubmitting = false;
+    var currentCameraCategory = null;
+    var currentBarcodeField = null;
+    var html5QrCode = null;
+    var resubmitRowId = null;
+    var cameraStream = null;
+    var capturedImageData = null;
+    var viewerState = { urls: [], index: 0, category: '' };
+    var checkerFilter = 'all';
+    var foremanFilter = 'all';
+    var settingsCache = { staff: '', checker: '', foreman: '' };
+    var rejectedItemsMap = {};
+    var loginSelectedRole = null;
+    var touchStartX = 0;
+    var touchEndX = 0;
 
-  // ==================== CONFIG ====================
-  var GAS_URL = 'https://script.google.com/macros/s/AKfycbyhofd1e3_Ix2M7I5B_v8yAJnyNMl0dnBpXLAOj9Pgp_-sGDmHPhGpvIRBe900BDGEx1g/exec';
-
-  // ==================== STATE ====================
-  var currentTab = 'entry';
-  var capturedPhotos = { photoDoc: [], photoPartBag: [], photoInnerBox: [], photoCarton: [] };
-  var entries = [];
-  var isSubmitting = false;
-  var currentCameraCategory = null;
-  var currentBarcodeField = null;
-  var html5QrCode = null;
-  var resubmitRowId = null;
-  var cameraStream = null;
-  var capturedImageData = null;
-  var viewerState = { urls: [], index: 0, category: '' };
-  var checkerFilter = 'all';
-  var foremanFilter = 'all';
-
-  // ==================== INIT ====================
-  document.addEventListener('DOMContentLoaded', function() {
-    // Set default date to today
-    document.getElementById('receivedDate').valueAsDate = new Date();
-    // Load rejected items for current staff
-    loadRejectedItems();
-  });
-
-  // ==================== TAB NAVIGATION ====================
-  function showTab(tabName) {
-    currentTab = tabName;
-    document.querySelectorAll('.tab-content').forEach(function(el) { el.classList.remove('active'); });
-    document.getElementById('tab-' + tabName).classList.add('active');
-    document.querySelectorAll('.nav-item').forEach(function(el) { el.classList.remove('active'); });
-    document.querySelector('.nav-item[data-tab="' + tabName + '"]').classList.add('active');
-    if (tabName === 'checker') refreshChecker();
-    if (tabName === 'foreman') refreshForeman();
-  }
-
-  // ==================== TOAST ====================
-  function showToast(message, type) {
-    var toast = document.getElementById('toast');
-    toast.textContent = message;
-    toast.className = 'toast toast-' + (type || 'success');
-    setTimeout(function() { toast.classList.add('show'); }, 10);
-    setTimeout(function() { toast.classList.remove('show'); }, 3000);
-  }
-
-  // ==================== LOADING ====================
-  function showLoading(text) {
-    document.getElementById('loadingText').textContent = text || 'Loading...';
-    document.getElementById('loadingOverlay').classList.add('active');
-  }
-  function hideLoading() {
-    document.getElementById('loadingOverlay').classList.remove('active');
-  }
-
-  // ==================== CAMERA / PHOTO ====================
-  function openCamera(category) {
-    currentCameraCategory = category;
-    capturedImageData = null;
-    var modal = document.getElementById('camera-modal');
-    modal.classList.add('active');
-    document.getElementById('cameraControls').style.display = 'flex';
-    document.getElementById('cameraConfirm').style.display = 'none';
-
-    var video = document.getElementById('camera-preview');
-    video.style.display = 'block';
-    document.getElementById('photo-viewer-img').style.display = 'none';
-
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-        .then(function(stream) {
-          cameraStream = stream;
-          video.srcObject = stream;
-        })
-        .catch(function(err) {
-          showToast('Camera access denied: ' + err.message, 'error');
-          closeCamera();
-        });
-    } else {
-      showToast('Camera not supported on this device', 'error');
-      closeCamera();
+    // ============================================================
+    // UTILITY FUNCTIONS
+    // ============================================================
+    function $(id) {
+      return document.getElementById(id);
     }
-  }
 
-  function capturePhoto() {
-    var video = document.getElementById('camera-preview');
-    if (!video || video.readyState < 2) return;
-    var canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    var ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0);
-    capturedImageData = canvas.toDataURL('image/jpeg', 0.9);
+    function esc(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
 
-    // Show preview
-    video.pause();
-    document.getElementById('cameraControls').style.display = 'none';
-    document.getElementById('cameraConfirm').style.display = 'flex';
-  }
+    function formatDate(dateStr) {
+      if (!dateStr) return '-';
+      var d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      var y = d.getFullYear();
+      var m = ('0' + (d.getMonth() + 1)).slice(-2);
+      var day = ('0' + d.getDate()).slice(-2);
+      return y + '-' + m + '-' + day;
+    }
 
-  function retakePhoto() {
-    capturedImageData = null;
-    var video = document.getElementById('camera-preview');
-    video.play();
-    document.getElementById('cameraControls').style.display = 'flex';
-    document.getElementById('cameraConfirm').style.display = 'none';
-  }
+    function showToast(message, type) {
+      var toast = $('toast');
+      toast.textContent = message;
+      toast.className = '';
+      if (type === 'success') toast.classList.add('toast-success');
+      else if (type === 'error') toast.classList.add('toast-error');
+      else toast.classList.add('toast-warning');
+      toast.classList.add('show');
+      setTimeout(function() { toast.classList.remove('show'); }, 3000);
+    }
 
-  function confirmPhoto() {
-    if (capturedImageData && currentCameraCategory) {
-      compressPhoto(capturedImageData, function(compressed) {
-        addPhotoToCategory(currentCameraCategory, compressed);
+    function showLoading(text) {
+      if (!text) text = 'Loading...';
+      $('loading-text').textContent = text;
+      $('loading-overlay').classList.add('active');
+    }
+
+    function hideLoading() {
+      $('loading-overlay').classList.remove('active');
+    }
+
+    function hideAllTabs() {
+      var tabs = document.querySelectorAll('.tab-content');
+      for (var i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove('active');
+        tabs[i].style.display = 'none';
+      }
+      var navs = document.querySelectorAll('.nav-item');
+      for (var i = 0; i < navs.length; i++) {
+        navs[i].classList.remove('active');
+      }
+    }
+
+    // ============================================================
+    // NAVIGATION
+    // ============================================================
+    function showScreen(screenName) {
+      var screens = document.querySelectorAll('.screen');
+      for (var i = 0; i < screens.length; i++) {
+        screens[i].classList.remove('active');
+      }
+      if (screenName === 'login') {
+        $('screen-login').classList.add('active');
+      } else if (screenName === 'settings') {
+        $('screen-settings').classList.add('active');
+      } else if (screenName === 'main') {
+        $('screen-main').classList.add('active');
+        $('role-badge').textContent = currentRole || '-';
+      }
+    }
+
+    function showTab(tabName) {
+      hideAllTabs();
+      currentTab = tabName;
+      var tabEl = $('tab-' + tabName);
+      if (tabEl) {
+        tabEl.style.display = 'block';
+        tabEl.classList.add('active');
+      }
+      var navEl = $('nav-' + tabName);
+      if (navEl) navEl.classList.add('active');
+
+      if (tabName === 'checker') refreshChecker();
+      else if (tabName === 'foreman') refreshForeman();
+      else if (tabName === 'entry') {
+        loadRejectedItems();
+      }
+    }
+
+    function logout() {
+      currentRole = null;
+      currentTab = 'entry';
+      localStorage.removeItem('currentRole');
+      capturedPhotos = { photoDoc: [], photoPartBag: [], photoInnerBox: [], photoCarton: [] };
+      allEntries = [];
+      resubmitRowId = null;
+      rejectedItemsMap = {};
+      clearForm();
+      initLogin();
+    }
+
+    // ============================================================
+    // LOGIN & SETTINGS
+    // ============================================================
+    function initLogin() {
+      loginSelectedRole = null;
+      $('login-password').value = '';
+      $('login-password-wrap').classList.remove('visible');
+      $('login-btn').disabled = true;
+      var btns = document.querySelectorAll('.role-btn');
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].classList.remove('selected');
+      }
+      loadSettings(function() {
+        showScreen('login');
       });
     }
-    closeCamera();
-  }
 
-  function closeCamera() {
-    var modal = document.getElementById('camera-modal');
-    modal.classList.remove('active');
-    if (cameraStream) {
-      cameraStream.getTracks().forEach(function(track) { track.stop(); });
-      cameraStream = null;
+    function selectLoginRole(role) {
+      loginSelectedRole = role;
+      var btns = document.querySelectorAll('.role-btn');
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].classList.remove('selected');
+        if (btns[i].getAttribute('data-role') === role) {
+          btns[i].classList.add('selected');
+        }
+      }
+      $('login-password-wrap').classList.add('visible');
+      $('login-password').value = '';
+      $('login-password').focus();
+      $('login-btn').disabled = false;
     }
-    currentCameraCategory = null;
-    capturedImageData = null;
-    document.getElementById('camera-preview').srcObject = null;
-  }
 
-  function addPhotoToCategory(category, base64Data) {
-    if (capturedPhotos[category].length >= 3) {
-      showToast('Maximum 3 photos allowed', 'error');
-      return;
+    function doLogin() {
+      if (!loginSelectedRole) {
+        showToast('Please select a role', 'error');
+        return;
+      }
+      var password = $('login-password').value;
+      var expectedPassword = settingsCache[loginSelectedRole];
+
+      if (expectedPassword && expectedPassword !== '' && password !== expectedPassword) {
+        showToast('Incorrect password', 'error');
+        return;
+      }
+
+      currentRole = loginSelectedRole;
+      localStorage.setItem('currentRole', currentRole);
+      showScreen('main');
+      setupTabsForRole();
     }
-    capturedPhotos[category].push(base64Data);
-    renderThumbnails(category);
-  }
 
-  function removePhoto(category, index) {
-    capturedPhotos[category].splice(index, 1);
-    renderThumbnails(category);
-  }
+    function showSettings() {
+      if (settingsCache.staff !== undefined) {
+        $('setting-pw-staff').value = settingsCache.staff || '';
+        $('setting-pw-checker').value = settingsCache.checker || '';
+        $('setting-pw-foreman').value = settingsCache.foreman || '';
+      }
+      showScreen('settings');
+    }
 
-  function renderThumbnails(category) {
-    var container = document.getElementById('thumbs-' + category);
-    var counter = document.getElementById('counter-' + category);
-    container.innerHTML = '';
-    counter.textContent = capturedPhotos[category].length + '/3 photos';
+    function backToLogin() {
+      initLogin();
+    }
 
-    capturedPhotos[category].forEach(function(data, i) {
-      var wrap = document.createElement('div');
-      wrap.className = 'thumb-wrap';
-      var img = document.createElement('img');
-      img.src = data;
-      img.alt = category + ' photo ' + (i + 1);
-      img.onclick = function() {
-        openPhotoViewer(capturedPhotos[category], i, category);
+    function saveSettings() {
+      var staffPw = $('setting-pw-staff').value;
+      var checkerPw = $('setting-pw-checker').value;
+      var foremanPw = $('setting-pw-foreman').value;
+
+      var data = {
+        staff: staffPw || '',
+        checker: checkerPw || '',
+        foreman: foremanPw || ''
       };
-      var del = document.createElement('button');
-      del.className = 'thumb-delete';
-      del.innerHTML = '&#10005;';
-      del.onclick = function() { removePhoto(category, i); };
-      wrap.appendChild(img);
-      wrap.appendChild(del);
-      container.appendChild(wrap);
-    });
-  }
 
-  function compressPhoto(base64Data, callback) {
-    var img = new Image();
-    img.onload = function() {
-      var canvas = document.createElement('canvas');
-      var MAX_SIZE = 1024;
-      var w = img.width, h = img.height;
-      if (w > h && w > MAX_SIZE) { h = Math.round(h * MAX_SIZE / w); w = MAX_SIZE; }
-      else if (h > MAX_SIZE) { w = Math.round(w * MAX_SIZE / h); h = MAX_SIZE; }
-      canvas.width = w;
-      canvas.height = h;
-      var ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, w, h);
-      var quality = 0.7;
-      var result = canvas.toDataURL('image/jpeg', quality);
-      while (result.length > 100 * 1024 && quality > 0.2) {
-        quality -= 0.1;
-        result = canvas.toDataURL('image/jpeg', quality);
-      }
-      callback(result);
-    };
-    img.onerror = function() { callback(base64Data); };
-    img.src = base64Data;
-  }
-
-  // ==================== BARCODE SCANNER ====================
-  function openScanner(fieldId) {
-    currentBarcodeField = fieldId;
-    var modal = document.getElementById('scanner-modal');
-    modal.classList.add('active');
-
-    var viewport = document.getElementById('scanner-viewport');
-    if (typeof Html5Qrcode !== 'undefined') {
-      html5QrCode = new Html5Qrcode('scanner-viewport');
-      html5QrCode.start(
-        { facingMode: 'environment' },
-        { fps: 10, qrbox: { width: 250, height: 150 },
-          formatsToSupport: [
-            Html5QrcodeSupportedFormats.CODE_128,
-            Html5QrcodeSupportedFormats.CODE_39,
-            Html5QrcodeSupportedFormats.QR_CODE
-          ]
-        },
-        onBarcodeScanned,
-        function(errorMessage) { /* ignore scan errors */ }
-      ).catch(function(err) {
-        showToast('Scanner error: ' + err, 'error');
-      });
-    } else {
-      showToast('Barcode scanner library not loaded', 'error');
-    }
-  }
-
-  function onBarcodeScanned(decodedText) {
-    if (currentBarcodeField) {
-      document.getElementById(currentBarcodeField).value = decodedText;
-      showToast('Barcode scanned: ' + decodedText, 'success');
-    }
-    closeScanner();
-  }
-
-  function closeScanner() {
-    var modal = document.getElementById('scanner-modal');
-    modal.classList.remove('active');
-    if (html5QrCode) {
-      html5QrCode.stop().then(function() {
-        html5QrCode.clear();
-        html5QrCode = null;
-      }).catch(function() {
-        html5QrCode = null;
+      showLoading('Saving settings...');
+      apiCall('saveSettings', data, function(resp) {
+        if (resp && resp.success) {
+          settingsCache = { staff: staffPw || '', checker: checkerPw || '', foreman: foremanPw || '' };
+          showToast('Settings saved successfully', 'success');
+          backToLogin();
+        } else {
+          var err = (resp && resp.error) ? resp.error : 'Failed to save';
+          showToast('Error: ' + err, 'error');
+        }
       });
     }
-    currentBarcodeField = null;
-  }
 
-  // ==================== FORM SUBMISSION ====================
-  function validateForm() {
-    var required = ['receivedDate','cartonId','customerName','piNo','partNo','qty','packedBy'];
-    for (var i = 0; i < required.length; i++) {
-      var el = document.getElementById(required[i]);
-      if (!el || !el.value.trim()) {
-        showToast('Please fill in all required fields', 'error');
-        if (el) el.focus();
-        return false;
+    function setupTabsForRole() {
+      var navEntry = $('nav-entry');
+      var navChecker = $('nav-checker');
+      var navForeman = $('nav-foreman');
+
+      if (navEntry) navEntry.style.display = (currentRole === 'staff') ? 'flex' : 'none';
+      if (navChecker) navChecker.style.display = (currentRole === 'checker') ? 'flex' : 'none';
+      if (navForeman) navForeman.style.display = (currentRole === 'foreman') ? 'flex' : 'none';
+
+      if (currentRole === 'staff') showTab('entry');
+      else if (currentRole === 'checker') showTab('checker');
+      else if (currentRole === 'foreman') showTab('foreman');
+    }
+
+    // ============================================================
+    // API
+    // ============================================================
+    function apiCall(action, data, callback) {
+      var url = GAS_URL + '?action=' + encodeURIComponent(action);
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', url, true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.timeout = 60000;
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          hideLoading();
+          if (xhr.status === 200) {
+            try {
+              var resp = JSON.parse(xhr.responseText);
+              callback(resp);
+            } catch (e) {
+              callback({ success: false, error: 'Invalid JSON: ' + e.message });
+            }
+          } else {
+            callback({ success: false, error: 'HTTP ' + xhr.status });
+          }
+        }
+      };
+      xhr.onerror = function() { hideLoading(); callback({ success: false, error: 'Network error' }); };
+      xhr.ontimeout = function() { hideLoading(); callback({ success: false, error: 'Timeout' }); };
+      xhr.send(JSON.stringify(data));
+    }
+
+    function loadSettings(callback) {
+      showLoading('Loading...');
+      apiCall('getSettings', {}, function(resp) {
+        if (resp && resp.success && resp.settings) {
+          settingsCache = {
+            staff: resp.settings.staff || '',
+            checker: resp.settings.checker || '',
+            foreman: resp.settings.foreman || ''
+          };
+        } else {
+          settingsCache = { staff: '', checker: '', foreman: '' };
+        }
+        if (callback) callback();
+      });
+    }
+
+    function loadEntries(callback) {
+      apiCall('getEntries', {}, function(resp) {
+        if (resp && resp.success && resp.entries) {
+          allEntries = resp.entries;
+        } else {
+          allEntries = [];
+        }
+        if (callback) callback(allEntries);
+      });
+    }
+
+
+    // ============================================================
+    // DATA ENTRY TAB
+    // ============================================================
+    function validateForm() {
+      var receivedDate = $('field-receivedDate').value.trim();
+      var cartonId = $('field-cartonId').value.trim();
+      var customerName = $('field-customerName').value.trim();
+      var piNo = $('field-piNo').value.trim();
+      var partNo = $('field-partNo').value.trim();
+      var qty = $('field-qty').value.trim();
+      var packedBy = $('field-packedBy').value.trim();
+
+      if (!receivedDate) { showToast('Please enter Received Date', 'error'); return false; }
+      if (!cartonId) { showToast('Please enter Carton ID', 'error'); return false; }
+      if (!customerName) { showToast('Please enter Customer Name', 'error'); return false; }
+      if (!piNo) { showToast('Please enter P/I No.', 'error'); return false; }
+      if (!partNo) { showToast('Please enter Part No.', 'error'); return false; }
+      if (!qty || parseInt(qty, 10) <= 0) { showToast('Please enter a valid Quantity', 'error'); return false; }
+      if (!packedBy) { showToast('Please enter Packed By name', 'error'); return false; }
+      return true;
+    }
+
+    function submitForm() {
+      if (isSubmitting) {
+        showToast('Please wait, submission in progress', 'warning');
+        return;
       }
-    }
-    if (capturedPhotos.photoDoc.length === 0) {
-      showToast('Please capture at least 1 Photo Doc', 'error');
-      return false;
-    }
-    return true;
-  }
+      if (!validateForm()) return;
 
-  function submitForm() {
-    if (isSubmitting) return;
-    if (!validateForm()) return;
+      isSubmitting = true;
+      showLoading('Submitting...');
 
-    isSubmitting = true;
-    var btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> Submitting...';
+      var receivedDate = $('field-receivedDate').value.trim();
+      var cartonId = $('field-cartonId').value.trim();
+      var customerName = $('field-customerName').value.trim();
+      var piNo = $('field-piNo').value.trim();
+      var partNo = $('field-partNo').value.trim();
+      var qty = parseInt($('field-qty').value.trim(), 10);
+      var packedBy = $('field-packedBy').value.trim();
+      var resubmitId = $('field-resubmitRowId').value;
 
-    var payload = {
-      receivedDate: document.getElementById('receivedDate').value,
-      cartonId: document.getElementById('cartonId').value.trim(),
-      customerName: document.getElementById('customerName').value.trim(),
-      piNo: document.getElementById('piNo').value.trim(),
-      partNo: document.getElementById('partNo').value.trim(),
-      qty: parseInt(document.getElementById('qty').value) || 0,
-      packedBy: document.getElementById('packedBy').value.trim(),
-      photos: {
+      var photos = {
         photoDoc: capturedPhotos.photoDoc,
         photoPartBag: capturedPhotos.photoPartBag,
         photoInnerBox: capturedPhotos.photoInnerBox,
         photoCarton: capturedPhotos.photoCarton
-      }
-    };
+      };
 
-    if (resubmitRowId) {
-      payload.rowId = resubmitRowId;
-      apiCall('resubmitEntry', payload, function(resp) {
-        isSubmitting = false;
-        btn.disabled = false;
-        btn.innerHTML = 'Submit';
-        if (resp && resp.success) {
-          showToast('Entry resubmitted successfully!', 'success');
-          clearForm();
-          resubmitRowId = null;
-          loadRejectedItems();
-        } else {
-          showToast('Error: ' + (resp && resp.error ? resp.error : 'Unknown error'), 'error');
-        }
-      });
-    } else {
-      apiCall('submitEntry', payload, function(resp) {
-        isSubmitting = false;
-        btn.disabled = false;
-        btn.innerHTML = 'Submit';
-        if (resp && resp.success) {
-          showToast('Entry submitted successfully!', 'success');
-          clearForm();
-        } else {
-          showToast('Error: ' + (resp && resp.error ? resp.error : 'Unknown error'), 'error');
-        }
-      });
-    }
-  }
+      var payload = {
+        receivedDate: receivedDate,
+        cartonId: cartonId,
+        customerName: customerName,
+        piNo: piNo,
+        partNo: partNo,
+        qty: qty,
+        packedBy: packedBy,
+        photos: photos
+      };
 
-  function clearForm() {
-    var fields = ['cartonId','customerName','piNo','partNo','qty','packedBy'];
-    fields.forEach(function(f) { document.getElementById(f).value = ''; });
-    document.getElementById('receivedDate').valueAsDate = new Date();
-    capturedPhotos = { photoDoc: [], photoPartBag: [], photoInnerBox: [], photoCarton: [] };
-    ['photoDoc','photoPartBag','photoInnerBox','photoCarton'].forEach(function(cat) {
-      renderThumbnails(cat);
-    });
-    resubmitRowId = null;
-  }
-
-  // ==================== API CALLS ====================
-  function apiCall(action, data, callback) {
-    var url = GAS_URL + '?action=' + encodeURIComponent(action);
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', url, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.timeout = 60000;
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          try {
-            var resp = JSON.parse(xhr.responseText);
-            callback(resp);
-          } catch (e) {
-            callback({ success: false, error: 'Invalid JSON response' });
+      if (resubmitId) {
+        payload.rowId = resubmitId;
+        apiCall('resubmitEntry', payload, function(resp) {
+          isSubmitting = false;
+          hideLoading();
+          if (resp && resp.success) {
+            showToast('Entry resubmitted successfully', 'success');
+            clearForm();
+            loadRejectedItems();
+          } else {
+            var err = (resp && resp.error) ? resp.error : 'Resubmit failed';
+            showToast('Error: ' + err, 'error');
           }
+        });
+      } else {
+        apiCall('submitEntry', payload, function(resp) {
+          isSubmitting = false;
+          hideLoading();
+          if (resp && resp.success) {
+            showToast('Entry submitted successfully', 'success');
+            clearForm();
+          } else {
+            var err = (resp && resp.error) ? resp.error : 'Submit failed';
+            showToast('Error: ' + err, 'error');
+          }
+        });
+      }
+    }
+
+    function clearForm() {
+      $('field-receivedDate').value = '';
+      $('field-cartonId').value = '';
+      $('field-customerName').value = '';
+      $('field-piNo').value = '';
+      $('field-partNo').value = '';
+      $('field-qty').value = '';
+      $('field-packedBy').value = '';
+      $('field-resubmitRowId').value = '';
+      resubmitRowId = null;
+      capturedPhotos = { photoDoc: [], photoPartBag: [], photoInnerBox: [], photoCarton: [] };
+      renderThumbnails('photoDoc');
+      renderThumbnails('photoPartBag');
+      renderThumbnails('photoInnerBox');
+      renderThumbnails('photoCarton');
+      $('submit-btn-text').innerHTML = '&#10004; Submit Entry';
+    }
+
+    function loadRejectedItems() {
+      if (currentRole !== 'staff') return;
+      var packedBy = $('field-packedBy').value.trim();
+      if (!packedBy) {
+        $('rejected-section').style.display = 'none';
+        return;
+      }
+      apiCall('getRejectedForStaff', { packedBy: packedBy }, function(resp) {
+        if (resp && resp.success && resp.entries && resp.entries.length > 0) {
+          $('rejected-section').style.display = 'block';
+          $('rejected-count').textContent = resp.entries.length;
+          rejectedItemsMap = {};
+          for (var i = 0; i < resp.entries.length; i++) {
+            rejectedItemsMap[resp.entries[i].rowId] = resp.entries[i];
+          }
+          renderRejectedItems(resp.entries);
         } else {
-          callback({ success: false, error: 'HTTP ' + xhr.status });
+          $('rejected-section').style.display = 'none';
+          rejectedItemsMap = {};
         }
-      }
-    };
-    xhr.onerror = function() { callback({ success: false, error: 'Network error' }); };
-    xhr.ontimeout = function() { callback({ success: false, error: 'Request timeout' }); };
-    xhr.send(JSON.stringify(data));
-  }
-
-  function loadEntries(status, callback) {
-    var payload = status ? { status: status } : {};
-    apiCall('getEntries', payload, function(resp) {
-      if (resp && resp.success && resp.entries) {
-        entries = resp.entries;
-        callback(null, resp.entries);
-      } else {
-        callback(resp && resp.error ? resp.error : 'Failed to load entries', null);
-      }
-    });
-  }
-
-  // ==================== CHECKER TAB ====================
-  function refreshChecker() {
-    showLoading('Loading entries...');
-    loadEntries(null, function(err, data) {
-      hideLoading();
-      if (err) {
-        showToast('Error loading entries: ' + err, 'error');
-        document.getElementById('checkerList').innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128218;</div><p>Failed to load entries.<br>Tap Refresh to try again.</p></div>';
-        return;
-      }
-      renderCheckerEntries(data);
-    });
-  }
-
-  function renderCheckerEntries(data) {
-    var container = document.getElementById('checkerList');
-    var filtered = checkerFilter === 'all' ? data : data.filter(function(e) { return e.status === checkerFilter; });
-    if (filtered.length === 0) {
-      container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128218;</div><p>No entries found</p></div>';
-      return;
-    }
-    container.innerHTML = '';
-    filtered.forEach(function(entry) {
-      container.appendChild(createEntryCard(entry, 'checker'));
-    });
-  }
-
-  function checkerAction(rowId, action) {
-    var nameInput = document.getElementById('checker-name-' + rowId);
-    var remarkInput = document.getElementById('checker-remark-' + rowId);
-    var name = nameInput ? nameInput.value.trim() : '';
-    if (!name) { showToast('Please enter Checker Name', 'error'); return; }
-
-    showLoading('Processing...');
-    var endpoint = action === 'pass' ? 'checkerReview' : 'checkerReject';
-    apiCall(endpoint, { rowId: rowId, checkerBy: name, checkerRemark: remarkInput ? remarkInput.value.trim() : '' }, function(resp) {
-      hideLoading();
-      if (resp && resp.success) {
-        showToast(action === 'pass' ? 'Entry approved!' : 'Entry rejected!', 'success');
-        refreshChecker();
-      } else {
-        showToast('Error: ' + (resp && resp.error ? resp.error : 'Unknown error'), 'error');
-      }
-    });
-  }
-
-  // ==================== FOREMAN TAB ====================
-  function refreshForeman() {
-    showLoading('Loading entries...');
-    loadEntries(null, function(err, data) {
-      hideLoading();
-      if (err) {
-        showToast('Error loading entries: ' + err, 'error');
-        document.getElementById('foremanList').innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128218;</div><p>Failed to load entries.<br>Tap Refresh to try again.</p></div>';
-        return;
-      }
-      // Only show entries that have been checked (CHECKER_APPROVED, FOREMAN_APPROVED, FOREMAN_REJECTED)
-      var foremanEntries = data.filter(function(e) {
-        return e.status === 'CHECKER_APPROVED' || e.status === 'FOREMAN_APPROVED' || e.status === 'FOREMAN_REJECTED';
       });
-      renderForemanEntries(foremanEntries);
-    });
-  }
-
-  function renderForemanEntries(data) {
-    var container = document.getElementById('foremanList');
-    var filtered = foremanFilter === 'all' ? data : data.filter(function(e) { return e.status === foremanFilter; });
-    if (filtered.length === 0) {
-      container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128218;</div><p>No entries pending foreman review</p></div>';
-      return;
     }
-    container.innerHTML = '';
-    filtered.forEach(function(entry) {
-      container.appendChild(createEntryCard(entry, 'foreman'));
-    });
-  }
 
-  function foremanAction(rowId, action) {
-    var nameInput = document.getElementById('foreman-name-' + rowId);
-    var remarkInput = document.getElementById('foreman-remark-' + rowId);
-    var name = nameInput ? nameInput.value.trim() : '';
-    if (!name) { showToast('Please enter Foreman Name', 'error'); return; }
-
-    showLoading('Processing...');
-    var endpoint = action === 'pass' ? 'foremanReview' : 'foremanReject';
-    apiCall(endpoint, { rowId: rowId, verifiedBy: name, verifiedRemark: remarkInput ? remarkInput.value.trim() : '' }, function(resp) {
-      hideLoading();
-      if (resp && resp.success) {
-        showToast(action === 'pass' ? 'Entry approved!' : 'Entry rejected!', 'success');
-        refreshForeman();
-      } else {
-        showToast('Error: ' + (resp && resp.error ? resp.error : 'Unknown error'), 'error');
+    function renderRejectedItems(items) {
+      var html = '';
+      for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        html += '<div class="rejected-card">';
+        html += '<div class="rejected-card-header">';
+        html += '<span class="rejected-card-title">' + esc(item.cartonId) + '</span>';
+        html += '<button type="button" class="btn btn-primary btn-small" onclick="resubmitById(\'' + esc(item.rowId) + '\')">Resubmit</button>';
+        html += '</div>';
+        html += '<div class="rejected-card-info">';
+        html += 'Customer: ' + esc(item.customerName) + ' | Part: ' + esc(item.partNo);
+        html += '</div>';
+        if (item.rejectedRemark) {
+          html += '<div class="rejected-card-reason">Reason: ' + esc(item.rejectedRemark) + '</div>';
+        } else if (item.verifiedRemark) {
+          html += '<div class="rejected-card-reason">Reason: ' + esc(item.verifiedRemark) + '</div>';
+        }
+        html += '</div>';
       }
-    });
-  }
-
-  // ==================== FILTER ENTRIES ====================
-  function filterEntries(tab, filter) {
-    if (tab === 'checker') {
-      checkerFilter = filter;
-      document.querySelectorAll('#tab-checker .filter-tab').forEach(function(el) { el.classList.remove('active'); });
-      document.querySelector('#tab-checker .filter-tab[data-filter="' + filter + '"]').classList.add('active');
-      renderCheckerEntries(entries);
-    } else {
-      foremanFilter = filter;
-      document.querySelectorAll('#tab-foreman .filter-tab').forEach(function(el) { el.classList.remove('active'); });
-      document.querySelector('#tab-foreman .filter-tab[data-filter="' + filter + '"]').classList.add('active');
-      var fe = entries.filter(function(e) { return e.status === 'CHECKER_APPROVED' || e.status === 'FOREMAN_APPROVED' || e.status === 'FOREMAN_REJECTED'; });
-      renderForemanEntries(fe);
-    }
-  }
-
-  // ==================== ENTRY CARD FACTORY ====================
-  function createEntryCard(entry, tabRole) {
-    var card = document.createElement('div');
-    card.className = 'entry-card status-' + entry.status;
-    card.setAttribute('data-rowid', entry.rowId);
-
-    var statusLabels = {
-      'NEW': 'NEW', 'CHECKER_APPROVED': 'CHK OK', 'CHECKER_REJECTED': 'CHK REJ',
-      'FOREMAN_APPROVED': 'APPROVED', 'FOREMAN_REJECTED': 'REJECTED'
-    };
-
-    // Header
-    var header = document.createElement('div');
-    header.className = 'entry-header';
-    header.innerHTML = '<span class="entry-carton">Carton: ' + esc(entry.cartonId) + '</span>' +
-      '<span class="status-badge status-' + entry.status + '">' + (statusLabels[entry.status] || entry.status) + '</span>';
-    card.appendChild(header);
-
-    // Info
-    var info = document.createElement('div');
-    info.className = 'entry-info';
-    info.innerHTML =
-      '<strong>Customer:</strong> ' + esc(entry.customerName) + '<br>' +
-      '<strong>P/I No.:</strong> ' + esc(entry.piNo) + ' &nbsp;|&nbsp; <strong>Part:</strong> ' + esc(entry.partNo) + '<br>' +
-      '<strong>QTY:</strong> ' + esc('' + entry.qty) + ' &nbsp;|&nbsp; <strong>Packed By:</strong> ' + esc(entry.packedBy) + '<br>' +
-      '<strong>Received:</strong> ' + formatDate(entry.receivedDate);
-    card.appendChild(info);
-
-    // Checker info (for foreman tab)
-    if ((tabRole === 'foreman' || entry.status !== 'NEW') && entry.checkerBy) {
-      var cinfo = document.createElement('div');
-      cinfo.className = 'checker-info';
-      cinfo.innerHTML = '&#10003; Checked by <strong>' + esc(entry.checkerBy) + '</strong>' +
-        (entry.checkerDate ? ' on ' + formatDate(entry.checkerDate) : '') +
-        (entry.checkerRemark ? '<br>Remark: "' + esc(entry.checkerRemark) + '"' : '');
-      card.appendChild(cinfo);
+      $('rejected-list').innerHTML = html;
     }
 
-    // Foreman info (if available)
-    if (entry.verifiedBy) {
-      var finfo = document.createElement('div');
-      finfo.className = 'checker-info';
-      finfo.style.background = '#e3f2fd';
-      finfo.style.color = '#1565c0';
-      finfo.innerHTML = '&#10003;&#10003; Approved by <strong>' + esc(entry.verifiedBy) + '</strong>' +
-        (entry.verifiedDate ? ' on ' + formatDate(entry.verifiedDate) : '') +
-        (entry.verifiedRemark ? '<br>Remark: "' + esc(entry.verifiedRemark) + '"' : '');
-      card.appendChild(finfo);
+    function toggleRejected() {
+      $('rejected-list').classList.toggle('visible');
+      var arrow = $('rejected-arrow');
+      if ($('rejected-list').classList.contains('visible')) {
+        arrow.innerHTML = '&#9650;';
+      } else {
+        arrow.innerHTML = '&#9660;';
+      }
     }
 
-    // Rejection info
-    if (entry.rejectedBy) {
-      var rinfo = document.createElement('div');
-      rinfo.className = 'checker-info';
-      rinfo.style.background = '#ffebee';
-      rinfo.style.color = '#c62828';
-      rinfo.innerHTML = '&#10007; Rejected by <strong>' + esc(entry.rejectedBy) + '</strong>' +
-        (entry.rejectedDate ? ' on ' + formatDate(entry.rejectedDate) : '') +
-        (entry.rejectedRemark ? '<br>Reason: ' + esc(entry.rejectedRemark) : '');
-      card.appendChild(rinfo);
+    function resubmitById(rowId) {
+      var entry = rejectedItemsMap[rowId];
+      if (!entry) {
+        showToast('Item not found', 'error');
+        return;
+      }
+      populateFormForResubmit(entry);
     }
 
-    // Photos - backend returns full Drive URLs, use directly
-    if (entry.photos) {
-      card.appendChild(document.createElement('div')).className = 'entry-divider';
-      var photoContainer = document.createElement('div');
-      photoContainer.className = 'entry-photos';
-      var cats = { photoDoc: 'Photo Doc', photoPartBag: 'Photo Part &amp; Bag', photoInnerBox: 'Photo Inner Box', photoCarton: 'Photo Carton' };
-      for (var cat in cats) {
-        var urls = entry.photos[cat];
-        if (urls && urls.length > 0) {
-          var plabel = document.createElement('div');
-          plabel.className = 'entry-photo-label';
-          plabel.innerHTML = '&#128248; ' + cats[cat] + ' (' + urls.length + ')';
-          photoContainer.appendChild(plabel);
-          var thumbs = document.createElement('div');
-          thumbs.className = 'entry-thumbs';
-          urls.forEach(function(url, idx) {
-            var img = document.createElement('img');
-            img.src = url;
-            img.alt = cats[cat] + ' ' + (idx + 1);
-            img.loading = 'lazy';
-            img.onclick = function() { openPhotoViewer(urls, idx, cats[cat]); };
-            thumbs.appendChild(img);
+    function populateFormForResubmit(entry) {
+      $('field-receivedDate').value = entry.receivedDate || '';
+      $('field-cartonId').value = entry.cartonId || '';
+      $('field-customerName').value = entry.customerName || '';
+      $('field-piNo').value = entry.piNo || '';
+      $('field-partNo').value = entry.partNo || '';
+      $('field-qty').value = entry.qty || '';
+      $('field-packedBy').value = entry.packedBy || '';
+      $('field-resubmitRowId').value = entry.rowId;
+      resubmitRowId = entry.rowId;
+
+      // Clear photos - Drive URLs cannot be reused as base64, user must retake
+      capturedPhotos = { photoDoc: [], photoPartBag: [], photoInnerBox: [], photoCarton: [] };
+      renderThumbnails('photoDoc');
+      renderThumbnails('photoPartBag');
+      renderThumbnails('photoInnerBox');
+      renderThumbnails('photoCarton');
+
+      $('submit-btn-text').innerHTML = '&#128260; Resubmit Entry';
+      showToast('Form loaded. Please retake all photos before resubmitting.', 'success');
+
+      // Scroll to top
+      $('tab-entry').scrollTop = 0;
+    }
+
+    // ============================================================
+    // CAMERA
+    // ============================================================
+    function openCamera(category) {
+      currentCameraCategory = category;
+      capturedImageData = null;
+      $('camera-modal').classList.add('active');
+      $('capture-wrap').classList.remove('hidden');
+      $('preview-actions').classList.remove('visible');
+
+      var video = $('camera-video');
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+          .then(function(stream) {
+            cameraStream = stream;
+            video.srcObject = stream;
+            video.play();
+          })
+          .catch(function(err) {
+            showToast('Camera error: ' + err.message, 'error');
+            closeCamera();
           });
-          photoContainer.appendChild(thumbs);
+      } else {
+        showToast('Camera not supported on this device', 'error');
+        closeCamera();
+      }
+    }
+
+    function capturePhoto() {
+      var video = $('camera-video');
+      var canvas = $('camera-canvas');
+      if (!video.videoWidth) return;
+
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0);
+
+      var base64 = canvas.toDataURL('image/jpeg', 0.9);
+      compressPhoto(base64, function(compressed) {
+        capturedImageData = compressed;
+        video.pause();
+        $('capture-wrap').classList.add('hidden');
+        $('preview-actions').classList.add('visible');
+      });
+    }
+
+    function retakePhoto() {
+      capturedImageData = null;
+      var video = $('camera-video');
+      video.play();
+      $('capture-wrap').classList.remove('hidden');
+      $('preview-actions').classList.remove('visible');
+    }
+
+    function confirmPhoto() {
+      if (capturedImageData && currentCameraCategory) {
+        addPhotoToCategory(currentCameraCategory, capturedImageData);
+      }
+      closeCamera();
+    }
+
+    function closeCamera() {
+      var video = $('camera-video');
+      video.pause();
+      if (cameraStream) {
+        var tracks = cameraStream.getTracks();
+        for (var i = 0; i < tracks.length; i++) {
+          tracks[i].stop();
+        }
+        cameraStream = null;
+      }
+      video.srcObject = null;
+      capturedImageData = null;
+      $('camera-modal').classList.remove('active');
+    }
+
+    function addPhotoToCategory(category, base64Data) {
+      capturedPhotos[category].push(base64Data);
+      renderThumbnails(category);
+    }
+
+    function removePhoto(category, index) {
+      capturedPhotos[category].splice(index, 1);
+      renderThumbnails(category);
+    }
+
+    function renderThumbnails(category) {
+      var container = $('thumbs-' + category);
+      var countEl = $('count-' + category);
+      if (countEl) countEl.textContent = capturedPhotos[category].length;
+
+      var html = '';
+      for (var i = 0; i < capturedPhotos[category].length; i++) {
+        var data = capturedPhotos[category][i];
+        var photoId = category + '-' + i;
+        html += '<div class="photo-thumb-wrap">';
+        html += '<img src="' + data + '" class="photo-thumb" onclick="openLocalPhotoViewer(\'' + category + '\', ' + i + ')" id="thumb-' + photoId + '">';
+        html += '<button type="button" class="photo-del" onclick="removePhoto(\'' + category + '\', ' + i + ')">&#10005;</button>';
+        html += '</div>';
+      }
+      if (container) container.innerHTML = html;
+    }
+
+    function compressPhoto(base64Data, callback) {
+      var img = new Image();
+      img.onload = function() {
+        var canvas = document.createElement('canvas');
+        var MAX_SIZE = 1024;
+        var w = img.width;
+        var h = img.height;
+        if (w > h && w > MAX_SIZE) { h = Math.round(h * MAX_SIZE / w); w = MAX_SIZE; }
+        else if (h > MAX_SIZE) { w = Math.round(w * MAX_SIZE / h); h = MAX_SIZE; }
+        canvas.width = w;
+        canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        var quality = 0.7;
+        var result = canvas.toDataURL('image/jpeg', quality);
+        while (result.length > 100 * 1024 && quality > 0.2) {
+          quality -= 0.1;
+          result = canvas.toDataURL('image/jpeg', quality);
+        }
+        callback(result);
+      };
+      img.onerror = function() { callback(base64Data); };
+      img.src = base64Data;
+    }
+
+
+    // ============================================================
+    // BARCODE SCANNER
+    // ============================================================
+    function openScanner(fieldId) {
+      currentBarcodeField = fieldId;
+      $('scanner-modal').classList.add('active');
+
+      if (!html5QrCode) {
+        html5QrCode = new Html5Qrcode('scanner-viewport');
+      }
+
+      html5QrCode.start(
+        { facingMode: 'environment' },
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        function(decodedText) {
+          onBarcodeScanned(decodedText);
+        },
+        function() {
+          // ignore errors during scanning
+        }
+      ).catch(function(err) {
+        showToast('Scanner error: ' + err.message, 'error');
+        closeScanner();
+      });
+    }
+
+    function onBarcodeScanned(decodedText) {
+      if (currentBarcodeField) {
+        $(currentBarcodeField).value = decodedText;
+        closeScanner();
+        showToast('Barcode scanned: ' + decodedText, 'success');
+      }
+    }
+
+    function closeScanner() {
+      if (html5QrCode) {
+        html5QrCode.stop().then(function() {
+          // stopped
+        }).catch(function() {
+          // ignore
+        });
+      }
+      $('scanner-modal').classList.remove('active');
+      currentBarcodeField = null;
+    }
+
+    // ============================================================
+    // PHOTO VIEWER
+    // ============================================================
+    function openLocalPhotoViewer(category, index) {
+      var urls = capturedPhotos[category];
+      if (!urls || urls.length === 0) return;
+      viewerState = { urls: urls, index: index, category: category };
+      $('photo-viewer').classList.add('active');
+      updatePhotoViewer();
+    }
+
+    function openPhotoViewer(urls, index, category) {
+      if (!urls || urls.length === 0) return;
+      viewerState = { urls: urls, index: index || 0, category: category || '' };
+      $('photo-viewer').classList.add('active');
+      updatePhotoViewer();
+    }
+
+    function updatePhotoViewer() {
+      var img = $('viewer-img');
+      var label = $('viewer-label');
+      var counter = $('viewer-counter');
+
+      if (viewerState.urls.length === 0) {
+        closePhotoViewer();
+        return;
+      }
+
+      var url = viewerState.urls[viewerState.index];
+      if (url && url.length > 500) {
+        // It's a base64 data URL
+        img.src = url;
+      } else if (url) {
+        img.src = url;
+      } else {
+        img.style.display = 'none';
+      }
+
+      var catName = viewerState.category;
+      if (catName === 'photoDoc') catName = 'Doc Label';
+      else if (catName === 'photoPartBag') catName = 'Part/Bag';
+      else if (catName === 'photoInnerBox') catName = 'Inner Box';
+      else if (catName === 'photoCarton') catName = 'Carton';
+      label.textContent = catName;
+      counter.textContent = (viewerState.index + 1) + ' / ' + viewerState.urls.length;
+    }
+
+    function closePhotoViewer() {
+      $('photo-viewer').classList.remove('active');
+      $('viewer-img').src = '';
+      viewerState = { urls: [], index: 0, category: '' };
+    }
+
+    function viewerPrev() {
+      if (viewerState.urls.length === 0) return;
+      viewerState.index = viewerState.index - 1;
+      if (viewerState.index < 0) viewerState.index = viewerState.urls.length - 1;
+      updatePhotoViewer();
+    }
+
+    function viewerNext() {
+      if (viewerState.urls.length === 0) return;
+      viewerState.index = viewerState.index + 1;
+      if (viewerState.index >= viewerState.urls.length) viewerState.index = 0;
+      updatePhotoViewer();
+    }
+
+    // ============================================================
+    // CHECKER TAB
+    // ============================================================
+    function setCheckerFilter(filter, btnEl) {
+      checkerFilter = filter;
+      var btns = document.querySelectorAll('#tab-checker .filter-btn');
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].classList.remove('active');
+      }
+      if (btnEl) btnEl.classList.add('active');
+      refreshChecker();
+    }
+
+    function refreshChecker() {
+      showLoading('Loading entries...');
+      loadEntries(function(entries) {
+        renderCheckerEntries(entries);
+        hideLoading();
+      });
+    }
+
+    function renderCheckerEntries(entries) {
+      var container = $('checker-entries');
+      var filtered = [];
+      for (var i = 0; i < entries.length; i++) {
+        var e = entries[i];
+        var status = e.status || 'NEW';
+        if (checkerFilter === 'all') {
+          filtered.push(e);
+        } else if (checkerFilter === 'pending' && (status === 'NEW' || status === 'CHECKER_REJECTED')) {
+          filtered.push(e);
+        } else if (checkerFilter === 'approved' && (status === 'CHECKER_APPROVED' || status === 'FOREMAN_APPROVED')) {
+          filtered.push(e);
+        } else if (checkerFilter === 'rejected' && (status === 'CHECKER_REJECTED' || status === 'FOREMAN_REJECTED')) {
+          filtered.push(e);
         }
       }
-      card.appendChild(photoContainer);
-    }
 
-    // Action section
-    if (tabRole === 'checker' && entry.status === 'NEW') {
-      var divider = document.createElement('div');
-      divider.className = 'entry-divider';
-      card.appendChild(divider);
-      var review = document.createElement('div');
-      review.className = 'review-section';
-      review.innerHTML =
-        '<input type="text" id="checker-name-' + entry.rowId + '" class="review-input" placeholder="Checker Name *">' +
-        '<input type="text" id="checker-remark-' + entry.rowId + '" class="review-input" placeholder="Remark (optional)">' +
-        '<div class="review-buttons">' +
-        '<button class="btn-pass" onclick="checkerAction(\'' + entry.rowId + '\', \'pass\')">&#9989; PASS</button>' +
-        '<button class="btn-reject" onclick="checkerAction(\'' + entry.rowId + '\', \'reject\')">&#10060; REJECT</button>' +
-        '</div>';
-      card.appendChild(review);
-    }
-
-    if (tabRole === 'foreman' && entry.status === 'CHECKER_APPROVED') {
-      var divider2 = document.createElement('div');
-      divider2.className = 'entry-divider';
-      card.appendChild(divider2);
-      var review2 = document.createElement('div');
-      review2.className = 'review-section';
-      review2.innerHTML =
-        '<input type="text" id="foreman-name-' + entry.rowId + '" class="review-input" placeholder="Foreman Name *">' +
-        '<input type="text" id="foreman-remark-' + entry.rowId + '" class="review-input" placeholder="Remark (optional)">' +
-        '<div class="review-buttons">' +
-        '<button class="btn-pass" onclick="foremanAction(\'' + entry.rowId + '\', \'pass\')">&#9989; PASS</button>' +
-        '<button class="btn-reject" onclick="foremanAction(\'' + entry.rowId + '\', \'reject\')">&#10060; REJECT</button>' +
-        '</div>';
-      card.appendChild(review2);
-    }
-
-    return card;
-  }
-
-  // ==================== PHOTO VIEWER ====================
-  function openPhotoViewer(urls, currentIndex, category) {
-    viewerState = { urls: urls, index: currentIndex, category: category };
-    updatePhotoViewer();
-    document.getElementById('photo-viewer').classList.add('active');
-  }
-
-  function updatePhotoViewer() {
-    var img = document.getElementById('photo-viewer-img');
-    var label = document.getElementById('photoViewerLabel');
-    img.src = viewerState.urls[viewerState.index];
-    label.innerHTML = viewerState.category + ' &mdash; ' + (viewerState.index + 1) + '/' + viewerState.urls.length;
-  }
-
-  function closePhotoViewer() {
-    document.getElementById('photo-viewer').classList.remove('active');
-    document.getElementById('photo-viewer-img').src = '';
-  }
-
-  function viewerPrev() {
-    if (viewerState.index > 0) { viewerState.index--; updatePhotoViewer(); }
-  }
-
-  function viewerNext() {
-    if (viewerState.index < viewerState.urls.length - 1) { viewerState.index++; updatePhotoViewer(); }
-  }
-
-  // Touch/swipe support for photo viewer
-  (function() {
-    var viewer = document.getElementById('photo-viewer');
-    var startX = 0;
-    viewer.addEventListener('touchstart', function(e) { startX = e.changedTouches[0].screenX; }, { passive: true });
-    viewer.addEventListener('touchend', function(e) {
-      var endX = e.changedTouches[0].screenX;
-      var diff = startX - endX;
-      if (Math.abs(diff) > 50) {
-        if (diff > 0) viewerNext(); else viewerPrev();
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128196;</div><p>No entries found</p></div>';
+        return;
       }
-    }, { passive: true });
-  })();
 
-  // ==================== REJECTED ITEMS ====================
-  var rejectedItemsLookup = {};
+      var html = '';
+      for (var i = 0; i < filtered.length; i++) {
+        html += createEntryCard(filtered[i], 'checker');
+      }
+      container.innerHTML = html;
+    }
 
-  function loadRejectedItems() {
-    var packedBy = document.getElementById('packedBy').value.trim();
-    if (!packedBy) return;
-    apiCall('getRejectedForStaff', { packedBy: packedBy }, function(resp) {
-      if (resp && resp.success && resp.entries && resp.entries.length > 0) {
-        renderRejectedItems(resp.entries);
+    function checkerAction(rowId, action) {
+      var checkerName = $('checker-name-' + rowId);
+      var checkerRemark = $('checker-remark-' + rowId);
+      var name = checkerName ? checkerName.value.trim() : '';
+      var remark = checkerRemark ? checkerRemark.value.trim() : '';
+
+      if (!name) { showToast('Please enter Checker name', 'error'); return; }
+
+      if (action === 'pass') {
+        showLoading('Approving...');
+        apiCall('checkerReview', {
+          rowId: rowId,
+          checkerBy: name,
+          checkerRemark: remark,
+          status: 'CHECKER_APPROVED'
+        }, function(resp) {
+          if (resp && resp.success) {
+            showToast('Entry approved', 'success');
+            refreshChecker();
+          } else {
+            var err = (resp && resp.error) ? resp.error : 'Approval failed';
+            showToast('Error: ' + err, 'error');
+          }
+        });
       } else {
-        document.getElementById('rejectedSection').style.display = 'none';
+        if (!remark) { showToast('Please enter a rejection reason', 'error'); return; }
+        showLoading('Rejecting...');
+        apiCall('checkerReject', {
+          rowId: rowId,
+          checkerBy: name,
+          checkerRemark: remark,
+          status: 'CHECKER_REJECTED'
+        }, function(resp) {
+          if (resp && resp.success) {
+            showToast('Entry rejected', 'success');
+            refreshChecker();
+          } else {
+            var err = (resp && resp.error) ? resp.error : 'Rejection failed';
+            showToast('Error: ' + err, 'error');
+          }
+        });
+      }
+    }
+
+    // ============================================================
+    // FOREMAN TAB
+    // ============================================================
+    function setForemanFilter(filter, btnEl) {
+      foremanFilter = filter;
+      var btns = document.querySelectorAll('#tab-foreman .filter-btn');
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].classList.remove('active');
+      }
+      if (btnEl) btnEl.classList.add('active');
+      refreshForeman();
+    }
+
+    function refreshForeman() {
+      showLoading('Loading entries...');
+      loadEntries(function(entries) {
+        renderForemanEntries(entries);
+        hideLoading();
+      });
+    }
+
+    function renderForemanEntries(entries) {
+      var container = $('foreman-entries');
+      var filtered = [];
+      for (var i = 0; i < entries.length; i++) {
+        var e = entries[i];
+        var status = e.status || 'NEW';
+        if (foremanFilter === 'all') {
+          filtered.push(e);
+        } else if (foremanFilter === 'pending' && (status === 'CHECKER_APPROVED' || status === 'FOREMAN_REJECTED')) {
+          filtered.push(e);
+        } else if (foremanFilter === 'approved' && status === 'FOREMAN_APPROVED') {
+          filtered.push(e);
+        } else if (foremanFilter === 'rejected' && status === 'FOREMAN_REJECTED') {
+          filtered.push(e);
+        }
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128196;</div><p>No entries found</p></div>';
+        return;
+      }
+
+      var html = '';
+      for (var i = 0; i < filtered.length; i++) {
+        html += createEntryCard(filtered[i], 'foreman');
+      }
+      container.innerHTML = html;
+    }
+
+    function foremanAction(rowId, action) {
+      var foremanName = $('foreman-name-' + rowId);
+      var foremanRemark = $('foreman-remark-' + rowId);
+      var name = foremanName ? foremanName.value.trim() : '';
+      var remark = foremanRemark ? foremanRemark.value.trim() : '';
+
+      if (!name) { showToast('Please enter Foreman name', 'error'); return; }
+
+      if (action === 'pass') {
+        showLoading('Approving...');
+        apiCall('foremanReview', {
+          rowId: rowId,
+          verifiedBy: name,
+          verifiedRemark: remark,
+          status: 'FOREMAN_APPROVED'
+        }, function(resp) {
+          if (resp && resp.success) {
+            showToast('Entry approved', 'success');
+            refreshForeman();
+          } else {
+            var err = (resp && resp.error) ? resp.error : 'Approval failed';
+            showToast('Error: ' + err, 'error');
+          }
+        });
+      } else {
+        if (!remark) { showToast('Please enter a rejection reason', 'error'); return; }
+        showLoading('Rejecting...');
+        apiCall('foremanReject', {
+          rowId: rowId,
+          verifiedBy: name,
+          verifiedRemark: remark,
+          status: 'FOREMAN_REJECTED'
+        }, function(resp) {
+          if (resp && resp.success) {
+            showToast('Entry rejected', 'success');
+            refreshForeman();
+          } else {
+            var err = (resp && resp.error) ? resp.error : 'Rejection failed';
+            showToast('Error: ' + err, 'error');
+          }
+        });
+      }
+    }
+
+
+    // ============================================================
+    // SHARED CARD BUILDER
+    // ============================================================
+    function createEntryCard(entry, tabRole) {
+      var html = '<div class="entry-card status-' + esc(entry.status) + '">';
+
+      // Header: Carton ID + Status badge
+      html += '<div class="entry-header">';
+      html += '<span class="entry-carton">' + esc(entry.cartonId) + '</span>';
+      html += '<span class="status-badge status-' + esc(entry.status) + '">' + formatStatusLabel(entry.status) + '</span>';
+      html += '</div>';
+
+      // Info grid
+      html += '<div class="entry-info">';
+      html += '<div class="entry-info-line"><span class="label">Date:</span> ' + esc(entry.receivedDate) + '</div>';
+      html += '<div class="entry-info-line"><span class="label">Customer:</span> ' + esc(entry.customerName) + '</div>';
+      html += '<div class="entry-info-line"><span class="label">P/I No:</span> ' + esc(entry.piNo) + '</div>';
+      html += '<div class="entry-info-line"><span class="label">Part No:</span> ' + esc(entry.partNo) + '</div>';
+      html += '<div class="entry-info-line"><span class="label">Qty:</span> ' + esc(entry.qty) + '</div>';
+      html += '<div class="entry-info-line"><span class="label">Packed By:</span> ' + esc(entry.packedBy) + '</div>';
+      html += '</div>';
+
+      // Photos
+      var photoHtml = buildPhotoSection(entry);
+      if (photoHtml) {
+        html += '<div class="entry-photos">' + photoHtml + '</div>';
+      }
+
+      // Checker info (for foreman tab)
+      if (tabRole === 'foreman' && entry.checkerBy) {
+        html += '<div class="checker-info">&#9989; Checker: ' + esc(entry.checkerBy);
+        if (entry.checkerDate) html += ' | ' + esc(entry.checkerDate);
+        if (entry.checkerRemark) html += '<br>Remark: ' + esc(entry.checkerRemark);
+        html += '</div>';
+      }
+
+      // Foreman info (display only)
+      if (entry.verifiedBy) {
+        html += '<div class="foreman-info">&#128737; Foreman: ' + esc(entry.verifiedBy);
+        if (entry.verifiedDate) html += ' | ' + esc(entry.verifiedDate);
+        if (entry.verifiedRemark) html += '<br>Remark: ' + esc(entry.verifiedRemark);
+        html += '</div>';
+      }
+
+      // Rejection info
+      if (entry.rejectedBy) {
+        html += '<div class="rejected-card-reason">&#10007; Rejected by ' + esc(entry.rejectedBy);
+        if (entry.rejectedDate) html += ' | ' + esc(entry.rejectedDate);
+        if (entry.rejectedRemark) html += '<br>Reason: ' + esc(entry.rejectedRemark);
+        html += '</div>';
+      }
+
+      // Review inputs (only show if entry can be acted upon)
+      var canActChecker = (tabRole === 'checker') && (entry.status === 'NEW' || entry.status === 'CHECKER_REJECTED');
+      var canActForeman = (tabRole === 'foreman') && (entry.status === 'CHECKER_APPROVED' || entry.status === 'FOREMAN_REJECTED');
+
+      if (canActChecker) {
+        html += '<div class="entry-review">';
+        html += '<div class="review-row">';
+        html += '<label class="form-label">Checker Name</label>';
+        html += '<input type="text" id="checker-name-' + esc(entry.rowId) + '" class="form-input" placeholder="Your name">';
+        html += '</div>';
+        html += '<div class="review-row">';
+        html += '<label class="form-label">Remark (required for reject)</label>';
+        html += '<input type="text" id="checker-remark-' + esc(entry.rowId) + '" class="form-input" placeholder="Enter remark">';
+        html += '</div>';
+        html += '<div class="review-actions">';
+        html += '<button type="button" class="btn btn-success" onclick="checkerAction(\'' + esc(entry.rowId) + '\', \'pass\')">&#10004; PASS</button>';
+        html += '<button type="button" class="btn btn-danger" onclick="checkerAction(\'' + esc(entry.rowId) + '\', \'reject\')">&#10008; REJECT</button>';
+        html += '</div>';
+        html += '</div>';
+      }
+
+      if (canActForeman) {
+        html += '<div class="entry-review">';
+        html += '<div class="review-row">';
+        html += '<label class="form-label">Foreman Name</label>';
+        html += '<input type="text" id="foreman-name-' + esc(entry.rowId) + '" class="form-input" placeholder="Your name">';
+        html += '</div>';
+        html += '<div class="review-row">';
+        html += '<label class="form-label">Remark (required for reject)</label>';
+        html += '<input type="text" id="foreman-remark-' + esc(entry.rowId) + '" class="form-input" placeholder="Enter remark">';
+        html += '</div>';
+        html += '<div class="review-actions">';
+        html += '<button type="button" class="btn btn-success" onclick="foremanAction(\'' + esc(entry.rowId) + '\', \'pass\')">&#10004; PASS</button>';
+        html += '<button type="button" class="btn btn-danger" onclick="foremanAction(\'' + esc(entry.rowId) + '\', \'reject\')">&#10008; REJECT</button>';
+        html += '</div>';
+        html += '</div>';
+      }
+
+      html += '</div>';
+      return html;
+    }
+
+    function buildPhotoSection(entry) {
+      if (!entry.photos) return '';
+      var cats = [
+        { key: 'photoDoc', label: 'Doc' },
+        { key: 'photoPartBag', label: 'Part' },
+        { key: 'photoInnerBox', label: 'Inner' },
+        { key: 'photoCarton', label: 'Carton' }
+      ];
+      var html = '<div class="entry-photo-thumbs">';
+      var hasPhotos = false;
+      for (var c = 0; c < cats.length; c++) {
+        var arr = entry.photos[cats[c].key];
+        if (arr && arr.length > 0) {
+          hasPhotos = true;
+          for (var j = 0; j < arr.length; j++) {
+            var clickFn = "openEntryPhotoViewer('" + entry.rowId + "','" + cats[c].key + "'," + j + ")";
+            html += '<img src="' + esc(arr[j]) + '" class="entry-photo-thumb" onclick="' + clickFn + '" onerror="this.style.display=&quot;none&quot;">';
+          }
+        }
+      }
+      html += '</div>';
+      return hasPhotos ? html : '';
+    }
+
+    function openEntryPhotoViewer(rowId, category, index) {
+      for (var i = 0; i < allEntries.length; i++) {
+        if (allEntries[i].rowId === rowId) {
+          var photos = allEntries[i].photos;
+          if (photos && photos[category] && photos[category].length > 0) {
+            openPhotoViewer(photos[category], index, category);
+            return;
+          }
+        }
+      }
+    }
+
+        function formatStatusLabel(status) {
+      if (status === 'NEW') return 'New';
+      if (status === 'CHECKER_APPROVED') return 'Chk Approved';
+      if (status === 'CHECKER_REJECTED') return 'Chk Rejected';
+      if (status === 'FOREMAN_APPROVED') return 'Approved';
+      if (status === 'FOREMAN_REJECTED') return 'Rejected';
+      return status || 'Unknown';
+    }
+
+    // ============================================================
+    // TOUCH EVENTS FOR VIEWER SWIPE
+    // ============================================================
+    function setupViewerTouch() {
+      var viewer = $('photo-viewer');
+      viewer.addEventListener('touchstart', function(e) {
+        touchStartX = e.changedTouches[0].screenX;
+      }, false);
+      viewer.addEventListener('touchend', function(e) {
+        touchEndX = e.changedTouches[0].screenX;
+        var diff = touchEndX - touchStartX;
+        if (Math.abs(diff) > 50) {
+          if (diff < 0) viewerNext();
+          else viewerPrev();
+        }
+      }, false);
+    }
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set default date to today
+      var today = new Date();
+      var yyyy = today.getFullYear();
+      var mm = ('0' + (today.getMonth() + 1)).slice(-2);
+      var dd = ('0' + today.getDate()).slice(-2);
+      var dateField = $('field-receivedDate');
+      if (dateField && !dateField.value) {
+        dateField.value = yyyy + '-' + mm + '-' + dd;
+      }
+
+      // Setup photo viewer swipe
+      setupViewerTouch();
+
+      // Check if already logged in
+      var savedRole = localStorage.getItem('currentRole');
+      if (savedRole) {
+        currentRole = savedRole;
+        loadSettings(function() {
+          showScreen('main');
+          setupTabsForRole();
+        });
+      } else {
+        initLogin();
       }
     });
-  }
-
-  // Watch packedBy field to load rejected items
-  document.getElementById('packedBy').addEventListener('blur', function() {
-    if (this.value.trim()) loadRejectedItems();
-  });
-
-  function renderRejectedItems(items) {
-    var section = document.getElementById('rejectedSection');
-    var list = document.getElementById('rejectedList');
-    rejectedItemsLookup = {};
-    section.style.display = 'block';
-    list.innerHTML = '';
-    items.forEach(function(item) {
-      rejectedItemsLookup[item.rowId] = item;
-      var statusClass = item.status === 'FOREMAN_REJECTED' ? 'status-FOREMAN_REJECTED' : 'status-CHECKER_REJECTED';
-      var statusLabel = item.status === 'FOREMAN_REJECTED' ? 'FOREMAN REJ' : 'CHK REJ';
-      var card = document.createElement('div');
-      card.className = 'rejected-card';
-      card.innerHTML =
-        '<div class="rejected-card-header">' +
-        '<span class="rejected-card-carton">Carton: ' + esc(item.cartonId) + '</span>' +
-        '<span class="status-badge ' + statusClass + '">' + statusLabel + '</span>' +
-        '</div>' +
-        '<div class="rejected-card-info">' +
-        '<strong>Customer:</strong> ' + esc(item.customerName) + '<br>' +
-        '<strong>Reason:</strong> ' + esc(item.rejectedRemark || 'No reason given') + '<br>' +
-        '<strong>Rejected by:</strong> ' + esc(item.rejectedBy) + ' on ' + formatDate(item.rejectedDate) +
-        '</div>' +
-        '<button class="btn-resubmit" onclick="resubmitById(\'' + item.rowId + '\')">&#9998; Edit &amp; Resubmit</button>';
-      list.appendChild(card);
-    });
-  }
-
-  function resubmitById(rowId) {
-    var item = rejectedItemsLookup[rowId];
-    if (item) populateFormForResubmit(item);
-  }
-
-  function populateFormForResubmit(entry) {
-    resubmitRowId = entry.rowId;
-    document.getElementById('receivedDate').value = entry.receivedDate || '';
-    document.getElementById('cartonId').value = entry.cartonId || '';
-    document.getElementById('customerName').value = entry.customerName || '';
-    document.getElementById('piNo').value = entry.piNo || '';
-    document.getElementById('partNo').value = entry.partNo || '';
-    document.getElementById('qty').value = entry.qty || '';
-    document.getElementById('packedBy').value = entry.packedBy || '';
-    // Photos stored on Drive are URLs, not base64 - user must retake photos for resubmission
-    capturedPhotos = { photoDoc: [], photoPartBag: [], photoInnerBox: [], photoCarton: [] };
-    ['photoDoc','photoPartBag','photoInnerBox','photoCarton'].forEach(function(cat) { renderThumbnails(cat); });
-    showTab('entry');
-    showToast('Form loaded for resubmission. Please retake photos.', 'success');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  // ==================== UTILITIES ====================
-  function esc(str) {
-    if (!str) return '';
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
-
-  function formatDate(dateStr) {
-    if (!dateStr) return '';
-    var d = new Date(dateStr);
-    if (i
+  </script>
+</body>
+</html>
