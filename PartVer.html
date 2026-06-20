@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <title>MG Part Verification</title>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <style>
@@ -166,9 +166,10 @@
   .entry-grid .field .field-value { color:#e0e0e0; font-weight:500; }
   .entry-photos { margin-bottom:12px; }
   .entry-photos-label { font-size:11px; color:#666; margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px; }
-  .entry-photo-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; }
-  .entry-photo-thumb { aspect-ratio:1; background:#2a2a2a; border-radius:8px; overflow:hidden; cursor:pointer; }
-  .entry-photo-thumb img { width:100%; height:100%; object-fit:cover; }
+  .entry-photo-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+  .entry-photo-thumb { aspect-ratio:1; background:#2a2a2a; border-radius:8px; overflow:hidden; cursor:pointer; position:relative; }
+  .entry-photo-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+  .entry-photo-thumb::after { content:'\1F50D'; position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,.6); color:#fff; font-size:13px; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
   .entry-remark-row { margin-bottom:12px; }
   .entry-actions { display:flex; gap:10px; }
 
@@ -192,13 +193,13 @@
   .modal-header { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid #333; }
   .modal-header h3 { font-size:16px; color:#e0e0e0; }
   .modal-close { width:36px; height:36px; background:#2a2a2a; border:1px solid #444; border-radius:50%; color:#e0e0e0; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-  .modal-body { flex:1; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; }
+  .modal-body { flex:1; display:flex; align-items:center; justify-content:center; overflow:auto; position:relative; touch-action:pinch-zoom; }
   #scanner-viewport { width:100%; max-width:400px; aspect-ratio:1; }
-  #photo-viewer-img { max-width:100%; max-height:70vh; object-fit:contain; border-radius:8px; }
-  .viewer-nav { position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; background:rgba(0,0,0,.6); border:1px solid #555; border-radius:50%; color:#fff; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:2; }
+  #photo-viewer-img { max-width:100%; max-height:85vh; width:auto; height:auto; object-fit:contain; border-radius:4px; touch-action:pinch-zoom; }
+  .viewer-nav { position:fixed; top:50%; transform:translateY(-50%); width:48px; height:48px; background:rgba(0,0,0,.6); border:1px solid #555; border-radius:50%; color:#fff; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:102; }
   .viewer-nav.prev { left:12px; }
   .viewer-nav.next { right:12px; }
-  .viewer-info { position:absolute; bottom:24px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,.7); padding:8px 20px; border-radius:20px; font-size:14px; color:#e0e0e0; white-space:nowrap; }
+  .viewer-info { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,.7); padding:8px 20px; border-radius:20px; font-size:14px; color:#e0e0e0; white-space:nowrap; z-index:102; }
 
   /* ============================
      LOADING OVERLAY
@@ -226,7 +227,7 @@
 
   @media(max-width:380px){
     .entry-grid { grid-template-columns:1fr; }
-    .entry-photo-grid { grid-template-columns:repeat(3,1fr); }
+    .entry-photo-grid { grid-template-columns:repeat(2,1fr); }
   }
 </style>
 <base target="_blank">
@@ -472,7 +473,7 @@
     <h3 id="viewer-title">Photo</h3>
     <button class="modal-close" onclick="closePhotoViewer()">&#10005;</button>
   </div>
-  <div class="modal-body">
+  <div class="modal-body" id="photo-viewer-body">
     <button class="viewer-nav prev" onclick="viewerPrev()">&#9664;</button>
     <img id="photo-viewer-img" src="" alt="">
     <button class="viewer-nav next" onclick="viewerNext()">&#9654;</button>
@@ -493,12 +494,13 @@
 // ============================================================
 // STATE
 // ============================================================
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-g7QiRuyj2DRXpWYgyP38s_yfq85BNUzBFo5YRNylqjrefvf6rj5NiWJi1yCduJi4mw/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx56dNLTgh3lrpD4YCrcMzR-zYXcL-bGXtCSHN94vp2Bpwd_oc9kH-BbBOlyFADoHSz5A/exec";
 let currentRole = null;
 let currentTab = 'entry';
 let capturedPhotos = { photoDoc: [], photoPartBag: [], photoInnerBox: [], photoCarton: [] };
 let allEntries = [];
 let isSubmitting = false;
+let isBusy = false; // global lock to prevent any duplicate button presses while a server call is in flight
 let html5QrCode = null;
 let activeScannerField = null;
 let resubmitRowId = null;
@@ -522,13 +524,31 @@ function showToast(msg, type='info') {
   setTimeout(() => { t.className = ''; }, 3000);
 }
 
+// Disable every clickable button on screen while a request is in flight,
+// and restore them afterwards. Prevents duplicate submissions/approvals.
+function lockUI() {
+  isBusy = true;
+  document.querySelectorAll('button').forEach(b => { if(!b.dataset.lockedSkip) b.disabled = true; });
+}
+function unlockUI() {
+  isBusy = false;
+  document.querySelectorAll('button').forEach(b => { b.disabled = false; });
+  // Re-apply any state-based disabling (e.g. photo slots already at 3/3)
+  ['photoDoc','photoPartBag','photoInnerBox','photoCarton'].forEach(cat => {
+    const btn = $('btn-' + cat);
+    if(btn) btn.disabled = capturedPhotos[cat].length >= 3;
+  });
+}
+
 function showLoading(text='Loading...') {
   $('loading-text').textContent = text;
   $('loading-overlay').classList.add('active');
+  lockUI();
 }
 
 function hideLoading() {
   $('loading-overlay').classList.remove('active');
+  unlockUI();
 }
 
 function hideAllTabs() {
@@ -603,6 +623,7 @@ async function serverCall(action, data={}) {
 let selectedLoginRole = null;
 
 async function selectLoginRole(role) {
+  if(isBusy) return;
   selectedLoginRole = role;
   document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
   document.querySelector('.role-btn[data-role="' + role + '"]').classList.add('selected');
@@ -610,13 +631,16 @@ async function selectLoginRole(role) {
 
   // Check if password is required for this role
   try {
+    showLoading('Checking...');
     const result = await serverCall('verifyPassword', { role: role, password: '' });
+    hideLoading();
     if (result.success && result.valid) {
       // No password set - auto login
       doLoginDirect(role);
       return;
     }
   } catch(e) {
+    hideLoading();
     $('login-error').textContent = 'Connection error: ' + e.message;
     return;
   }
@@ -639,6 +663,7 @@ function doLoginDirect(role) {
 }
 
 async function doLogin() {
+  if(isBusy) return;
   if(!selectedLoginRole) { $('login-error').textContent = 'Please select a role'; return; }
   const pwd = $('login-password').value;
   try {
@@ -673,6 +698,7 @@ function initLogin() {
 // SETTINGS
 // ============================================================
 async function showSettings() {
+  if(isBusy) return;
   await loadSettings();
   // Clear master password field
   const mpw = $('set-master');
@@ -708,6 +734,7 @@ async function loadSettings() {
 }
 
 async function saveSettings() {
+  if(isBusy) return;
   const masterPwd = $('set-master').value;
   const staff = $('set-staff').value;
   const checker = $('set-checker').value;
@@ -775,17 +802,17 @@ function backToLogin() {
 // DATA ENTRY - FORM
 // ============================================================
 async function submitForm() {
-  if(isSubmitting) return;
+  if(isSubmitting || isBusy) return;
   if(!validateForm()) return;
 
   isSubmitting = true;
-  $('submit-btn').disabled = true;
-  showLoading('Submitting...');
+  showLoading(resubmitRowId ? 'Resubmitting...' : 'Submitting...');
 
   try {
     const photosPayload = {};
     for(const cat of ['photoDoc','photoPartBag','photoInnerBox','photoCarton']) {
-      photosPayload[cat] = capturedPhotos[cat].filter(p => p.fileId).map(p => p.fileId);
+      // Store the full Drive link for each photo (not just the file ID)
+      photosPayload[cat] = capturedPhotos[cat].filter(p => p.url).map(p => p.url);
     }
 
     const data = {
@@ -824,7 +851,6 @@ async function submitForm() {
     showToast('Connection error. Please retry.', 'error');
   } finally {
     isSubmitting = false;
-    $('submit-btn').disabled = false;
   }
 }
 
@@ -835,6 +861,13 @@ function validateForm() {
   }
   if(!$('f-qty').value || parseInt($('f-qty').value) <= 0) {
     showToast('Please enter a valid quantity', 'error'); $('f-qty').focus(); return false;
+  }
+  // Make sure no photo is still mid-upload
+  for(const cat of ['photoDoc','photoPartBag','photoInnerBox','photoCarton']) {
+    if(capturedPhotos[cat].some(p => p.uploading)) {
+      showToast('Please wait for photos to finish uploading', 'error');
+      return false;
+    }
   }
   return true;
 }
@@ -892,6 +925,7 @@ function toggleRejected() {
 }
 
 function resubmitById(rowId) {
+  if(isBusy) return;
   const item = rejectedItemsMap[rowId];
   if(!item) return;
   resubmitRowId = rowId;
@@ -918,6 +952,7 @@ $('f-packedBy').addEventListener('blur', () => loadRejectedItems());
 // PHOTO CAPTURE
 // ============================================================
 function triggerPhoto(category) {
+  if(isBusy) return;
   if(capturedPhotos[category].length >= 3) { showToast('Maximum 3 photos', 'info'); return; }
   $('file-' + category).click();
 }
@@ -932,6 +967,7 @@ async function onPhotoSelected(input, category) {
   const photoObj = { base64: null, fileId: null, url: null, uploading: true };
   capturedPhotos[category].push(photoObj);
   renderPhotoThumbnails(category);
+  lockUI(); // prevent submit/other actions while an upload is in progress
 
   try {
     const base64 = await compressPhoto(file);
@@ -942,16 +978,19 @@ async function onPhotoSelected(input, category) {
     const result = await serverCall('uploadPhoto', { base64, filename });
     if(result.success) {
       photoObj.fileId = result.fileId;
-      photoObj.url = result.url;
+      photoObj.url = result.url; // full shareable Drive link, this is what gets saved to the Sheet
       showToast('Photo uploaded!', 'success');
     } else {
       showToast('Photo upload failed', 'error');
+      capturedPhotos[category].splice(capturedPhotos[category].indexOf(photoObj), 1);
     }
   } catch(e) {
     showToast('Photo upload error', 'error');
+    capturedPhotos[category].splice(capturedPhotos[category].indexOf(photoObj), 1);
   } finally {
     photoObj.uploading = false;
     renderPhotoThumbnails(category);
+    unlockUI();
   }
 }
 
@@ -981,6 +1020,7 @@ function compressPhoto(file) {
 }
 
 function removePhoto(category, index) {
+  if(isBusy) return;
   capturedPhotos[category].splice(index, 1);
   renderPhotoThumbnails(category);
 }
@@ -1015,6 +1055,7 @@ function renderPhotoThumbnails(category) {
 // BARCODE SCANNER
 // ============================================================
 async function startScanner(fieldId) {
+  if(isBusy) return;
   activeScannerField = fieldId;
   $('scanner-modal').classList.add('active');
   try {
@@ -1050,7 +1091,7 @@ function onBarcodeScanned(text) {
 }
 
 // ============================================================
-// PHOTO VIEWER (LIGHTBOX)
+// PHOTO VIEWER (LIGHTBOX) - supports pinch-zoom & double-tap zoom
 // ============================================================
 function openPhotoViewer(urls, idx, cat) {
   if(!urls || urls.length === 0) return;
@@ -1062,6 +1103,7 @@ function openPhotoViewer(urls, idx, cat) {
 function closePhotoViewer() {
   $('photo-viewer').classList.remove('active');
   viewerState = { urls: [], index: 0, category: '' };
+  resetZoom();
 }
 
 function viewerPrev() {
@@ -1081,9 +1123,39 @@ function updateViewer() {
   const info = $('viewer-info');
   const title = $('viewer-title');
   const url = viewerState.urls[viewerState.index];
-  img.src = url;
+  img.src = toLargeImageUrl(url);
   info.textContent = viewerState.category + ' ' + (viewerState.index + 1) + '/' + viewerState.urls.length;
   title.textContent = viewerState.category;
+  resetZoom();
+}
+
+// --- simple double-tap-to-zoom for the viewer image (native pinch-zoom also works since viewport allows scaling) ---
+let zoomed = false;
+function resetZoom() {
+  zoomed = false;
+  const img = $('photo-viewer-img');
+  if(img) { img.style.transform = 'scale(1)'; img.style.cursor = 'zoom-in'; }
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const img = $('photo-viewer-img');
+  if(img) {
+    img.addEventListener('dblclick', () => {
+      zoomed = !zoomed;
+      img.style.transform = zoomed ? 'scale(2.2)' : 'scale(1)';
+      img.style.cursor = zoomed ? 'zoom-out' : 'zoom-in';
+      img.style.transition = 'transform .2s ease';
+    });
+  }
+});
+
+// Convert any Drive link/fileId-based URL into a large, reliably-rendering thumbnail URL
+function toLargeImageUrl(url, size) {
+  size = size || 1600;
+  if(!url) return url;
+  const idMatch = url.match(/[-\w]{25,}/);
+  const id = idMatch ? idMatch[0] : null;
+  if(id) return 'https://drive.google.com/thumbnail?id=' + id + '&sz=w' + size;
+  return url;
 }
 
 // ============================================================
@@ -1107,6 +1179,7 @@ async function refreshChecker() {
 }
 
 function setCheckerFilter(filter) {
+  if(isBusy) return;
   checkerFilter = filter;
   document.querySelectorAll('#tab-checker .filter-pill').forEach(p => p.classList.remove('active'));
   document.querySelector('#tab-checker .filter-pill[data-filter="' + filter + '"]').classList.add('active');
@@ -1119,8 +1192,9 @@ function renderCheckerEntries(entries) {
     list.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128196;</div><div class="empty-text">No entries found</div></div>';
     return;
   }
+  // Checker sees everything (this is the first review stage)
   let filtered = entries;
-  if(checkerFilter === 'pending') filtered = entries.filter(e => e.status === 'NEW');
+  if(checkerFilter === 'pending') filtered = entries.filter(e => e.status === 'NEW' || e.status === 'RESUBMITTED');
   else if(checkerFilter === 'approved') filtered = entries.filter(e => e.status === 'CHECKER_APPROVED' || e.status === 'FOREMAN_APPROVED');
   else if(checkerFilter === 'rejected') filtered = entries.filter(e => e.status === 'CHECKER_REJECTED' || e.status === 'FOREMAN_REJECTED');
 
@@ -1132,6 +1206,7 @@ function renderCheckerEntries(entries) {
 }
 
 async function checkerAction(rowId, action) {
+  if(isBusy) return;
   const checkerBy = $('checker-name').value.trim();
   if(!checkerBy) { showToast('Please enter your name', 'error'); $('checker-name').focus(); return; }
   const card = document.querySelector('.entry-card[data-rowid="' + rowId + '"]');
@@ -1175,6 +1250,7 @@ async function refreshForeman() {
 }
 
 function setForemanFilter(filter) {
+  if(isBusy) return;
   foremanFilter = filter;
   document.querySelectorAll('#tab-foreman .filter-pill').forEach(p => p.classList.remove('active'));
   document.querySelector('#tab-foreman .filter-pill[data-filter="' + filter + '"]').classList.add('active');
@@ -1183,14 +1259,20 @@ function setForemanFilter(filter) {
 
 function renderForemanEntries(entries) {
   const list = $('foreman-list');
-  if(!entries || entries.length === 0) {
+  // Foreman must NEVER see entries that the checker has not yet approved.
+  // This excludes NEW, RESUBMITTED, and CHECKER_REJECTED from the foreman view entirely.
+  const visibleToForeman = (entries || []).filter(e =>
+    e.status === 'CHECKER_APPROVED' || e.status === 'FOREMAN_APPROVED' || e.status === 'FOREMAN_REJECTED'
+  );
+
+  if(visibleToForeman.length === 0) {
     list.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128196;</div><div class="empty-text">No entries found</div></div>';
     return;
   }
-  let filtered = entries;
-  if(foremanFilter === 'pending') filtered = entries.filter(e => e.status === 'CHECKER_APPROVED');
-  else if(foremanFilter === 'approved') filtered = entries.filter(e => e.status === 'FOREMAN_APPROVED');
-  else if(foremanFilter === 'rejected') filtered = entries.filter(e => e.status === 'FOREMAN_REJECTED');
+  let filtered = visibleToForeman;
+  if(foremanFilter === 'pending') filtered = visibleToForeman.filter(e => e.status === 'CHECKER_APPROVED');
+  else if(foremanFilter === 'approved') filtered = visibleToForeman.filter(e => e.status === 'FOREMAN_APPROVED');
+  else if(foremanFilter === 'rejected') filtered = visibleToForeman.filter(e => e.status === 'FOREMAN_REJECTED');
 
   if(filtered.length === 0) {
     list.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128196;</div><div class="empty-text">No entries in this filter</div></div>';
@@ -1200,6 +1282,7 @@ function renderForemanEntries(entries) {
 }
 
 async function foremanAction(rowId, action) {
+  if(isBusy) return;
   const verifiedBy = $('foreman-name').value.trim();
   if(!verifiedBy) { showToast('Please enter your name', 'error'); $('foreman-name').focus(); return; }
   const card = document.querySelector('.entry-card[data-rowid="' + rowId + '"]');
@@ -1238,11 +1321,12 @@ function createEntryCardHTML(entry, tabRole) {
   for(const cat of photoCategories) {
     const urls = photos[cat.key] || [];
     if(urls.length > 0) {
+      const thumbUrls = urls.map(u => toLargeImageUrl(u, 600));
       photoHTML += '<div class="entry-photos">';
       photoHTML += '<div class="entry-photos-label">' + cat.label + '</div>';
       photoHTML += '<div class="entry-photo-grid">';
       photoHTML += urls.map((url, idx) =>
-        '<div class="entry-photo-thumb" onclick="openPhotoViewer(' + JSON.stringify(urls).replace(/"/g,'&quot;') + ',' + idx + ',' + "'"+cat.label+"'" + ')"><img src="' + esc(url) + '" alt=""></div>'
+        '<div class="entry-photo-thumb" onclick="openPhotoViewer(' + JSON.stringify(urls).replace(/"/g,'&quot;') + ',' + idx + ',' + "'"+cat.label+"'" + ')"><img src="' + esc(thumbUrls[idx]) + '" alt="" loading="lazy"></div>'
       ).join('');
       photoHTML += '</div></div>';
     }
