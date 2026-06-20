@@ -3,261 +3,270 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-<title>MG Part Verification</title>
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<title>MG Part Verification - TEST MOCK</title>
 <style>
-  /* ============================ RESET & BASE ============================ */
+  /* ============================
+     RESET & BASE
+     ============================ */
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  html,body { width:100%; height:100%; overflow:hidden; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,sans-serif; font-size:16px; color:#e7e9ec; background:#0b0c10; }
+  html,body { width:100%; height:100%; overflow:hidden; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,sans-serif; font-size:16px; color:#e0e0e0; background:#0f0f0f; }
   body { position:relative; }
-  ::selection { background:#5b8def55; }
 
-  :root{
-    --bg:#0b0c10;
-    --bg-soft:#11131a;
-    --card:#161922;
-    --card2:#1b1f2a;
-    --border:#262b38;
-    --text:#e7e9ec;
-    --muted:#8a90a3;
-    --blue:#5b8def;
-    --blue-dark:#3f6fd1;
-    --green:#36c281;
-    --green-dark:#28a06b;
-    --red:#ff5d6c;
-    --red-dark:#e84455;
-    --orange:#ffb648;
-    --purple:#b07bff;
-    --shadow:0 10px 30px rgba(0,0,0,.45);
-  }
-
-  /* ============================ SCREENS ============================ */
-  .screen { display:none; width:100%; height:100%; overflow-y:auto; position:absolute; top:0; left:0; background:var(--bg); }
+  /* ============================
+     SCREENS
+     ============================ */
+  .screen { display:none; width:100%; height:100%; overflow-y:auto; position:absolute; top:0; left:0; background:#0f0f0f; }
   .screen.active { display:block; }
 
-  /* ============================ LOGIN ============================ */
-  #screen-login { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px;
-    background:radial-gradient(circle at 20% 0%, #1c2540 0%, #0b0c10 55%), radial-gradient(circle at 100% 100%, #1a1430 0%, transparent 50%); }
-  .login-card { width:100%; max-width:380px; background:linear-gradient(160deg,var(--card2),var(--card)); border:1px solid var(--border); border-radius:20px; padding:36px 28px; box-shadow:var(--shadow); text-align:center; }
-  .brand-mark { width:56px; height:56px; margin:0 auto 16px; border-radius:16px; background:linear-gradient(135deg,var(--blue),var(--purple)); display:flex; align-items:center; justify-content:center; font-size:26px; box-shadow:0 8px 24px rgba(91,141,239,.35); }
-  .login-card h1 { font-size:22px; font-weight:700; color:#fff; margin-bottom:4px; letter-spacing:.2px; }
-  .login-card .subtitle { font-size:13px; color:var(--muted); margin-bottom:26px; }
-  .login-card .role-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:10px; text-align:left; }
-  .role-btns { display:flex; gap:8px; margin-bottom:18px; }
-  .role-btn { flex:1; padding:16px 6px; background:var(--bg-soft); border:1px solid var(--border); border-radius:14px; color:var(--muted); font-size:13px; font-weight:600; cursor:pointer; transition:all .15s; display:flex; flex-direction:column; gap:6px; align-items:center; }
-  .role-btn .ri { font-size:20px; }
-  .role-btn:hover { border-color:#3a4256; color:#c7cbd6; }
-  .role-btn.selected { background:linear-gradient(135deg,var(--blue),#4f7bdb); border-color:var(--blue); color:#fff; box-shadow:0 6px 18px rgba(91,141,239,.3); }
-  #login-password-wrap { display:none; margin-bottom:18px; }
+  /* ============================
+     LOGIN SCREEN
+     ============================ */
+  #screen-login { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; background:linear-gradient(145deg,#0f0f0f,#1a1a2e); }
+  .login-card { width:100%; max-width:360px; background:#1e1e1e; border:1px solid #333; border-radius:16px; padding:32px 24px; box-shadow:0 8px 32px rgba(0,0,0,.5); text-align:center; }
+  .login-card h1 { font-size:24px; font-weight:600; color:#90caf9; margin-bottom:8px; letter-spacing:.5px; }
+  .login-card .subtitle { font-size:13px; color:#888; margin-bottom:28px; }
+  .login-card .role-label { font-size:12px; color:#aaa; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; }
+  .role-btns { display:flex; gap:10px; margin-bottom:20px; }
+  .role-btn { flex:1; padding:14px 8px; background:#2a2a2a; border:1px solid #444; border-radius:10px; color:#888; font-size:14px; font-weight:500; cursor:pointer; transition:all .2s; }
+  .role-btn:hover { border-color:#666; color:#bbb; }
+  .role-btn.selected { background:#3f51b5; border-color:#5c6bc0; color:#fff; }
+  #login-password-wrap { display:none; margin-bottom:20px; }
   #login-password-wrap.show { display:block; }
-  .login-input { width:100%; padding:14px 16px; background:var(--bg-soft); border:1px solid var(--border); border-radius:12px; color:var(--text); font-size:16px; outline:none; transition:border-color .15s; }
-  .login-input:focus { border-color:var(--blue); }
-  .login-input::placeholder { color:#5b6072; }
-  .login-btn { width:100%; padding:16px; background:linear-gradient(135deg,var(--green),#2bb37a); border:none; border-radius:12px; color:#06150e; font-size:15px; font-weight:700; cursor:pointer; transition:filter .15s; }
-  .login-btn:hover { filter:brightness(1.08); }
-  .login-btn:disabled { opacity:.4; cursor:not-allowed; }
-  .login-error { color:var(--red); font-size:13px; margin-top:12px; min-height:18px; }
-  .settings-gear { position:fixed; bottom:24px; right:24px; width:46px; height:46px; background:var(--card); border:1px solid var(--border); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; cursor:pointer; transition:all .15s; color:var(--muted); z-index:10; box-shadow:var(--shadow); }
-  .settings-gear:hover { border-color:var(--blue); color:#fff; }
+  .login-input { width:100%; padding:14px 16px; background:#2a2a2a; border:1px solid #444; border-radius:10px; color:#e0e0e0; font-size:16px; outline:none; transition:border-color .2s; }
+  .login-input:focus { border-color:#90caf9; }
+  .login-input::placeholder { color:#666; }
+  .login-btn { width:100%; padding:16px; background:#4caf50; border:none; border-radius:10px; color:#fff; font-size:16px; font-weight:600; cursor:pointer; transition:background .2s; }
+  .login-btn:hover { background:#43a047; }
+  .login-btn:disabled { opacity:.5; cursor:not-allowed; }
+  .login-error { color:#f44336; font-size:13px; margin-top:12px; min-height:18px; }
+  .settings-gear { position:fixed; bottom:24px; right:24px; width:44px; height:44px; background:#2a2a2a; border:1px solid #444; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; cursor:pointer; transition:all .2s; color:#888; z-index:10; }
+  .settings-gear:hover { border-color:#666; color:#fff; background:#333; }
 
-  /* ============================ SETTINGS ============================ */
+  /* ============================
+     SETTINGS SCREEN
+     ============================ */
   #screen-settings { padding:0; }
-  .settings-header { display:flex; align-items:center; gap:16px; padding:16px 20px; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--bg); z-index:5; }
-  .settings-header .back-btn { width:38px; height:38px; background:var(--card); border:1px solid var(--border); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; color:var(--text); }
-  .settings-header h2 { font-size:18px; font-weight:700; color:var(--text); }
+  .settings-header { display:flex; align-items:center; gap:16px; padding:16px 20px; border-bottom:1px solid #333; position:sticky; top:0; background:#0f0f0f; z-index:5; }
+  .settings-header .back-btn { width:36px; height:36px; background:#2a2a2a; border:1px solid #444; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; color:#e0e0e0; }
+  .settings-header h2 { font-size:18px; font-weight:600; color:#e0e0e0; }
   .settings-body { max-width:480px; margin:0 auto; padding:24px 20px; }
-  .settings-group { margin-bottom:18px; }
-  .settings-group label { display:block; font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; margin-bottom:6px; font-weight:600; }
-  .settings-group input { width:100%; padding:14px 16px; background:var(--card); border:1px solid var(--border); border-radius:12px; color:var(--text); font-size:16px; outline:none; }
-  .settings-group input:focus { border-color:var(--blue); }
-  .settings-hint { font-size:12px; color:#5b6072; margin-top:4px; }
-  .save-btn { width:100%; padding:16px; background:linear-gradient(135deg,var(--green),#2bb37a); border:none; border-radius:12px; color:#06150e; font-size:15px; font-weight:700; cursor:pointer; margin-top:8px; }
+  .settings-group { margin-bottom:20px; }
+  .settings-group label { display:block; font-size:13px; color:#aaa; text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
+  .settings-group input { width:100%; padding:14px 16px; background:#2a2a2a; border:1px solid #444; border-radius:10px; color:#e0e0e0; font-size:16px; outline:none; }
+  .settings-group input:focus { border-color:#90caf9; }
+  .settings-hint { font-size:12px; color:#666; margin-top:4px; }
+  .save-btn { width:100%; padding:16px; background:#4caf50; border:none; border-radius:10px; color:#fff; font-size:16px; font-weight:600; cursor:pointer; margin-top:8px; }
+  .save-btn:hover { background:#43a047; }
 
-  /* ============================ TOP BAR ============================ */
-  .top-bar { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; background:linear-gradient(135deg,#151a28,#10131c); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:4; backdrop-filter:blur(6px); }
-  .top-bar .app-title { font-size:16px; font-weight:700; color:#fff; display:flex; align-items:center; gap:8px; }
-  .top-bar .app-title .ti { font-size:18px; }
+  /* ============================
+     TOP BAR
+     ============================ */
+  .top-bar { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; background:#1e1e1e; border-bottom:1px solid #333; position:sticky; top:0; z-index:4; }
+  .top-bar .app-title { font-size:16px; font-weight:600; color:#90caf9; }
   .top-bar-right { display:flex; align-items:center; gap:10px; }
-  .role-badge { padding:5px 11px; border-radius:8px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; }
-  .role-badge.staff { background:rgba(54,194,129,.15); color:var(--green); border:1px solid rgba(54,194,129,.4); }
-  .role-badge.checker { background:rgba(255,182,72,.15); color:var(--orange); border:1px solid rgba(255,182,72,.4); }
-  .role-badge.foreman { background:rgba(91,141,239,.15); color:var(--blue); border:1px solid rgba(91,141,239,.4); }
-  .logout-btn { padding:7px 13px; background:rgba(255,93,108,.12); border:1px solid rgba(255,93,108,.4); border-radius:8px; color:var(--red); font-size:12px; font-weight:600; cursor:pointer; }
-  .logout-btn:hover { background:rgba(255,93,108,.22); }
+  .role-badge { padding:4px 10px; border-radius:6px; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.5px; }
+  .role-badge.staff { background:#4caf5022; color:#4caf50; border:1px solid #4caf50; }
+  .role-badge.checker { background:#ff980022; color:#ff9800; border:1px solid #ff9800; }
+  .role-badge.foreman { background:#90caf922; color:#90caf9; border:1px solid #90caf9; }
+  .logout-btn { padding:6px 12px; background:#f4433622; border:1px solid #f44336; border-radius:6px; color:#f44336; font-size:12px; font-weight:500; cursor:pointer; }
+  .logout-btn:hover { background:#f4433633; }
 
-  /* ============================ TABS ============================ */
-  .tab-content { display:none; padding:16px 16px 96px; max-width:640px; margin:0 auto; }
+  /* ============================
+     TABS
+     ============================ */
+  .tab-content { display:none; padding:16px 16px 90px; max-width:600px; margin:0 auto; }
   .tab-content.active { display:block; }
-  .bottom-nav { position:fixed; bottom:0; left:0; right:0; display:flex; background:linear-gradient(180deg,#151a28,#10131c); border-top:1px solid var(--border); z-index:4; max-width:640px; margin:0 auto; padding-bottom:env(safe-area-inset-bottom); }
-  .bottom-nav .tab-btn { flex:1; padding:12px 4px 10px; background:none; border:none; color:#5b6072; font-size:11px; font-weight:600; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:all .15s; position:relative; }
+  .bottom-nav { position:fixed; bottom:0; left:0; right:0; display:flex; background:#1e1e1e; border-top:1px solid #333; z-index:4; max-width:600px; margin:0 auto; }
+  .bottom-nav .tab-btn { flex:1; padding:12px 4px; background:none; border:none; color:#666; font-size:12px; font-weight:500; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:all .2s; }
   .bottom-nav .tab-btn .tab-icon { font-size:20px; }
-  .bottom-nav .tab-btn.active { color:var(--blue); }
-  .bottom-nav .tab-btn.active::before { content:''; position:absolute; top:0; left:50%; transform:translateX(-50%); width:28px; height:3px; background:var(--blue); border-radius:0 0 4px 4px; }
+  .bottom-nav .tab-btn.active { color:#90caf9; }
+  .bottom-nav .tab-btn:hover { color:#aaa; }
 
-  /* ============================ DASHBOARD ============================ */
-  .dash-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:18px; }
-  .dash-card { background:linear-gradient(160deg,var(--card2),var(--card)); border:1px solid var(--border); border-radius:14px; padding:16px; position:relative; overflow:hidden; }
-  .dash-card .dc-icon { position:absolute; top:14px; right:14px; font-size:20px; opacity:.5; }
-  .dash-card .dc-num { font-size:26px; font-weight:800; color:#fff; line-height:1; margin-bottom:4px; }
-  .dash-card .dc-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; font-weight:600; }
-  .dash-card.c-pending { border-color:rgba(255,182,72,.35); } .dash-card.c-pending .dc-num{ color:var(--orange); }
-  .dash-card.c-approved { border-color:rgba(54,194,129,.35); } .dash-card.c-approved .dc-num{ color:var(--green); }
-  .dash-card.c-rejected { border-color:rgba(255,93,108,.35); } .dash-card.c-rejected .dc-num{ color:var(--red); }
-  .dash-card.c-total { border-color:rgba(91,141,239,.35); } .dash-card.c-total .dc-num{ color:var(--blue); }
-
-  /* ============================ CARDS & FORMS ============================ */
-  .card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:20px; margin-bottom:16px; }
+  /* ============================
+     CARDS & FORMS
+     ============================ */
+  .card { background:#1e1e1e; border:1px solid #333; border-radius:12px; padding:20px; margin-bottom:16px; }
+  .card-title { font-size:14px; font-weight:600; color:#aaa; text-transform:uppercase; letter-spacing:.5px; margin-bottom:16px; }
   .form-group { margin-bottom:16px; }
-  .form-group label { display:block; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; margin-bottom:7px; font-weight:600; }
+  .form-group label { display:block; font-size:12px; color:#aaa; text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
   .input-wrap { position:relative; display:flex; gap:8px; }
   .input-wrap input, .input-wrap select, .form-group input, .form-group select, .form-group textarea {
-    flex:1; width:100%; padding:14px 16px; background:var(--bg-soft); border:1px solid var(--border); border-radius:12px; color:var(--text); font-size:16px; outline:none; transition:border-color .15s;
+    flex:1; width:100%; padding:14px 16px; background:#2a2a2a; border:1px solid #444; border-radius:10px; color:#e0e0e0; font-size:16px; outline:none; transition:border-color .2s;
   }
-  .input-wrap input:focus, .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--blue); }
-  .scan-btn { width:46px; height:46px; min-width:46px; background:linear-gradient(135deg,var(--blue),#4f7bdb); border:none; border-radius:12px; color:#fff; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .input-wrap input:focus, .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:#90caf9; }
+  .scan-btn { width:44px; height:44px; min-width:44px; background:#3f51b5; border:none; border-radius:10px; color:#fff; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .scan-btn:hover { background:#5c6bc0; }
   textarea { resize:vertical; min-height:80px; font-family:inherit; }
-  .full-btn { width:100%; padding:16px; border:none; border-radius:12px; font-size:15px; font-weight:700; cursor:pointer; transition:filter .15s,opacity .15s; }
-  .full-btn:disabled { opacity:.4; cursor:not-allowed; }
-  .btn-green { background:linear-gradient(135deg,var(--green),#2bb37a); color:#06150e; }
-  .btn-red { background:linear-gradient(135deg,var(--red),#e8475a); color:#1a0306; }
-  .btn-blue { background:linear-gradient(135deg,var(--blue),#4f7bdb); color:#fff; }
-  .btn-orange { background:linear-gradient(135deg,var(--orange),#f59e2b); color:#1a1102; }
-  .full-btn:hover:not(:disabled) { filter:brightness(1.08); }
+  .full-btn { width:100%; padding:16px; border:none; border-radius:10px; font-size:16px; font-weight:600; cursor:pointer; transition:opacity .2s; }
+  .full-btn:disabled { opacity:.5; cursor:not-allowed; }
+  .btn-green { background:#4caf50; color:#fff; }
+  .btn-green:hover { background:#43a047; }
+  .btn-red { background:#f44336; color:#fff; }
+  .btn-red:hover { background:#e53935; }
+  .btn-blue { background:#3f51b5; color:#fff; }
+  .btn-blue:hover { background:#5c6bc0; }
+  .btn-orange { background:#ff9800; color:#000; }
+  .btn-orange:hover { background:#f57c00; }
+  .btn-row { display:flex; gap:10px; }
+  .btn-row .full-btn { flex:1; }
 
-  /* ============================ REJECTED SECTION ============================ */
-  .rejected-header { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; background:rgba(255,93,108,.08); border:1px solid rgba(255,93,108,.3); border-radius:14px; cursor:pointer; margin-bottom:16px; }
-  .rejected-header .rej-title { font-size:13px; font-weight:700; color:var(--red); }
-  .rejected-header .rej-count { background:var(--red); color:#fff; font-size:11px; font-weight:700; padding:2px 9px; border-radius:10px; }
-  .rejected-header .rej-arrow { color:var(--red); font-size:12px; transition:transform .2s; }
+  /* ============================
+     REJECTED SECTION
+     ============================ */
+  .rejected-header { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; background:#f4433611; border:1px solid #f4433644; border-radius:10px; cursor:pointer; margin-bottom:16px; }
+  .rejected-header .rej-title { font-size:13px; font-weight:600; color:#f44336; }
+  .rejected-header .rej-count { background:#f44336; color:#fff; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; }
+  .rejected-header .rej-arrow { color:#f44336; font-size:12px; transition:transform .2s; }
   .rejected-header.open .rej-arrow { transform:rotate(180deg); }
   .rejected-list { display:none; margin-bottom:16px; }
   .rejected-list.open { display:block; }
-  .rej-item { background:var(--card); border:1px solid rgba(255,93,108,.25); border-radius:14px; padding:14px; margin-bottom:10px; }
-  .rej-item .rej-meta { font-size:12px; color:var(--muted); margin-bottom:6px; }
-  .rej-item .rej-reason { font-size:13px; color:var(--red); margin-bottom:10px; }
+  .rej-item { background:#1e1e1e; border:1px solid #f4433633; border-radius:10px; padding:14px; margin-bottom:10px; }
+  .rej-item .rej-meta { font-size:12px; color:#aaa; margin-bottom:6px; }
+  .rej-item .rej-reason { font-size:13px; color:#f44336; margin-bottom:10px; }
   .rej-item .rej-actions { display:flex; gap:8px; }
-  .rej-item button { flex:1; padding:9px; border:none; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; background:linear-gradient(135deg,var(--green),#2bb37a); color:#06150e; }
+  .rej-item button { flex:1; padding:8px; border:none; border-radius:6px; font-size:13px; font-weight:500; cursor:pointer; }
 
-  /* ============================ PHOTO SECTION ============================ */
+  /* ============================
+     PHOTO SECTION
+     ============================ */
   .photo-section { margin-bottom:20px; }
-  .photo-section-title { font-size:13px; font-weight:700; color:#c7cbd6; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; }
-  .photo-counter { font-size:12px; color:var(--muted); }
+  .photo-section-title { font-size:13px; font-weight:600; color:#aaa; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; }
+  .photo-counter { font-size:12px; color:#666; }
   .photo-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:10px; }
-  .photo-slot { aspect-ratio:1; background:var(--bg-soft); border:1px dashed var(--border); border-radius:12px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
-  .photo-slot img { width:100%; height:100%; object-fit:cover; border-radius:12px; }
-  .photo-slot .remove-photo { position:absolute; top:4px; right:4px; width:24px; height:24px; background:var(--red); border:none; border-radius:50%; color:#fff; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-  .photo-slot .uploading-overlay { position:absolute; inset:0; background:rgba(0,0,0,.7); display:flex; align-items:center; justify-content:center; color:var(--blue); font-size:11px; border-radius:12px; text-align:center; padding:6px; }
-  .take-photo-btn { width:100%; padding:13px; background:var(--bg-soft); border:1px solid var(--border); border-radius:12px; color:var(--muted); font-size:14px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:all .15s; }
-  .take-photo-btn:hover { border-color:var(--blue); color:#c7cbd6; }
-  .take-photo-btn:disabled { opacity:.4; cursor:not-allowed; }
+  .photo-slot { aspect-ratio:1; background:#2a2a2a; border:1px dashed #444; border-radius:10px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+  .photo-slot img { width:100%; height:100%; object-fit:cover; border-radius:10px; }
+  .photo-slot .remove-photo { position:absolute; top:4px; right:4px; width:24px; height:24px; background:#f44336; border:none; border-radius:50%; color:#fff; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .photo-slot .uploading-overlay { position:absolute; inset:0; background:rgba(0,0,0,.7); display:flex; align-items:center; justify-content:center; color:#90caf9; font-size:12px; border-radius:10px; }
+  .take-photo-btn { width:100%; padding:12px; background:#2a2a2a; border:1px solid #444; border-radius:10px; color:#888; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:all .2s; }
+  .take-photo-btn:hover { border-color:#666; color:#bbb; }
+  .take-photo-btn:disabled { opacity:.5; cursor:not-allowed; }
   input[type="file"].hidden-file { display:none; }
 
-  /* ============================ ENTRY CARDS ============================ */
+  /* ============================
+     ENTRY CARDS (Checker/Foreman)
+     ============================ */
   .filter-bar { display:flex; gap:6px; margin-bottom:16px; overflow-x:auto; padding-bottom:4px; }
-  .filter-pill { padding:8px 16px; background:var(--card); border:1px solid var(--border); border-radius:20px; color:var(--muted); font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; transition:all .15s; }
-  .filter-pill.active { background:linear-gradient(135deg,var(--blue),#4f7bdb); border-color:var(--blue); color:#fff; }
+  .filter-pill { padding:8px 16px; background:#2a2a2a; border:1px solid #444; border-radius:20px; color:#888; font-size:13px; font-weight:500; cursor:pointer; white-space:nowrap; transition:all .2s; }
+  .filter-pill:hover { border-color:#666; }
+  .filter-pill.active { background:#3f51b5; border-color:#5c6bc0; color:#fff; }
   .entry-list { display:flex; flex-direction:column; gap:14px; }
-  .entry-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:18px; transition:border-color .15s; }
+  .entry-card { background:#1e1e1e; border:1px solid #333; border-radius:12px; padding:16px; }
   .entry-card .entry-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
-  .entry-card .entry-id { font-size:11px; color:#5b6072; font-family:monospace; }
-  .entry-card .status-badge { padding:5px 11px; border-radius:8px; font-size:11px; font-weight:700; }
-  .status-badge.new { background:rgba(91,141,239,.15); color:var(--blue); border:1px solid rgba(91,141,239,.4); }
-  .status-badge.approved { background:rgba(54,194,129,.15); color:var(--green); border:1px solid rgba(54,194,129,.4); }
-  .status-badge.rejected { background:rgba(255,93,108,.15); color:var(--red); border:1px solid rgba(255,93,108,.4); }
-  .status-badge.resubmitted { background:rgba(176,123,255,.15); color:var(--purple); border:1px solid rgba(176,123,255,.4); }
-  .entry-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; background:var(--bg-soft); border-radius:12px; padding:12px; }
+  .entry-card .entry-id { font-size:11px; color:#666; }
+  .entry-card .status-badge { padding:4px 10px; border-radius:6px; font-size:11px; font-weight:600; }
+  .status-badge.new { background:#90caf922; color:#90caf9; border:1px solid #90caf9; }
+  .status-badge.pending { background:#ff980022; color:#ff9800; border:1px solid #ff9800; }
+  .status-badge.approved { background:#4caf5022; color:#4caf50; border:1px solid #4caf50; }
+  .status-badge.rejected { background:#f4433622; color:#f44336; border:1px solid #f44336; }
+  .status-badge.resubmitted { background:#e040fb22; color:#e040fb; border:1px solid #e040fb; }
+  .entry-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
   .entry-grid .field { font-size:12px; }
-  .entry-grid .field .field-label { color:#5b6072; display:block; margin-bottom:3px; text-transform:uppercase; font-size:10px; letter-spacing:.4px; }
-  .entry-grid .field .field-value { color:var(--text); font-weight:600; }
-  .entry-photos { margin-bottom:14px; }
-  .entry-photos-label { font-size:11px; color:var(--muted); margin-bottom:7px; text-transform:uppercase; letter-spacing:.5px; font-weight:700; }
+  .entry-grid .field .field-label { color:#666; display:block; margin-bottom:2px; }
+  .entry-grid .field .field-value { color:#e0e0e0; font-weight:500; }
+  .entry-photos { margin-bottom:12px; }
+  .entry-photos-label { font-size:11px; color:#666; margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px; }
   .entry-photo-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
-  .entry-photo-thumb { aspect-ratio:1; background:var(--bg-soft); border-radius:10px; overflow:hidden; cursor:pointer; position:relative; border:1px solid var(--border); }
+  .entry-photo-thumb { aspect-ratio:1; background:#2a2a2a; border-radius:8px; overflow:hidden; cursor:pointer; position:relative; }
   .entry-photo-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
-  .entry-photo-thumb::after { content:'\1F50D'; position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,.65); color:#fff; font-size:13px; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .entry-photo-thumb::after { content:'\1F50D'; position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,.6); color:#fff; font-size:13px; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
   .entry-remark-row { margin-bottom:12px; }
   .entry-actions { display:flex; gap:10px; }
 
-  .review-info { margin:10px 0; padding:12px; background:var(--bg-soft); border-radius:10px; font-size:12px; border-left:3px solid var(--border); }
-  .review-info.ri-checker { border-left-color:var(--orange); }
-  .review-info.ri-foreman { border-left-color:var(--blue); }
-  .review-info .ri-label { color:var(--muted); margin-bottom:4px; font-weight:600; }
-  .review-info .ri-value { color:var(--text); }
+  /* Checker/Foreman info on card */
+  .review-info { margin:10px 0; padding:10px; background:#0f0f0f; border-radius:8px; font-size:12px; }
+  .review-info .ri-label { color:#666; margin-bottom:4px; }
+  .review-info .ri-value { color:#e0e0e0; }
 
-  /* ============================ EMPTY STATE ============================ */
-  .empty-state { text-align:center; padding:50px 20px; color:#454b5e; }
-  .empty-state .empty-icon { font-size:48px; margin-bottom:12px; opacity:.6; }
+  /* ============================
+     EMPTY STATE
+     ============================ */
+  .empty-state { text-align:center; padding:40px 20px; color:#555; }
+  .empty-state .empty-icon { font-size:48px; margin-bottom:12px; }
   .empty-state .empty-text { font-size:14px; }
 
-  /* ============================ MODALS ============================ */
-  .modal { display:none; position:fixed; inset:0; z-index:100; background:rgba(0,0,0,.92); }
+  /* ============================
+     MODALS (Scanner & Viewer)
+     ============================ */
+  .modal { display:none; position:fixed; inset:0; z-index:100; background:rgba(0,0,0,.9); }
   .modal.active { display:flex; flex-direction:column; }
-  .modal-header { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid var(--border); }
-  .modal-header h3 { font-size:16px; color:var(--text); }
-  .modal-close { width:38px; height:38px; background:var(--card); border:1px solid var(--border); border-radius:50%; color:var(--text); font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .modal-header { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid #333; }
+  .modal-header h3 { font-size:16px; color:#e0e0e0; }
+  .modal-close { width:36px; height:36px; background:#2a2a2a; border:1px solid #444; border-radius:50%; color:#e0e0e0; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
   .modal-body { flex:1; display:flex; align-items:center; justify-content:center; overflow:auto; position:relative; touch-action:pinch-zoom; }
   #scanner-viewport { width:100%; max-width:400px; aspect-ratio:1; }
-  #photo-viewer-img { max-width:100%; max-height:85vh; width:auto; height:auto; object-fit:contain; border-radius:6px; touch-action:pinch-zoom; }
-  .viewer-nav { position:fixed; top:50%; transform:translateY(-50%); width:48px; height:48px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2); border-radius:50%; color:#fff; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:102; }
+  #photo-viewer-img { max-width:100%; max-height:85vh; width:auto; height:auto; object-fit:contain; border-radius:4px; touch-action:pinch-zoom; }
+  .viewer-nav { position:fixed; top:50%; transform:translateY(-50%); width:48px; height:48px; background:rgba(0,0,0,.6); border:1px solid #555; border-radius:50%; color:#fff; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:102; }
   .viewer-nav.prev { left:12px; }
   .viewer-nav.next { right:12px; }
-  .viewer-info { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:rgba(255,255,255,.1); padding:8px 20px; border-radius:20px; font-size:13px; color:var(--text); white-space:nowrap; z-index:102; }
+  .viewer-info { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,.7); padding:8px 20px; border-radius:20px; font-size:14px; color:#e0e0e0; white-space:nowrap; z-index:102; }
 
-  /* ============================ LOADING / TOAST ============================ */
-  #loading-overlay { display:none; position:fixed; inset:0; z-index:200; background:rgba(0,0,0,.65); flex-direction:column; align-items:center; justify-content:center; backdrop-filter:blur(2px); }
+  /* ============================
+     LOADING OVERLAY
+     ============================ */
+  #loading-overlay { display:none; position:fixed; inset:0; z-index:200; background:rgba(0,0,0,.7); flex-direction:column; align-items:center; justify-content:center; }
   #loading-overlay.active { display:flex; }
-  .spinner { width:46px; height:46px; border:4px solid #262b38; border-top-color:var(--blue); border-radius:50%; animation:spin .9s linear infinite; margin-bottom:16px; }
+  .spinner { width:48px; height:48px; border:4px solid #333; border-top-color:#90caf9; border-radius:50%; animation:spin 1s linear infinite; margin-bottom:16px; }
   @keyframes spin { to { transform:rotate(360deg); } }
-  .loading-text { color:#c7cbd6; font-size:14px; font-weight:500; }
+  .loading-text { color:#aaa; font-size:14px; }
 
-  #toast { position:fixed; top:16px; left:50%; transform:translateX(-50%) translateY(-120%); padding:14px 24px; border-radius:12px; font-size:14px; font-weight:600; color:#fff; z-index:300; transition:transform .3s ease; max-width:90%; text-align:center; pointer-events:none; box-shadow:var(--shadow); }
+  /* ============================
+     TOAST
+     ============================ */
+  #toast { position:fixed; top:16px; left:50%; transform:translateX(-50%) translateY(-120%); padding:14px 24px; border-radius:10px; font-size:14px; font-weight:500; color:#fff; z-index:300; transition:transform .3s ease; max-width:90%; text-align:center; pointer-events:none; }
   #toast.show { transform:translateX(-50%) translateY(0); }
-  #toast.success { background:linear-gradient(135deg,var(--green),#2bb37a); color:#06150e; }
-  #toast.error { background:linear-gradient(135deg,var(--red),#e8475a); }
-  #toast.info { background:linear-gradient(135deg,var(--blue),#4f7bdb); }
+  #toast.success { background:#4caf50; }
+  #toast.error { background:#f44336; }
+  #toast.info { background:#3f51b5; }
 
-  /* ============================ MISC ============================ */
-  .section-title { font-size:16px; font-weight:700; color:#fff; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; }
+  /* ============================
+     MISC
+     ============================ */
+  .section-title { font-size:15px; font-weight:600; color:#e0e0e0; margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid #333; }
+  .badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:600; }
 
   @media(max-width:380px){
     .entry-grid { grid-template-columns:1fr; }
-    .dash-grid { grid-template-columns:repeat(2,1fr); }
+    .entry-photo-grid { grid-template-columns:repeat(2,1fr); }
   }
 </style>
+<base target="_blank">
 <base target="_blank">
 </head>
 <body>
 
-<!-- ============================ LOGIN ============================ -->
+<!-- ============================
+     LOGIN SCREEN
+     ============================ -->
 <div id="screen-login" class="screen active">
   <div class="login-card">
-    <div class="brand-mark">&#128230;</div>
     <h1>MG Part Verification</h1>
     <p class="subtitle">Quality Control System</p>
     <p class="role-label">Select Role</p>
     <div class="role-btns">
-      <button class="role-btn" data-role="staff" data-act="select-role"><span class="ri">&#9998;</span>Staff</button>
-      <button class="role-btn" data-role="checker" data-act="select-role"><span class="ri">&#10003;</span>Checker</button>
-      <button class="role-btn" data-role="foreman" data-act="select-role"><span class="ri">&#9733;</span>Foreman</button>
+      <button class="role-btn" data-role="staff" onclick="selectLoginRole('staff')">Staff</button>
+      <button class="role-btn" data-role="checker" onclick="selectLoginRole('checker')">Checker</button>
+      <button class="role-btn" data-role="foreman" onclick="selectLoginRole('foreman')">Foreman</button>
     </div>
     <div id="login-password-wrap">
-      <input type="password" id="login-password" class="login-input" placeholder="Enter password">
+      <input type="password" id="login-password" class="login-input" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
     </div>
-    <button class="login-btn" id="login-btn" data-act="login" disabled>Login</button>
+    <button class="login-btn" id="login-btn" onclick="doLogin()" disabled>Login</button>
     <p class="login-error" id="login-error"></p>
   </div>
-  <div class="settings-gear" data-act="show-settings" title="Settings">&#9881;</div>
+  <div class="settings-gear" onclick="showSettings()" title="Settings">&#9881;</div>
 </div>
 
-<!-- ============================ SETTINGS ============================ -->
+<!-- ============================
+     SETTINGS SCREEN
+     ============================ -->
 <div id="screen-settings" class="screen">
   <div class="settings-header">
-    <button class="back-btn" data-act="back-to-login">&#8592;</button>
+    <button class="back-btn" onclick="backToLogin()">&#8592;</button>
     <h2>Settings</h2>
   </div>
   <div class="settings-body">
-    <div class="settings-group" id="master-pw-group" style="border:1px solid #444;border-radius:14px;padding:16px;margin-bottom:20px;background:var(--card);">
-      <label style="color:var(--orange);">&#128274; Current Password (Required to Save)</label>
+    <div class="settings-group" id="master-pw-group" style="border:1px solid #444;border-radius:10px;padding:16px;margin-bottom:20px;background:#1a1a1a;">
+      <label style="color:#ff9800;">&#128274; Current Password (Required to Save)</label>
       <input type="password" id="set-master" placeholder="Enter any current role password">
       <p class="settings-hint" id="master-hint">First time? Leave empty if no passwords are set yet.</p>
     </div>
@@ -276,25 +285,28 @@
       <input type="password" id="set-foreman" placeholder="Leave empty for no password">
       <p class="settings-hint">Empty = no password required</p>
     </div>
-    <button class="save-btn" data-act="save-settings">Save Settings</button>
+    <button class="save-btn" onclick="saveSettings()">Save Settings</button>
   </div>
 </div>
 
-<!-- ============================ MAIN APP ============================ -->
+<!-- ============================
+     MAIN APP
+     ============================ -->
 <div id="screen-main" class="screen">
   <div class="top-bar">
-    <span class="app-title"><span class="ti">&#128230;</span>MG Part Verification</span>
+    <span class="app-title">MG Part Verification</span>
     <div class="top-bar-right">
       <span class="role-badge" id="role-badge"></span>
-      <button class="logout-btn" data-act="logout">Logout</button>
+      <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
   </div>
 
   <!-- TAB: Data Entry -->
   <div id="tab-entry" class="tab-content active">
-    <div class="section-title">&#9998; New Entry</div>
+    <div class="section-title">New Entry</div>
+    <!-- Rejected items section -->
     <div id="rejected-section" style="display:none;">
-      <div class="rejected-header" id="rejected-header" data-act="toggle-rejected">
+      <div class="rejected-header" id="rejected-header" onclick="toggleRejected()">
         <span class="rej-title">Rejected Items</span>
         <div style="display:flex;align-items:center;gap:8px;">
           <span class="rej-count" id="rejected-count">0</span>
@@ -313,28 +325,28 @@
         <label>Carton ID</label>
         <div class="input-wrap">
           <input type="text" id="f-cartonId" placeholder="Scan or type carton ID">
-          <button class="scan-btn" data-act="scan" data-field="f-cartonId">&#128247;</button>
+          <button class="scan-btn" onclick="startScanner('f-cartonId')">&#128247;</button>
         </div>
       </div>
       <div class="form-group">
         <label>Customer Name</label>
         <div class="input-wrap">
           <input type="text" id="f-customerName" placeholder="Scan or type customer name">
-          <button class="scan-btn" data-act="scan" data-field="f-customerName">&#128247;</button>
+          <button class="scan-btn" onclick="startScanner('f-customerName')">&#128247;</button>
         </div>
       </div>
       <div class="form-group">
         <label>P/I No.</label>
         <div class="input-wrap">
           <input type="text" id="f-piNo" placeholder="Scan or type PI number">
-          <button class="scan-btn" data-act="scan" data-field="f-piNo">&#128247;</button>
+          <button class="scan-btn" onclick="startScanner('f-piNo')">&#128247;</button>
         </div>
       </div>
       <div class="form-group">
         <label>Part No.</label>
         <div class="input-wrap">
           <input type="text" id="f-partNo" placeholder="Scan or type part number">
-          <button class="scan-btn" data-act="scan" data-field="f-partNo">&#128247;</button>
+          <button class="scan-btn" onclick="startScanner('f-partNo')">&#128247;</button>
         </div>
       </div>
       <div class="form-group">
@@ -347,46 +359,58 @@
       </div>
     </div>
 
+    <!-- Photo sections -->
     <div class="card">
       <div class="photo-section">
-        <div class="photo-section-title"><span>&#128308; Photo Doc</span><span class="photo-counter" id="cnt-photoDoc">0/3</span></div>
+        <div class="photo-section-title">
+          <span>&#128308; Photo Doc</span>
+          <span class="photo-counter" id="cnt-photoDoc">0/3</span>
+        </div>
         <div class="photo-grid" id="grid-photoDoc"></div>
-        <button class="take-photo-btn" id="btn-photoDoc" data-act="trigger-photo" data-cat="photoDoc">&#128248; Take Photo</button>
-        <input type="file" id="file-photoDoc" class="hidden-file" accept="image/*" capture="environment" data-cat="photoDoc">
+        <button class="take-photo-btn" id="btn-photoDoc" onclick="triggerPhoto('photoDoc')">&#128248; Take Photo</button>
+        <input type="file" id="file-photoDoc" class="hidden-file" accept="image/*" capture="environment" onchange="onPhotoSelected(this,'photoDoc')">
       </div>
       <div class="photo-section">
-        <div class="photo-section-title"><span>&#128308; Photo Part &amp; Bag W/Laser</span><span class="photo-counter" id="cnt-photoPartBag">0/3</span></div>
+        <div class="photo-section-title">
+          <span>&#128308; Photo Part &amp; Bag W/Laser</span>
+          <span class="photo-counter" id="cnt-photoPartBag">0/3</span>
+        </div>
         <div class="photo-grid" id="grid-photoPartBag"></div>
-        <button class="take-photo-btn" id="btn-photoPartBag" data-act="trigger-photo" data-cat="photoPartBag">&#128248; Take Photo</button>
-        <input type="file" id="file-photoPartBag" class="hidden-file" accept="image/*" capture="environment" data-cat="photoPartBag">
+        <button class="take-photo-btn" id="btn-photoPartBag" onclick="triggerPhoto('photoPartBag')">&#128248; Take Photo</button>
+        <input type="file" id="file-photoPartBag" class="hidden-file" accept="image/*" capture="environment" onchange="onPhotoSelected(this,'photoPartBag')">
       </div>
       <div class="photo-section">
-        <div class="photo-section-title"><span>&#128308; Photo Inner Box</span><span class="photo-counter" id="cnt-photoInnerBox">0/3</span></div>
+        <div class="photo-section-title">
+          <span>&#128308; Photo Inner Box</span>
+          <span class="photo-counter" id="cnt-photoInnerBox">0/3</span>
+        </div>
         <div class="photo-grid" id="grid-photoInnerBox"></div>
-        <button class="take-photo-btn" id="btn-photoInnerBox" data-act="trigger-photo" data-cat="photoInnerBox">&#128248; Take Photo</button>
-        <input type="file" id="file-photoInnerBox" class="hidden-file" accept="image/*" capture="environment" data-cat="photoInnerBox">
+        <button class="take-photo-btn" id="btn-photoInnerBox" onclick="triggerPhoto('photoInnerBox')">&#128248; Take Photo</button>
+        <input type="file" id="file-photoInnerBox" class="hidden-file" accept="image/*" capture="environment" onchange="onPhotoSelected(this,'photoInnerBox')">
       </div>
       <div class="photo-section">
-        <div class="photo-section-title"><span>&#128308; Photo Carton</span><span class="photo-counter" id="cnt-photoCarton">0/3</span></div>
+        <div class="photo-section-title">
+          <span>&#128308; Photo Carton</span>
+          <span class="photo-counter" id="cnt-photoCarton">0/3</span>
+        </div>
         <div class="photo-grid" id="grid-photoCarton"></div>
-        <button class="take-photo-btn" id="btn-photoCarton" data-act="trigger-photo" data-cat="photoCarton">&#128248; Take Photo</button>
-        <input type="file" id="file-photoCarton" class="hidden-file" accept="image/*" capture="environment" data-cat="photoCarton">
+        <button class="take-photo-btn" id="btn-photoCarton" onclick="triggerPhoto('photoCarton')">&#128248; Take Photo</button>
+        <input type="file" id="file-photoCarton" class="hidden-file" accept="image/*" capture="environment" onchange="onPhotoSelected(this,'photoCarton')">
       </div>
     </div>
 
-    <button class="full-btn btn-green" id="submit-btn" data-act="submit-form" style="margin-bottom:24px;">&#10004; SUBMIT</button>
+    <button class="full-btn btn-green" id="submit-btn" onclick="submitForm()" style="margin-bottom:24px;">&#10004; SUBMIT</button>
     <div style="height:40px;"></div>
   </div>
 
   <!-- TAB: Checker -->
   <div id="tab-checker" class="tab-content">
-    <div class="section-title">&#10003; Checker Review</div>
-    <div class="dash-grid" id="checker-dash"></div>
+    <div class="section-title">Checker Review</div>
     <div class="filter-bar">
-      <button class="filter-pill active" data-filter="all" data-act="checker-filter">All</button>
-      <button class="filter-pill" data-filter="pending" data-act="checker-filter">Pending</button>
-      <button class="filter-pill" data-filter="approved" data-act="checker-filter">Approved</button>
-      <button class="filter-pill" data-filter="rejected" data-act="checker-filter">Rejected</button>
+      <button class="filter-pill active" data-filter="all" onclick="setCheckerFilter('all')">All</button>
+      <button class="filter-pill" data-filter="pending" onclick="setCheckerFilter('pending')">Pending</button>
+      <button class="filter-pill" data-filter="approved" onclick="setCheckerFilter('approved')">Approved</button>
+      <button class="filter-pill" data-filter="rejected" onclick="setCheckerFilter('rejected')">Rejected</button>
     </div>
     <div class="form-group" style="margin-bottom:16px;">
       <label>Checker Name</label>
@@ -397,13 +421,12 @@
 
   <!-- TAB: Foreman -->
   <div id="tab-foreman" class="tab-content">
-    <div class="section-title">&#9733; Foreman Review</div>
-    <div class="dash-grid" id="foreman-dash"></div>
+    <div class="section-title">Foreman Review</div>
     <div class="filter-bar">
-      <button class="filter-pill active" data-filter="all" data-act="foreman-filter">All</button>
-      <button class="filter-pill" data-filter="pending" data-act="foreman-filter">Pending</button>
-      <button class="filter-pill" data-filter="approved" data-act="foreman-filter">Approved</button>
-      <button class="filter-pill" data-filter="rejected" data-act="foreman-filter">Rejected</button>
+      <button class="filter-pill active" data-filter="all" onclick="setForemanFilter('all')">All</button>
+      <button class="filter-pill" data-filter="pending" onclick="setForemanFilter('pending')">Pending</button>
+      <button class="filter-pill" data-filter="approved" onclick="setForemanFilter('approved')">Approved</button>
+      <button class="filter-pill" data-filter="rejected" onclick="setForemanFilter('rejected')">Rejected</button>
     </div>
     <div class="form-group" style="margin-bottom:16px;">
       <label>Foreman Name</label>
@@ -412,38 +435,86 @@
     <div id="foreman-list" class="entry-list"></div>
   </div>
 
+  <!-- Bottom Navigation -->
   <nav class="bottom-nav" id="bottom-nav">
-    <button class="tab-btn active" id="nav-entry" data-act="show-tab" data-tab="entry"><span class="tab-icon">&#9998;</span><span>Entry</span></button>
-    <button class="tab-btn" id="nav-checker" data-act="show-tab" data-tab="checker"><span class="tab-icon">&#10003;</span><span>Checker</span></button>
-    <button class="tab-btn" id="nav-foreman" data-act="show-tab" data-tab="foreman"><span class="tab-icon">&#9733;</span><span>Foreman</span></button>
+    <button class="tab-btn active" id="nav-entry" onclick="showTab('entry')">
+      <span class="tab-icon">&#9998;</span>
+      <span>Entry</span>
+    </button>
+    <button class="tab-btn" id="nav-checker" onclick="showTab('checker')">
+      <span class="tab-icon">&#10003;</span>
+      <span>Checker</span>
+    </button>
+    <button class="tab-btn" id="nav-foreman" onclick="showTab('foreman')">
+      <span class="tab-icon">&#9733;</span>
+      <span>Foreman</span>
+    </button>
   </nav>
 </div>
 
-<!-- ============================ SCANNER MODAL ============================ -->
+<!-- ============================
+     SCANNER MODAL
+     ============================ -->
 <div id="scanner-modal" class="modal">
-  <div class="modal-header"><h3>Scan Barcode</h3><button class="modal-close" data-act="stop-scanner">&#10005;</button></div>
-  <div class="modal-body"><div id="scanner-viewport"></div></div>
+  <div class="modal-header">
+    <h3>Scan Barcode</h3>
+    <button class="modal-close" onclick="stopScanner()">&#10005;</button>
+  </div>
+  <div class="modal-body">
+    <div id="scanner-viewport"></div>
+  </div>
 </div>
 
-<!-- ============================ PHOTO VIEWER ============================ -->
-<div id="photo-viewer" class="modal">
-  <div class="modal-header"><h3 id="viewer-title">Photo</h3><button class="modal-close" data-act="close-viewer">&#10005;</button></div>
+<!-- ============================
+     PHOTO VIEWER
+     ============================ -->
+<div id="photo-viewer" class="modal" onclick="if(event.target===this)closePhotoViewer()">
+  <div class="modal-header">
+    <h3 id="viewer-title">Photo</h3>
+    <button class="modal-close" onclick="closePhotoViewer()">&#10005;</button>
+  </div>
   <div class="modal-body" id="photo-viewer-body">
-    <button class="viewer-nav prev" data-act="viewer-prev">&#9664;</button>
+    <button class="viewer-nav prev" onclick="viewerPrev()">&#9664;</button>
     <img id="photo-viewer-img" src="" alt="">
-    <button class="viewer-nav next" data-act="viewer-next">&#9654;</button>
+    <button class="viewer-nav next" onclick="viewerNext()">&#9654;</button>
     <div class="viewer-info" id="viewer-info"></div>
   </div>
 </div>
 
-<div id="loading-overlay"><div class="spinner"></div><div class="loading-text" id="loading-text">Loading...</div></div>
+<!-- ============================
+     LOADING + TOAST
+     ============================ -->
+<div id="loading-overlay">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loading-text">Loading...</div>
+</div>
 <div id="toast"></div>
 
 <script>
 // ============================================================
+// SERVER
+// ============================================================
+async function serverCall(action, data={}) {
+  try {
+    const resp = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: action, ...data })
+    });
+    if (!resp.ok) {
+      throw new Error('HTTP ' + resp.status);
+    }
+    return await resp.json();
+  } catch (err) {
+    console.error('serverCall error:', action, err.message);
+    throw new Error('Connection failed - check GAS URL and deployment: ' + err.message);
+  }
+}
+
+// ============================================================
 // STATE
 // ============================================================
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx56dNLTgh3lrpD4YCrcMzR-zYXcL-bGXtCSHN94vp2Bpwd_oc9kH-BbBOlyFADoHSz5A/exec";
+const SCRIPT_URL = SCRIPT_URL;
 let currentRole = null;
 let currentTab = 'entry';
 let capturedPhotos = { photoDoc: [], photoPartBag: [], photoInnerBox: [], photoCarton: [] };
@@ -458,10 +529,13 @@ let checkerFilter = 'all';
 let foremanFilter = 'all';
 let settingsCache = { staff: '', checker: '', foreman: '' };
 let rejectedItemsMap = {};
-let selectedLoginRole = null;
 
+// ============================================================
+// UTILITIES
+// ============================================================
 const $ = (id) => document.getElementById(id);
 const esc = (str) => { if(!str) return ''; return str.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
+const escJs = (str) => { if(!str) return ''; return str.toString().replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'\\"'); };
 const formatDate = (str) => { if(!str) return '-'; try { const d=new Date(str); return d.toLocaleDateString(); } catch(e){ return str; } };
 
 function showToast(msg, type='info') {
@@ -473,7 +547,7 @@ function showToast(msg, type='info') {
 
 function lockUI() {
   isBusy = true;
-  document.querySelectorAll('button').forEach(b => { b.disabled = true; });
+  document.querySelectorAll('button').forEach(b => { if(!b.dataset.lockedSkip) b.disabled = true; });
 }
 function unlockUI() {
   isBusy = false;
@@ -498,10 +572,12 @@ function hideAllTabs() {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
 }
+
 function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   $('screen-' + name).classList.add('active');
 }
+
 function showTab(name) {
   currentTab = name;
   hideAllTabs();
@@ -511,6 +587,7 @@ function showTab(name) {
   if(name === 'checker') refreshChecker();
   if(name === 'foreman') refreshForeman();
 }
+
 function logout() {
   currentRole = null;
   localStorage.removeItem('currentRole');
@@ -520,56 +597,55 @@ function logout() {
   $('login-error').textContent = '';
   showScreen('login');
 }
+
 function setupTabsForRole() {
   const nav = $('bottom-nav');
   nav.style.display = 'flex';
   document.querySelectorAll('.tab-btn').forEach(b => b.style.display = 'none');
-  if(currentRole === 'staff') { $('nav-entry').style.display = 'flex'; showTab('entry'); }
-  else if(currentRole === 'checker') { $('nav-checker').style.display = 'flex'; showTab('checker'); }
-  else if(currentRole === 'foreman') { $('nav-foreman').style.display = 'flex'; showTab('foreman'); }
-}
-
-// ============================================================
-// SERVER
-// ============================================================
-async function serverCall(action, data={}) {
-  try {
-    const resp = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action: action, ...data })
-    });
-    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-    return await resp.json();
-  } catch (err) {
-    console.error('serverCall error:', action, err.message);
-    throw new Error('Connection failed: ' + err.message);
+  if(currentRole === 'staff') {
+    $('nav-entry').style.display = 'flex';
+    showTab('entry');
+  } else if(currentRole === 'checker') {
+    $('nav-checker').style.display = 'flex';
+    showTab('checker');
+  } else if(currentRole === 'foreman') {
+    $('nav-foreman').style.display = 'flex';
+    showTab('foreman');
   }
 }
 
 // ============================================================
 // LOGIN
 // ============================================================
+let selectedLoginRole = null;
+
 async function selectLoginRole(role) {
   if(isBusy) return;
   selectedLoginRole = role;
   document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
   document.querySelector('.role-btn[data-role="' + role + '"]').classList.add('selected');
   $('login-error').textContent = '';
+
   try {
     showLoading('Checking...');
     const result = await serverCall('verifyPassword', { role: role, password: '' });
     hideLoading();
-    if (result.success && result.valid) { doLoginDirect(role); return; }
+    if (result.success && result.valid) {
+      doLoginDirect(role);
+      return;
+    }
   } catch(e) {
     hideLoading();
     $('login-error').textContent = 'Connection error: ' + e.message;
     return;
   }
+
   $('login-password-wrap').classList.add('show');
   $('login-btn').disabled = false;
+  $('login-btn').textContent = 'Login';
   setTimeout(() => $('login-password').focus(), 100);
 }
+
 function doLoginDirect(role) {
   currentRole = role;
   localStorage.setItem('currentRole', currentRole);
@@ -579,6 +655,7 @@ function doLoginDirect(role) {
   showScreen('main');
   showToast('Logged in as ' + currentRole, 'success');
 }
+
 async function doLogin() {
   if(isBusy) return;
   if(!selectedLoginRole) { $('login-error').textContent = 'Please select a role'; return; }
@@ -587,10 +664,17 @@ async function doLogin() {
     showLoading('Verifying...');
     const result = await serverCall('verifyPassword', { role: selectedLoginRole, password: pwd });
     hideLoading();
-    if(result.success && result.valid) doLoginDirect(selectedLoginRole);
-    else $('login-error').textContent = 'Incorrect password';
-  } catch(e) { hideLoading(); $('login-error').textContent = 'Connection error: ' + e.message; }
+    if(result.success && result.valid) {
+      doLoginDirect(selectedLoginRole);
+    } else {
+      $('login-error').textContent = 'Incorrect password';
+    }
+  } catch(e) {
+    hideLoading();
+    $('login-error').textContent = 'Connection error: ' + e.message;
+  }
 }
+
 function initLogin() {
   const saved = localStorage.getItem('currentRole');
   if(saved) {
@@ -609,45 +693,85 @@ function initLogin() {
 async function showSettings() {
   if(isBusy) return;
   await loadSettings();
-  const mpw = $('set-master'); if(mpw) mpw.value = '';
+  const mpw = $('set-master');
+  if(mpw) mpw.value = '';
   const hasExisting = settingsCache.staff || settingsCache.checker || settingsCache.foreman;
-  const hint = $('master-hint'); const group = $('master-pw-group');
-  if(hasExisting) { hint.textContent = 'Enter any existing role password to authorize changes.'; group.style.borderColor = '#ff5722'; }
-  else { hint.textContent = 'First time setup - no current password needed. Leave empty.'; group.style.borderColor = '#4caf50'; }
+  const hint = $('master-hint');
+  const group = $('master-pw-group');
+  if(hasExisting) {
+    hint.textContent = 'Enter any existing role password to authorize changes.';
+    group.style.borderColor = '#ff5722';
+  } else {
+    hint.textContent = 'First time setup - no current password needed. Leave empty.';
+    group.style.borderColor = '#4caf50';
+  }
   showScreen('settings');
 }
+
 async function loadSettings() {
   try {
     const result = await serverCall('getSettings');
     if(result.success && result.settings) {
-      settingsCache = { staff: result.settings.staff || '', checker: result.settings.checker || '', foreman: result.settings.foreman || '' };
+      settingsCache = {
+        staff: result.settings.staff || '',
+        checker: result.settings.checker || '',
+        foreman: result.settings.foreman || ''
+      };
       $('set-staff').value = settingsCache.staff;
       $('set-checker').value = settingsCache.checker;
       $('set-foreman').value = settingsCache.foreman;
     }
   } catch(e) { console.log('Settings load failed', e); }
 }
+
 async function saveSettings() {
   if(isBusy) return;
   const masterPwd = $('set-master').value;
-  const staff = $('set-staff').value, checker = $('set-checker').value, foreman = $('set-foreman').value;
+  const staff = $('set-staff').value;
+  const checker = $('set-checker').value;
+  const foreman = $('set-foreman').value;
+
   const hasExisting = settingsCache.staff || settingsCache.checker || settingsCache.foreman;
-  if(hasExisting && !masterPwd) { showToast('Enter current master password to change settings', 'error'); return; }
+  if(hasExisting && !masterPwd) {
+    showToast('Enter current master password to change settings', 'error');
+    return;
+  }
+
   try {
     showLoading('Saving...');
     if(hasExisting) {
       const check = await serverCall('verifyPassword', { role: 'staff', password: masterPwd });
       let valid = check.success && check.valid;
-      if(!valid && settingsCache.checker) { const c2 = await serverCall('verifyPassword', { role: 'checker', password: masterPwd }); valid = c2.success && c2.valid; }
-      if(!valid && settingsCache.foreman) { const c3 = await serverCall('verifyPassword', { role: 'foreman', password: masterPwd }); valid = c3.success && c3.valid; }
-      if(!valid) { hideLoading(); showToast('Incorrect master password', 'error'); return; }
+      if(!valid && settingsCache.checker) {
+        const check2 = await serverCall('verifyPassword', { role: 'checker', password: masterPwd });
+        valid = check2.success && check2.valid;
+      }
+      if(!valid && settingsCache.foreman) {
+        const check3 = await serverCall('verifyPassword', { role: 'foreman', password: masterPwd });
+        valid = check3.success && check3.valid;
+      }
+      if(!valid) {
+        hideLoading();
+        showToast('Incorrect master password', 'error');
+        return;
+      }
     }
+
     const result = await serverCall('saveSettings', { staff, checker, foreman });
     hideLoading();
-    if(result.success) { settingsCache = { staff, checker, foreman }; showToast('Settings saved!', 'success'); backToLogin(); }
-    else showToast('Failed to save: ' + (result.error || 'Unknown error'), 'error');
-  } catch(e) { hideLoading(); showToast('Connection error: ' + e.message, 'error'); }
+    if(result.success) {
+      settingsCache = { staff, checker, foreman };
+      showToast('Settings saved!', 'success');
+      backToLogin();
+    } else {
+      showToast('Failed to save: ' + (result.error || 'Unknown error'), 'error');
+    }
+  } catch(e) {
+    hideLoading();
+    showToast('Connection error: ' + e.message, 'error');
+  }
 }
+
 function backToLogin() {
   selectedLoginRole = null;
   document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
@@ -664,13 +788,16 @@ function backToLogin() {
 async function submitForm() {
   if(isSubmitting || isBusy) return;
   if(!validateForm()) return;
+
   isSubmitting = true;
   showLoading(resubmitRowId ? 'Resubmitting...' : 'Submitting...');
+
   try {
     const photosPayload = {};
     for(const cat of ['photoDoc','photoPartBag','photoInnerBox','photoCarton']) {
       photosPayload[cat] = capturedPhotos[cat].filter(p => p.url).map(p => p.url);
     }
+
     const data = {
       receivedDate: $('f-receivedDate').value,
       cartonId: $('f-cartonId').value.trim(),
@@ -685,28 +812,48 @@ async function submitForm() {
       data.rowId = resubmitRowId;
       const result = await serverCall('resubmitEntry', data);
       hideLoading();
-      if(result.success) { showToast('Entry resubmitted!', 'success'); clearForm(); loadRejectedItems(); }
-      else showToast(result.message || 'Resubmit failed', 'error');
+      if(result.success) {
+        showToast('Entry resubmitted!', 'success');
+        clearForm();
+        loadRejectedItems();
+      } else {
+        showToast(result.message || 'Resubmit failed', 'error');
+      }
     } else {
       const result = await serverCall('submitEntry', data);
       hideLoading();
-      if(result.success) { showToast('Entry submitted!', 'success'); clearForm(); }
-      else showToast(result.message || 'Submit failed', 'error');
+      if(result.success) {
+        showToast('Entry submitted!', 'success');
+        clearForm();
+      } else {
+        showToast(result.message || 'Submit failed', 'error');
+      }
     }
-  } catch(e) { hideLoading(); showToast('Connection error. Please retry.', 'error'); }
-  finally { isSubmitting = false; }
+  } catch(e) {
+    hideLoading();
+    showToast('Connection error. Please retry.', 'error');
+  } finally {
+    isSubmitting = false;
+  }
 }
+
 function validateForm() {
   const required = ['f-receivedDate','f-cartonId','f-customerName','f-piNo','f-partNo','f-packedBy'];
   for(const id of required) {
     if(!$(id).value.trim()) { showToast('Please fill all required fields', 'error'); $(id).focus(); return false; }
   }
-  if(!$('f-qty').value || parseInt($('f-qty').value) <= 0) { showToast('Please enter a valid quantity', 'error'); $('f-qty').focus(); return false; }
+  if(!$('f-qty').value || parseInt($('f-qty').value) <= 0) {
+    showToast('Please enter a valid quantity', 'error'); $('f-qty').focus(); return false;
+  }
   for(const cat of ['photoDoc','photoPartBag','photoInnerBox','photoCarton']) {
-    if(capturedPhotos[cat].some(p => p.uploading)) { showToast('Please wait for photos to finish uploading', 'error'); return false; }
+    if(capturedPhotos[cat].some(p => p.uploading)) {
+      showToast('Please wait for photos to finish uploading', 'error');
+      return false;
+    }
   }
   return true;
 }
+
 function clearForm() {
   ['f-receivedDate','f-cartonId','f-customerName','f-piNo','f-partNo','f-qty','f-packedBy'].forEach(id => $(id).value = '');
   resubmitRowId = null;
@@ -714,6 +861,8 @@ function clearForm() {
   capturedPhotos = { photoDoc: [], photoPartBag: [], photoInnerBox: [], photoCarton: [] };
   ['photoDoc','photoPartBag','photoInnerBox','photoCarton'].forEach(cat => renderPhotoThumbnails(cat));
 }
+
+$('f-receivedDate').valueAsDate = new Date();
 
 // ============================================================
 // REJECTED ITEMS
@@ -731,8 +880,11 @@ async function loadRejectedItems() {
     }
   } catch(e) { console.log('Failed to load rejected items', e); }
 }
+
 function renderRejectedItems(items) {
-  const section = $('rejected-section'); const list = $('rejected-list'); const count = $('rejected-count');
+  const section = $('rejected-section');
+  const list = $('rejected-list');
+  const count = $('rejected-count');
   if(!items || items.length === 0) { section.style.display = 'none'; list.innerHTML = ''; return; }
   section.style.display = 'block';
   count.textContent = items.length;
@@ -740,14 +892,18 @@ function renderRejectedItems(items) {
     <div class="rej-item">
       <div class="rej-meta">Carton: ${esc(item.cartonId)} | Part: ${esc(item.partNo)} | PI: ${esc(item.piNo)}</div>
       <div class="rej-reason">Rejected: ${esc(item.rejectedRemark || item.checkerRemark || item.verifiedRemark || 'No reason')}</div>
-      <div class="rej-actions"><button data-act="resubmit-by-id" data-rowid="${esc(item.rowId)}">Resubmit</button></div>
+      <div class="rej-actions">
+        <button class="btn-green" style="flex:1;padding:8px;border:none;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;background:#4caf50;color:#fff;" onclick="resubmitById('${escJs(item.rowId)}')">Resubmit</button>
+      </div>
     </div>
   `).join('');
 }
+
 function toggleRejected() {
   $('rejected-header').classList.toggle('open');
   $('rejected-list').classList.toggle('open');
 }
+
 function resubmitById(rowId) {
   if(isBusy) return;
   const item = rejectedItemsMap[rowId];
@@ -756,6 +912,7 @@ function resubmitById(rowId) {
   populateFormForResubmit(item);
   showToast('Form populated for resubmission', 'info');
 }
+
 function populateFormForResubmit(entry) {
   $('f-receivedDate').value = entry.receivedDate || '';
   $('f-cartonId').value = entry.cartonId || '';
@@ -768,6 +925,8 @@ function populateFormForResubmit(entry) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+$('f-packedBy').addEventListener('blur', () => loadRejectedItems());
+
 // ============================================================
 // PHOTO CAPTURE
 // ============================================================
@@ -776,57 +935,87 @@ function triggerPhoto(category) {
   if(capturedPhotos[category].length >= 3) { showToast('Maximum 3 photos', 'info'); return; }
   $('file-' + category).click();
 }
+
 async function onPhotoSelected(input, category) {
   const file = input.files[0];
   if(!file) return;
   input.value = '';
   if(capturedPhotos[category].length >= 3) { showToast('Maximum 3 photos', 'info'); return; }
+
   const idx = capturedPhotos[category].length;
   const photoObj = { base64: null, fileId: null, url: null, uploading: true };
   capturedPhotos[category].push(photoObj);
   renderPhotoThumbnails(category);
   lockUI();
+
   try {
     const base64 = await compressPhoto(file);
     photoObj.base64 = base64;
     const filename = category + '_' + (idx+1) + '_' + Date.now() + '.jpg';
     const result = await serverCall('uploadPhoto', { base64, filename });
-    if(result.success) { photoObj.fileId = result.fileId; photoObj.url = result.url; showToast('Photo uploaded!', 'success'); }
-    else { showToast('Photo upload failed', 'error'); capturedPhotos[category].splice(capturedPhotos[category].indexOf(photoObj), 1); }
-  } catch(e) { showToast('Photo upload error', 'error'); capturedPhotos[category].splice(capturedPhotos[category].indexOf(photoObj), 1); }
-  finally { photoObj.uploading = false; renderPhotoThumbnails(category); unlockUI(); }
+    if(result.success) {
+      photoObj.fileId = result.fileId;
+      photoObj.url = result.url;
+      showToast('Photo uploaded!', 'success');
+    } else {
+      showToast('Photo upload failed', 'error');
+      capturedPhotos[category].splice(capturedPhotos[category].indexOf(photoObj), 1);
+    }
+  } catch(e) {
+    showToast('Photo upload error', 'error');
+    capturedPhotos[category].splice(capturedPhotos[category].indexOf(photoObj), 1);
+  } finally {
+    photoObj.uploading = false;
+    renderPhotoThumbnails(category);
+    unlockUI();
+  }
 }
+
 function compressPhoto(file) {
   return new Promise((resolve) => {
     const img = new Image();
     img.onload = () => {
-      let w = img.width, h = img.height; const MAX = 1024;
-      if(w > h && w > MAX) { h = Math.round(h * MAX / w); w = MAX; } else if(h > MAX) { w = Math.round(w * MAX / h); h = MAX; }
-      const canvas = document.createElement('canvas'); canvas.width = w; canvas.height = h;
+      let w = img.width, h = img.height;
+      const MAX = 1024;
+      if(w > h && w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+      else if(h > MAX) { w = Math.round(w * MAX / h); h = MAX; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
       canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      let quality = 0.7; let result = canvas.toDataURL('image/jpeg', quality);
-      while(result.length > 100 * 1024 && quality > 0.2) { quality -= 0.1; result = canvas.toDataURL('image/jpeg', quality); }
-      URL.revokeObjectURL(img.src); resolve(result);
+      let quality = 0.7;
+      let result = canvas.toDataURL('image/jpeg', quality);
+      while(result.length > 100 * 1024 && quality > 0.2) {
+        quality -= 0.1;
+        result = canvas.toDataURL('image/jpeg', quality);
+      }
+      URL.revokeObjectURL(img.src);
+      resolve(result);
     };
     img.onerror = () => resolve('');
     img.src = URL.createObjectURL(file);
   });
 }
+
 function removePhoto(category, index) {
   if(isBusy) return;
   capturedPhotos[category].splice(index, 1);
   renderPhotoThumbnails(category);
 }
+
 function renderPhotoThumbnails(category) {
-  const grid = $('grid-' + category); const counter = $('cnt-' + category); const photos = capturedPhotos[category];
+  const grid = $('grid-' + category);
+  const counter = $('cnt-' + category);
+  const photos = capturedPhotos[category];
   counter.textContent = photos.length + '/3';
+
   grid.innerHTML = photos.map((p, i) => `
     <div class="photo-slot">
       ${p.base64 ? `<img src="${esc(p.base64)}" alt="">` : ''}
-      <button class="remove-photo" data-act="remove-photo" data-cat="${category}" data-idx="${i}">&times;</button>
+      <button class="remove-photo" onclick="removePhoto('${category}',${i})">&times;</button>
       ${p.uploading ? '<div class="uploading-overlay">Uploading...</div>' : ''}
     </div>
   `).join('');
+
   const emptySlots = 3 - photos.length;
   for(let i = 0; i < emptySlots; i++) {
     const slot = document.createElement('div');
@@ -834,6 +1023,7 @@ function renderPhotoThumbnails(category) {
     slot.innerHTML = '<span style="color:#444;font-size:24px;">+</span>';
     grid.appendChild(slot);
   }
+
   $('btn-' + category).disabled = photos.length >= 3;
 }
 
@@ -846,20 +1036,38 @@ async function startScanner(fieldId) {
   $('scanner-modal').classList.add('active');
   try {
     html5QrCode = new Html5Qrcode('scanner-viewport');
-    await html5QrCode.start({ facingMode: 'environment' }, { fps: 10, qrbox: { width: 250, height: 250 } }, onBarcodeScanned, () => {});
-  } catch(e) { showToast('Camera not available. Type manually.', 'error'); stopScanner(); }
+    await html5QrCode.start(
+      { facingMode: 'environment' },
+      { fps: 10, qrbox: { width: 250, height: 250 } },
+      onBarcodeScanned,
+      () => {}
+    );
+  } catch(e) {
+    showToast('Camera not available. Type manually.', 'error');
+    stopScanner();
+  }
 }
+
 async function stopScanner() {
   $('scanner-modal').classList.remove('active');
-  if(html5QrCode) { try { await html5QrCode.stop(); } catch(e){} try { await html5QrCode.clear(); } catch(e){} html5QrCode = null; }
+  if(html5QrCode) {
+    try { await html5QrCode.stop(); } catch(e){}
+    try { await html5QrCode.clear(); } catch(e){}
+    html5QrCode = null;
+  }
   activeScannerField = null;
 }
+
 function onBarcodeScanned(text) {
-  if(activeScannerField) { $(activeScannerField).value = text; stopScanner(); showToast('Barcode scanned!', 'success'); }
+  if(activeScannerField) {
+    $(activeScannerField).value = text;
+    stopScanner();
+    showToast('Barcode scanned!', 'success');
+  }
 }
 
 // ============================================================
-// PHOTO VIEWER
+// PHOTO VIEWER (LIGHTBOX)
 // ============================================================
 function openPhotoViewer(urls, idx, cat) {
   if(!urls || urls.length === 0) return;
@@ -867,27 +1075,54 @@ function openPhotoViewer(urls, idx, cat) {
   updateViewer();
   $('photo-viewer').classList.add('active');
 }
+
 function closePhotoViewer() {
   $('photo-viewer').classList.remove('active');
   viewerState = { urls: [], index: 0, category: '' };
   resetZoom();
 }
-function viewerPrev() { if(viewerState.urls.length <= 1) return; viewerState.index = (viewerState.index - 1 + viewerState.urls.length) % viewerState.urls.length; updateViewer(); }
-function viewerNext() { if(viewerState.urls.length <= 1) return; viewerState.index = (viewerState.index + 1) % viewerState.urls.length; updateViewer(); }
+
+function viewerPrev() {
+  if(viewerState.urls.length <= 1) return;
+  viewerState.index = (viewerState.index - 1 + viewerState.urls.length) % viewerState.urls.length;
+  updateViewer();
+}
+
+function viewerNext() {
+  if(viewerState.urls.length <= 1) return;
+  viewerState.index = (viewerState.index + 1) % viewerState.urls.length;
+  updateViewer();
+}
+
 function updateViewer() {
-  const img = $('photo-viewer-img'); const info = $('viewer-info'); const title = $('viewer-title');
+  const img = $('photo-viewer-img');
+  const info = $('viewer-info');
+  const title = $('viewer-title');
   const url = viewerState.urls[viewerState.index];
   img.src = toLargeImageUrl(url);
   info.textContent = viewerState.category + ' ' + (viewerState.index + 1) + '/' + viewerState.urls.length;
   title.textContent = viewerState.category;
   resetZoom();
 }
+
 let zoomed = false;
 function resetZoom() {
   zoomed = false;
   const img = $('photo-viewer-img');
   if(img) { img.style.transform = 'scale(1)'; img.style.cursor = 'zoom-in'; }
 }
+document.addEventListener('DOMContentLoaded', () => {
+  const img = $('photo-viewer-img');
+  if(img) {
+    img.addEventListener('dblclick', () => {
+      zoomed = !zoomed;
+      img.style.transform = zoomed ? 'scale(2.2)' : 'scale(1)';
+      img.style.cursor = zoomed ? 'zoom-out' : 'zoom-in';
+      img.style.transition = 'transform .2s ease';
+    });
+  }
+});
+
 function toLargeImageUrl(url, size) {
   size = size || 1600;
   if(!url) return url;
@@ -898,20 +1133,6 @@ function toLargeImageUrl(url, size) {
 }
 
 // ============================================================
-// DASHBOARD STATS
-// ============================================================
-function renderDashboard(containerId, stats) {
-  const c = $(containerId);
-  if(!c) return;
-  c.innerHTML = `
-    <div class="dash-card c-total"><span class="dc-icon">&#128203;</span><div class="dc-num">${stats.total}</div><div class="dc-label">Total Entries</div></div>
-    <div class="dash-card c-pending"><span class="dc-icon">&#9203;</span><div class="dc-num">${stats.pending}</div><div class="dc-label">Pending</div></div>
-    <div class="dash-card c-approved"><span class="dc-icon">&#9989;</span><div class="dc-num">${stats.approved}</div><div class="dc-label">Approved</div></div>
-    <div class="dash-card c-rejected"><span class="dc-icon">&#10060;</span><div class="dc-num">${stats.rejected}</div><div class="dc-label">Rejected</div></div>
-  `;
-}
-
-// ============================================================
 // CHECKER
 // ============================================================
 async function refreshChecker() {
@@ -919,10 +1140,18 @@ async function refreshChecker() {
   try {
     const result = await serverCall('getEntries', {});
     hideLoading();
-    if(result.success) { allEntries = result.entries || []; renderCheckerEntries(allEntries); }
-    else $('checker-list').innerHTML = '<div class="empty-state"><div class="empty-text">Failed to load entries</div></div>';
-  } catch(e) { hideLoading(); $('checker-list').innerHTML = '<div class="empty-state"><div class="empty-text">Connection error</div></div>'; }
+    if(result.success) {
+      allEntries = result.entries || [];
+      renderCheckerEntries(allEntries);
+    } else {
+      $('checker-list').innerHTML = '<div class="empty-state"><div class="empty-text">Failed to load entries</div></div>';
+    }
+  } catch(e) {
+    hideLoading();
+    $('checker-list').innerHTML = '<div class="empty-state"><div class="empty-text">Connection error</div></div>';
+  }
 }
+
 function setCheckerFilter(filter) {
   if(isBusy) return;
   checkerFilter = filter;
@@ -930,41 +1159,47 @@ function setCheckerFilter(filter) {
   document.querySelector('#tab-checker .filter-pill[data-filter="' + filter + '"]').classList.add('active');
   renderCheckerEntries(allEntries);
 }
+
 function renderCheckerEntries(entries) {
   const list = $('checker-list');
-  entries = entries || [];
-
-  const stats = {
-    total: entries.length,
-    pending: entries.filter(e => e.status === 'NEW' || e.status === 'RESUBMITTED').length,
-    approved: entries.filter(e => e.status === 'CHECKER_APPROVED' || e.status === 'FOREMAN_APPROVED').length,
-    rejected: entries.filter(e => e.status === 'CHECKER_REJECTED' || e.status === 'FOREMAN_REJECTED').length
-  };
-  renderDashboard('checker-dash', stats);
-
-  if(entries.length === 0) { list.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128196;</div><div class="empty-text">No entries found</div></div>'; return; }
+  if(!entries || entries.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128196;</div><div class="empty-text">No entries found</div></div>';
+    return;
+  }
   let filtered = entries;
   if(checkerFilter === 'pending') filtered = entries.filter(e => e.status === 'NEW' || e.status === 'RESUBMITTED');
   else if(checkerFilter === 'approved') filtered = entries.filter(e => e.status === 'CHECKER_APPROVED' || e.status === 'FOREMAN_APPROVED');
   else if(checkerFilter === 'rejected') filtered = entries.filter(e => e.status === 'CHECKER_REJECTED' || e.status === 'FOREMAN_REJECTED');
 
-  if(filtered.length === 0) { list.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128196;</div><div class="empty-text">No entries in this filter</div></div>'; return; }
+  if(filtered.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128196;</div><div class="empty-text">No entries in this filter</div></div>';
+    return;
+  }
   list.innerHTML = filtered.map(e => createEntryCardHTML(e, 'checker')).join('');
 }
+
 async function checkerAction(rowId, action) {
-  if(isBusy) return;
+  if(isBusy) { return; }
   const checkerBy = $('checker-name').value.trim();
   if(!checkerBy) { showToast('Please enter your name', 'error'); $('checker-name').focus(); return; }
-  const card = document.querySelector('.entry-card[data-rowid="' + rowId + '"]');
+  const card = document.querySelector('.entry-card[data-rowid="' + CSS.escape(rowId) + '"]');
   const remark = card ? card.querySelector('.remark-input').value.trim() : '';
   const apiAction = action === 'pass' ? 'checkerReview' : 'checkerReject';
+
   showLoading(action === 'pass' ? 'Approving...' : 'Rejecting...');
   try {
     const result = await serverCall(apiAction, { rowId, checkerBy, checkerRemark: remark });
     hideLoading();
-    if(result.success) { showToast(action === 'pass' ? 'Approved!' : 'Rejected!', 'success'); refreshChecker(); }
-    else showToast(result.message || 'Action failed', 'error');
-  } catch(e) { hideLoading(); showToast('Connection error', 'error'); }
+    if(result.success) {
+      showToast(action === 'pass' ? 'Approved!' : 'Rejected!', 'success');
+      refreshChecker();
+    } else {
+      showToast(result.message || 'Action failed', 'error');
+    }
+  } catch(e) {
+    hideLoading();
+    showToast('Connection error', 'error');
+  }
 }
 
 // ============================================================
@@ -975,10 +1210,20 @@ async function refreshForeman() {
   try {
     const result = await serverCall('getEntries', {});
     hideLoading();
-    if(result.success) { allEntries = result.entries || []; renderForemanEntries(allEntries); }
-    else $('foreman-list').innerHTML = '<div class="empty-state"><div class="empty-text">Failed to load entries</div></div>';
-  } catch(e) { hideLoading(); $('foreman-list').innerHTML = '<div class="empty-state"><div class="empty-text">Connection error</div></div>'; }
+    if(result.success) {
+      allEntries = result.entries || [];
+      for(const e of allEntries) {
+      }
+      renderForemanEntries(allEntries);
+    } else {
+      $('foreman-list').innerHTML = '<div class="empty-state"><div class="empty-text">Failed to load entries</div></div>';
+    }
+  } catch(e) {
+    hideLoading();
+    $('foreman-list').innerHTML = '<div class="empty-state"><div class="empty-text">Connection error</div></div>';
+  }
 }
+
 function setForemanFilter(filter) {
   if(isBusy) return;
   foremanFilter = filter;
@@ -986,44 +1231,55 @@ function setForemanFilter(filter) {
   document.querySelector('#tab-foreman .filter-pill[data-filter="' + filter + '"]').classList.add('active');
   renderForemanEntries(allEntries);
 }
+
 function renderForemanEntries(entries) {
   const list = $('foreman-list');
-  // Foreman only ever sees entries the checker has already approved.
   const visibleToForeman = (entries || []).filter(e =>
     e.status === 'CHECKER_APPROVED' || e.status === 'FOREMAN_APPROVED' || e.status === 'FOREMAN_REJECTED'
   );
 
-  const stats = {
-    total: visibleToForeman.length,
-    pending: visibleToForeman.filter(e => e.status === 'CHECKER_APPROVED').length,
-    approved: visibleToForeman.filter(e => e.status === 'FOREMAN_APPROVED').length,
-    rejected: visibleToForeman.filter(e => e.status === 'FOREMAN_REJECTED').length
-  };
-  renderDashboard('foreman-dash', stats);
-
-  if(visibleToForeman.length === 0) { list.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128196;</div><div class="empty-text">No entries found</div></div>'; return; }
+  if(visibleToForeman.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128196;</div><div class="empty-text">No entries found</div></div>';
+    return;
+  }
   let filtered = visibleToForeman;
   if(foremanFilter === 'pending') filtered = visibleToForeman.filter(e => e.status === 'CHECKER_APPROVED');
   else if(foremanFilter === 'approved') filtered = visibleToForeman.filter(e => e.status === 'FOREMAN_APPROVED');
   else if(foremanFilter === 'rejected') filtered = visibleToForeman.filter(e => e.status === 'FOREMAN_REJECTED');
 
-  if(filtered.length === 0) { list.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128196;</div><div class="empty-text">No entries in this filter</div></div>'; return; }
-  list.innerHTML = filtered.map(e => createEntryCardHTML(e, 'foreman')).join('');
+
+  if(filtered.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128196;</div><div class="empty-text">No entries in this filter</div></div>';
+    return;
+  }
+  const html = filtered.map(e => createEntryCardHTML(e, 'foreman')).join('');
+  // Check if action buttons are present
+  const hasButtons = html.includes('foremanAction');
+  list.innerHTML = html;
 }
+
 async function foremanAction(rowId, action) {
-  if(isBusy) return;
+  if(isBusy) { return; }
   const verifiedBy = $('foreman-name').value.trim();
   if(!verifiedBy) { showToast('Please enter your name', 'error'); $('foreman-name').focus(); return; }
-  const card = document.querySelector('.entry-card[data-rowid="' + rowId + '"]');
+  const card = document.querySelector('.entry-card[data-rowid="' + CSS.escape(rowId) + '"]');
   const remark = card ? card.querySelector('.remark-input').value.trim() : '';
   const apiAction = action === 'pass' ? 'foremanReview' : 'foremanReject';
+
   showLoading(action === 'pass' ? 'Approving...' : 'Rejecting...');
   try {
     const result = await serverCall(apiAction, { rowId, verifiedBy, verifiedRemark: remark });
     hideLoading();
-    if(result.success) { showToast(action === 'pass' ? 'Approved!' : 'Rejected!', 'success'); refreshForeman(); }
-    else showToast(result.message || 'Action failed', 'error');
-  } catch(e) { hideLoading(); showToast('Connection error', 'error'); }
+    if(result.success) {
+      showToast(action === 'pass' ? 'Approved!' : 'Rejected!', 'success');
+      refreshForeman();
+    } else {
+      showToast(result.message || 'Action failed', 'error');
+    }
+  } catch(e) {
+    hideLoading();
+    showToast('Connection error', 'error');
+  }
 }
 
 // ============================================================
@@ -1032,9 +1288,12 @@ async function foremanAction(rowId, action) {
 function createEntryCardHTML(entry, tabRole) {
   const photos = entry.photos || {};
   const photoCategories = [
-    { key: 'photoDoc', label: 'Doc' }, { key: 'photoPartBag', label: 'Part/Bag' },
-    { key: 'photoInnerBox', label: 'Inner Box' }, { key: 'photoCarton', label: 'Carton' }
+    { key: 'photoDoc', label: 'Doc' },
+    { key: 'photoPartBag', label: 'Part/Bag' },
+    { key: 'photoInnerBox', label: 'Inner Box' },
+    { key: 'photoCarton', label: 'Carton' }
   ];
+
   let photoHTML = '';
   for(const cat of photoCategories) {
     const urls = photos[cat.key] || [];
@@ -1044,38 +1303,49 @@ function createEntryCardHTML(entry, tabRole) {
       photoHTML += '<div class="entry-photos-label">' + cat.label + '</div>';
       photoHTML += '<div class="entry-photo-grid">';
       photoHTML += urls.map((url, idx) =>
-        '<div class="entry-photo-thumb" data-act="open-viewer" data-urls="' + esc(JSON.stringify(urls)) + '" data-idx="' + idx + '" data-cat="' + esc(cat.label) + '"><img src="' + esc(thumbUrls[idx]) + '" alt="" loading="lazy"></div>'
+        '<div class="entry-photo-thumb" onclick="openPhotoViewer(' + JSON.stringify(urls).replace(/"/g,'&quot;') + ',' + idx + ',' + "'"+cat.label+"'" + ')"><img src="' + esc(thumbUrls[idx]) + '" alt="" loading="lazy"></div>'
       ).join('');
       photoHTML += '</div></div>';
     }
   }
+
   let actionHTML = '';
   if(tabRole === 'checker' && (entry.status === 'NEW' || entry.status === 'RESUBMITTED')) {
     actionHTML = `
-      <div class="entry-remark-row"><input type="text" class="remark-input login-input" placeholder="Checker remark (optional)" style="width:100%;"></div>
+      <div class="entry-remark-row">
+        <input type="text" class="remark-input login-input" placeholder="Checker remark (optional)" style="width:100%;">
+      </div>
       <div class="entry-actions">
-        <button class="full-btn btn-green" data-act="checker-pass" data-rowid="${entry.rowId}">&#10004; PASS</button>
-        <button class="full-btn btn-red" data-act="checker-reject" data-rowid="${entry.rowId}">&#10008; REJECT</button>
-      </div>`;
+        <button class="full-btn btn-green" onclick="checkerAction('${escJs(entry.rowId)}','pass')">&#10004; PASS</button>
+        <button class="full-btn btn-red" onclick="checkerAction('${escJs(entry.rowId)}','reject')">&#10008; REJECT</button>
+      </div>
+    `;
   } else if(tabRole === 'foreman' && entry.status === 'CHECKER_APPROVED') {
     actionHTML = `
-      <div class="entry-remark-row"><input type="text" class="remark-input login-input" placeholder="Foreman remark (optional)" style="width:100%;"></div>
+      <div class="entry-remark-row">
+        <input type="text" class="remark-input login-input" placeholder="Foreman remark (optional)" style="width:100%;">
+      </div>
       <div class="entry-actions">
-        <button class="full-btn btn-green" data-act="foreman-pass" data-rowid="${entry.rowId}">&#10004; PASS</button>
-        <button class="full-btn btn-red" data-act="foreman-reject" data-rowid="${entry.rowId}">&#10008; REJECT</button>
-      </div>`;
+        <button class="full-btn btn-green" onclick="foremanAction('${escJs(entry.rowId)}','pass')">&#10004; PASS</button>
+        <button class="full-btn btn-red" onclick="foremanAction('${escJs(entry.rowId)}','reject')">&#10008; REJECT</button>
+      </div>
+    `;
   }
+
   let reviewHTML = '';
   if(entry.checkerBy) {
-    reviewHTML += '<div class="review-info ri-checker"><div class="ri-label">Checker: ' + esc(entry.checkerBy) + ' (' + formatDate(entry.checkerDate) + ')</div>';
+    reviewHTML += '<div class="review-info">';
+    reviewHTML += '<div class="ri-label">Checker: ' + esc(entry.checkerBy) + ' (' + formatDate(entry.checkerDate) + ')</div>';
     if(entry.checkerRemark) reviewHTML += '<div class="ri-value">Remark: ' + esc(entry.checkerRemark) + '</div>';
     reviewHTML += '</div>';
   }
   if(entry.verifiedBy) {
-    reviewHTML += '<div class="review-info ri-foreman"><div class="ri-label">Foreman: ' + esc(entry.verifiedBy) + ' (' + formatDate(entry.verifiedDate) + ')</div>';
+    reviewHTML += '<div class="review-info">';
+    reviewHTML += '<div class="ri-label">Foreman: ' + esc(entry.verifiedBy) + ' (' + formatDate(entry.verifiedDate) + ')</div>';
     if(entry.verifiedRemark) reviewHTML += '<div class="ri-value">Remark: ' + esc(entry.verifiedRemark) + '</div>';
     reviewHTML += '</div>';
   }
+
   return `
     <div class="entry-card" data-rowid="${entry.rowId}">
       <div class="entry-header">
@@ -1094,92 +1364,31 @@ function createEntryCardHTML(entry, tabRole) {
       ${photoHTML}
       ${reviewHTML}
       ${actionHTML}
-    </div>`;
+    </div>
+  `;
 }
+
 function formatStatusLabel(status) {
   if(!status) return 'Unknown';
-  const map = { 'NEW': 'New', 'CHECKER_APPROVED': 'Chk Approved', 'CHECKER_REJECTED': 'Chk Rejected', 'FOREMAN_APPROVED': 'Approved', 'FOREMAN_REJECTED': 'Fmn Rejected', 'RESUBMITTED': 'Resubmitted' };
+  const map = {
+    'NEW': 'New',
+    'CHECKER_APPROVED': 'Chk Approved',
+    'CHECKER_REJECTED': 'Chk Rejected',
+    'FOREMAN_APPROVED': 'Approved',
+    'FOREMAN_REJECTED': 'Fmn Rejected',
+    'RESUBMITTED': 'Resubmitted'
+  };
   return map[status] || status;
 }
+
 function formatStatusClass(status) {
   if(!status) return '';
-  if(status === 'NEW' || status === 'RESUBMITTED') return status === 'NEW' ? 'new' : 'resubmitted';
+  if(status === 'NEW') return 'new';
   if(status === 'CHECKER_APPROVED' || status === 'FOREMAN_APPROVED') return 'approved';
   if(status === 'CHECKER_REJECTED' || status === 'FOREMAN_REJECTED') return 'rejected';
+  if(status === 'RESUBMITTED') return 'resubmitted';
   return '';
 }
-
-// ============================================================
-// GLOBAL EVENT DELEGATION (robust click wiring - no inline onclick)
-// ============================================================
-document.addEventListener('click', function(e) {
-  const t = e.target.closest('[data-act]');
-  if(!t) return;
-  const act = t.dataset.act;
-
-  switch(act) {
-    case 'select-role': selectLoginRole(t.dataset.role); break;
-    case 'login': doLogin(); break;
-    case 'show-settings': showSettings(); break;
-    case 'back-to-login': backToLogin(); break;
-    case 'save-settings': saveSettings(); break;
-    case 'logout': logout(); break;
-    case 'show-tab': showTab(t.dataset.tab); break;
-    case 'toggle-rejected': toggleRejected(); break;
-    case 'scan': startScanner(t.dataset.field); break;
-    case 'stop-scanner': stopScanner(); break;
-    case 'trigger-photo': triggerPhoto(t.dataset.cat); break;
-    case 'remove-photo': removePhoto(t.dataset.cat, parseInt(t.dataset.idx)); break;
-    case 'submit-form': submitForm(); break;
-    case 'resubmit-by-id': resubmitById(t.dataset.rowid); break;
-    case 'checker-filter': setCheckerFilter(t.dataset.filter); break;
-    case 'foreman-filter': setForemanFilter(t.dataset.filter); break;
-    case 'checker-pass': checkerAction(t.dataset.rowid, 'pass'); break;
-    case 'checker-reject': checkerAction(t.dataset.rowid, 'reject'); break;
-    case 'foreman-pass': foremanAction(t.dataset.rowid, 'pass'); break;
-    case 'foreman-reject': foremanAction(t.dataset.rowid, 'reject'); break;
-    case 'open-viewer': {
-      let urls = [];
-      try { urls = JSON.parse(t.dataset.urls); } catch(err) { urls = []; }
-      openPhotoViewer(urls, parseInt(t.dataset.idx), t.dataset.cat);
-      break;
-    }
-    case 'close-viewer': closePhotoViewer(); break;
-    case 'viewer-prev': viewerPrev(); break;
-    case 'viewer-next': viewerNext(); break;
-  }
-});
-
-// Close photo viewer when tapping the dark backdrop (not the image itself)
-$('photo-viewer').addEventListener('click', function(e) {
-  if(e.target === this) closePhotoViewer();
-});
-
-// File input change events (photo capture)
-document.querySelectorAll('input[type="file"].hidden-file').forEach(inp => {
-  inp.addEventListener('change', function() { onPhotoSelected(this, this.dataset.cat); });
-});
-
-// Login - Enter key submits
-$('login-password').addEventListener('keydown', function(e) { if(e.key === 'Enter') doLogin(); });
-
-// Load rejected items when packedBy changes
-$('f-packedBy').addEventListener('blur', () => loadRejectedItems());
-
-// Double-tap to zoom in the photo viewer
-document.addEventListener('DOMContentLoaded', () => {
-  const img = $('photo-viewer-img');
-  if(img) {
-    img.addEventListener('dblclick', () => {
-      zoomed = !zoomed;
-      img.style.transition = 'transform .2s ease';
-      img.style.transform = zoomed ? 'scale(2.2)' : 'scale(1)';
-      img.style.cursor = zoomed ? 'zoom-out' : 'zoom-in';
-    });
-  }
-  // Set default date to today
-  if($('f-receivedDate')) $('f-receivedDate').valueAsDate = new Date();
-});
 
 // ============================================================
 // INIT
