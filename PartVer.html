@@ -429,12 +429,13 @@
 
   <!-- TAB: Rejected (Staff only) -->
   <div id="tab-rejected" class="tab-content">
-    <div class="section-title">My Rejected Jobs</div>
-    <div class="form-group" style="margin-bottom:16px;">
-      <label>Staff Name</label>
-      <input type="text" id="rejected-staff-name" placeholder="Enter your name to find rejected jobs">
+    <div class="section-title">Rejected Jobs</div>
+    <div id="rejected-summary-bar" class="summary-bar" style="margin-bottom:16px;">
+      <div class="summary-card rejected"><div class="summary-count" id="rej-chk-count">0</div><div class="summary-label">Checker Rejected</div></div>
+      <div class="summary-card pending"><div class="summary-count" id="rej-fmn-count">0</div><div class="summary-label">Foreman Rejected</div></div>
+      <div class="summary-card total"><div class="summary-count" id="rej-total-count">0</div><div class="summary-label">Total</div></div>
     </div>
-    <button class="full-btn btn-blue" id="btn-load-rejected" onclick="refreshRejected()" style="margin-bottom:16px;">&#128260; Load Rejected Jobs</button>
+    <button class="full-btn btn-blue" id="btn-load-rejected" onclick="refreshRejected()" style="margin-bottom:16px;">&#128260; Refresh</button>
     <div id="rejected-tab-list" class="entry-list"></div>
   </div>
 
@@ -565,7 +566,7 @@ async function serverCall(action, data={}) {
 // ============================================================
 // STATE
 // ============================================================
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxdfzMEVeUiHbrn9L1dhrY0Mba_WPf2Sb-PozJ9uZDVTN1PRZvOMzamg6xbfpYF13TYjA/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwpg-XZhQKN51PyACAvzG-wzq_7XA29arHFB1XEC4ZCueIXD37BHRxlLhVe8fPvH8r8Pw/exec";
 let currentRole = null;
 let currentTab = 'entry';
 let capturedPhotos = { photoDoc: [], photoPartBag: [], photoInnerBox: [], photoCarton: [] };
@@ -966,18 +967,13 @@ function resubmitById(rowId) {
   showToast('Form populated for resubmission', 'info');
 }
 
-// --- Rejected Tab (dedicated view for staff) ---
+// --- Rejected Tab (ALL rejected jobs visible to any staff) ---
 async function refreshRejected() {
   if(!currentRole || currentRole !== 'staff') return;
-  const staffName = $('rejected-staff-name').value.trim();
-  if(!staffName) {
-    showToast('Please enter your name', 'error');
-    $('rejected-staff-name').focus();
-    return;
-  }
   showLoading('Loading rejected jobs...');
   try {
-    const result = await serverCall('getRejectedForStaff', { packedBy: staffName });
+    // Call backend without packedBy filter to get ALL rejected jobs
+    const result = await serverCall('getRejectedForStaff', {});
     hideLoading();
     if(result.success && result.items) {
       rejectedItemsMap = {};
@@ -994,11 +990,17 @@ async function refreshRejected() {
 
 function renderRejectedTab(items) {
   const list = $('rejected-tab-list');
+  // Update summary counts
+  const chkRejected = (items || []).filter(e => e.status === 'CHECKER_REJECTED').length;
+  const fmnRejected = (items || []).filter(e => e.status === 'FOREMAN_REJECTED').length;
+  $('rej-chk-count').textContent = chkRejected;
+  $('rej-fmn-count').textContent = fmnRejected;
+  $('rej-total-count').textContent = (items || []).length;
+
   if(!items || items.length === 0) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128196;</div><div class="empty-text">No rejected jobs found</div></div>';
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128196;</div><div class="empty-text">No rejected jobs</div></div>';
     return;
   }
-  // Show rejected items as proper entry cards with full info and a Resubmit button
   list.innerHTML = items.map(item => createRejectedCardHTML(item)).join('');
 }
 
@@ -1018,7 +1020,7 @@ function createRejectedCardHTML(item) {
         <div class="field"><span class="field-label">P/I No.</span><span class="field-value">${esc(item.piNo)}</span></div>
         <div class="field"><span class="field-label">Part No.</span><span class="field-value">${esc(item.partNo)}</span></div>
         <div class="field"><span class="field-label">QTY</span><span class="field-value">${item.qty}</span></div>
-        <div class="field"><span class="field-label">Packed By</span><span class="field-value">${esc(item.packedBy)}</span></div>
+        <div class="field"><span class="field-label">Packed By</span><span class="field-value" style="color:#ff9800;font-weight:600;">${esc(item.packedBy)}</span></div>
       </div>
       <div class="rejection-info">
         <div class="rej-label">&#10008; Rejected by ${rejecterRole}: ${esc(item.rejectedBy)} (${formatDate(item.rejectedDate)})</div>
@@ -1041,8 +1043,6 @@ function resubmitByIdAndSwitch(rowId) {
   if(!$('f-packedBy').value.trim()) {
     $('f-packedBy').value = item.packedBy || '';
   }
-  // Also sync the rejected-tab staff name field
-  $('rejected-staff-name').value = item.packedBy || '';
   showTab('entry');
   showToast('Form filled. Edit and resubmit.', 'info');
 }
