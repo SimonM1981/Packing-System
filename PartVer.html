@@ -427,6 +427,17 @@
     <div style="height:40px;"></div>
   </div>
 
+  <!-- TAB: Rejected (Staff only) -->
+  <div id="tab-rejected" class="tab-content">
+    <div class="section-title">My Rejected Jobs</div>
+    <div class="form-group" style="margin-bottom:16px;">
+      <label>Staff Name</label>
+      <input type="text" id="rejected-staff-name" placeholder="Enter your name to find rejected jobs">
+    </div>
+    <button class="full-btn btn-blue" id="btn-load-rejected" onclick="refreshRejected()" style="margin-bottom:16px;">&#128260; Load Rejected Jobs</button>
+    <div id="rejected-tab-list" class="entry-list"></div>
+  </div>
+
   <!-- TAB: Checker -->
   <div id="tab-checker" class="tab-content">
     <div class="section-title">Checker Review</div>
@@ -476,6 +487,10 @@
     <button class="tab-btn active" id="nav-entry" onclick="showTab('entry')">
       <span class="tab-icon">&#9998;</span>
       <span>Entry</span>
+    </button>
+    <button class="tab-btn" id="nav-rejected" onclick="showTab('rejected')">
+      <span class="tab-icon">&#10008;</span>
+      <span>Rejected</span>
     </button>
     <button class="tab-btn" id="nav-checker" onclick="showTab('checker')">
       <span class="tab-icon">&#10003;</span>
@@ -622,6 +637,7 @@ function showTab(name) {
   if(nav) nav.classList.add('active');
   if(name === 'checker') refreshChecker();
   if(name === 'foreman') refreshForeman();
+  if(name === 'rejected') refreshRejected();
 }
 
 function logout() {
@@ -640,6 +656,7 @@ function setupTabsForRole() {
   document.querySelectorAll('.tab-btn').forEach(b => b.style.display = 'none');
   if(currentRole === 'staff') {
     $('nav-entry').style.display = 'flex';
+    $('nav-rejected').style.display = 'flex';
     showTab('entry');
   } else if(currentRole === 'checker') {
     $('nav-checker').style.display = 'flex';
@@ -947,6 +964,87 @@ function resubmitById(rowId) {
   resubmitRowId = rowId;
   populateFormForResubmit(item);
   showToast('Form populated for resubmission', 'info');
+}
+
+// --- Rejected Tab (dedicated view for staff) ---
+async function refreshRejected() {
+  if(!currentRole || currentRole !== 'staff') return;
+  const staffName = $('rejected-staff-name').value.trim();
+  if(!staffName) {
+    showToast('Please enter your name', 'error');
+    $('rejected-staff-name').focus();
+    return;
+  }
+  showLoading('Loading rejected jobs...');
+  try {
+    const result = await serverCall('getRejectedForStaff', { packedBy: staffName });
+    hideLoading();
+    if(result.success && result.items) {
+      rejectedItemsMap = {};
+      result.items.forEach(item => { rejectedItemsMap[item.rowId] = item; });
+      renderRejectedTab(result.items);
+    } else {
+      $('rejected-tab-list').innerHTML = '<div class="empty-state"><div class="empty-icon">&#128196;</div><div class="empty-text">Failed to load rejected jobs</div></div>';
+    }
+  } catch(e) {
+    hideLoading();
+    $('rejected-tab-list').innerHTML = '<div class="empty-state"><div class="empty-text">Connection error</div></div>';
+  }
+}
+
+function renderRejectedTab(items) {
+  const list = $('rejected-tab-list');
+  if(!items || items.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128196;</div><div class="empty-text">No rejected jobs found</div></div>';
+    return;
+  }
+  // Show rejected items as proper entry cards with full info and a Resubmit button
+  list.innerHTML = items.map(item => createRejectedCardHTML(item)).join('');
+}
+
+function createRejectedCardHTML(item) {
+  const rejecterRole = item.status === 'CHECKER_REJECTED' ? 'Checker' : 'Foreman';
+  const reason = item.rejectedRemark || item.checkerRemark || item.verifiedRemark || 'No reason given';
+  return `
+    <div class="entry-card" data-rowid="${esc(item.rowId)}">
+      <div class="entry-header">
+        <span class="entry-id">#${esc(item.rowId.substring(0,8))}</span>
+        <span class="status-badge rejected">${rejecterRole} Rejected</span>
+      </div>
+      <div class="entry-grid">
+        <div class="field"><span class="field-label">Received</span><span class="field-value">${formatDate(item.receivedDate)}</span></div>
+        <div class="field"><span class="field-label">Carton ID</span><span class="field-value">${esc(item.cartonId)}</span></div>
+        <div class="field"><span class="field-label">Customer</span><span class="field-value">${esc(item.customerName)}</span></div>
+        <div class="field"><span class="field-label">P/I No.</span><span class="field-value">${esc(item.piNo)}</span></div>
+        <div class="field"><span class="field-label">Part No.</span><span class="field-value">${esc(item.partNo)}</span></div>
+        <div class="field"><span class="field-label">QTY</span><span class="field-value">${item.qty}</span></div>
+        <div class="field"><span class="field-label">Packed By</span><span class="field-value">${esc(item.packedBy)}</span></div>
+      </div>
+      <div class="rejection-info">
+        <div class="rej-label">&#10008; Rejected by ${rejecterRole}: ${esc(item.rejectedBy)} (${formatDate(item.rejectedDate)})</div>
+        <div class="rej-detail">Reason: ${esc(reason)}</div>
+      </div>
+      <div class="entry-actions">
+        <button class="full-btn btn-blue" onclick="resubmitByIdAndSwitch('${escJs(item.rowId)}')">&#9998; Edit &amp; Resubmit</button>
+      </div>
+    </div>
+  `;
+}
+
+function resubmitByIdAndSwitch(rowId) {
+  if(isBusy) return;
+  const item = rejectedItemsMap[rowId];
+  if(!item) return;
+  resubmitRowId = rowId;
+  populateFormForResubmit(item);
+  // Auto-fill the staff name in Packed By if empty
+  if(!$('f-packedBy').value.trim()) {
+    $('f-packedBy').value = item.packedBy || '';
+  }
+  // Also sync the rejected-tab staff name field
+  $('rejected-staff-name').value = item.packedBy || '';
+  showTab('entry');
+  showToast('Form filled. Edit and resubmit.', 'info');
 }
 
 function populateFormForResubmit(entry) {
