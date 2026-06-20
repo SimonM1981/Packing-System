@@ -219,14 +219,38 @@
   #toast.info { background:#3f51b5; }
 
   /* ============================
+     DASHBOARD SUMMARY
+     ============================ */
+  .summary-bar { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px; }
+  .summary-card { background:#1e1e1e; border:1px solid #333; border-radius:10px; padding:12px 8px; text-align:center; }
+  .summary-count { font-size:22px; font-weight:700; margin-bottom:2px; }
+  .summary-label { font-size:11px; color:#888; text-transform:uppercase; letter-spacing:.5px; }
+  .summary-card.pending .summary-count { color:#ff9800; }
+  .summary-card.approved .summary-count { color:#4caf50; }
+  .summary-card.rejected .summary-count { color:#f44336; }
+  .summary-card.total .summary-count { color:#90caf9; }
+
+  /* ============================
+     REJECTION INFO DISPLAY
+     ============================ */
+  .rejection-info { margin:10px 0; padding:10px; background:#f4433611; border:1px solid #f4433633; border-radius:8px; font-size:12px; }
+  .rejection-info .rej-label { color:#f44336; font-weight:600; margin-bottom:4px; }
+  .rejection-info .rej-detail { color:#e0e0e0; }
+
+  /* ============================
      MISC
      ============================ */
   .section-title { font-size:15px; font-weight:600; color:#e0e0e0; margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid #333; }
   .badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:600; }
 
+  /* Photo slot for restored URL-only photos */
+  .photo-slot img { width:100%; height:100%; object-fit:cover; border-radius:10px; }
+  .photo-slot .photo-url-badge { position:absolute; bottom:4px; left:4px; background:rgba(76,175,80,.8); color:#fff; font-size:9px; padding:2px 6px; border-radius:4px; }
+
   @media(max-width:380px){
     .entry-grid { grid-template-columns:1fr; }
     .entry-photo-grid { grid-template-columns:repeat(2,1fr); }
+    .summary-bar { grid-template-columns:repeat(2,1fr); }
   }
 </style>
 <base target="_blank">
@@ -406,6 +430,12 @@
   <!-- TAB: Checker -->
   <div id="tab-checker" class="tab-content">
     <div class="section-title">Checker Review</div>
+    <div class="summary-bar" id="checker-summary">
+      <div class="summary-card pending"><div class="summary-count" id="chk-pending-count">0</div><div class="summary-label">Pending</div></div>
+      <div class="summary-card approved"><div class="summary-count" id="chk-approved-count">0</div><div class="summary-label">Approved</div></div>
+      <div class="summary-card rejected"><div class="summary-count" id="chk-rejected-count">0</div><div class="summary-label">Rejected</div></div>
+      <div class="summary-card total"><div class="summary-count" id="chk-total-count">0</div><div class="summary-label">Total</div></div>
+    </div>
     <div class="filter-bar">
       <button class="filter-pill active" data-filter="all" onclick="setCheckerFilter('all')">All</button>
       <button class="filter-pill" data-filter="pending" onclick="setCheckerFilter('pending')">Pending</button>
@@ -422,6 +452,12 @@
   <!-- TAB: Foreman -->
   <div id="tab-foreman" class="tab-content">
     <div class="section-title">Foreman Review</div>
+    <div class="summary-bar" id="foreman-summary">
+      <div class="summary-card pending"><div class="summary-count" id="fmn-pending-count">0</div><div class="summary-label">Pending</div></div>
+      <div class="summary-card approved"><div class="summary-count" id="fmn-approved-count">0</div><div class="summary-label">Approved</div></div>
+      <div class="summary-card rejected"><div class="summary-count" id="fmn-rejected-count">0</div><div class="summary-label">Rejected</div></div>
+      <div class="summary-card total"><div class="summary-count" id="fmn-total-count">0</div><div class="summary-label">Total</div></div>
+    </div>
     <div class="filter-bar">
       <button class="filter-pill active" data-filter="all" onclick="setForemanFilter('all')">All</button>
       <button class="filter-pill" data-filter="pending" onclick="setForemanFilter('pending')">Pending</button>
@@ -514,7 +550,7 @@ async function serverCall(action, data={}) {
 // ============================================================
 // STATE
 // ============================================================
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx56dNLTgh3lrpD4YCrcMzR-zYXcL-bGXtCSHN94vp2Bpwd_oc9kH-BbBOlyFADoHSz5A/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxdfzMEVeUiHbrn9L1dhrY0Mba_WPf2Sb-PozJ9uZDVTN1PRZvOMzamg6xbfpYF13TYjA/exec";
 let currentRole = null;
 let currentTab = 'entry';
 let capturedPhotos = { photoDoc: [], photoPartBag: [], photoInnerBox: [], photoCarton: [] };
@@ -922,6 +958,22 @@ function populateFormForResubmit(entry) {
   $('f-qty').value = entry.qty || '';
   $('f-packedBy').value = entry.packedBy || '';
   $('submit-btn').textContent = '\u27F3 RESUBMIT';
+
+  // Restore existing photos from the entry so staff can keep or replace individual ones
+  const photos = entry.photos || {};
+  capturedPhotos = { photoDoc: [], photoPartBag: [], photoInnerBox: [], photoCarton: [] };
+  for(const cat of ['photoDoc','photoPartBag','photoInnerBox','photoCarton']) {
+    const urls = photos[cat] || [];
+    capturedPhotos[cat] = urls.map(url => ({
+      base64: null,
+      fileId: null,
+      url: url,
+      uploading: false,
+      isExisting: true   // flag: this is a saved photo, not newly uploaded
+    }));
+    renderPhotoThumbnails(cat);
+  }
+
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1008,13 +1060,18 @@ function renderPhotoThumbnails(category) {
   const photos = capturedPhotos[category];
   counter.textContent = photos.length + '/3';
 
-  grid.innerHTML = photos.map((p, i) => `
+  grid.innerHTML = photos.map((p, i) => {
+    // Determine image source: base64 for new uploads, thumbnail URL for existing saved photos
+    const imgSrc = p.base64 ? esc(p.base64) : (p.url ? esc(toLargeImageUrl(p.url, 400)) : '');
+    const savedBadge = p.isExisting && !p.base64 ? '<div class="photo-url-badge">Saved</div>' : '';
+    return `
     <div class="photo-slot">
-      ${p.base64 ? `<img src="${esc(p.base64)}" alt="">` : ''}
+      ${imgSrc ? `<img src="${imgSrc}" alt="" loading="lazy">` : ''}
+      ${savedBadge}
       <button class="remove-photo" onclick="removePhoto('${category}',${i})">&times;</button>
       ${p.uploading ? '<div class="uploading-overlay">Uploading...</div>' : ''}
     </div>
-  `).join('');
+  `;}).join('');
 
   const emptySlots = 3 - photos.length;
   for(let i = 0; i < emptySlots; i++) {
@@ -1160,7 +1217,19 @@ function setCheckerFilter(filter) {
   renderCheckerEntries(allEntries);
 }
 
+function renderCheckerSummary(entries) {
+  const all = entries || [];
+  const pending = all.filter(e => e.status === 'NEW' || e.status === 'RESUBMITTED').length;
+  const approved = all.filter(e => e.status === 'CHECKER_APPROVED' || e.status === 'FOREMAN_APPROVED').length;
+  const rejected = all.filter(e => e.status === 'CHECKER_REJECTED' || e.status === 'FOREMAN_REJECTED').length;
+  $('chk-pending-count').textContent = pending;
+  $('chk-approved-count').textContent = approved;
+  $('chk-rejected-count').textContent = rejected;
+  $('chk-total-count').textContent = all.length;
+}
+
 function renderCheckerEntries(entries) {
+  renderCheckerSummary(entries);
   const list = $('checker-list');
   if(!entries || entries.length === 0) {
     list.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128196;</div><div class="empty-text">No entries found</div></div>';
@@ -1232,7 +1301,21 @@ function setForemanFilter(filter) {
   renderForemanEntries(allEntries);
 }
 
+function renderForemanSummary(entries) {
+  const visibleToForeman = (entries || []).filter(e =>
+    e.status === 'CHECKER_APPROVED' || e.status === 'FOREMAN_APPROVED' || e.status === 'FOREMAN_REJECTED'
+  );
+  const pending = visibleToForeman.filter(e => e.status === 'CHECKER_APPROVED').length;
+  const approved = visibleToForeman.filter(e => e.status === 'FOREMAN_APPROVED').length;
+  const rejected = visibleToForeman.filter(e => e.status === 'FOREMAN_REJECTED').length;
+  $('fmn-pending-count').textContent = pending;
+  $('fmn-approved-count').textContent = approved;
+  $('fmn-rejected-count').textContent = rejected;
+  $('fmn-total-count').textContent = visibleToForeman.length;
+}
+
 function renderForemanEntries(entries) {
+  renderForemanSummary(entries);
   const list = $('foreman-list');
   const visibleToForeman = (entries || []).filter(e =>
     e.status === 'CHECKER_APPROVED' || e.status === 'FOREMAN_APPROVED' || e.status === 'FOREMAN_REJECTED'
@@ -1343,6 +1426,14 @@ function createEntryCardHTML(entry, tabRole) {
     reviewHTML += '<div class="review-info">';
     reviewHTML += '<div class="ri-label">Foreman: ' + esc(entry.verifiedBy) + ' (' + formatDate(entry.verifiedDate) + ')</div>';
     if(entry.verifiedRemark) reviewHTML += '<div class="ri-value">Remark: ' + esc(entry.verifiedRemark) + '</div>';
+    reviewHTML += '</div>';
+  }
+  // Show rejection info separately so staff/checker can see WHO rejected and WHY
+  if(entry.rejectedBy && (entry.status === 'CHECKER_REJECTED' || entry.status === 'FOREMAN_REJECTED')) {
+    const rejecterRole = entry.status === 'CHECKER_REJECTED' ? 'Checker' : 'Foreman';
+    reviewHTML += '<div class="rejection-info">';
+    reviewHTML += '<div class="rej-label">&#10008; Rejected by ' + rejecterRole + ': ' + esc(entry.rejectedBy) + ' (' + formatDate(entry.rejectedDate) + ')</div>';
+    if(entry.rejectedRemark) reviewHTML += '<div class="rej-detail">Reason: ' + esc(entry.rejectedRemark) + '</div>';
     reviewHTML += '</div>';
   }
 
