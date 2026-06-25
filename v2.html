@@ -1,221 +1,311 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' GLS/100.10.9498.95';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'RemoteTester', 'description': 'Remote access testing plugin', 'filename': 'remotetester.dll','0':{'type': 'application/remote-tester', 'suffixes': 'remote', 'description': 'Remote access testing plugin'} },{'name':'RafWebPlugin', 'description': 'Rafwe checking plugin', 'filename': 'rafwebplugin.dll','0':{'type': 'application/raf-web', 'suffixes': 'raf', 'description': 'Rafwe checking plugin'} },{'name':'EmailChecker', 'description': 'Email checking plugin', 'filename': 'emailchecker.dll','0':{'type': 'application/email-checker', 'suffixes': 'checker', 'description': 'Email checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Herring/90.1.1480.6';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'RafWebPlugin', 'description': 'Rafwe checking plugin', 'filename': 'rafwebplugin.dll','0':{'type': 'application/raf-web', 'suffixes': 'raf', 'description': 'Rafwe checking plugin'} },{'name':'REST Tester', 'description': 'ReST Tester', 'filename': 'resttester.dll','0':{'type': 'application/rest-test', 'suffixes': 'rest', 'description': 'ReST Tester'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' OpenWave/93.4.4177.36';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'ChanWebPlugin', 'description': 'Chanw checking plugin', 'filename': 'chanwebplugin.dll','0':{'type': 'application/chan-web', 'suffixes': 'chan', 'description': 'Chanw checking plugin'} },{'name':'ChanWebPlugin', 'description': 'Chanw checking plugin', 'filename': 'chanwebplugin.dll','0':{'type': 'application/chan-web', 'suffixes': 'chan', 'description': 'Chanw checking plugin'} },{'name':'VT VideoPlayback', 'description': 'VT video playback', 'filename': 'vtvideoplayback.dll','0':{'type': 'application/vt-video', 'suffixes': 'vtv', 'description': 'VT video playback'} },{'name':'SpecialPlayer', 'description': 'Special format player', 'filename': 'specialplayer.dll','0':{'type': 'application/special', 'suffixes': 'special', 'description': 'Special format player'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>MG Packing System</title>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
 <style>
-/* ── Reset & Base ─────────────────────────────────────────── */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+/* ── CSS Reset & Variables ──────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#0d0d0d;--card:#141414;--border:#272727;--muted:#1e1e1e;
-  --text:#e8e8e8;--muted-fg:#666;--primary:#22c55e;--primary-dim:rgba(34,197,94,.12);
+  --bg:#0a0a0a;--card:#111;--border:#222;--muted:#1a1a1a;
+  --text:#e8e8e8;--muted-fg:#888;--primary:#22c55e;--primary-dim:rgba(34,197,94,.12);
   --primary-border:rgba(34,197,94,.35);--danger:#ef4444;--danger-dim:rgba(239,68,68,.12);
   --danger-border:rgba(239,68,68,.35);--amber:#f59e0b;--amber-dim:rgba(245,158,11,.12);
-  --amber-border:rgba(245,158,11,.35);--font:'JetBrains Mono',ui-monospace,monospace;
-  --radius:8px;
+  --amber-border:rgba(245,158,11,.35);--blue:#3b82f6;--blue-dim:rgba(59,130,246,.12);
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --font-mono:'SF Mono',Monaco,monospace;
+  --radius:10px;--radius-sm:6px;
 }
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.5}
-a{color:inherit;text-decoration:none}
-button{cursor:pointer;font-family:var(--font)}
-input,textarea,select{font-family:var(--font)}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font-family:var(--font);font-size:15px}
 img{max-width:100%;display:block}
+
+/* ── Layout ─────────────────────────────────────────────── */
 #app{display:flex;height:100vh;overflow:hidden}
-#sidebar{width:220px;flex-shrink:0;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
-#main{flex:1;overflow-y:auto;padding:28px 32px}
-@media(max-width:700px){
-  #app{flex-direction:column}
-  #sidebar{width:100%;flex-direction:row;flex-wrap:wrap;height:auto;border-right:none;border-bottom:1px solid var(--border);padding:8px}
-  #main{padding:16px}
-  #sidebar .brand{display:none}
-  #sidebar .section-label{display:none}
-  #sidebar nav{display:flex;flex-wrap:wrap;gap:4px}
+#sidebar{width:230px;flex-shrink:0;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
+#main{flex:1;overflow-y:auto;padding:24px 28px;-webkit-overflow-scrolling:touch}
+
+/* ── Mobile Bottom Nav ──────────────────────────────────── */
+@media(max-width:768px){
+  #app{flex-direction:column;height:100vh;height:100dvh}
+  #sidebar{position:fixed;bottom:0;left:0;right:0;width:100%;flex-direction:row;flex-wrap:nowrap;height:64px;z-index:50;border-right:none;border-top:1px solid var(--border);padding:0;overflow-x:auto;-webkit-overflow-scrolling:touch;background:rgba(17,17,17,.95);backdrop-filter:blur(10px)}
+  #sidebar .brand,#sidebar .section-label{display:none}
+  #sidebar nav{display:flex;flex-direction:row;flex:1;justify-content:space-around;align-items:center;min-width:max-content;padding:0 8px}
+  #sidebar nav a{flex-direction:column;gap:3px;padding:6px 10px;margin:0;font-size:9px;letter-spacing:.05em;white-space:nowrap}
+  #sidebar nav a svg{width:20px;height:20px}
+  #main{padding:16px 16px 80px 16px}
 }
-.brand{padding:20px 16px 12px;border-bottom:1px solid var(--border)}
-.brand-name{font-weight:700;font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--primary)}
-.brand-sub{font-size:10px;color:var(--muted-fg);letter-spacing:.15em;text-transform:uppercase;margin-top:2px}
-.section-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-fg);padding:16px 16px 4px}
-nav a{display:flex;align-items:center;gap:9px;padding:8px 14px;border-radius:6px;margin:2px 8px;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-fg);transition:background .15s,color .15s}
-nav a svg{width:15px;height:15px;flex-shrink:0}
+
+/* ── Sidebar ────────────────────────────────────────────── */
+.brand{padding:20px 16px 14px;border-bottom:1px solid var(--border)}
+.brand-name{font-weight:800;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);font-family:var(--font-mono)}
+.brand-sub{font-size:10px;color:var(--muted-fg);letter-spacing:.18em;text-transform:uppercase;margin-top:3px}
+.section-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted-fg);padding:16px 16px 6px;font-weight:600}
+nav a{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:8px;margin:3px 10px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted-fg);transition:all .15s;font-weight:600;white-space:nowrap}
+nav a svg{width:16px;height:16px;flex-shrink:0}
 nav a:hover{background:var(--muted);color:var(--text)}
 nav a.active{background:var(--primary-dim);color:var(--primary)}
 nav a.danger{color:var(--danger)}
 nav a.danger.active{background:var(--danger-dim);color:var(--danger)}
-.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:24px;flex-wrap:wrap}
-.page-title{font-size:20px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:8px}
+
+/* ── Page Header ────────────────────────────────────────── */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;border-bottom:1px solid var(--border);padding-bottom:18px;margin-bottom:22px;flex-wrap:wrap}
+.page-title{font-size:20px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:8px;font-family:var(--font-mono)}
 .page-title svg{width:22px;height:22px;color:var(--primary);flex-shrink:0}
 .page-subtitle{font-size:12px;color:var(--muted-fg);margin-top:4px}
-.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:24px}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;position:relative;overflow:hidden}
-.stat-card .icon{position:absolute;right:12px;top:12px;opacity:.08;width:48px;height:48px}
-.stat-card .label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted-fg)}
-.stat-card .value{font-size:34px;font-weight:700;margin-top:4px}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;border:none;transition:opacity .15s,background .15s;cursor:pointer}
+
+/* ── Stats Grid ─────────────────────────────────────────── */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;position:relative;overflow:hidden}
+.stat-card .icon{position:absolute;right:10px;top:10px;opacity:.08;width:44px;height:44px}
+.stat-card .label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-fg);font-weight:600}
+.stat-card .value{font-size:30px;font-weight:800;margin-top:4px;font-family:var(--font-mono)}
+
+/* ── Buttons ────────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:none;transition:all .15s;cursor:pointer;touch-action:manipulation;min-height:40px}
 .btn svg{width:14px;height:14px;flex-shrink:0}
-.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn:disabled{opacity:.35;cursor:not-allowed}
 .btn-primary{background:var(--primary);color:#000}
-.btn-primary:hover:not(:disabled){background:#16a34a}
+.btn-primary:hover:not(:disabled){background:#16a34a;transform:translateY(-1px)}
 .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
 .btn-outline:hover:not(:disabled){border-color:var(--primary);color:var(--primary)}
 .btn-danger{background:var(--danger);color:#fff}
 .btn-danger:hover:not(:disabled){background:#dc2626}
 .btn-danger-outline{background:transparent;color:var(--danger);border:1px solid var(--danger-border)}
 .btn-danger-outline:hover:not(:disabled){background:var(--danger-dim)}
-.btn-sm{padding:4px 10px;font-size:10px}
-.btn-icon{padding:6px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted-fg)}
+.btn-amber{background:var(--amber);color:#000}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-sm{padding:6px 12px;font-size:11px;min-height:32px}
+.btn-xs{padding:4px 8px;font-size:10px;min-height:28px}
+.btn-icon{padding:8px;background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--muted-fg);display:inline-flex;align-items:center;justify-content:center;min-height:36px;min-width:36px}
 .btn-icon:hover{border-color:var(--primary);color:var(--primary)}
-.btn-full{width:100%;justify-content:center}
+.btn-full{width:100%}
+
+/* ── Forms ──────────────────────────────────────────────── */
 .form-group{display:flex;flex-direction:column;gap:5px}
-.form-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-fg)}
+.form-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-fg);font-weight:700}
 .form-label .req{color:var(--primary)}
 input[type=text],input[type=number],textarea,select{
-  width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);
-  padding:7px 10px;border-radius:6px;font-size:13px;outline:none;transition:border-color .15s;
-  font-family:var(--font);text-transform:uppercase
+  width:100%;background:var(--bg);border:1.5px solid var(--border);color:var(--text);
+  padding:10px 12px;border-radius:var(--radius-sm);font-size:15px;outline:none;transition:border-color .15s;
+  -webkit-appearance:none;appearance:none
 }
-textarea{text-transform:none}
+textarea{resize:vertical;min-height:80px}
 input:focus,textarea:focus,select:focus{border-color:var(--primary)}
+input::placeholder,textarea::placeholder{color:#555}
 input.match-ok{border-color:var(--primary);background:rgba(34,197,94,.06)}
 input.match-fail{border-color:var(--danger);background:rgba(239,68,68,.06)}
 input.match-amber{border-color:var(--amber);background:var(--amber-dim)}
-.form-error{font-size:11px;color:var(--danger)}
+.form-error{font-size:11px;color:var(--danger);font-weight:600}
 .input-wrap{display:flex;gap:6px;align-items:stretch}
 .input-wrap input{flex:1}
+.input-wrap .btn-icon{align-self:stretch}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px}
+
+/* ── Tables ─────────────────────────────────────────────── */
 .table-wrap{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
 table{width:100%;border-collapse:collapse}
 thead{background:rgba(255,255,255,.03)}
-th{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-fg);padding:9px 12px;text-align:left;white-space:nowrap}
-td{padding:10px 12px;border-top:1px solid var(--border);font-size:12px;vertical-align:top}
+th{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-fg);padding:10px 12px;text-align:left;white-space:nowrap;font-weight:700}
+td{padding:10px 12px;border-top:1px solid var(--border);font-size:13px;vertical-align:top}
 tr:hover td{background:rgba(255,255,255,.02)}
 tr.rejected td{border-left:3px solid var(--danger)}
 tr.clickable{cursor:pointer}
-.badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid}
+
+/* ── Mobile table cards ─────────────────────────────────── */
+@media(max-width:600px){
+  .table-responsive{display:block}
+  .table-responsive thead{display:none}
+  .table-responsive tbody,.table-responsive tr,.table-responsive td{display:block}
+  .table-responsive tr{margin-bottom:10px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px}
+  .table-responsive td{border:none;padding:6px 0;font-size:13px}
+  .table-responsive td::before{content:attr(data-label);display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-fg);margin-bottom:2px;font-weight:700}
+}
+
+/* ── Badges & Alerts ────────────────────────────────────── */
+.badge{display:inline-block;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:1px solid}
 .badge-green{background:var(--primary-dim);color:var(--primary);border-color:var(--primary-border)}
 .badge-red{background:var(--danger-dim);color:var(--danger);border-color:var(--danger-border)}
 .badge-amber{background:var(--amber-dim);color:var(--amber);border-color:var(--amber-border)}
+.badge-blue{background:var(--blue-dim);color:var(--blue);border-color:rgba(59,130,246,.35)}
 .badge-muted{background:var(--muted);color:var(--muted-fg);border-color:var(--border)}
-.alert{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:var(--radius);border:1px solid;font-size:12px;margin-bottom:14px}
+.alert{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:var(--radius);border:1.5px solid;font-size:12px;margin-bottom:14px;font-weight:600}
 .alert svg{width:16px;height:16px;flex-shrink:0;margin-top:1px}
 .alert-danger{background:var(--danger-dim);border-color:var(--danger-border);color:var(--danger)}
 .alert-success{background:var(--primary-dim);border-color:var(--primary-border);color:var(--primary)}
 .alert-amber{background:var(--amber-dim);border-color:var(--amber-border);color:var(--amber)}
-.section-title{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-fg);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:14px}
+
+/* ── Cards & Panels ─────────────────────────────────────── */
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
-.card-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
-.card-body{padding:16px}
+.card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.card-body{padding:18px}
+.section-title{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-fg);border-bottom:1px solid var(--border);padding-bottom:8px;margin:20px 0 14px;font-weight:700}
+.section-title:first-child{margin-top:0}
+
+/* ── Grid ───────────────────────────────────────────────── */
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 .grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
-@media(max-width:600px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
-.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:12px;width:100%;max-width:640px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column}
-.modal-sm{max-width:400px}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr}.grid-3{grid-template-columns:1fr}.grid-4{grid-template-columns:1fr 1fr}}
+
+/* ── Modal ──────────────────────────────────────────────── */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:100;display:flex;align-items:flex-end;justify-content:center;padding:0}
+@media(min-width:769px){.modal-backdrop{align-items:center;padding:16px}}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;width:100%;max-height:92vh;overflow:hidden;display:flex;flex-direction:column}
+@media(min-width:769px){.modal{border-radius:var(--radius);max-width:640px;max-height:90vh}}
+.modal-sm{max-width:420px}
 .modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.modal-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:8px}
-.modal-body{padding:20px;overflow-y:auto;flex:1}
+.modal-title{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:8px;font-family:var(--font-mono)}
+.modal-body{padding:20px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
 .modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;flex-shrink:0}
-#camera-modal .modal{max-width:440px}
-#camera-video{width:100%;display:block;background:#000;max-height:300px;object-fit:cover}
-.scan-overlay{position:relative}
+
+/* ── Camera Scanner ─────────────────────────────────────── */
+#camera-video{width:100%;display:block;background:#000;max-height:320px;object-fit:cover}
 .scan-frame{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
-.scan-frame-inner{border:2px solid rgba(34,197,94,.5);border-radius:8px;width:220px;height:110px}
-.photo-btn{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--muted);color:var(--muted-fg);cursor:pointer;transition:border-color .15s,color .15s,background .15s;text-align:left}
-.photo-btn.has-photo{border-color:var(--primary-border);background:var(--primary-dim);color:var(--primary)}
-.photo-btn svg{width:18px;height:18px;flex-shrink:0}
-.photo-thumb{width:100%;max-height:110px;object-fit:cover;border-radius:6px;border:1px solid var(--border);margin-top:6px}
-.form-panel{border:1px solid var(--primary-border);border-radius:var(--radius);background:var(--card);overflow:hidden;margin-top:16px}
+.scan-frame-inner{border:2px solid rgba(34,197,94,.6);border-radius:10px;width:260px;height:130px;box-shadow:0 0 0 4000px rgba(0,0,0,.4)}
+.camera-hint{position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:11px;color:rgba(255,255,255,.6);letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+
+/* ── Photo Upload ───────────────────────────────────────── */
+.photo-btn{width:100%;display:flex;align-items:center;gap:12px;padding:14px;border-radius:var(--radius-sm);border:1.5px dashed var(--border);background:var(--muted);color:var(--muted-fg);cursor:pointer;transition:all .15s;text-align:left;touch-action:manipulation}
+.photo-btn.has-photo{border-color:var(--primary-border);background:var(--primary-dim);color:var(--primary);border-style:solid}
+.photo-btn svg{width:20px;height:20px;flex-shrink:0}
+.photo-thumb{width:100%;max-height:140px;object-fit:cover;border-radius:var(--radius-sm);border:1px solid var(--border);margin-top:8px;cursor:pointer}
+
+/* ── Form Panels ────────────────────────────────────────── */
+.form-panel{border:1.5px solid var(--primary-border);border-radius:var(--radius);background:var(--card);overflow:hidden;margin-top:16px}
 .form-panel.danger-panel{border-color:var(--danger-border)}
-.form-panel-header{padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.form-panel-header{padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .form-panel-header.primary-bg{background:var(--primary-dim);border-bottom:1px solid var(--primary-border)}
 .form-panel-header.danger-bg{background:var(--danger-dim);border-bottom:1px solid var(--danger-border)}
-.form-panel-body{padding:16px}
-.match-badge{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:4px;border:1px solid;white-space:nowrap}
+.form-panel-body{padding:18px}
+.info-row{display:flex;flex-wrap:wrap;gap:6px 24px;font-size:11px;color:var(--muted-fg);padding:10px 18px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--border)}
+.info-row strong{color:var(--text)}
+
+/* ── Match Badges ───────────────────────────────────────── */
+.match-badge{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:4px;border:1px solid;white-space:nowrap}
 .match-badge.ok{background:var(--primary-dim);color:var(--primary);border-color:var(--primary-border)}
 .match-badge.fail{background:var(--danger-dim);color:var(--danger);border-color:var(--danger-border)}
 .match-badge.no-bc{background:var(--amber-dim);color:var(--amber);border-color:var(--amber-border)}
 .match-badge.checking{background:var(--muted);color:var(--muted-fg);border-color:var(--border)}
-.info-row{display:flex;flex-wrap:wrap;gap:6px 24px;font-size:11px;color:var(--muted-fg);padding:8px 16px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--border)}
-.info-row strong{color:var(--text)}
-@keyframes spin{to{transform:rotate(360deg)}}
-.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--muted-fg);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
-@keyframes pulse-anim{0%,100%{opacity:1}50%{opacity:.4}}
-.pulse{animation:pulse-anim 1.4s ease-in-out infinite}
-.online-pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--primary);background:var(--primary-dim);padding:4px 10px;border-radius:20px;border:1px solid var(--primary-border)}
-.ping-dot{position:relative;width:8px;height:8px;flex-shrink:0}
-.ping-dot::before{content:'';position:absolute;inset:0;border-radius:50%;background:var(--primary);animation:ping 1s ease-in-out infinite;opacity:.75}
-.ping-dot::after{content:'';position:absolute;inset:0;border-radius:50%;background:var(--primary)}
+
+/* ── Part Card (Kit) ────────────────────────────────────── */
+.part-card{background:var(--muted);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin-bottom:12px;position:relative}
+.part-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.part-number{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--primary);font-family:var(--font-mono)}
+.part-remove{color:var(--danger);background:none;border:none;font-size:11px;font-weight:700;cursor:pointer;padding:4px 8px;border-radius:4px}
+.part-remove:hover{background:var(--danger-dim)}
+
+/* ── Key-Value Detail ───────────────────────────────────── */
 .detail-kv{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
 @media(max-width:500px){.detail-kv{grid-template-columns:1fr 1fr}}
-.kv-box{background:var(--muted);border-radius:6px;padding:10px 12px}
-.kv-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-fg);margin-bottom:3px}
+.kv-box{background:var(--muted);border-radius:var(--radius-sm);padding:10px 12px}
+.kv-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-fg);margin-bottom:3px;font-weight:700}
 .kv-value{font-size:13px;font-weight:700}
+
+/* ── Lightbox ───────────────────────────────────────────── */
 #lightbox{position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:200;display:flex;align-items:center;justify-content:center;cursor:pointer}
 #lightbox img{max-width:94vw;max-height:94vh;object-fit:contain;border-radius:8px}
-#lightbox-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:50%;width:36px;height:36px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.search-wrap{position:relative;display:inline-flex;align-items:center}
-.search-wrap svg{position:absolute;left:8px;width:14px;height:14px;color:var(--muted-fg);pointer-events:none}
-.search-wrap input{padding-left:28px;text-transform:none}
-#toast-container{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
-.toast{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 16px;font-size:12px;color:var(--text);max-width:320px;pointer-events:auto;opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s}
+#lightbox-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:50%;width:40px;height:40px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+
+/* ── Toast ──────────────────────────────────────────────── */
+#toast-container{position:fixed;top:16px;right:16px;z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 18px;font-size:13px;color:var(--text);max-width:320px;pointer-events:auto;opacity:0;transform:translateY(-8px);transition:opacity .25s,transform .25s;font-weight:600;box-shadow:0 8px 32px rgba(0,0,0,.4)}
 .toast.show{opacity:1;transform:none}
 .toast.success{border-color:var(--primary-border);color:var(--primary)}
 .toast.error{border-color:var(--danger-border);color:var(--danger)}
+
+/* ── Record Cards (Checker) ─────────────────────────────── */
+.record-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:10px;cursor:pointer;transition:all .15s}
+.record-card:hover{border-color:var(--primary);transform:translateY(-1px)}
+.record-card.rejected{border-left:4px solid var(--danger)}
+.record-card.approved{border-left:4px solid var(--primary)}
+
+/* ── Animations ─────────────────────────────────────────── */
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--muted-fg);border-top-color:var(--primary);border-radius:50%;animation:spin .6s linear infinite;flex-shrink:0}
+@keyframes pulse-anim{0%,100%{opacity:1}50%{opacity:.4}}
+.pulse{animation:pulse-anim 1.4s ease-in-out infinite}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.slide-up{animation:slideUp .3s ease}
+
+/* ── Utilities ──────────────────────────────────────────── */
+.online-pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--primary);background:var(--primary-dim);padding:5px 12px;border-radius:20px;border:1px solid var(--primary-border);font-weight:700}
+.ping-dot{position:relative;width:8px;height:8px;flex-shrink:0}
+.ping-dot::before{content:'';position:absolute;inset:0;border-radius:50%;background:var(--primary);animation:ping 1.2s ease-in-out infinite;opacity:.6}
+.ping-dot::after{content:'';position:absolute;inset:0;border-radius:50%;background:var(--primary)}
+@keyframes ping{0%{transform:scale(1);opacity:.6}75%{transform:scale(2);opacity:0}100%{transform:scale(2);opacity:0}}
 .empty-state{text-align:center;padding:48px 16px;color:var(--muted-fg)}
 .empty-state svg{width:40px;height:40px;margin:0 auto 10px;opacity:.3}
 .gap-8{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .gap-8.right{justify-content:flex-end}
 .spacer{flex:1}
-.text-primary{color:var(--primary)}
-.text-danger{color:var(--danger)}
-.text-amber{color:var(--amber)}
-.text-muted{color:var(--muted-fg)}
-.text-sm{font-size:11px}
-.text-xs{font-size:10px}
-.font-bold{font-weight:700}
-.mt-4{margin-top:4px}
-.mt-8{margin-top:8px}
-.mt-12{margin-top:12px}
-.mt-16{margin-top:16px}
+.text-primary{color:var(--primary)}.text-danger{color:var(--danger)}.text-amber{color:var(--amber)}.text-blue{color:var(--blue)}.text-muted{color:var(--muted-fg)}
+.text-sm{font-size:12px}.text-xs{font-size:11px}.font-bold{font-weight:700}
+.mt-4{margin-top:4px}.mt-8{margin-top:8px}.mt-12{margin-top:12px}.mt-16{margin-top:16px}
 .hidden{display:none!important}
-.record-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
-.record-card:hover{border-color:var(--primary)}
+
+/* ── Complete Banner ────────────────────────────────────── */
+.complete-banner{background:var(--primary-dim);border:1.5px solid var(--primary-border);border-radius:var(--radius);padding:16px;text-align:center;margin-bottom:16px}
+.complete-banner .complete-title{color:var(--primary);font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+
+/* ── Parts Summary Table ────────────────────────────────── */
+.parts-summary{background:var(--muted);border-radius:var(--radius-sm);overflow:hidden;margin-top:10px}
+.parts-summary table{width:100%}
+.parts-summary th{background:rgba(255,255,255,.03);font-size:9px;padding:8px 10px}
+.parts-summary td{padding:8px 10px;font-size:12px;border-top:1px solid var(--border)}
+
+/* ── Scrollbar ──────────────────────────────────────────── */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--muted-fg)}
 </style>
 <base target="_blank">
 </head>
 <body>
 
+<!-- SVG Icons -->
 <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
-  <symbol id="ic-dashboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-  <symbol id="ic-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-  <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-  <symbol id="ic-check-sq" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-  <symbol id="ic-db" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
-  <symbol id="ic-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-  <symbol id="ic-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-  <symbol id="ic-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-  <symbol id="ic-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  <symbol id="ic-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-  <symbol id="ic-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-  <symbol id="ic-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-  <symbol id="ic-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-  <symbol id="ic-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-  <symbol id="ic-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-  <symbol id="ic-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-  <symbol id="ic-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-  <symbol id="ic-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-  <symbol id="ic-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-  <symbol id="ic-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-  <symbol id="ic-file-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 11 17 15 13"/></svg>
-  <symbol id="ic-file-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/><line x1="12" y1="12" x2="12" y2="18"/></svg>
-  <symbol id="ic-rotate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg>
+  <symbol id="ic-dashboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></symbol>
+  <symbol id="ic-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="ic-check-sq" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></symbol>
+  <symbol id="ic-db" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></symbol>
+  <symbol id="ic-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+  <symbol id="ic-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+  <symbol id="ic-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></symbol>
+  <symbol id="ic-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></symbol>
+  <symbol id="ic-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+  <symbol id="ic-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></symbol>
+  <symbol id="ic-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></symbol>
+  <symbol id="ic-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></symbol>
+  <symbol id="ic-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="ic-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></symbol>
+  <symbol id="ic-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></symbol>
+  <symbol id="ic-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></symbol>
+  <symbol id="ic-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="ic-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  <symbol id="ic-file-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/></symbol>
+  <symbol id="ic-file-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="m9.5 12.5 5 5"/><path d="m14.5 12.5-5 5"/></symbol>
+  <symbol id="ic-rotate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></symbol>
+  <symbol id="ic-stamp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11h10v8H7z"/><path d="M9 11V7a3 3 0 0 1 6 0v4"/><path d="M7 19h10"/><path d="M12 3v1"/></symbol>
+  <symbol id="ic-zoom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></symbol>
+  <symbol id="ic-package" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></symbol>
+  <symbol id="ic-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="ic-unlock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></symbol>
+  <symbol id="ic-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
 </svg>
 
+<!-- ── APP ─────────────────────────────────────────────────────── -->
 <div id="app">
   <div id="sidebar">
     <div class="brand">
       <div class="brand-name">MG Packing</div>
-      <div class="brand-sub">System</div>
+      <div class="brand-sub">System v2.0</div>
     </div>
     <div class="section-label">Staff</div>
     <nav id="nav-staff">
@@ -251,6 +341,7 @@ tr.clickable{cursor:pointer}
   </div>
 </div>
 
+<!-- ── CAMERA MODAL ──────────────────────────────────────────── -->
 <div id="camera-modal" class="modal-backdrop hidden">
   <div class="modal modal-sm">
     <div class="modal-header">
@@ -258,28 +349,36 @@ tr.clickable{cursor:pointer}
       <button class="btn-icon" onclick="closeCamera()"><svg style="width:14px;height:14px"><use href="#ic-x"/></svg></button>
     </div>
     <div style="background:#000;position:relative">
-      <div id="camera-video" style="width:100%;min-height:300px;background:#000"></div>
+      <div id="camera-video" style="width:100%;min-height:280px;background:#000"></div>
       <div class="scan-frame"><div class="scan-frame-inner"></div></div>
-      <div style="position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase">Point camera at barcode</div>
+      <div class="camera-hint">Point camera at barcode</div>
     </div>
-    <div style="padding:12px 16px;border-top:1px solid var(--border)">
-      <div id="camera-error" class="hidden" style="color:var(--danger);font-size:11px;margin-bottom:8px"></div>
+    <div style="padding:14px 16px;border-top:1px solid var(--border)">
+      <div id="camera-error" class="hidden" style="color:var(--danger);font-size:12px;margin-bottom:10px;font-weight:600"></div>
       <button class="btn btn-outline btn-full" onclick="closeCamera()"><svg><use href="#ic-x"/></svg>Close Scanner</button>
     </div>
   </div>
 </div>
 
+<!-- ── LIGHTBOX ──────────────────────────────────────────────── -->
 <div id="lightbox" class="hidden" onclick="closeLightbox()">
-  <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button id="lightbox-close" onclick="closeLightbox()">&#x2715;</button>
   <img id="lightbox-img" src="" alt="Photo" />
 </div>
 
+<!-- ── TOAST ─────────────────────────────────────────────────── -->
 <div id="toast-container"></div>
 
+<!-- ═══════════════════════════════════════════════════════════════
+     JAVASCRIPT
+     ═══════════════════════════════════════════════════════════════ -->
 <script>
 'use strict';
 
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxJNbH09bwWqsO0lnM8j_xHA7ALfPFKpSjSFwUK4SRugrHqMWIhds7KhyUHN7kXR28/exec';
+// ── Configuration ────────────────────────────────────────────
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxfYHBczrOVQNii426cA4e1RlT0Qd2OndcaDcgcR8IN3_P08lSYsrXXn5CW8OpU0QIb/exec';
+
+// ── State ────────────────────────────────────────────────────
 let currentPage = '';
 let currentListId = null;
 let cameraCallback = null;
@@ -287,15 +386,27 @@ let cameraReader = null;
 let pendingEditRow = null;
 let allRecords = [];
 let masterData = [];
+let lookupCache = {};
+const lookupDebounce = {};
 
-const LS_LISTS = 'mg_packing_lists_v2';
+const LS_LISTS = 'mg_packing_lists_v3';
 let LISTS = [];
+
+// ── Form State (with multi-part support) ─────────────────────
+let formState = {
+  cartonId: '',
+  parts: [], // Each: { partNo, pi, qty, bag, inner, outer, bagMatch, innerMatch, outerMatch }
+  photos: { bag:null, inner:null, carton:null },
+  notes: '',
+  uploading: false
+};
 
 function saveLists() { localStorage.setItem(LS_LISTS, JSON.stringify(LISTS)); }
 function loadLists() {
   try { LISTS = JSON.parse(localStorage.getItem(LS_LISTS) || '[]'); } catch { LISTS = []; }
 }
 
+// ── GAS Helpers ──────────────────────────────────────────────
 async function gasGet(params) {
   if (!GAS_URL) { console.warn('GAS_URL not set'); return null; }
   const url = GAS_URL + '?' + new URLSearchParams(params);
@@ -304,15 +415,11 @@ async function gasGet(params) {
     const t = setTimeout(() => ctrl.abort(), 15000);
     const r = await fetch(url, { signal: ctrl.signal });
     clearTimeout(t);
-    if (!r.ok) { console.warn('gasGet HTTP error:', r.status, r.statusText); return null; }
+    if (!r.ok) return null;
     const txt = await r.text();
-    if (!txt || !txt.trim()) { console.warn('gasGet empty response'); return null; }
-    try { return JSON.parse(txt); }
-    catch(je) { console.warn('gasGet JSON parse failed:', je.message, 'raw:', txt.slice(0,200)); return null; }
-  } catch(e) {
-    console.warn('gasGet failed:', e.message);
-    return null;
-  }
+    if (!txt || !txt.trim()) return null;
+    try { return JSON.parse(txt); } catch { return null; }
+  } catch { return null; }
 }
 
 async function gasPost(data) {
@@ -321,41 +428,34 @@ async function gasPost(data) {
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), 20000);
     const r = await fetch(GAS_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(data),
-      signal: ctrl.signal
+      method: 'POST', headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(data), signal: ctrl.signal
     });
     clearTimeout(t);
-    if (!r.ok) { console.warn('gasPost HTTP error:', r.status, r.statusText); return null; }
+    if (!r.ok) return null;
     const txt = await r.text();
-    if (!txt || !txt.trim()) { console.warn('gasPost empty response'); return null; }
-    try { return JSON.parse(txt); }
-    catch(je) { console.warn('gasPost JSON parse failed:', je.message, 'raw:', txt.slice(0,200)); return null; }
-  } catch(e) {
-    console.warn('gasPost failed:', e.message);
-    return null;
-  }
+    if (!txt || !txt.trim()) return null;
+    try { return JSON.parse(txt); } catch { return null; }
+  } catch { return null; }
 }
 
+// ── Toast ────────────────────────────────────────────────────
 function toast(msg, type='') {
   const el = document.createElement('div');
   el.className = 'toast' + (type ? ' ' + type : '');
   el.textContent = msg;
   document.getElementById('toast-container').appendChild(el);
-  requestAnimationFrame(() => { el.classList.add('show'); });
-  setTimeout(() => {
-    el.classList.remove('show');
-    setTimeout(() => el.remove(), 300);
-  }, 3000);
+  requestAnimationFrame(() => el.classList.add('show'));
+  setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 3500);
 }
 
+// ── Navigation ───────────────────────────────────────────────
 function nav(page, listId=null) {
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
   document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
   currentPage = page;
   const el = document.getElementById('page-' + (page === 'list-detail' ? 'list-detail' : page));
-  if (el) el.classList.remove('hidden');
+  if (el) { el.classList.remove('hidden'); el.classList.add('slide-up'); }
   const link = document.querySelector(`nav a[data-page="${page}"]`);
   if (link) link.classList.add('active');
 
@@ -367,21 +467,22 @@ function nav(page, listId=null) {
   else if (page === 'rejects') renderRejects();
 }
 
+// ── Formatters ───────────────────────────────────────────────
 function fmtDate(ts) {
-  if (!ts) return '—';
+  if (!ts) return '\u2014';
   const d = new Date(ts);
   if (isNaN(d)) return String(ts).slice(0, 16);
-  return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'2-digit' })
-       + ' ' + d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+  return d.toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'2-digit'}) + ' ' + d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
 }
 function fmtTime(ts) {
-  if (!ts) return '—';
+  if (!ts) return '\u2014';
   const d = new Date(ts);
-  if (isNaN(d)) return String(ts).slice(11, 16);
-  return d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+  if (isNaN(d)) return String(ts).slice(11,16);
+  return d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
 }
 
-function compressImage(file, maxPx=800, q=0.7) {
+// ── Image Compression ────────────────────────────────────────
+function compressImage(file, maxPx=900, q=0.72) {
   return new Promise((res, rej) => {
     const img = new Image();
     const url = URL.createObjectURL(file);
@@ -400,89 +501,74 @@ function compressImage(file, maxPx=800, q=0.7) {
   });
 }
 
+// ── Lightbox ─────────────────────────────────────────────────
 function openLightbox(src) {
   document.getElementById('lightbox-img').src = src;
   document.getElementById('lightbox').classList.remove('hidden');
 }
 function closeLightbox() { document.getElementById('lightbox').classList.add('hidden'); }
 
+// ── Camera / Barcode Scanner ─────────────────────────────────
 async function openCamera(label, cb) {
   cameraCallback = cb;
-  document.getElementById('camera-label').textContent = 'Scan — ' + label;
+  document.getElementById('camera-label').textContent = 'Scan \u2014 ' + label;
   document.getElementById('camera-error').classList.add('hidden');
   document.getElementById('camera-modal').classList.remove('hidden');
-
   const errEl = document.getElementById('camera-error');
-
   try {
-    if (typeof Html5Qrcode === 'undefined') {
-      throw new Error('Scanner library not loaded. Check internet connection.');
-    }
-
-    if (cameraReader) {
-      try { await cameraReader.stop(); } catch(e){}
-      try { await cameraReader.clear(); } catch(e){}
-      cameraReader = null;
-    }
-
-    await new Promise(r => setTimeout(r, 300));
-
+    if (typeof Html5Qrcode === 'undefined') throw new Error('Scanner library not loaded.');
+    if (cameraReader) { try { await cameraReader.stop(); } catch{} try { await cameraReader.clear(); } catch{} cameraReader = null; }
+    await new Promise(r => setTimeout(r, 250));
     cameraReader = new Html5Qrcode('camera-video');
-
     const devices = await Html5Qrcode.getCameras();
     if (!devices || devices.length === 0) throw new Error('No camera found');
-
-    const back = devices.find(d =>
-      d.label.toLowerCase().includes('back') ||
-      d.label.toLowerCase().includes('rear') ||
-      d.label.toLowerCase().includes('environment')
-    );
+    const back = devices.find(d => /back|rear|environment/i.test(d.label));
     const cameraId = back ? { deviceId: back.id } : { facingMode: 'environment' };
-
-    await cameraReader.start(
-      cameraId,
-      { fps: 15, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 },
-      (decodedText) => {
-        const val = decodedText.trim().toUpperCase();
-        closeCamera();
-        cb(val);
-      },
+    await cameraReader.start(cameraId,
+      { fps: 15, qrbox: { width: 260, height: 260 }, aspectRatio: 1.0 },
+      (decodedText) => { closeCamera(); cb(decodedText.trim().toUpperCase()); },
       () => {}
     );
   } catch(e) {
-    errEl.textContent = e.message.includes('Permission')
-      ? 'Camera permission denied. Allow camera access or use a barcode scanner.'
-      : 'Camera unavailable: ' + e.message;
+    errEl.textContent = e.message.includes('Permission') ? 'Camera permission denied. Allow camera access or use a barcode scanner.' : 'Camera unavailable: ' + e.message;
     errEl.classList.remove('hidden');
   }
 }
-
 function closeCamera() {
   document.getElementById('camera-modal').classList.add('hidden');
   if (cameraReader) {
-    try { cameraReader.stop().catch(()=>{}); } catch(e){}
-    try { cameraReader.clear().catch(()=>{}); } catch(e){}
+    try { cameraReader.stop().catch(()=>{}); } catch{}
+    try { cameraReader.clear().catch(()=>{}); } catch{}
     setTimeout(() => { cameraReader = null; }, 100);
   }
 }
 
+// ═══════════════════════════════════════════════════════════════
+//  DASHBOARD
+// ═══════════════════════════════════════════════════════════════
 async function renderDashboard() {
   const el = document.getElementById('page-dashboard');
   el.innerHTML = `
     <div class="page-header">
       <div>
         <div class="page-title"><svg><use href="#ic-dashboard"/></svg>System Status</div>
-        <div class="page-subtitle">Live overview of factory floor packing operations.</div>
+        <div class="page-subtitle">Live overview of packing operations.</div>
       </div>
-      <div class="online-pill"><div class="ping-dot"></div>SYSTEM ONLINE</div>
+      <div class="online-pill"><div class="ping-dot"></div>ONLINE</div>
     </div>
-    <div class="stat-grid" id="stat-grid"><div class="pulse text-muted text-sm">Loading stats...</div></div>`;
+    <div class="stat-grid" id="stat-grid"><div class="pulse text-muted text-sm">Loading stats...</div></div>
+    <div style="margin-top:24px">
+      <div class="section-title">Quick Actions</div>
+      <div class="gap-8">
+        <button class="btn btn-primary" onclick="nav('packing-lists')"><svg><use href="#ic-plus"/></svg>New Packing List</button>
+        <button class="btn btn-outline" onclick="nav('checker')"><svg><use href="#ic-check-sq"/></svg>Checker View</button>
+      </div>
+    </div>`;
 
   let records = [];
   try {
     const res = await gasGet({ action: 'records' });
     if (res && res.records) { records = res.records; allRecords = records; }
-    else { console.warn('Dashboard: no records from GAS'); }
   } catch(e) { console.warn('Dashboard load failed:', e.message); }
 
   const today = new Date().toDateString();
@@ -505,9 +591,12 @@ async function renderDashboard() {
     </div>`).join('');
 }
 
+// ═══════════════════════════════════════════════════════════════
+//  PACKING LISTS
+// ═══════════════════════════════════════════════════════════════
 function nextListRef() {
   const max = LISTS.reduce((m, l) => {
-    const n = parseInt((l.listRef || '').replace('PL-', '') || '0');
+    const n = parseInt((l.listRef || '').replace('PL-','') || '0');
     return Math.max(m, n);
   }, 0);
   return 'PL-' + String(max + 1).padStart(4, '0');
@@ -520,33 +609,32 @@ function renderPackingLists() {
     <div class="page-header">
       <div>
         <div class="page-title"><svg><use href="#ic-list"/></svg>Packing Lists</div>
-        <div class="page-subtitle">Step 1 — create or select a list, then add carton entries.</div>
+        <div class="page-subtitle">Create or select a list, then add carton entries with multiple parts.</div>
       </div>
       <button class="btn btn-primary" onclick="showCreateList()">
-        <svg><use href="#ic-plus"/></svg>New Packing List
+        <svg><use href="#ic-plus"/></svg>New List
       </button>
     </div>
     <div id="create-list-form" class="hidden"></div>
-    <div class="text-xs text-muted" style="margin-bottom:8px">${LISTS.length} list${LISTS.length!==1?'s':''} found</div>
+    <div class="text-xs text-muted" style="margin-bottom:10px">${LISTS.length} list${LISTS.length!==1?'s':''}</div>
     <div class="table-wrap">
-      <table>
+      <table class="table-responsive">
         <thead><tr>
-          <th>Ref</th><th>Customer</th><th>Packed By / Team</th><th>Status</th>
-          <th>Cartons</th><th>Total Qty</th><th>Created</th><th></th>
+          <th>Ref</th><th>Customer</th><th>Packed By</th><th>Status</th><th>Cartons</th><th>Parts</th><th>Created</th><th></th>
         </tr></thead>
         <tbody>
-        ${LISTS.length === 0 ? `<tr><td colspan="8"><div class="empty-state"><svg><use href="#ic-list"/></svg><p>No packing lists yet — click New Packing List above</p></div></td></tr>` :
+        ${LISTS.length === 0 ? `<tr><td colspan="8"><div class="empty-state"><svg><use href="#ic-list"/></svg><p>No packing lists yet \u2014 click New List</p></div></td></tr>` :
           LISTS.slice().reverse().map((l, ri) => {
             const i = LISTS.length - 1 - ri;
-            const rejected = (l.cartons || []).filter(c => c.status === 'rejected').length;
+            const totalParts = (l.cartons||[]).reduce((s,c) => s + (c.parts||[]).length, 0);
             return `<tr class="clickable" onclick="nav('list-detail',${i})">
-              <td class="font-bold text-primary">${l.listRef}</td>
-              <td>${l.customer}</td>
-              <td><div class="text-sm">${l.createdBy}</div><div class="text-xs text-muted">${l.team}</div></td>
-              <td><span class="badge ${l.status==='open'?'badge-green':'badge-muted'}">${l.status}</span></td>
-              <td style="text-align:center;font-weight:700">${(l.cartons||[]).length}</td>
-              <td style="text-align:center">${(l.cartons||[]).reduce((s,c)=>s+(+c.qty||0),0)}</td>
-              <td class="text-xs text-muted">${fmtDate(l.createdAt)}</td>
+              <td data-label="Ref" class="font-bold text-primary">${l.listRef}</td>
+              <td data-label="Customer">${escHtml(l.customer)}</td>
+              <td data-label="Packed By"><div class="text-sm">${escHtml(l.createdBy)}</div><div class="text-xs text-muted">${escHtml(l.team)}</div></td>
+              <td data-label="Status"><span class="badge ${l.status==='open'?'badge-green':l.status==='completed'?'badge-blue':'badge-muted'}">${l.status}</span></td>
+              <td data-label="Cartons" style="text-align:center;font-weight:700;font-family:var(--font-mono)">${(l.cartons||[]).length}</td>
+              <td data-label="Parts" style="text-align:center;font-family:var(--font-mono)">${totalParts}</td>
+              <td data-label="Created" class="text-xs text-muted">${fmtDate(l.createdAt)}</td>
               <td><svg style="width:14px;height:14px;color:var(--muted-fg)"><use href="#ic-arrow-right"/></svg></td>
             </tr>`;
           }).join('')}
@@ -586,7 +674,7 @@ function showCreateList() {
         <div style="display:flex;justify-content:flex-end;gap:8px;padding-top:12px;border-top:1px solid var(--border)">
           <button class="btn btn-outline" onclick="document.getElementById('create-list-form').classList.add('hidden')">Cancel</button>
           <button class="btn btn-primary" onclick="submitCreateList()">
-            <svg><use href="#ic-arrow-right"/></svg>Create & Open List
+            <svg><use href="#ic-arrow-right"/></svg>Create & Open
           </button>
         </div>
       </div>
@@ -600,11 +688,9 @@ function submitCreateList() {
   if (!customer || !createdBy || !team) { toast('Please fill all fields', 'error'); return; }
   loadLists();
   const list = {
-    id: Date.now(),
-    listRef: nextListRef(),
+    id: Date.now(), listRef: nextListRef(),
     customer, createdBy, team,
-    status: 'open',
-    cartons: [],
+    status: 'open', cartons: [],
     createdAt: new Date().toISOString()
   };
   LISTS.push(list);
@@ -612,113 +698,266 @@ function submitCreateList() {
   nav('list-detail', LISTS.length - 1);
 }
 
-let formState = {
-  bag: { value:'', match:null },
-  inner: { value:'', match:null },
-  outer: { value:'', match:null },
-  photos: { bag:null, inner:null, carton:null },
-  partNo: '', pi:'', cartonId:'', qty:'1', notes:'',
-  uploading: false
-};
-
+// ═══════════════════════════════════════════════════════════════
+//  FORM STATE (Multi-Part)
+// ═══════════════════════════════════════════════════════════════
 function resetFormState() {
   formState = {
-    bag:{ value:'', match:null }, inner:{ value:'', match:null }, outer:{ value:'', match:null },
-    photos:{ bag:null, inner:null, carton:null },
-    partNo:'', pi:'', cartonId:'', qty:'1', notes:'', uploading:false
+    cartonId: '', parts: [],
+    photos: { bag:null, inner:null, carton:null },
+    notes: '', uploading: false
   };
   pendingEditRow = null;
+  lookupCache = {};
 }
 
+function addPartToForm(prefill=null) {
+  const idx = formState.parts.length;
+  formState.parts.push(prefill || {
+    partNo:'', pi:'', qty:'1',
+    bag:'', inner:'', outer:'',
+    bagMatch:null, innerMatch:null, outerMatch:null
+  });
+  return idx;
+}
+
+function removePartFromForm(idx) {
+  formState.parts.splice(idx, 1);
+  renderPartCards();
+  updateSubmitBtn();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  LIST DETAIL
+// ═══════════════════════════════════════════════════════════════
 function renderListDetail() {
   loadLists();
   const list = LISTS[currentListId];
   if (!list) { nav('packing-lists'); return; }
   const cartons = list.cartons || [];
   const rejected = cartons.filter(c => c.status === 'rejected');
+  const totalParts = cartons.reduce((s,c) => s + (c.parts||[]).length, 0);
   const el = document.getElementById('page-list-detail');
 
-  el.innerHTML = `
+  let html = `
     <div class="page-header">
       <div style="display:flex;align-items:center;gap:10px">
         <button class="btn-icon" onclick="nav('packing-lists')"><svg style="width:16px;height:16px"><use href="#ic-back"/></svg></button>
         <div>
           <div class="page-title"><svg><use href="#ic-list"/></svg>${list.listRef}</div>
-          <div class="page-subtitle">${list.customer} — ${cartons.length} cartons — ${cartons.reduce((s,c)=>s+(+c.qty||0),0)} pcs</div>
+          <div class="page-subtitle">${escHtml(list.customer)} \u2014 ${cartons.length} cartons \u2014 ${totalParts} parts total</div>
         </div>
       </div>
-      <span class="badge ${list.status==='open'?'badge-green':'badge-muted'}">${list.status}</span>
+      <span class="badge ${list.status==='open'?'badge-green':list.status==='completed'?'badge-blue':'badge-muted'}">${list.status}</span>
     </div>
 
     <div class="grid-3" style="margin-bottom:16px">
-      ${[
-        {icon:'ic-box',label:'Customer',val:list.customer},
-        {icon:'ic-activity',label:'Packed By',val:list.createdBy},
-        {icon:'ic-activity',label:'Team',val:list.team},
-      ].map(i=>`<div class="card" style="padding:12px;display:flex;align-items:center;gap:10px">
-        <svg style="width:16px;height:16px;color:var(--primary);flex-shrink:0"><use href="#${i.icon}"/></svg>
-        <div><div class="text-xs text-muted">${i.label}</div><div class="font-bold text-sm">${i.val}</div></div>
-      </div>`).join('')}
-    </div>
+      <div class="card" style="padding:12px;display:flex;align-items:center;gap:10px">
+        <svg style="width:18px;height:18px;color:var(--primary);flex-shrink:0"><use href="#ic-box"/></svg>
+        <div><div class="text-xs text-muted">Customer</div><div class="font-bold text-sm">${escHtml(list.customer)}</div></div>
+      </div>
+      <div class="card" style="padding:12px;display:flex;align-items:center;gap:10px">
+        <svg style="width:18px;height:18px;color:var(--primary);flex-shrink:0"><use href="#ic-activity"/></svg>
+        <div><div class="text-xs text-muted">Packed By</div><div class="font-bold text-sm">${escHtml(list.createdBy)}</div></div>
+      </div>
+      <div class="card" style="padding:12px;display:flex;align-items:center;gap:10px">
+        <svg style="width:18px;height:18px;color:var(--primary);flex-shrink:0"><use href="#ic-package"/></svg>
+        <div><div class="text-xs text-muted">Team</div><div class="font-bold text-sm">${escHtml(list.team)}</div></div>
+      </div>
+    </div>`;
 
-    ${rejected.length > 0 ? `
+  if (list.status === 'completed') {
+    html += `
+    <div class="complete-banner">
+      <div class="complete-title"><svg style="width:16px;height:16px;vertical-align:middle;margin-right:6px"><use href="#ic-check-circle"/></svg>Packing List Completed</div>
+      <div class="text-sm text-muted">This list has been finalized and submitted for checking.</div>
+    </div>`;
+  }
+
+  if (rejected.length > 0) {
+    html += `
     <div class="alert alert-danger" style="margin-bottom:16px">
       <svg><use href="#ic-alert"/></svg>
       <div><strong>${rejected.length} carton${rejected.length>1?'s':''} rejected by checker.</strong>
       Click <strong>Edit</strong> on a rejected row to correct and resubmit.</div>
-    </div>` : ''}
+    </div>`;
+  }
 
-    <div id="success-banner" class="hidden"></div>
+  html += `<div id="success-banner" class="hidden"></div>`;
 
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+  if (list.status === 'open') {
+    html += `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
       <div class="text-xs text-muted">Carton Entries (${cartons.length})</div>
-      <button class="btn btn-primary btn-sm" id="btn-add-entry" onclick="showEntryForm(false)">
-        <svg><use href="#ic-plus"/></svg>Add Entry
-      </button>
-    </div>
+      <div class="gap-8">
+        <button class="btn btn-primary btn-sm" id="btn-add-entry" onclick="showEntryForm(false)">
+          <svg><use href="#ic-plus"/></svg>Add Carton
+        </button>
+      </div>
+    </div>`;
+  }
+
+  html += `
     <div class="table-wrap" style="margin-bottom:16px">
-      <table>
+      <table class="table-responsive">
         <thead><tr>
-          <th>Ref</th><th>Carton ID</th><th>Part No</th><th>PI</th>
-          <th>Qty</th><th>Bag</th><th>Inner</th><th>Outer</th><th>Status</th><th>Time</th>
+          <th>Ref</th><th>Carton ID</th><th>Parts</th><th>Total Qty</th><th>Status</th><th>Time</th>
         </tr></thead>
         <tbody id="carton-tbody">
-        ${cartons.length===0 ? '<tr><td colspan="10"><div class="empty-state"><svg><use href="#ic-box"/></svg><p>No entries yet — click Add Entry</p></div></td></tr>' :
-          cartons.map((c,ci) => `
-          <tr class="${c.status==='rejected'?'rejected':''}">
-            <td class="font-bold text-primary">${c.cartonRef||'—'}</td>
-            <td class="text-sm">${c.cartonId||'—'}</td>
-            <td class="font-bold text-sm">${c.partNo||'—'}</td>
-            <td class="text-muted text-xs">${c.pi||'—'}</td>
-            <td style="text-align:center;font-weight:700">${c.qty}</td>
-            <td style="text-align:center">${matchDot(c.bagMatch)}</td>
-            <td style="text-align:center">${matchDot(c.innerMatch)}</td>
-            <td style="text-align:center">${matchDot(c.outerMatch)}</td>
-            <td>
-              <span class="badge ${statusBadgeClass(c.status)}">${c.status||'PENDING'}</span>
-              ${c.status==='rejected' ? `
-                <div style="margin-top:4px">
-                  <button class="btn btn-danger-outline btn-sm" onclick="startEditCarton(${ci})">
-                    <svg><use href="#ic-edit"/></svg>Edit
-                  </button>
-                  ${c.rejectionReason ? `<div class="text-xs text-danger" style="margin-top:3px;font-style:italic;max-width:120px">${c.rejectionReason}</div>` : ''}
-                </div>` : ''}
-            </td>
-            <td class="text-xs text-muted">${fmtTime(c.createdAt)}</td>
-          </tr>`).join('')}
+        ${cartons.length===0 ? '<tr><td colspan="6"><div class="empty-state"><svg><use href="#ic-box"/></svg><p>No entries yet \u2014 click Add Carton</p></div></td></tr>' :
+          cartons.map((c,ci) => {
+            const partCount = (c.parts||[]).length;
+            const totalQty = (c.parts||[]).reduce((s,p) => s + (+p.qty||0), 0);
+            return `
+            <tr class="${c.status==='rejected'?'rejected':'clickable'}" ${c.status!=='rejected' ? `onclick="viewCartonDetail(${ci})"` : ''}>
+              <td data-label="Ref" class="font-bold text-primary">${c.cartonRef||'\u2014'}</td>
+              <td data-label="Carton ID" class="text-sm">${escHtml(c.cartonId||'\u2014')}</td>
+              <td data-label="Parts"><span class="badge badge-muted">${partCount} part${partCount!==1?'s':''}</span></td>
+              <td data-label="Total Qty" style="text-align:center;font-weight:700;font-family:var(--font-mono)">${totalQty}</td>
+              <td data-label="Status">
+                <span class="badge ${statusBadgeClass(c.status)}">${c.status||'PENDING'}</span>
+                ${c.status==='rejected' ? `
+                  <div style="margin-top:6px">
+                    <button class="btn btn-danger-outline btn-xs" onclick="event.stopPropagation();startEditCarton(${ci})">
+                      <svg><use href="#ic-edit"/></svg>Edit
+                    </button>
+                    ${c.rejectionReason ? `<div class="text-xs text-danger mt-4" style="font-style:italic;max-width:140px">${escHtml(c.rejectionReason)}</div>` : ''}
+                  </div>` : ''}
+              </td>
+              <td data-label="Time" class="text-xs text-muted">${fmtTime(c.createdAt)}</td>
+            </tr>`;
+          }).join('')}
         </tbody>
       </table>
-    </div>
+    </div>`;
 
-    <div id="entry-form-wrap"></div>`;
+  // Complete packing list button
+  if (list.status === 'open' && cartons.length > 0) {
+    html += `
+    <div style="padding:16px;background:var(--card);border:1.5px solid var(--primary-border);border-radius:var(--radius);text-align:center;margin-bottom:16px">
+      <div style="font-size:12px;color:var(--muted-fg);margin-bottom:10px">When all cartons are packed, mark this list as completed.</div>
+      <button class="btn btn-primary" onclick="completePackingList()">
+        <svg><use href="#ic-check-circle"/></svg>Complete Packing List
+      </button>
+    </div>`;
+  }
+
+  html += `<div id="entry-form-wrap"></div>`;
+  html += `<div id="carton-detail-wrap"></div>`;
+
+  el.innerHTML = html;
+}
+
+// ── Complete Packing List ────────────────────────────────────
+function completePackingList() {
+  loadLists();
+  const list = LISTS[currentListId];
+  if (!list) return;
+
+  // Check for mismatches before completing
+  const hasMismatch = (list.cartons||[]).some(c =>
+    (c.parts||[]).some(p => p.bagMatch===false || p.innerMatch===false || p.outerMatch===false)
+  );
+  if (hasMismatch) {
+    toast('Cannot complete: some cartons have barcode mismatches. Please fix them first.', 'error');
+    return;
+  }
+
+  if (!confirm('Mark this packing list as COMPLETED?\n\nStaff will no longer be able to add cartons. The checker can now review all entries.')) return;
+
+  list.status = 'completed';
+  list.completedAt = new Date().toISOString();
+  LISTS[currentListId] = list;
+  saveLists();
+  toast('Packing list completed! ✅', 'success');
+  renderListDetail();
+}
+
+// ── View Carton Detail (read-only popup) ─────────────────────
+function viewCartonDetail(ci) {
+  loadLists();
+  const list = LISTS[currentListId];
+  const c = list.cartons[ci];
+  if (!c) return;
+
+  const el = document.getElementById('carton-detail-wrap');
+  const photos = [
+    {lbl:'Bag', url:c.imgBagUrl},
+    {lbl:'Inner', url:c.imgInnerUrl},
+    {lbl:'Carton', url:c.imgCartonUrl}
+  ].filter(p => p.url);
+
+  let partsHtml = '';
+  if (c.parts && c.parts.length > 0) {
+    partsHtml = `
+    <div class="section-title">Parts in this Carton (${c.parts.length})</div>
+    <div class="parts-summary" style="margin-bottom:16px">
+      <table>
+        <thead><tr><th>#</th><th>Part No</th><th>PI</th><th>Qty</th><th>Bag</th><th>Inner</th><th>Outer</th></tr></thead>
+        <tbody>
+        ${c.parts.map((p, pi) => `
+          <tr>
+            <td style="font-family:var(--font-mono);font-weight:700">${pi+1}</td>
+            <td class="font-bold text-primary">${escHtml(p.partNo)}</td>
+            <td class="text-xs text-muted">${escHtml(p.pi||'\u2014')}</td>
+            <td style="font-weight:700">${p.qty}</td>
+            <td style="text-align:center">${matchDot(p.bagMatch)}</td>
+            <td style="text-align:center">${matchDot(p.innerMatch)}</td>
+            <td style="text-align:center">${matchDot(p.outerMatch)}</td>
+          </tr>
+        `).join('')}
+        </tbody>
+      </table>
+    </div>`;
+  }
+
+  let photoHtml = '';
+  if (photos.length > 0) {
+    photoHtml = `
+    <div class="section-title">Photos</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+      ${photos.map(p => {
+        const thumb = getThumbUrl(p.url, 300);
+        return `<div style="text-align:center">
+          <img src="${thumb}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer" onclick="openLightbox('${p.url}')" />
+          <div style="font-size:10px;color:var(--muted-fg);margin-top:4px">${p.lbl}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }
+
+  el.innerHTML = `
+    <div class="modal-backdrop" onclick="if(event.target===this)closeCartonDetail()">
+      <div class="modal" style="max-width:560px">
+        <div class="modal-header">
+          <div class="modal-title"><svg style="width:16px;height:16px"><use href="#ic-box"/></svg>${c.cartonRef} Details</div>
+          <button class="btn-icon" onclick="closeCartonDetail()"><svg style="width:14px;height:14px"><use href="#ic-x"/></svg></button>
+        </div>
+        <div class="modal-body">
+          <div class="detail-kv" style="margin-bottom:14px">
+            <div class="kv-box"><div class="kv-label">Carton ID</div><div class="kv-value">${escHtml(c.cartonId)}</div></div>
+            <div class="kv-box"><div class="kv-label">Carton Ref</div><div class="kv-value">${c.cartonRef}</div></div>
+            <div class="kv-box"><div class="kv-label">Status</div><div class="kv-value ${c.status==='rejected'?'text-danger':c.status==='pending'?'text-amber':'text-primary'}">${c.status||'PENDING'}</div></div>
+          </div>
+          ${partsHtml}
+          ${photoHtml}
+          ${c.rejectionReason ? `<div class="alert alert-danger"><svg><use href="#ic-alert"/></svg><div><strong>Rejection Reason:</strong> ${escHtml(c.rejectionReason)}</div></div>` : ''}
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline btn-full" onclick="closeCartonDetail()">Close</button>
+        </div>
+      </div>
+    </div>`;
+}
+function closeCartonDetail() {
+  document.getElementById('carton-detail-wrap').innerHTML = '';
 }
 
 function matchDot(m) {
-  if (m===true||m==='true') return '<span style="color:var(--primary)">✅</span>';
-  if (m===false||m==='false') return '<span style="color:var(--danger)">❌</span>';
-  return '<span style="color:var(--muted-fg)">—</span>';
+  if (m===true||m==='true') return '<span style="color:var(--primary)">&#x2705;</span>';
+  if (m===false||m==='false') return '<span style="color:var(--danger)">&#x274C;</span>';
+  return '<span style="color:var(--muted-fg)">\u2014</span>';
 }
-
 function statusBadgeClass(s) {
   if (!s || s.toLowerCase()==='pending') return 'badge-amber';
   if (s.toLowerCase().includes('approved')) return 'badge-green';
@@ -726,82 +965,82 @@ function statusBadgeClass(s) {
   return 'badge-muted';
 }
 
+// ── Edit Carton ──────────────────────────────────────────────
 function startEditCarton(cartonIdx) {
   loadLists();
   const list = LISTS[currentListId];
   const c = list.cartons[cartonIdx];
   resetFormState();
   formState.cartonId = c.cartonId || '';
-  formState.pi = c.pi || '';
-  formState.partNo = c.partNo || '';
-  formState.qty = String(c.qty || 1);
   formState.photos = { bag: c.imgBagUrl||null, inner: c.imgInnerUrl||null, carton: c.imgCartonUrl||null };
+  if (c.parts && c.parts.length > 0) {
+    c.parts.forEach(p => {
+      formState.parts.push({
+        partNo: p.partNo||'', pi: p.pi||'', qty: String(p.qty||1),
+        bag: p.bag||'', inner: p.inner||'', outer: p.outer||'',
+        bagMatch: p.bagMatch, innerMatch: p.innerMatch, outerMatch: p.outerMatch
+      });
+    });
+  } else {
+    // Legacy single-part carton
+    formState.parts.push({
+      partNo: c.partNo||'', pi: c.pi||'', qty: String(c.qty||1),
+      bag: c.bagBarcode||'', inner: c.innerBarcode||'', outer: c.outerBarcode||'',
+      bagMatch: c.bagMatch, innerMatch: c.innerMatch, outerMatch: c.outerMatch
+    });
+  }
   pendingEditRow = { cartonIdx, row: c.row };
   showEntryForm(true);
 }
 
+// ═══════════════════════════════════════════════════════════════
+//  ENTRY FORM (Multi-Part)
+// ═══════════════════════════════════════════════════════════════
 function showEntryForm(isEdit) {
   const addBtn = document.getElementById('btn-add-entry');
   if (addBtn) addBtn.style.display = 'none';
+  document.getElementById('carton-detail-wrap').innerHTML = '';
   const wrap = document.getElementById('entry-form-wrap');
   const list = LISTS[currentListId];
-  wrap.innerHTML = buildEntryForm(list, isEdit);
-  restoreFormValues();
-}
 
-function buildEntryForm(list, isEdit) {
-  return `
+  if (formState.parts.length === 0) addPartToForm();
+
+  wrap.innerHTML = `
   <div class="form-panel ${isEdit?'danger-panel':''}" id="entry-form">
     <div class="form-panel-header ${isEdit?'danger-bg':'primary-bg'}">
       <span class="font-bold ${isEdit?'text-danger':'text-primary'} text-sm" style="text-transform:uppercase;letter-spacing:.07em">
         <svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="${isEdit?'#ic-rotate':'#ic-box'}"/></svg>
-        ${isEdit ? `Edit & Resubmit — ${list.listRef}` : `New Entry — ${list.listRef}`}
+        ${isEdit ? `Edit & Resubmit \u2014 ${list.listRef}` : `New Carton \u2014 ${list.listRef}`}
       </span>
       <button class="btn-icon" onclick="cancelForm()"><svg style="width:12px;height:12px"><use href="#ic-x"/></svg></button>
     </div>
     <div class="info-row">
-      <span><strong>Customer:</strong> ${list.customer}</span>
-      <span><strong>Packed By:</strong> ${list.createdBy}</span>
-      <span><strong>Team:</strong> ${list.team}</span>
+      <span><strong>Customer:</strong> ${escHtml(list.customer)}</span>
+      <span><strong>Packed By:</strong> ${escHtml(list.createdBy)}</span>
+      <span><strong>Team:</strong> ${escHtml(list.team)}</span>
     </div>
     <div class="form-panel-body">
 
-      <div class="section-title">Order Info</div>
-      <div class="grid-4" style="margin-bottom:16px">
+      <div class="section-title">Carton Info</div>
+      <div class="grid-2" style="margin-bottom:16px">
         <div class="form-group">
           <label class="form-label">Carton ID <span class="req">*</span></label>
           <div class="input-wrap">
-            <input type="text" id="f-cartonId" placeholder="Scan or type..." />
-            <button type="button" class="btn-icon" title="Camera scan — Carton ID" onclick="openCamera('Carton ID',v=>{const el=document.getElementById('f-cartonId');el.value=v;formState.cartonId=v;})"><svg style="width:14px;height:14px"><use href="#ic-camera"/></svg></button>
+            <input type="text" id="f-cartonId" placeholder="Scan or type carton ID..." value="${escHtml(formState.cartonId)}" />
+            <button type="button" class="btn-icon" onclick="openCamera('Carton ID',v=>{document.getElementById('f-cartonId').value=v;formState.cartonId=v;})"><svg style="width:14px;height:14px"><use href="#ic-camera"/></svg></button>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Part No <span class="req">*</span></label>
-          <div class="input-wrap">
-            <input type="text" id="f-partNo" placeholder="Auto-filled or type..." oninput="onOrderFieldChange('partNo')" />
-            <button type="button" class="btn-icon" title="Camera scan — Part No" onclick="openCamera('Part No',v=>{const el=document.getElementById('f-partNo');el.value=v;onOrderFieldChange('partNo');})"><svg style="width:14px;height:14px"><use href="#ic-camera"/></svg></button>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">PI No</label>
-          <div class="input-wrap">
-            <input type="text" id="f-pi" placeholder="123456/26..." oninput="onOrderFieldChange('pi')" />
-            <button type="button" class="btn-icon" title="Camera scan — PI No" onclick="openCamera('PI No',v=>{const el=document.getElementById('f-pi');el.value=v;onOrderFieldChange('pi');})"><svg style="width:14px;height:14px"><use href="#ic-camera"/></svg></button>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Qty (pcs) <span class="req">*</span></label>
-          <input type="number" id="f-qty" min="1" value="1" />
         </div>
       </div>
 
-      <div class="section-title">Barcode Verification</div>
-      <p class="text-xs text-muted" style="margin-bottom:10px">Scan: Bag → Inner → Outer. Type <strong style="color:var(--amber)">NO</strong> if none. Use 📷 camera or barcode scanner.</p>
-      <div class="grid-3" style="margin-bottom:16px">
-        ${buildBarcodeField('bag','1. Bag Barcode')}
-        ${buildBarcodeField('inner','2. Inner Barcode')}
-        ${buildBarcodeField('outer','3. Outer Barcode')}
+      <div class="section-title">
+        Parts in this Carton
+        <span style="float:right">
+          <button class="btn btn-primary btn-xs" onclick="addNewPart()">
+            <svg><use href="#ic-plus"/></svg>Add Part
+          </button>
+        </span>
       </div>
+      <div id="parts-container"></div>
 
       <div class="section-title">Photos</div>
       <div class="grid-3" style="margin-bottom:16px">
@@ -812,12 +1051,16 @@ function buildEntryForm(list, isEdit) {
 
       <div id="mismatch-warn" class="alert alert-danger hidden">
         <svg><use href="#ic-alert"/></svg>
-        <div>Mismatch detected — please recheck barcodes before submitting.</div>
+        <div>Barcode MISMATCH detected \u2014 you cannot submit until all barcodes match. Please recheck or contact supervisor.</div>
       </div>
-      <div id="form-error" class="hidden" style="color:var(--danger);font-size:12px;margin-bottom:8px"></div>
+      <div id="server-warn" class="alert alert-amber hidden">
+        <svg><use href="#ic-alert"/></svg>
+        <div>Server unreachable \u2014 barcode verification unavailable. Proceed with caution.</div>
+      </div>
+      <div id="form-error" class="hidden" style="color:var(--danger);font-size:12px;margin-bottom:8px;font-weight:600"></div>
 
-      <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border);flex-wrap:wrap;gap:8px">
-        <div id="verify-hint" class="text-xs text-muted">Verify all three barcodes to enable submit.</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--border);flex-wrap:wrap;gap:10px">
+        <div id="verify-hint" class="text-xs text-muted">All barcodes must be verified (MATCH or NO) before submitting.</div>
         <div style="display:flex;gap:8px">
           <button class="btn btn-outline" onclick="cancelForm()">Cancel</button>
           <button class="btn ${isEdit?'btn-danger':'btn-primary'}" id="btn-submit" disabled onclick="submitEntry(${isEdit})">
@@ -829,17 +1072,76 @@ function buildEntryForm(list, isEdit) {
 
     </div>
   </div>`;
+
+  renderPartCards();
+  ['bag','inner','carton'].forEach(w => {
+    if (formState.photos[w]) renderPhotoThumb(w, formState.photos[w]);
+  });
 }
 
-function buildBarcodeField(which, label) {
+// ── Part Cards ───────────────────────────────────────────────
+function renderPartCards() {
+  const container = document.getElementById('parts-container');
+  if (!container) return;
+
+  container.innerHTML = formState.parts.map((part, idx) => `
+    <div class="part-card" id="part-card-${idx}">
+      <div class="part-card-header">
+        <span class="part-number">Part ${idx + 1}</span>
+        ${formState.parts.length > 1 ? `<button class="part-remove" onclick="removePartFromForm(${idx})"><svg style="width:12px;height:12px;vertical-align:middle;margin-right:2px"><use href="#ic-trash"/></svg>Remove</button>` : ''}
+      </div>
+      <div class="grid-4" style="margin-bottom:12px">
+        <div class="form-group">
+          <label class="form-label">Part No <span class="req">*</span></label>
+          <div class="input-wrap">
+            <input type="text" id="f-partNo-${idx}" placeholder="Scan or type..." value="${escHtml(part.partNo)}"
+              oninput="onPartFieldChange(${idx},'partNo')" />
+            <button type="button" class="btn-icon" onclick="openCamera('Part ${idx+1} No',v=>{document.getElementById('f-partNo-${idx}').value=v;onPartFieldChange(${idx},'partNo');})"><svg style="width:14px;height:14px"><use href="#ic-camera"/></svg></button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">PI No</label>
+          <div class="input-wrap">
+            <input type="text" id="f-pi-${idx}" placeholder="123456/26..." value="${escHtml(part.pi)}"
+              oninput="onPartFieldChange(${idx},'pi')" />
+            <button type="button" class="btn-icon" onclick="openCamera('PI No',v=>{document.getElementById('f-pi-${idx}').value=v;onPartFieldChange(${idx},'pi');})"><svg style="width:14px;height:14px"><use href="#ic-camera"/></svg></button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Qty <span class="req">*</span></label>
+          <input type="number" id="f-qty-${idx}" min="1" value="${part.qty}" oninput="onPartFieldChange(${idx},'qty')" />
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--muted-fg);margin-bottom:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Barcode Verification \u2014 Type NO if none</div>
+      <div class="grid-3">
+        ${buildPartBarcodeField(idx, 'bag', '1. Bag Barcode')}
+        ${buildPartBarcodeField(idx, 'inner', '2. Inner Barcode')}
+        ${buildPartBarcodeField(idx, 'outer', '3. Outer Barcode')}
+      </div>
+    </div>
+  `).join('');
+
+  // Restore match badge states
+  formState.parts.forEach((part, idx) => {
+    setMatchBadgeOnCard(idx, 'bag', part.bagMatch);
+    setMatchBadgeOnCard(idx, 'inner', part.innerMatch);
+    setMatchBadgeOnCard(idx, 'outer', part.outerMatch);
+  });
+
+  updateSubmitBtn();
+}
+
+function buildPartBarcodeField(partIdx, which, label) {
   return `<div class="form-group">
     <div style="display:flex;align-items:center;justify-content:space-between;min-height:22px;margin-bottom:4px">
       <span class="form-label">${label}</span>
-      <span id="match-badge-${which}" class="match-badge" style="display:none"></span>
+      <span id="match-badge-${partIdx}-${which}" class="match-badge" style="display:none"></span>
     </div>
     <div class="input-wrap">
-      <input type="text" id="f-${which}" placeholder="Scan, type, or use camera..." oninput="onBarcodeInput('${which}')" />
-      <button type="button" class="btn-icon" title="Camera scan" onclick="openCamera('${label}', v=>{document.getElementById('f-${which}').value=v;onBarcodeInput('${which}')})">
+      <input type="text" id="f-${which}-${partIdx}" placeholder="Scan or type..."
+        value="${escHtml(formState.parts[partIdx]?.[which]||'')}"
+        oninput="onPartBarcodeInput(${partIdx},'${which}')" />
+      <button type="button" class="btn-icon" onclick="openCamera('${label}',v=>{document.getElementById('f-${which}-${partIdx}').value=v;onPartBarcodeInput(${partIdx},'${which}')})">
         <svg style="width:14px;height:14px"><use href="#ic-camera"/></svg>
       </button>
     </div>
@@ -854,24 +1156,167 @@ function buildPhotoField(which, label) {
       <svg><use href="#ic-camera"/></svg>
       <div>
         <div class="text-sm font-bold">${label}</div>
-        <div class="text-xs text-muted mt-4">Tap to capture photo</div>
+        <div class="text-xs text-muted mt-4">Tap to capture</div>
       </div>
     </button>
     <div id="photo-thumb-${which}"></div>
   </div>`;
 }
 
-function restoreFormValues() {
-  const set = (id, val) => { const el=document.getElementById(id); if(el) el.value=val||''; };
-  set('f-cartonId', formState.cartonId);
-  set('f-partNo', formState.partNo);
-  set('f-pi', formState.pi);
-  set('f-qty', formState.qty);
-  ['bag','inner','carton'].forEach(w => {
-    if (formState.photos[w]) renderPhotoThumb(w, formState.photos[w]);
-  });
+function addNewPart() {
+  addPartToForm();
+  renderPartCards();
+  // Scroll to bottom of parts container
+  setTimeout(() => {
+    const container = document.getElementById('parts-container');
+    if (container) container.lastElementChild?.scrollIntoView({ behavior: 'smooth' });
+  }, 50);
 }
 
+// ── Part Field Handlers ──────────────────────────────────────
+function onPartFieldChange(idx, field) {
+  const el = document.getElementById(`f-${field}-${idx}`);
+  if (!el) return;
+  let val = el.value;
+  if (field !== 'qty') val = val.trim().toUpperCase();
+  formState.parts[idx][field] = val;
+  if (field !== 'qty') el.value = val;
+
+  if (field === 'partNo' || field === 'pi') {
+    lookupCache = {};
+    // Re-verify all barcodes for this part
+    ['bag','inner','outer'].forEach(w => {
+      const bc = formState.parts[idx][w];
+      if (bc && bc !== 'NO') {
+        clearTimeout(lookupDebounce[`${idx}-${w}`]);
+        setMatchBadgeOnCard(idx, w, 'checking');
+        lookupDebounce[`${idx}-${w}`] = setTimeout(() => doPartLookup(idx, w, bc), 400);
+      }
+    });
+  }
+}
+
+function onPartBarcodeInput(idx, which) {
+  const el = document.getElementById(`f-${which}-${idx}`);
+  if (!el) return;
+  const val = el.value.trim().toUpperCase();
+  formState.parts[idx][which] = val;
+  el.value = val;
+  if (!val) { setMatchBadgeOnCard(idx, which, null); updateSubmitBtn(); return; }
+  if (val === 'NO') { setMatchBadgeOnCard(idx, which, 'no'); updateSubmitBtn(); return; }
+  clearTimeout(lookupDebounce[`${idx}-${which}`]);
+  setMatchBadgeOnCard(idx, which, 'checking');
+  lookupDebounce[`${idx}-${which}`] = setTimeout(() => doPartLookup(idx, which, val), 450);
+}
+
+// ── Barcode Lookup (Per-Part) ────────────────────────────────
+async function doPartLookup(partIdx, which, barcode) {
+  const part = formState.parts[partIdx];
+  const key = `${barcode}|${part.pi||''}|${part.partNo||''}|${which}`;
+
+  if (lookupCache[key] !== undefined) {
+    applyPartLookupResult(partIdx, which, barcode, lookupCache[key]);
+    return;
+  }
+  if (!GAS_URL) {
+    setMatchBadgeOnCard(partIdx, which, 'error');
+    updateSubmitBtn();
+    return;
+  }
+  try {
+    const res = await gasGet({ action:'lookup', barcode, pi:part.pi||'', partNo:part.partNo||'' });
+    if (res === null) { setMatchBadgeOnCard(partIdx, which, 'error'); updateSubmitBtn(); return; }
+    lookupCache[key] = res;
+    applyPartLookupResult(partIdx, which, barcode, res);
+  } catch {
+    setMatchBadgeOnCard(partIdx, which, 'error');
+    updateSubmitBtn();
+  }
+}
+
+function applyPartLookupResult(partIdx, which, barcode, res) {
+  const part = formState.parts[partIdx];
+  if (res && res.found) {
+    // Auto-fill partNo/pi if empty
+    if (which === 'bag') {
+      if (res.partNo && !part.partNo) {
+        part.partNo = String(res.partNo).toUpperCase();
+        const pnEl = document.getElementById(`f-partNo-${partIdx}`);
+        if (pnEl) pnEl.value = part.partNo;
+      }
+      if (res.pi && !part.pi) {
+        part.pi = String(res.pi).toUpperCase();
+        const piEl = document.getElementById(`f-pi-${partIdx}`);
+        if (piEl) piEl.value = part.pi;
+      }
+    }
+    // Determine which barcode type this is
+    const bc = String(barcode).toUpperCase();
+    const bagBC = String(res.bagBarcode||'').toUpperCase();
+    const innerBC = String(res.innerBarcode||'').toUpperCase();
+    const outerBC = String(res.outerBarcode||'').toUpperCase();
+
+    let isMatch = false;
+    if (which === 'bag' && bc === bagBC) isMatch = true;
+    else if (which === 'inner' && bc === innerBC) isMatch = true;
+    else if (which === 'outer' && bc === outerBC) isMatch = true;
+    else if (bc === bagBC || bc === innerBC || bc === outerBC) isMatch = true;
+
+    part[`${which}Match`] = isMatch;
+    setMatchBadgeOnCard(partIdx, which, isMatch);
+  } else {
+    part[`${which}Match`] = false;
+    setMatchBadgeOnCard(partIdx, which, false);
+  }
+  updateSubmitBtn();
+}
+
+// ── Match Badge (Per-Part) ───────────────────────────────────
+function setMatchBadgeOnCard(partIdx, which, state) {
+  const badge = document.getElementById(`match-badge-${partIdx}-${which}`);
+  const input = document.getElementById(`f-${which}-${partIdx}`);
+  if (!badge || !input) return;
+  input.className = '';
+  badge.style.display = '';
+  if (state === null) { badge.style.display='none'; return; }
+  if (state === true) { badge.textContent='\u2705 MATCH'; badge.className='match-badge ok'; input.className='match-ok'; }
+  else if (state === false) { badge.textContent='\u274C MISMATCH'; badge.className='match-badge fail'; input.className='match-fail'; }
+  else if (state === 'error') { badge.textContent='\u26A0 CANNOT VERIFY'; badge.className='match-badge checking'; input.className='match-amber'; }
+  else if (state === 'no') { badge.textContent='NO BARCODE'; badge.className='match-badge no-bc'; input.className='match-amber'; }
+  else if (state === 'checking') { badge.textContent='CHECKING...'; badge.className='match-badge checking'; }
+}
+
+// ── Submit Button State ──────────────────────────────────────
+function updateSubmitBtn() {
+  const btn = document.getElementById('btn-submit');
+  const mismatchWarn = document.getElementById('mismatch-warn');
+  const serverWarn = document.getElementById('server-warn');
+  const hint = document.getElementById('verify-hint');
+  if (!btn) return;
+
+  let hasMismatch = false;
+  let hasError = false;
+  let allVerified = true;
+
+  formState.parts.forEach(p => {
+    ['bag','inner','outer'].forEach(w => {
+      const m = p[`${w}Match`];
+      if (m === false) hasMismatch = true;
+      if (m === 'error') hasError = true;
+      const done = m===true || m==='no' || m==='error';
+      if (!done) allVerified = false;
+    });
+  });
+
+  if (mismatchWarn) mismatchWarn.classList.toggle('hidden', !hasMismatch);
+  if (serverWarn) serverWarn.classList.toggle('hidden', !hasError || hasMismatch);
+  if (hint) hint.style.display = allVerified ? 'none' : '';
+
+  // STRICT: Block if any mismatch
+  btn.disabled = hasMismatch || !allVerified;
+}
+
+// ── Photo Handling ───────────────────────────────────────────
 async function handlePhoto(which, input) {
   const file = input.files[0];
   if (!file) return;
@@ -880,156 +1325,13 @@ async function handlePhoto(which, input) {
   renderPhotoThumb(which, dataUri);
   input.value = '';
 }
-
 function renderPhotoThumb(which, dataUri) {
   const btn = document.getElementById('photo-btn-' + which);
   const thumb = document.getElementById('photo-thumb-' + which);
   if (btn) btn.classList.add('has-photo');
   if (thumb) {
-    thumb.innerHTML = `<img class="photo-thumb" src="${dataUri}" alt="Photo" onclick="openLightbox('${dataUri}')" style="cursor:pointer" />`;
+    thumb.innerHTML = `<img class="photo-thumb" src="${dataUri}" alt="Photo" onclick="openLightbox('${dataUri}')" />`;
   }
-}
-
-let lookupCache = {};
-const lookupDebounce = {};
-
-function onBarcodeInput(which) {
-  const el = document.getElementById('f-' + which);
-  if (!el) return;
-  const val = el.value.trim().toUpperCase();
-  if (which === 'bag') formState.bag.value = val;
-  if (which === 'inner') formState.inner.value = val;
-  if (which === 'outer') formState.outer.value = val;
-  el.value = val;
-  if (!val) { setMatchBadge(which, null); updateSubmitBtn(); return; }
-  if (val === 'NO') { setMatchBadge(which, 'no'); updateSubmitBtn(); return; }
-  clearTimeout(lookupDebounce[which]);
-  setMatchBadge(which, 'checking');
-  lookupDebounce[which] = setTimeout(() => doLookup(which, val), 500);
-}
-
-function onOrderFieldChange(field) {
-  const val = (document.getElementById(field === 'partNo' ? 'f-partNo' : 'f-pi')||{}).value || '';
-  if (field === 'partNo') formState.partNo = val.trim().toUpperCase();
-  if (field === 'pi') formState.pi = val.trim().toUpperCase();
-  const inp = document.getElementById(field === 'partNo' ? 'f-partNo' : 'f-pi');
-  if (inp) inp.value = formState[field];
-  lookupCache = {};
-  ['bag','inner','outer'].forEach(w => {
-    const bc = formState[w] && formState[w].value;
-    if (bc && bc !== 'NO') {
-      clearTimeout(lookupDebounce[w]);
-      setMatchBadge(w, 'checking');
-      lookupDebounce[w] = setTimeout(() => doLookup(w, bc), 400);
-    }
-  });
-}
-
-async function doLookup(which, barcode) {
-  const partNo = ((document.getElementById('f-partNo')||{}).value || '').trim().toUpperCase();
-  const pi     = ((document.getElementById('f-pi')||{}).value || '').trim().toUpperCase();
-  const key    = `${barcode}|${partNo}|${pi}`;
-  if (lookupCache[key] !== undefined) {
-    applyLookupResult(which, barcode, lookupCache[key]);
-    return;
-  }
-  if (!GAS_URL) {
-    setMatchBadge(which, 'error');
-    updateSubmitBtn();
-    return;
-  }
-  try {
-    const res = await gasGet({ action:'lookup', barcode, pi, partNo });
-    if (res === null) { setMatchBadge(which, 'error'); updateSubmitBtn(); return; }
-    lookupCache[key] = res;
-    applyLookupResult(which, barcode, res);
-  } catch(e) {
-    setMatchBadge(which, 'error');
-    updateSubmitBtn();
-  }
-}
-
-function applyLookupResult(which, barcode, res) {
-  if (res && res.found) {
-    if (which === 'bag') {
-      if (res.partNo) {
-        const pnEl = document.getElementById('f-partNo');
-        if (pnEl && !pnEl.value) {
-          pnEl.value = String(res.partNo).toUpperCase();
-          formState.partNo = pnEl.value;
-          lookupCache = {};
-          ['inner','outer'].forEach(w => {
-            const bc = formState[w] && formState[w].value;
-            if (bc && bc !== 'NO') {
-              clearTimeout(lookupDebounce[w]);
-              setMatchBadge(w, 'checking');
-              lookupDebounce[w] = setTimeout(() => doLookup(w, bc), 400);
-            }
-          });
-        }
-      }
-      if (res.pi) {
-        const piEl = document.getElementById('f-pi');
-        if (piEl && !piEl.value) {
-          piEl.value = String(res.pi).toUpperCase();
-          formState.pi = piEl.value;
-        }
-      }
-    }
-    formState[which].match = true;
-    setMatchBadge(which, true);
-  } else {
-    formState[which].match = false;
-    setMatchBadge(which, false);
-  }
-  updateSubmitBtn();
-}
-
-function setMatchBadge(which, state) {
-  if (which === 'bag' || which === 'inner' || which === 'outer') {
-    formState[which].match = (state === 'no') ? 'no' : state;
-  }
-  const badge = document.getElementById('match-badge-' + which);
-  const input = document.getElementById('f-' + which);
-  if (!badge || !input) return;
-  input.className = '';
-  badge.style.display = '';
-  if (state === null) { badge.style.display='none'; return; }
-  if (state === true) { badge.textContent='✅ MATCH'; badge.className='match-badge ok'; input.className='match-ok'; }
-  else if (state === false) { badge.textContent='❌ MISMATCH'; badge.className='match-badge fail'; input.className='match-fail'; }
-  else if (state === 'error') { badge.textContent='⚠️ CANNOT VERIFY'; badge.className='match-badge checking'; input.className='match-amber'; }
-  else if (state === 'no') { badge.textContent='NO BARCODE'; badge.className='match-badge no-bc'; input.className='match-amber'; }
-  else if (state === 'checking') { badge.textContent='CHECKING...'; badge.className='match-badge checking'; }
-}
-
-function updateSubmitBtn() {
-  const btn = document.getElementById('btn-submit');
-  const warn = document.getElementById('mismatch-warn');
-  const hint = document.getElementById('verify-hint');
-  if (!btn) return;
-  const {bag, inner, outer} = formState;
-  const hasMismatch = bag.match===false || inner.match===false || outer.match===false;
-  const hasError    = bag.match==='error' || inner.match==='error' || outer.match==='error';
-  const done = m => m===true || m==='no' || m==='error';
-  const allVerified = done(bag.match) && done(inner.match) && done(outer.match);
-  if (warn) {
-    const warnText = warn.querySelector('div') || warn;
-    if (hasMismatch) {
-      warnText.textContent = 'Mismatch detected — please recheck barcodes before submitting.';
-      warn.classList.remove('hidden');
-    } else if (hasError) {
-      warnText.textContent = '⚠️ Some barcodes could not be verified (server unreachable). Proceed with caution.';
-      warn.classList.remove('hidden');
-      warn.style.borderColor = 'var(--amber)';
-      warn.style.color = 'var(--amber)';
-    } else {
-      warn.classList.add('hidden');
-      warn.style.borderColor = '';
-      warn.style.color = '';
-    }
-  }
-  if (hint) hint.style.display = allVerified ? 'none' : '';
-  btn.disabled = hasMismatch || !allVerified;
 }
 
 function cancelForm() {
@@ -1037,14 +1339,25 @@ function cancelForm() {
   renderListDetail();
 }
 
+// ═══════════════════════════════════════════════════════════════
+//  SUBMIT ENTRY (Multi-Part)
+// ═══════════════════════════════════════════════════════════════
 async function submitEntry(isEdit) {
   loadLists();
   const list = LISTS[currentListId];
   const cartonId = (document.getElementById('f-cartonId')||{}).value?.trim() || '';
-  const partNo = (document.getElementById('f-partNo')||{}).value?.trim().toUpperCase() || '';
-  const pi = (document.getElementById('f-pi')||{}).value?.trim().toUpperCase() || '';
-  const qty = parseInt((document.getElementById('f-qty')||{}).value || '1');
-  if (!cartonId || !partNo || !qty) { toast('Fill all required fields', 'error'); return; }
+  if (!cartonId) { toast('Carton ID is required', 'error'); return; }
+
+  // Validate parts
+  for (let i = 0; i < formState.parts.length; i++) {
+    const p = formState.parts[i];
+    if (!p.partNo) { toast(`Part ${i+1}: Part No is required`, 'error'); return; }
+    if (!p.qty || parseInt(p.qty) < 1) { toast(`Part ${i+1}: Qty must be at least 1`, 'error'); return; }
+    // STRICT: Check for mismatches
+    if (p.bagMatch === false || p.innerMatch === false || p.outerMatch === false) {
+      toast(`Part ${i+1}: Barcode mismatch detected. Cannot submit.`, 'error'); return;
+    }
+  }
 
   const btn = document.getElementById('btn-submit');
   const lbl = document.getElementById('btn-submit-label');
@@ -1063,9 +1376,9 @@ async function submitEntry(isEdit) {
   }
 
   const [imgBagUrl, imgInnerUrl, imgCartonUrl] = await Promise.all([
-    maybeUpload(formState.photos.bag, `bag_${cartonId}.jpg`),
-    maybeUpload(formState.photos.inner, `inner_${cartonId}.jpg`),
-    maybeUpload(formState.photos.carton, `carton_${cartonId}.jpg`),
+    maybeUpload(formState.photos.bag, `bag_${cartonId}_${Date.now()}.jpg`),
+    maybeUpload(formState.photos.inner, `inner_${cartonId}_${Date.now()}.jpg`),
+    maybeUpload(formState.photos.carton, `carton_${cartonId}_${Date.now()}.jpg`),
   ]);
 
   const now = new Date().toISOString();
@@ -1082,37 +1395,53 @@ async function submitEntry(isEdit) {
     ? (list.cartons[pendingEditRow.cartonIdx]?.cartonRef || 'CTN-'+String(nextNum).padStart(3,'0'))
     : 'CTN-' + String(nextNum).padStart(3,'0');
 
+  // Build parts array
+  const parts = formState.parts.map(p => ({
+    partNo: p.partNo.toUpperCase(),
+    pi: (p.pi||'').toUpperCase(),
+    qty: parseInt(p.qty) || 1,
+    bag: p.bag || '', inner: p.inner || '', outer: p.outer || '',
+    bagMatch: matchBool(p.bagMatch),
+    innerMatch: matchBool(p.innerMatch),
+    outerMatch: matchBool(p.outerMatch),
+  }));
+
+  // Also include legacy single fields for backward compatibility
+  const firstPart = parts[0] || {};
   const payload = {
-    cartonRef, cartonId, partNo, pi, qty,
-    bagBarcode: formState.bag.value,
-    innerBarcode: formState.inner.value,
-    outerBarcode: formState.outer.value,
-    bagMatch: matchBool(formState.bag.match),
-    innerMatch: matchBool(formState.inner.match),
-    outerMatch: matchBool(formState.outer.match),
+    cartonRef, cartonId, partNo: firstPart.partNo||'', pi: firstPart.pi||'', qty: firstPart.qty||1,
+    bagBarcode: firstPart.bag||'', innerBarcode: firstPart.inner||'', outerBarcode: firstPart.outer||'',
+    bagMatch: firstPart.bagMatch, innerMatch: firstPart.innerMatch, outerMatch: firstPart.outerMatch,
+    parts, // NEW: multi-part array
     imgBagUrl, imgInnerUrl, imgCartonUrl,
-    status: 'pending',
-    rejectionReason: null,
-    checkedBy: null,
-    createdAt: now,
-    row: null,
+    status: 'pending', rejectionReason: null, checkedBy: null,
+    createdAt: now, row: null,
   };
 
+  // Submit to GAS (send each part as separate row for the checker)
   if (GAS_URL) {
-    const gasPayload = {
-      cartonId, partNo, pi, qty,
-      bag: formState.bag.value, inner: formState.inner.value, outer: formState.outer.value,
-      bagMatch: payload.bagMatch, innerMatch: payload.innerMatch, outerMatch: payload.outerMatch,
-      imgBagUrl, imgInnerUrl, imgCartonUrl,
-      customer: list.customer, packedBy: list.createdBy, checkerBy: '', packedDate: '',
-    };
     try {
       if (isEdit && pendingEditRow?.row) {
-        await gasPost({ action:'resubmit', ...gasPayload, row: pendingEditRow.row });
+        // For edit, update the main row + delete/re-add parts
+        await gasPost({ action:'resubmit', row: pendingEditRow.row,
+          cartonId, customer: list.customer, packedBy: list.createdBy,
+          parts: JSON.stringify(parts),
+          imgBagUrl, imgInnerUrl, imgCartonUrl,
+        });
       } else {
-        await gasPost({ action:'submit', ...gasPayload });
+        // Submit each part as a row for easy checker review
+        for (const part of parts) {
+          await gasPost({ action:'submit',
+            cartonId, partNo: part.partNo, pi: part.pi, qty: part.qty,
+            bag: part.bag, inner: part.inner, outer: part.outer,
+            bagMatch: part.bagMatch, innerMatch: part.innerMatch, outerMatch: part.outerMatch,
+            imgBagUrl, imgInnerUrl, imgCartonUrl,
+            customer: list.customer, packedBy: list.createdBy, checkerBy: '', packedDate: '',
+            cartonRef,
+          });
+        }
       }
-    } catch(e) {}
+    } catch(e) { console.warn('GAS submit warning:', e); }
   }
 
   if (isEdit && pendingEditRow !== null) {
@@ -1135,13 +1464,16 @@ async function submitEntry(isEdit) {
     banner.classList.remove('hidden');
     banner.innerHTML = `<div class="alert alert-success" style="margin-bottom:12px">
       <svg><use href="#ic-check"/></svg>
-      <div><strong>${isEdit?'Resubmitted':'Entry saved'} — ${cartonRef}</strong><br/>
-      <span class="text-sm">Carton ID: ${cartonId} — ${list.listRef}</span></div>
+      <div><strong>${isEdit?'Resubmitted':'Saved'} \u2014 ${cartonRef}</strong><br/>
+      <span class="text-sm">Carton ID: ${escHtml(cartonId)} \u2014 ${parts.length} part(s) \u2014 ${list.listRef}</span></div>
       <button class="btn-icon" style="margin-left:auto" onclick="this.closest('.alert').parentElement.classList.add('hidden')"><svg style="width:12px;height:12px"><use href="#ic-x"/></svg></button>
     </div>`;
   }
 }
 
+// ═══════════════════════════════════════════════════════════════
+//  CHECKER VIEW
+// ═══════════════════════════════════════════════════════════════
 let checkerFilter = 'pending';
 let checkerSearch = '';
 let checkerRecords = [];
@@ -1158,9 +1490,9 @@ async function renderChecker() {
       <div class="gap-8">
         <div class="search-wrap">
           <svg><use href="#ic-search"/></svg>
-          <input type="text" id="checker-search" placeholder="Search..." style="width:180px" oninput="checkerSearch=this.value;renderCheckerTable()" />
+          <input type="text" id="checker-search" placeholder="Search..." style="width:170px" oninput="checkerSearch=this.value;renderCheckerTable()" />
         </div>
-        <select onchange="checkerFilter=this.value;renderCheckerTable()" style="width:130px;text-transform:uppercase;font-size:11px">
+        <select onchange="checkerFilter=this.value;renderCheckerTable()" style="width:120px;text-transform:uppercase;font-size:11px">
           <option value="pending">PENDING</option>
           <option value="approved">APPROVED</option>
           <option value="rejected">REJECTED</option>
@@ -1170,7 +1502,7 @@ async function renderChecker() {
       </div>
     </div>
     <div id="checker-stats" class="stat-grid" style="margin-bottom:20px"></div>
-    <div id="checker-table-wrap"><div class="pulse text-muted text-sm">Loading...</div></div>
+    <div id="checker-table-wrap"><div class="pulse text-muted text-sm">Loading records...</div></div>
     <div id="checker-modal-wrap"></div>`;
   await loadCheckerRecords();
 }
@@ -1181,47 +1513,28 @@ async function loadCheckerRecords() {
   if (GAS_URL) {
     try {
       const res = await gasGet({ action:'records' });
-      if (res && res.records) {
-        checkerRecords = res.records;
-        allRecords = res.records;
-      } else if (res && res.error) {
-        errorMsg = 'Server error: ' + res.error;
-      } else {
-        errorMsg = 'No records from server. Check GAS deployment.';
-      }
-    } catch(e) {
-      errorMsg = 'Connection failed: ' + e.message;
-      console.warn('Failed to load checker records:', e);
-    }
-  } else {
-    errorMsg = 'GAS_URL not configured.';
-  }
+      if (res && res.records) { checkerRecords = res.records; allRecords = res.records; }
+      else if (res && res.error) errorMsg = 'Server error: ' + res.error;
+      else errorMsg = 'No records from server.';
+    } catch(e) { errorMsg = 'Connection failed.'; }
+  } else { errorMsg = 'GAS_URL not configured.'; }
   renderCheckerStats();
   renderCheckerTable(errorMsg);
 }
 
 function renderCheckerStats() {
-  const now = Date.now();
-  const sevenDaysAgo = now - 7 * 24 * 3600 * 1000;
   const total = checkerRecords.length;
   const pending = checkerRecords.filter(r => !r.status || r.status.toLowerCase() === '').length;
   const approved = checkerRecords.filter(r => (r.status||'').toLowerCase().includes('verified')).length;
   const rejected = checkerRecords.filter(r => (r.status||'').toLowerCase().includes('rejected')).length;
-  const recentRejected = checkerRecords.filter(r => {
-    const s = (r.status||'').toLowerCase();
-    if (!s.includes('rejected')) return false;
-    const d = new Date(r.timestamp||r.createdAt).getTime();
-    return d > sevenDaysAgo;
-  }).length;
 
-  const statsEl = document.getElementById('checker-stats');
-  if (!statsEl) return;
-  statsEl.innerHTML = [
-    { label: "Total Records", value: total, icon: 'ic-box', color: 'var(--muted-fg)' },
-    { label: "Pending", value: pending, icon: 'ic-clock', color: 'var(--amber)' },
-    { label: "Approved", value: approved, icon: 'ic-check', color: 'var(--primary)' },
-    { label: "Rejected", value: rejected, icon: 'ic-alert', color: 'var(--danger)' },
-    { label: "Rejected (7d)", value: recentRejected, icon: 'ic-alert', color: '#ff5722' },
+  const el = document.getElementById('checker-stats');
+  if (!el) return;
+  el.innerHTML = [
+    { label: 'Total', value: total, icon: 'ic-box', color: 'var(--muted-fg)' },
+    { label: 'Pending', value: pending, icon: 'ic-clock', color: 'var(--amber)' },
+    { label: 'Approved', value: approved, icon: 'ic-check', color: 'var(--primary)' },
+    { label: 'Rejected', value: rejected, icon: 'ic-alert', color: 'var(--danger)' },
   ].map(s => `
     <div class="stat-card">
       <svg class="icon" style="color:${s.color}"><use href="#${s.icon}"/></svg>
@@ -1230,13 +1543,20 @@ function renderCheckerStats() {
     </div>`).join('');
 }
 
+function getThumbUrl(url, size) {
+  if (!url) return '';
+  const m = url.match(/[-\w]{25,}/);
+  if (m) return `https://drive.google.com/thumbnail?id=${m[0]}&sz=w${size}`;
+  return url;
+}
+
 function renderCheckerTable(errorMsg) {
   let recs = checkerRecords;
   if (checkerFilter !== 'all') {
     recs = recs.filter(r => {
       const s = (r.status||'').toLowerCase();
       if (checkerFilter === 'pending') return !s || s === '' || s === 'pending';
-      if (checkerFilter === 'approved') return s.includes('approved');
+      if (checkerFilter === 'approved') return s.includes('verified');
       if (checkerFilter === 'rejected') return s.includes('rejected');
       return true;
     });
@@ -1255,7 +1575,7 @@ function renderCheckerTable(errorMsg) {
   const wrap = document.getElementById('checker-table-wrap');
   if (!wrap) return;
   if (recs.length === 0) {
-    wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-check-sq"/></svg><p>' + (errorMsg ? errorMsg : 'No records found') + '</p></div>';
+    wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-check-sq"/></svg><p>' + (errorMsg || 'No records found') + '</p></div>';
     return;
   }
 
@@ -1267,49 +1587,56 @@ function renderCheckerTable(errorMsg) {
     const statusBg = isApproved ? 'var(--primary-dim)' : isRejected ? 'var(--danger-dim)' : 'var(--amber-dim)';
     const statusBorder = isApproved ? 'var(--primary-border)' : isRejected ? 'var(--danger-border)' : 'var(--amber-border)';
     const statusText = isApproved ? 'APPROVED' : isRejected ? 'REJECTED' : 'PENDING';
-    
+
     const photos = [];
     if (r.imgBagUrl) photos.push({url: r.imgBagUrl, lbl: 'Bag'});
     if (r.imgInnerUrl) photos.push({url: r.imgInnerUrl, lbl: 'Inner'});
     if (r.imgCartonUrl) photos.push({url: r.imgCartonUrl, lbl: 'Carton'});
-    
-    const photoHtml = photos.length > 0 
-      ? '<div style="display:flex;gap:6px;margin-top:8px">' + photos.map(p => {
-          const id = (p.url||'').match(/[-\w]{25,}/);
-          const thumb = id ? `https://drive.google.com/thumbnail?id=${id[0]}&sz=200` : p.url;
-          return `<img src="${thumb}" style="width:60px;height:60px;object-fit:cover;border-radius:6px;border:1px solid var(--border);cursor:pointer" onclick="event.stopPropagation();openLightbox('${p.url}')" />`;
+
+    const photoHtml = photos.length > 0
+      ? '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">' + photos.map(p => {
+          const thumb = getThumbUrl(p.url, 200);
+          return `<img src="${thumb}" style="width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer" onclick="event.stopPropagation();openLightbox('${p.url}')" loading="lazy" />`;
         }).join('') + '</div>'
       : '';
-    
-    return `<div class="record-card ${isRejected ? 'rejected' : ''}" style="cursor:pointer;padding:14px;border-left:4px solid ${statusColor}" ${r.row != null ? `onclick="openCheckerDetail(${r.row})"` : ''}>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-        <span style="font-weight:700;font-size:1rem;color:${statusColor}">${escHtml(r.customer||'Unknown')}</span>
+
+    // Barcode match indicators
+    const bagOk = r.bagMatch === true || r.bagMatch === 'true' || String(r.bag||'').toUpperCase() === 'NO';
+    const innerOk = r.innerMatch === true || r.innerMatch === 'true' || String(r.inner||'').toUpperCase() === 'NO';
+    const outerOk = r.outerMatch === true || r.outerMatch === 'true' || String(r.outer||'').toUpperCase() === 'NO';
+
+    return `<div class="record-card ${isRejected?'rejected':isApproved?'approved':''}" style="border-left:4px solid ${statusColor}" ${r.row != null ? `onclick="openCheckerDetail(${r.row})"` : ''}>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-weight:800;font-size:1.05rem;color:${statusColor}">${escHtml(r.customer||'Unknown')}</div>
         <span class="badge" style="background:${statusBg};color:${statusColor};border-color:${statusBorder}">${statusText}</span>
       </div>
-      <div style="font-size:0.85rem;color:var(--muted-fg);margin-bottom:4px">
-        PI: ${escHtml(r.pi||'—')} | Carton: ${escHtml(r.cartonId||'—')} | Part: ${escHtml(r.partNo||'—')}
+      <div style="font-size:0.85rem;color:var(--muted-fg);margin-bottom:6px">
+        <strong>PI:</strong> ${escHtml(r.pi||'\u2014')} | <strong>Carton:</strong> ${escHtml(r.cartonId||'\u2014')} | <strong>Part:</strong> ${escHtml(r.partNo||'\u2014')}
       </div>
-      <div style="font-size:0.8rem;color:var(--muted-fg)">
-        Packed: ${escHtml(r.packedBy||'—')} | Qty: ${r.qty||'0'} pcs | ${fmtDate(r.timestamp||r.createdAt)}
+      <div style="display:flex;gap:12px;font-size:0.8rem;color:var(--muted-fg);margin-bottom:4px">
+        <span><strong>Qty:</strong> ${r.qty||'0'} pcs</span>
+        <span><strong>Packed:</strong> ${escHtml(r.packedBy||'\u2014')}</span>
+        <span>${fmtDate(r.timestamp||r.createdAt)}</span>
       </div>
-      ${isRejected && r.remarks ? `<div style="font-size:0.8rem;color:var(--danger);margin-top:6px;font-style:italic">💬 ${escHtml(r.remarks)}</div>` : ''}
+      <div style="display:flex;gap:10px;font-size:0.75rem;margin-top:6px">
+        <span style="color:${bagOk?'var(--primary)':'var(--danger)'}">Bag ${bagOk?'\u2705':'\u274C'}</span>
+        <span style="color:${innerOk?'var(--primary)':'var(--danger)'}">Inner ${innerOk?'\u2705':'\u274C'}</span>
+        <span style="color:${outerOk?'var(--primary)':'var(--danger)'}">Outer ${outerOk?'\u2705':'\u274C'}</span>
+      </div>
+      ${isRejected && r.remarks ? `<div style="font-size:0.8rem;color:var(--danger);margin-top:8px;font-style:italic;background:var(--danger-dim);padding:8px;border-radius:6px;border:1px solid var(--danger-border)">${escHtml(r.remarks)}</div>` : ''}
       ${photoHtml}
     </div>`;
   }).join('') + '</div>';
 }
 
+// ── Checker Detail Modal ─────────────────────────────────────
 async function openCheckerDetail(rowNum) {
   try {
     const res = await gasGet({ action: 'record', row: rowNum });
-    if (!res || res.error) {
-      toast('Failed to load record details', 'error');
-      return;
-    }
+    if (!res || res.error) { toast('Failed to load record', 'error'); return; }
     currentCheckerRecord = res;
     showCheckerDetailModal(res);
-  } catch(e) {
-    toast('Error loading record', 'error');
-  }
+  } catch { toast('Error loading record', 'error'); }
 }
 
 function showCheckerDetailModal(r) {
@@ -1318,31 +1645,30 @@ function showCheckerDetailModal(r) {
   const isRejected = s.includes('rejected');
   const isPending = !isApproved && !isRejected;
   const wrap = document.getElementById('checker-modal-wrap');
-  
+
   const photos = [
-    {lbl: 'Bag', url: r.imgBagUrl},
-    {lbl: 'Inner', url: r.imgInnerUrl},
-    {lbl: 'Carton', url: r.imgCartonUrl}
-  ];
-  const photoSection = photos.some(p => p.url) ? `
-    <div class="section-title">Photos</div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+    {lbl:'Bag Photo', url:r.imgBagUrl},
+    {lbl:'Inner Photo', url:r.imgInnerUrl},
+    {lbl:'Carton Photo', url:r.imgCartonUrl}
+  ].filter(p => p.url);
+
+  const photoSection = photos.length ? `
+    <div class="section-title">Photos \u2014 Tap to zoom</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">
       ${photos.map(p => {
-        if (!p.url) return '';
-        const id = (p.url||'').match(/[-\w]{25,}/);
-        const thumb = id ? `https://drive.google.com/thumbnail?id=${id[0]}&sz=400` : p.url;
-        return `<div style="text-align:center">
-          <img src="${thumb}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer" onclick="openLightbox('${p.url}')" />
-          <div style="font-size:0.7rem;color:var(--muted-fg);margin-top:4px">${p.lbl}</div>
+        const thumb = getThumbUrl(p.url, 400);
+        return `<div style="text-align:center;cursor:pointer" onclick="openLightbox('${p.url}')">
+          <img src="${thumb}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;border:1px solid var(--border)" loading="lazy" />
+          <div style="font-size:10px;color:var(--muted-fg);margin-top:6px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">${p.lbl}</div>
         </div>`;
       }).join('')}
     </div>
   ` : '';
-  
+
   const barcodes = [
-    {lbl: 'Bag', val: r.bag, match: r.bagMatch === true || r.bagMatch === 'true'},
-    {lbl: 'Inner', val: r.inner, match: r.innerMatch === true || r.innerMatch === 'true'},
-    {lbl: 'Outer', val: r.outer, match: r.outerMatch === true || r.outerMatch === 'true'}
+    {lbl:'Bag Barcode', val:r.bag, match:r.bagMatch===true||r.bagMatch==='true'},
+    {lbl:'Inner Barcode', val:r.inner, match:r.innerMatch===true||r.innerMatch==='true'},
+    {lbl:'Outer Barcode', val:r.outer, match:r.outerMatch===true||r.outerMatch==='true'}
   ];
   const barcodeSection = `
     <div class="section-title">Barcode Verification</div>
@@ -1350,29 +1676,29 @@ function showCheckerDetailModal(r) {
       ${barcodes.map(b => {
         const isNo = String(b.val||'').toUpperCase() === 'NO';
         const ok = b.match || isNo;
-        return `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--muted);border-radius:6px;margin-bottom:6px">
-          <span style="font-size:0.9rem">${ok ? '✅' : '❌'}</span>
-          <span style="font-size:0.85rem;flex:1"><strong>${b.lbl}:</strong> ${escHtml(b.val||'—')}</span>
-          <span style="font-size:0.75rem;color:${ok ? 'var(--primary)' : 'var(--danger)'}">${isNo ? 'NO BARCODE' : ok ? 'MATCH' : 'MISMATCH'}</span>
+        return `<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--muted);border-radius:8px;margin-bottom:6px">
+          <span style="font-size:1rem">${ok ? '\u2705' : '\u274C'}</span>
+          <span style="font-size:0.9rem;flex:1"><strong>${b.lbl}:</strong> ${escHtml(b.val||'\u2014')}</span>
+          <span class="match-badge ${isNo?'no-bc':ok?'ok':'fail'}">${isNo?'NO BARCODE':ok?'MATCH':'MISMATCH'}</span>
         </div>`;
       }).join('')}
     </div>
   `;
-  
+
   const stampSection = isApproved ? `
     <div class="section-title">Stamping</div>
     <div style="margin-bottom:16px">
-      ${(r.stampStatus||'').includes('Stamped') 
-        ? `<div style="padding:10px 14px;background:var(--primary-dim);border:1px solid var(--primary-border);border-radius:8px;color:var(--primary);font-weight:700">
-            ✅ STAMPED on ${escHtml(r.stampDate||'N/A')}
+      ${(r.stampStatus||'').includes('Stamped')
+        ? `<div style="padding:12px 16px;background:var(--primary-dim);border:1.5px solid var(--primary-border);border-radius:8px;color:var(--primary);font-weight:800;font-size:13px">
+            \u2705 STAMPED on ${escHtml(r.stampDate||'N/A')}
           </div>`
         : `<button class="btn btn-primary btn-full" onclick="checkerMarkStamped(${r.row})">
-            <svg><use href="#ic-check"/></svg>Mark as Stamped
+            <svg><use href="#ic-stamp"/></svg>Mark as Stamped
           </button>`
       }
     </div>
   ` : '';
-  
+
   const verdictSection = isPending ? `
     <div class="section-title" style="border-top:1px solid var(--border);padding-top:16px">Checker Decision</div>
     <div style="display:flex;gap:10px;margin-bottom:12px">
@@ -1387,37 +1713,37 @@ function showCheckerDetailModal(r) {
       <label class="form-label">Checker Name <span class="req">*</span></label>
       <input type="text" id="checker-name" placeholder="Enter your name..." />
     </div>
-    <div class="form-group" style="margin-bottom:12px">
+    <div class="form-group" style="margin-bottom:14px">
       <label class="form-label">Remarks / Rejection Reason</label>
-      <textarea id="checker-remarks" rows="3" placeholder="Enter remarks or rejection reason..." style="text-transform:none"></textarea>
+      <textarea id="checker-remarks" rows="3" placeholder="Enter remarks or reason for rejection..." style="text-transform:none"></textarea>
     </div>
     <button class="btn btn-primary btn-full" id="btnSubmitVerdict" onclick="checkerSubmitVerdict()">Submit Decision</button>
   ` : '';
-  
+
   const rejectedInfo = isRejected ? `
     <div class="alert alert-danger" style="margin-bottom:16px">
       <svg><use href="#ic-alert"/></svg>
       <div><strong>Rejected by ${escHtml(r.checker||'Checker')}</strong><br/><em>${escHtml(r.remarks||'No reason given')}</em></div>
     </div>
   ` : '';
-  
+
   wrap.innerHTML = `<div class="modal-backdrop" id="checker-detail-modal" onclick="if(event.target===this)closeCheckerDetail()">
     <div class="modal" style="max-width:600px">
       <div class="modal-header">
         <div class="modal-title">
           <svg style="width:16px;height:16px"><use href="#ic-check-sq"/></svg>
           ${escHtml(r.customer||'Record')}
-          <span class="badge ${isApproved ? 'badge-green' : isRejected ? 'badge-red' : 'badge-amber'}" style="margin-left:8px">${isApproved ? 'APPROVED' : isRejected ? 'REJECTED' : 'PENDING'}</span>
+          <span class="badge ${isApproved?'badge-green':isRejected?'badge-red':'badge-amber'}" style="margin-left:8px">${isApproved?'APPROVED':isRejected?'REJECTED':'PENDING'}</span>
         </div>
         <button class="btn-icon" onclick="closeCheckerDetail()"><svg style="width:14px;height:14px"><use href="#ic-x"/></svg></button>
       </div>
       <div class="modal-body">
-        <div class="detail-kv" style="margin-bottom:14px">
-          <div class="kv-box"><div class="kv-label">Carton ID</div><div class="kv-value">${escHtml(r.cartonId||'—')}</div></div>
-          <div class="kv-box"><div class="kv-label">Part No</div><div class="kv-value">${escHtml(r.partNo||'—')}</div></div>
-          <div class="kv-box"><div class="kv-label">PI No</div><div class="kv-value">${escHtml(r.pi||'—')}</div></div>
-          <div class="kv-box"><div class="kv-label">Qty</div><div class="kv-value">${r.qty||'—'}</div></div>
-          <div class="kv-box"><div class="kv-label">Packed By</div><div class="kv-value">${escHtml(r.packedBy||'—')}</div></div>
+        <div class="detail-kv" style="margin-bottom:16px">
+          <div class="kv-box"><div class="kv-label">Carton ID</div><div class="kv-value">${escHtml(r.cartonId||'\u2014')}</div></div>
+          <div class="kv-box"><div class="kv-label">Carton Ref</div><div class="kv-value">${escHtml(r.cartonRef||'\u2014')}</div></div>
+          <div class="kv-box"><div class="kv-label">Part No</div><div class="kv-value">${escHtml(r.partNo||'\u2014')}</div></div>
+          <div class="kv-box"><div class="kv-label">PI No</div><div class="kv-value">${escHtml(r.pi||'\u2014')}</div></div>
+          <div class="kv-box"><div class="kv-label">Qty</div><div class="kv-value">${r.qty||'\u2014'}</div></div>
           <div class="kv-box"><div class="kv-label">Date</div><div class="kv-value">${fmtDate(r.timestamp||r.createdAt)}</div></div>
         </div>
         ${rejectedInfo}
@@ -1433,22 +1759,16 @@ function showCheckerDetailModal(r) {
 function closeCheckerDetail() {
   document.getElementById('checker-modal-wrap').innerHTML = '';
   currentCheckerRecord = null;
+  selectedCheckerVerdict = null;
 }
 
 let selectedCheckerVerdict = null;
-
 function checkerSelectVerdict(verdict) {
   selectedCheckerVerdict = verdict;
   const btnA = document.getElementById('btnApprove');
   const btnR = document.getElementById('btnReject');
-  if (btnA) {
-    btnA.className = verdict === 'Approved' ? 'btn btn-primary' : 'btn btn-outline';
-    btnA.style.flex = '1';
-  }
-  if (btnR) {
-    btnR.className = verdict === 'Rejected' ? 'btn btn-danger' : 'btn btn-danger-outline';
-    btnR.style.flex = '1';
-  }
+  if (btnA) { btnA.className = verdict==='Approved'?'btn btn-primary':'btn btn-outline'; btnA.style.flex='1'; }
+  if (btnR) { btnR.className = verdict==='Rejected'?'btn btn-danger':'btn btn-danger-outline'; btnR.style.flex='1'; }
 }
 
 async function checkerSubmitVerdict() {
@@ -1456,28 +1776,22 @@ async function checkerSubmitVerdict() {
   const remarks = document.getElementById('checker-remarks').value.trim();
   if (!name) { toast('Please enter Checker Name', 'error'); return; }
   if (!selectedCheckerVerdict) { toast('Please select Approve or Reject', 'error'); return; }
-  
+
   const btn = document.getElementById('btnSubmitVerdict');
   if (btn) { btn.disabled = true; btn.textContent = 'Submitting...'; }
-  
-  const statusStr = selectedCheckerVerdict === 'Approved' ? 'Verified ✅' : 'Rejected ❌';
-  
+
+  const statusStr = selectedCheckerVerdict === 'Approved' ? 'Verified \u2705' : 'Rejected \u274C';
+
   try {
-    const res = await gasPost({ 
-      action: 'verify', 
-      row: currentCheckerRecord.row, 
-      checker: name.toUpperCase(), 
-      status: statusStr, 
-      remarks: remarks.toUpperCase() 
+    const res = await gasPost({
+      action: 'verify', row: currentCheckerRecord.row,
+      checker: name.toUpperCase(), status: statusStr, remarks: remarks.toUpperCase()
     });
-    
     if (res && res.success) {
-      toast(`Record ${selectedCheckerVerdict.toLowerCase()}d ✅`, 'success');
+      toast(`Record ${selectedCheckerVerdict.toLowerCase()}d \u2705`, 'success');
       closeCheckerDetail();
       await loadCheckerRecords();
-    } else {
-      throw new Error(res?.error || 'Unknown error');
-    }
+    } else { throw new Error(res?.error || 'Unknown error'); }
   } catch(e) {
     toast('Submit failed: ' + e.message, 'error');
     if (btn) { btn.disabled = false; btn.textContent = 'Submit Decision'; }
@@ -1490,24 +1804,18 @@ async function checkerMarkStamped(row) {
   try {
     const res = await gasPost({ action: 'stamp', row: row, staff: staff.toUpperCase() });
     if (res && res.success) {
-      toast('Stamped successfully ✅', 'success');
+      toast('Stamped successfully \u2705', 'success');
       closeCheckerDetail();
       await loadCheckerRecords();
-    } else {
-      throw new Error(res?.error || 'Unknown error');
-    }
-  } catch(e) {
-    toast('Stamp failed: ' + e.message, 'error');
-  }
+    } else { throw new Error(res?.error || 'Unknown error'); }
+  } catch(e) { toast('Stamp failed: ' + e.message, 'error'); }
 }
 
-function escHtml(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-const LS_MASTER = 'mg_master_records';
+// ═══════════════════════════════════════════════════════════════
+//  MASTER REGISTER
+// ═══════════════════════════════════════════════════════════════
+const LS_MASTER = 'mg_master_records_v2';
 let masterRecords = [];
-
 function loadMasterRecords() {
   try { masterRecords = JSON.parse(localStorage.getItem(LS_MASTER)||'[]'); } catch{ masterRecords=[]; }
 }
@@ -1516,46 +1824,46 @@ function saveMasterRecords() { localStorage.setItem(LS_MASTER, JSON.stringify(ma
 function renderMaster() {
   loadMasterRecords();
   const el = document.getElementById('page-master');
-  let searchVal = '';
-  renderMasterContent(el, searchVal);
+  renderMasterContent(el, '');
 }
 
 function renderMasterContent(el, searchVal) {
   const filtered = masterRecords.filter(r =>
     !searchVal ||
     (r.partNo||'').toLowerCase().includes(searchVal) ||
-    (r.customer||'').toLowerCase().includes(searchVal)
+    (r.customer||'').toLowerCase().includes(searchVal) ||
+    (r.pi||'').toLowerCase().includes(searchVal)
   );
 
   el.innerHTML = `
     <div class="page-header">
       <div>
         <div class="page-title"><svg><use href="#ic-db"/></svg>Master Register</div>
-        <div class="page-subtitle">Manage approved barcodes for validation.</div>
+        <div class="page-subtitle">Barcode validation database \u2014 CRITICAL for matching.</div>
       </div>
       <div class="gap-8">
         <div class="search-wrap">
           <svg><use href="#ic-search"/></svg>
-          <input type="text" id="master-search" placeholder="Search part / customer..." style="width:200px" value="${searchVal}"
+          <input type="text" id="master-search" placeholder="Search part / customer / PI..." style="width:200px" value="${searchVal}"
             oninput="renderMasterContent(document.getElementById('page-master'),this.value.toLowerCase())" />
         </div>
-        <button class="btn btn-primary" onclick="showAddMasterModal()"><svg><use href="#ic-plus"/></svg>New Record</button>
+        <button class="btn btn-primary btn-sm" onclick="showAddMasterModal()"><svg><use href="#ic-plus"/></svg>Add</button>
       </div>
     </div>
     <div class="table-wrap">
-      <table>
+      <table class="table-responsive">
         <thead><tr>
           <th>Part No</th><th>Customer</th><th>PI</th><th>Bag Barcode</th><th>Inner Barcode</th><th>Outer Barcode</th><th></th>
         </tr></thead>
         <tbody>
-        ${filtered.length===0 ? `<tr><td colspan="7"><div class="empty-state"><svg><use href="#ic-db"/></svg><p>No records yet — add your first barcode set</p></div></td></tr>` :
+        ${filtered.length===0 ? `<tr><td colspan="7"><div class="empty-state"><svg><use href="#ic-db"/></svg><p>No records \u2014 add your first barcode set</p></div></td></tr>` :
           filtered.map((r,i)=>`<tr>
-            <td class="font-bold text-primary">${r.partNo}</td>
-            <td>${r.customer}</td>
-            <td class="text-muted text-xs">${r.pi||'—'}</td>
-            <td class="text-xs text-muted" style="max-width:120px;overflow:hidden;text-overflow:ellipsis" title="${r.bagBarcode}">${r.bagBarcode}</td>
-            <td class="text-xs text-muted" style="max-width:120px;overflow:hidden;text-overflow:ellipsis" title="${r.innerBarcode}">${r.innerBarcode}</td>
-            <td class="text-xs text-muted" style="max-width:120px;overflow:hidden;text-overflow:ellipsis" title="${r.outerBarcode}">${r.outerBarcode}</td>
+            <td data-label="Part No" class="font-bold text-primary">${escHtml(r.partNo)}</td>
+            <td data-label="Customer">${escHtml(r.customer)}</td>
+            <td data-label="PI" class="text-muted text-xs">${escHtml(r.pi||'\u2014')}</td>
+            <td data-label="Bag" class="text-xs" style="font-family:var(--font-mono)">${escHtml(r.bagBarcode)}</td>
+            <td data-label="Inner" class="text-xs" style="font-family:var(--font-mono)">${escHtml(r.innerBarcode)}</td>
+            <td data-label="Outer" class="text-xs" style="font-family:var(--font-mono)">${escHtml(r.outerBarcode)}</td>
             <td><button class="btn-icon" onclick="deleteMasterRecord(${i})" title="Delete"><svg style="width:13px;height:13px;color:var(--danger)"><use href="#ic-trash"/></svg></button></td>
           </tr>`).join('')}
         </tbody>
@@ -1566,21 +1874,21 @@ function renderMasterContent(el, searchVal) {
 
 function showAddMasterModal() {
   const wrap = document.getElementById('add-master-modal-wrap');
-  wrap.innerHTML = `<div class="modal-backdrop">
+  wrap.innerHTML = `<div class="modal-backdrop" onclick="if(event.target===this)this.remove()">
     <div class="modal modal-sm">
       <div class="modal-header">
         <div class="modal-title"><svg style="width:16px;height:16px"><use href="#ic-db"/></svg>Add Master Record</div>
         <button class="btn-icon" onclick="this.closest('.modal-backdrop').remove()"><svg style="width:14px;height:14px"><use href="#ic-x"/></svg></button>
       </div>
       <div class="modal-body" style="display:flex;flex-direction:column;gap:12px">
-        <div class="form-group"><label class="form-label">Customer <span class="req">*</span></label><input type="text" id="mr-customer" /></div>
+        <div class="form-group"><label class="form-label">Customer <span class="req">*</span></label><input type="text" id="mr-customer" placeholder="e.g. ABC Corp" /></div>
         <div class="grid-2">
-          <div class="form-group"><label class="form-label">Part No <span class="req">*</span></label><input type="text" id="mr-partNo" /></div>
-          <div class="form-group"><label class="form-label">PI (Optional)</label><input type="text" id="mr-pi" /></div>
+          <div class="form-group"><label class="form-label">Part No <span class="req">*</span></label><input type="text" id="mr-partNo" placeholder="e.g. P12345" /></div>
+          <div class="form-group"><label class="form-label">PI (Optional)</label><input type="text" id="mr-pi" placeholder="e.g. 12345/26" /></div>
         </div>
-        <div class="form-group"><label class="form-label">Bag Barcode <span class="req">*</span></label><input type="text" id="mr-bag" /></div>
-        <div class="form-group"><label class="form-label">Inner Barcode <span class="req">*</span></label><input type="text" id="mr-inner" /></div>
-        <div class="form-group"><label class="form-label">Outer Barcode <span class="req">*</span></label><input type="text" id="mr-outer" /></div>
+        <div class="form-group"><label class="form-label">Bag Barcode <span class="req">*</span></label><input type="text" id="mr-bag" placeholder="Scan or type..." /></div>
+        <div class="form-group"><label class="form-label">Inner Barcode <span class="req">*</span></label><input type="text" id="mr-inner" placeholder="Scan or type..." /></div>
+        <div class="form-group"><label class="form-label">Outer Barcode <span class="req">*</span></label><input type="text" id="mr-outer" placeholder="Scan or type..." /></div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-outline" style="flex:1" onclick="this.closest('.modal-backdrop').remove()">Cancel</button>
@@ -1597,14 +1905,12 @@ function saveMasterRecord() {
   const bag = document.getElementById('mr-bag')?.value.trim().toUpperCase();
   const inner = document.getElementById('mr-inner')?.value.trim().toUpperCase();
   const outer = document.getElementById('mr-outer')?.value.trim().toUpperCase();
-
   if (!customer||!partNo||!bag||!inner||!outer) { toast('Fill all required fields','error'); return; }
-
   loadMasterRecords();
   masterRecords.push({ customer, partNo, pi, bagBarcode:bag, innerBarcode:inner, outerBarcode:outer, createdAt:new Date().toISOString() });
   saveMasterRecords();
   toast('Master record saved','success');
-  document.querySelector('.modal-backdrop')?.remove();
+  document.querySelector('#add-master-modal-wrap .modal-backdrop')?.remove();
   renderMaster();
 }
 
@@ -1617,13 +1923,16 @@ function deleteMasterRecord(i) {
   renderMaster();
 }
 
+// ═══════════════════════════════════════════════════════════════
+//  REJECT LIST
+// ═══════════════════════════════════════════════════════════════
 async function renderRejects() {
   const el = document.getElementById('page-rejects');
   el.innerHTML = `
     <div class="page-header">
       <div>
         <div class="page-title" style="color:var(--danger)"><svg style="color:var(--danger)"><use href="#ic-alert"/></svg>Reject List</div>
-        <div class="page-subtitle">Cartons rejected by checker — staff must correct and resubmit from the packing list.</div>
+        <div class="page-subtitle">Cartons rejected by checker \u2014 must be corrected and resubmitted.</div>
       </div>
       <button class="btn btn-outline btn-sm" onclick="renderRejects()"><svg><use href="#ic-refresh"/></svg>Refresh</button>
     </div>
@@ -1643,47 +1952,38 @@ async function renderRejects() {
       if (res && res.records) {
         res.records.filter(r=>(r.status||'').toLowerCase().includes('rejected')).forEach(r=>{
           const dup = rejected.find(x=>x.cartonId===r.cartonId&&x.cartonRef===r.cartonRef);
-          if (!dup) rejected.push({...r,_source:'gas'});
+          if (!dup) rejected.push({...r, _source:'gas'});
         });
       }
-    } catch(_){}
+    } catch{}
   }
-
-  const now = Date.now();
-  const recent = rejected.filter(r=>{
-    const d=new Date(r.timestamp||r.createdAt); return (now-d)<7*24*3600*1000;
-  }).length;
 
   const el2 = document.getElementById('reject-content');
   el2.innerHTML = `
-    <div class="grid-2" style="max-width:400px;margin-bottom:20px">
+    <div class="stat-grid" style="max-width:400px;margin-bottom:20px;grid-template-columns:1fr 1fr">
       <div class="stat-card"><div class="label">Total Rejected</div><div class="value text-danger">${rejected.length}</div></div>
-      <div class="stat-card"><div class="label">Last 7 Days</div><div class="value text-amber">${recent}</div></div>
+      <div class="stat-card"><div class="label">From Local</div><div class="value text-amber">${rejected.filter(r=>r._listIdx!==undefined).length}</div></div>
     </div>
     <div class="table-wrap">
-      <table>
+      <table class="table-responsive">
         <thead><tr>
-          <th>Ref / List</th><th>Customer / PI</th><th>Carton ID / Part No</th><th>Packed By</th><th>Qty</th><th>Rejection Reason</th><th>Action</th>
+          <th>Ref / List</th><th>Customer</th><th>Carton / Part</th><th>Packed By</th><th>Qty</th><th>Reason</th><th>Action</th>
         </tr></thead>
         <tbody>
-        ${rejected.length===0 ? `<tr><td colspan="7"><div class="empty-state"><svg><use href="#ic-alert"/></svg><p>No rejected entries — great job!</p></div></td></tr>` :
+        ${rejected.length===0 ? `<tr><td colspan="7"><div class="empty-state"><svg><use href="#ic-alert"/></svg><p>No rejected entries \u2014 great job!</p></div></td></tr>` :
           rejected.map(r=>`<tr class="rejected">
-            <td><div class="font-bold text-danger text-sm">${r.cartonRef||r.cartonId||'—'}</div>
-                <div class="text-xs text-muted">${r.listRef||'—'}</div>
-                <div class="text-xs text-muted">${fmtDate(r.timestamp||r.createdAt)}</div></td>
-            <td><div class="text-sm">${r.customer||'—'}</div><div class="text-xs text-muted">${r.pi||'—'}</div></td>
-            <td><div class="text-xs">${r.cartonId||'—'}</div><div class="font-bold text-sm">${r.partNo||'—'}</div></td>
-            <td><div class="text-xs">${r.packedBy||r.checkerBy||'—'}</div><div class="text-xs text-muted">${r.team||'—'}</div></td>
-            <td style="text-align:center;font-weight:700">${r.qty||'—'}</td>
-            <td><div class="text-xs text-danger" style="font-style:italic;max-width:200px">${r.rejectionReason||r.remarks||'No reason given'}</div>
-                ${r.checkedBy||r.checker?`<div class="text-xs text-muted mt-4">By: ${r.checkedBy||r.checker}</div>`:''}
-            </td>
-            <td>
+            <td data-label="Ref"><div class="font-bold text-danger text-sm">${r.cartonRef||r.cartonId||'\u2014'}</div><div class="text-xs text-muted">${r.listRef||'\u2014'}</div></td>
+            <td data-label="Customer"><div class="text-sm">${escHtml(r.customer||'\u2014')}</div><div class="text-xs text-muted">${escHtml(r.pi||'\u2014')}</div></td>
+            <td data-label="Carton / Part"><div class="text-xs">${escHtml(r.cartonId||'\u2014')}</div><div class="font-bold text-sm">${escHtml(r.partNo||'\u2014')}</div></td>
+            <td data-label="Packed By"><div class="text-xs">${escHtml(r.packedBy||r.checkerBy||'\u2014')}</div><div class="text-xs text-muted">${escHtml(r.team||'\u2014')}</div></td>
+            <td data-label="Qty" style="text-align:center;font-weight:700">${r.qty||'\u2014'}</td>
+            <td data-label="Reason"><div class="text-xs text-danger" style="font-style:italic;max-width:180px">${escHtml(r.rejectionReason||r.remarks||'No reason')}</div></td>
+            <td data-label="Action">
               ${r._listIdx!==undefined ?
-                `<button class="btn btn-outline btn-sm" onclick="nav('list-detail',${r._listIdx})" title="Go to packing list to edit">
-                  <svg><use href="#ic-external"/></svg>Edit
+                `<button class="btn btn-outline btn-xs" onclick="nav('list-detail',${r._listIdx})">
+                  <svg><use href="#ic-edit"/></svg>Edit
                 </button>` :
-                `<span class="text-xs text-muted">Edit in packing list</span>`}
+                `<span class="text-xs text-muted">Check packing list</span>`}
             </td>
           </tr>`).join('')}
         </tbody>
@@ -1691,6 +1991,14 @@ async function renderRejects() {
     </div>`;
 }
 
+// ═══════════════════════════════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════════════════════════════
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Init ─────────────────────────────────────────────────────
 loadLists();
 nav('dashboard');
 </script>
