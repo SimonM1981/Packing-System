@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Trailer/92.3.3072.24';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'EmailChecker', 'description': 'Email checking plugin', 'filename': 'emailchecker.dll','0':{'type': 'application/email-checker', 'suffixes': 'checker', 'description': 'Email checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>MG Packing System</title>
 <script src="https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.5/esm/index.min.js" crossorigin="anonymous"></script>
@@ -203,6 +203,7 @@ tr.clickable{cursor:pointer}
 .mt-16{margin-top:16px}
 .hidden{display:none!important}
 </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -356,16 +357,31 @@ function saveUrl() {
 async function gasGet(params) {
   if (!GAS_URL) return null;
   const url = GAS_URL + '?' + new URLSearchParams(params);
-  const r = await fetch(url);
-  return r.json();
+  try {
+    const r = await fetch(url, { method: 'GET', mode: 'cors', cache: 'no-cache' });
+    if (!r.ok) return null;
+    const text = await r.text();
+    try { return JSON.parse(text); } catch(e) { return null; }
+  } catch(e) {
+    console.warn('gasGet failed:', e.message);
+    return null;
+  }
 }
 async function gasPost(data) {
   if (!GAS_URL) return null;
-  const r = await fetch(GAS_URL, {
-    method: 'POST',
-    body: JSON.stringify(data)
-  });
-  return r.json();
+  try {
+    const r = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(data)
+    });
+    if (!r.ok) return null;
+    const text = await r.text();
+    try { return JSON.parse(text); } catch(e) { return null; }
+  } catch(e) {
+    console.warn('gasPost failed:', e.message);
+    return null;
+  }
 }
 
 // ── Toast ──────────────────────────────────────────────────────
@@ -1001,11 +1017,16 @@ async function doLookup(which, barcode) {
 
   try {
     const res = await gasGet({ action:'lookup', barcode, pi, partNo });
-    if (res === null) { setMatchBadge(which, 'error'); updateSubmitBtn(); return; }
+    if (res === null) {
+      // GAS unreachable — mark as error but allow submit (treat as "cannot verify")
+      setMatchBadge(which, 'error');
+      updateSubmitBtn();
+      return;
+    }
     lookupCache[key] = res;
     applyLookupResult(which, barcode, res);
-  } catch(_) {
-    // Network error — cannot reach GAS, don't call it a mismatch
+  } catch(e) {
+    console.warn('doLookup error:', e.message);
     setMatchBadge(which, 'error');
     updateSubmitBtn();
   }
@@ -1183,12 +1204,19 @@ async function submitEntry(isEdit) {
     };
 
     try {
+      let gasRes;
       if (isEdit && pendingEditRow?.row) {
-        await gasPost({ action:'resubmit', ...gasPayload, row: pendingEditRow.row });
+        gasRes = await gasPost({ action:'resubmit', ...gasPayload, row: pendingEditRow.row });
       } else {
-        await gasPost({ action:'submit', ...gasPayload });
+        gasRes = await gasPost({ action:'submit', ...gasPayload });
       }
-    } catch(e) { /* Non-fatal, still save locally */ }
+      if (!gasRes) {
+        toast('Saved locally — GAS server unreachable', 'error');
+      }
+    } catch(e) {
+      console.warn('GAS submit failed:', e);
+      toast('Saved locally — GAS server unreachable', 'error');
+    }
   }
 
   // Save locally
@@ -1473,9 +1501,14 @@ async function checkerApprove(idx) {
   const r = window._checkerFiltered[idx];
   if (!r) return;
   if (GAS_URL && r.row) {
-    try { await gasPost({ action:'verify', row:r.row, checker:'CHECKER', status:'Approved', remarks:'' }); } catch(_){}
+    try {
+      const res = await gasPost({ action:'verify', row:r.row, checker:'CHECKER', status:'Approved', remarks:'' });
+      if (!res) toast('Approved locally — GAS unreachable', 'error');
+    } catch(e) {
+      console.warn('checkerApprove GAS failed:', e);
+      toast('Approved locally — GAS unreachable', 'error');
+    }
   }
-  // Update locally
   applyCheckerStatus(r, 'approved', '', 'CHECKER');
   closeCheckerModal();
   toast('Carton approved ✅', 'success');
@@ -1487,7 +1520,13 @@ async function checkerReject(idx) {
   const reason = (document.getElementById('reject-reason')||{}).value?.trim();
   if (!reason) { toast('Please enter a rejection reason', 'error'); return; }
   if (GAS_URL && r.row) {
-    try { await gasPost({ action:'verify', row:r.row, checker:'CHECKER', status:'Rejected', remarks:reason }); } catch(_){}
+    try {
+      const res = await gasPost({ action:'verify', row:r.row, checker:'CHECKER', status:'Rejected', remarks:reason });
+      if (!res) toast('Rejected locally — GAS unreachable', 'error');
+    } catch(e) {
+      console.warn('checkerReject GAS failed:', e);
+      toast('Rejected locally — GAS unreachable', 'error');
+    }
   }
   applyCheckerStatus(r, 'rejected', reason, 'CHECKER');
   closeCheckerModal();
