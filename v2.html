@@ -1,412 +1,1645 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Carton Tracker</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 15px; }
-        .container { max-width: 900px; margin: 0 auto; }
-        .card { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 25px; margin-bottom: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); }
-        h1 { font-size: 28px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; text-align: center; }
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; font-size: 13px; font-weight: 700; color: #555; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .input-group input { width: 100%; padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 16px; outline: none; transition: all 0.3s; background: #fafafa; }
-        .input-group input:focus { border-color: #667eea; background: #fff; box-shadow: 0 0 0 4px rgba(102,126,234,0.1); }
-        .range-row { display: flex; gap: 12px; align-items: flex-end; }
-        .range-row .input-group { flex: 1; margin-bottom: 0; }
-        .range-sep { padding-bottom: 14px; color: #888; font-weight: bold; font-size: 18px; }
-        .btn { width: 100%; padding: 16px; border: none; border-radius: 14px; font-size: 17px; font-weight: 700; cursor: pointer; transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; box-shadow: 0 8px 25px rgba(102,126,234,0.4); }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 35px rgba(102,126,234,0.5); }
-        .btn-success { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; box-shadow: 0 8px 25px rgba(17,153,142,0.4); }
-        .btn-danger { background: linear-gradient(135deg, #eb3349, #f45c43); color: white; box-shadow: 0 8px 25px rgba(235,51,73,0.4); }
-        .btn-warning { background: linear-gradient(135deg, #f093fb, #f5576c); color: white; }
-        .btn-info { background: linear-gradient(135deg, #4facfe, #00f2fe); color: white; box-shadow: 0 8px 25px rgba(79,172,254,0.4); }
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
-        .stat-box { background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 16px; padding: 20px; text-align: center; color: white; box-shadow: 0 8px 25px rgba(102,126,234,0.3); }
-        .stat-box.pending { background: linear-gradient(135deg, #eb3349, #f45c43); box-shadow: 0 8px 25px rgba(235,51,73,0.3); }
-        .stat-box.progress { background: linear-gradient(135deg, #11998e, #38ef7d); box-shadow: 0 8px 25px rgba(17,153,142,0.3); }
-        .stat-value { font-size: 32px; font-weight: 800; margin-bottom: 4px; }
-        .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; }
-        .progress-outer { background: #e0e0e0; border-radius: 10px; height: 10px; margin-bottom: 20px; overflow: hidden; }
-        .progress-inner { height: 100%; background: linear-gradient(90deg, #11998e, #38ef7d); border-radius: 10px; transition: width 0.5s ease; box-shadow: 0 0 10px rgba(17,153,142,0.3); }
-        .cartons-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); gap: 10px; }
-        .carton { background: #fff; border: 3px solid #ff6b6b; border-radius: 16px; padding: 18px 6px; text-align: center; cursor: pointer; transition: all 0.3s; user-select: none; -webkit-tap-highlight-color: transparent; box-shadow: 0 4px 15px rgba(255,107,107,0.2); }
-        .carton:active { transform: scale(0.92); }
-        .carton.checked { background: linear-gradient(135deg, #11998e, #38ef7d); border-color: #11998e; color: white; box-shadow: 0 4px 20px rgba(17,153,142,0.4); }
-        .carton-number { font-size: 15px; font-weight: 800; display: block; }
-        .carton-status { font-size: 9px; margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8; }
-        .carton.checked .carton-status { opacity: 1; }
-        .carton-hint { font-size: 8px; margin-top: 2px; opacity: 0.5; font-style: italic; }
-        .carton.checked .carton-hint { display: none; }
-        .controls { display: flex; gap: 10px; margin-bottom: 20px; }
-        .controls .btn { flex: 1; margin-top: 0; font-size: 13px; padding: 12px; }
-        .info-bar { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
-        .info-pill { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-        .job-card { background: #f8f9fa; border: 2px solid #e0e0e0; border-radius: 14px; padding: 16px; margin-bottom: 10px; transition: all 0.3s; position: relative; }
-        .job-card:hover { border-color: #667eea; background: #fff; transform: translateX(5px); box-shadow: 0 4px 15px rgba(102,126,234,0.2); }
-        .job-title { font-weight: 700; color: #333; font-size: 15px; }
-        .job-meta { color: #888; font-size: 12px; margin-top: 4px; }
-        .job-actions { display: flex; gap: 8px; margin-top: 10px; }
-        .job-actions .btn { margin-top: 0; font-size: 11px; padding: 8px; border-radius: 8px; }
-        .sync-badge { position: fixed; top: 15px; right: 15px; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; color: white; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .sync-badge.online { background: linear-gradient(135deg, #11998e, #38ef7d); }
-        .sync-badge.offline { background: linear-gradient(135deg, #eb3349, #f45c43); }
-        .sync-badge.syncing { background: linear-gradient(135deg, #f093fb, #f5576c); animation: pulse 1s infinite; }
-        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
-        .back-btn { background: #666; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; margin-bottom: 15px; }
-        .hidden { display: none !important; }
-        .empty-state { text-align: center; padding: 40px; color: #888; }
-        .loading-dots { display: inline-flex; gap: 4px; }
-        .loading-dots span { width: 8px; height: 8px; background: #667eea; border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
-        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
-        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes bounce { 0%,80%,100% { transform: scale(0); } 40% { transform: scale(1); } }
-        .warning-box { background: #fff3cd; border: 2px solid #ffc107; border-radius: 10px; padding: 12px; margin-bottom: 15px; color: #856404; font-size: 13px; }
-        .warning-box strong { display: block; margin-bottom: 4px; font-size: 14px; }
-        .danger-box { background: #f8d7da; border: 2px solid #f5c6cb; border-radius: 10px; padding: 12px; margin-bottom: 15px; color: #721c24; font-size: 13px; }
-        .danger-box strong { display: block; margin-bottom: 4px; font-size: 14px; }
-        @media (max-width: 500px) { .cartons-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 8px; } .carton { padding: 14px 4px; } .carton-number { font-size: 13px; } .stats-grid { gap: 10px; } .stat-value { font-size: 24px; } .job-actions { flex-direction: column; } }
-    </style>
-<base target="_blank">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MG Packing System</title>
+<script src="https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.5/esm/index.min.js" crossorigin="anonymous"></script>
+<style>
+/* ── Reset & Base ─────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d0d;--card:#141414;--border:#272727;--muted:#1e1e1e;
+  --text:#e8e8e8;--muted-fg:#666;--primary:#22c55e;--primary-dim:rgba(34,197,94,.12);
+  --primary-border:rgba(34,197,94,.35);--danger:#ef4444;--danger-dim:rgba(239,68,68,.12);
+  --danger-border:rgba(239,68,68,.35);--amber:#f59e0b;--amber-dim:rgba(245,158,11,.12);
+  --amber-border:rgba(245,158,11,.35);--font:'JetBrains Mono',ui-monospace,monospace;
+  --radius:8px;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.5}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;font-family:var(--font)}
+input,textarea,select{font-family:var(--font)}
+img{max-width:100%;display:block}
+/* ── Layout ───────────────────────────────────────────────── */
+#app{display:flex;height:100vh;overflow:hidden}
+#sidebar{width:220px;flex-shrink:0;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+#main{flex:1;overflow-y:auto;padding:28px 32px}
+@media(max-width:700px){
+  #app{flex-direction:column}
+  #sidebar{width:100%;flex-direction:row;flex-wrap:wrap;height:auto;border-right:none;border-bottom:1px solid var(--border);padding:8px}
+  #main{padding:16px}
+  #sidebar .brand{display:none}
+  #sidebar .section-label{display:none}
+  #sidebar nav{display:flex;flex-wrap:wrap;gap:4px}
+}
+/* ── Sidebar ──────────────────────────────────────────────── */
+.brand{padding:20px 16px 12px;border-bottom:1px solid var(--border)}
+.brand-name{font-weight:700;font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--primary)}
+.brand-sub{font-size:10px;color:var(--muted-fg);letter-spacing:.15em;text-transform:uppercase;margin-top:2px}
+.section-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-fg);padding:16px 16px 4px}
+nav a{display:flex;align-items:center;gap:9px;padding:8px 14px;border-radius:6px;margin:2px 8px;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-fg);transition:background .15s,color .15s}
+nav a svg{width:15px;height:15px;flex-shrink:0}
+nav a:hover{background:var(--muted);color:var(--text)}
+nav a.active{background:var(--primary-dim);color:var(--primary)}
+nav a.danger{color:var(--danger)}
+nav a.danger.active{background:var(--danger-dim);color:var(--danger)}
+/* ── Page header ──────────────────────────────────────────── */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:24px;flex-wrap:wrap}
+.page-title{font-size:20px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:8px}
+.page-title svg{width:22px;height:22px;color:var(--primary);flex-shrink:0}
+.page-subtitle{font-size:12px;color:var(--muted-fg);margin-top:4px}
+/* ── Cards / Stat cards ───────────────────────────────────── */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:24px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;position:relative;overflow:hidden}
+.stat-card .icon{position:absolute;right:12px;top:12px;opacity:.08;width:48px;height:48px}
+.stat-card .label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted-fg)}
+.stat-card .value{font-size:34px;font-weight:700;margin-top:4px}
+/* ── Buttons ──────────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;border:none;transition:opacity .15s,background .15s;cursor:pointer}
+.btn svg{width:14px;height:14px;flex-shrink:0}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-primary{background:var(--primary);color:#000}
+.btn-primary:hover:not(:disabled){background:#16a34a}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn-outline:hover:not(:disabled){border-color:var(--primary);color:var(--primary)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-danger:hover:not(:disabled){background:#dc2626}
+.btn-danger-outline{background:transparent;color:var(--danger);border:1px solid var(--danger-border)}
+.btn-danger-outline:hover:not(:disabled){background:var(--danger-dim)}
+.btn-sm{padding:4px 10px;font-size:10px}
+.btn-icon{padding:6px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted-fg)}
+.btn-icon:hover{border-color:var(--primary);color:var(--primary)}
+.btn-full{width:100%;justify-content:center}
+/* ── Form elements ────────────────────────────────────────── */
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-fg)}
+.form-label .req{color:var(--primary)}
+input[type=text],input[type=number],textarea,select{
+  width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);
+  padding:7px 10px;border-radius:6px;font-size:13px;outline:none;transition:border-color .15s;
+  font-family:var(--font);text-transform:uppercase
+}
+textarea{text-transform:none}
+input:focus,textarea:focus,select:focus{border-color:var(--primary)}
+input.match-ok{border-color:var(--primary);background:rgba(34,197,94,.06)}
+input.match-fail{border-color:var(--danger);background:rgba(239,68,68,.06)}
+input.match-amber{border-color:var(--amber);background:var(--amber-dim)}
+.form-error{font-size:11px;color:var(--danger)}
+.input-wrap{display:flex;gap:6px;align-items:stretch}
+.input-wrap input{flex:1}
+/* ── Tables ───────────────────────────────────────────────── */
+.table-wrap{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead{background:rgba(255,255,255,.03)}
+th{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-fg);padding:9px 12px;text-align:left;white-space:nowrap}
+td{padding:10px 12px;border-top:1px solid var(--border);font-size:12px;vertical-align:top}
+tr:hover td{background:rgba(255,255,255,.02)}
+tr.rejected td{border-left:3px solid var(--danger)}
+tr.clickable{cursor:pointer}
+/* ── Badges ───────────────────────────────────────────────── */
+.badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid}
+.badge-green{background:var(--primary-dim);color:var(--primary);border-color:var(--primary-border)}
+.badge-red{background:var(--danger-dim);color:var(--danger);border-color:var(--danger-border)}
+.badge-amber{background:var(--amber-dim);color:var(--amber);border-color:var(--amber-border)}
+.badge-muted{background:var(--muted);color:var(--muted-fg);border-color:var(--border)}
+/* ── Alerts ───────────────────────────────────────────────── */
+.alert{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:var(--radius);border:1px solid;font-size:12px;margin-bottom:14px}
+.alert svg{width:16px;height:16px;flex-shrink:0;margin-top:1px}
+.alert-danger{background:var(--danger-dim);border-color:var(--danger-border);color:var(--danger)}
+.alert-success{background:var(--primary-dim);border-color:var(--primary-border);color:var(--primary)}
+.alert-amber{background:var(--amber-dim);border-color:var(--amber-border);color:var(--amber)}
+/* ── Sections ─────────────────────────────────────────────── */
+.section-title{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-fg);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.card-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.card-body{padding:16px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
+@media(max-width:600px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+/* ── Modal ────────────────────────────────────────────────── */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:12px;width:100%;max-width:640px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column}
+.modal-sm{max-width:400px}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.modal-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:8px}
+.modal-body{padding:20px;overflow-y:auto;flex:1}
+.modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;flex-shrink:0}
+/* ── Camera modal ─────────────────────────────────────────── */
+#camera-modal .modal{max-width:440px}
+#camera-video{width:100%;display:block;background:#000;max-height:300px;object-fit:cover}
+.scan-overlay{position:relative}
+.scan-frame{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.scan-frame-inner{border:2px solid rgba(34,197,94,.5);border-radius:8px;width:220px;height:110px}
+/* ── Photo capture ────────────────────────────────────────── */
+.photo-btn{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--muted);color:var(--muted-fg);cursor:pointer;transition:border-color .15s,color .15s,background .15s;text-align:left}
+.photo-btn.has-photo{border-color:var(--primary-border);background:var(--primary-dim);color:var(--primary)}
+.photo-btn svg{width:18px;height:18px;flex-shrink:0}
+.photo-thumb{width:100%;max-height:110px;object-fit:cover;border-radius:6px;border:1px solid var(--border);margin-top:6px}
+/* ── Form panel ───────────────────────────────────────────── */
+.form-panel{border:1px solid var(--primary-border);border-radius:var(--radius);background:var(--card);overflow:hidden;margin-top:16px}
+.form-panel.danger-panel{border-color:var(--danger-border)}
+.form-panel-header{padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.form-panel-header.primary-bg{background:var(--primary-dim);border-bottom:1px solid var(--primary-border)}
+.form-panel-header.danger-bg{background:var(--danger-dim);border-bottom:1px solid var(--danger-border)}
+.form-panel-body{padding:16px}
+/* ── Match badge (inline) ─────────────────────────────────── */
+.match-badge{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:4px;border:1px solid;white-space:nowrap}
+.match-badge.ok{background:var(--primary-dim);color:var(--primary);border-color:var(--primary-border)}
+.match-badge.fail{background:var(--danger-dim);color:var(--danger);border-color:var(--danger-border)}
+.match-badge.no-bc{background:var(--amber-dim);color:var(--amber);border-color:var(--amber-border)}
+.match-badge.checking{background:var(--muted);color:var(--muted-fg);border-color:var(--border)}
+/* ── Info row ─────────────────────────────────────────────── */
+.info-row{display:flex;flex-wrap:wrap;gap:6px 24px;font-size:11px;color:var(--muted-fg);padding:8px 16px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--border)}
+.info-row strong{color:var(--text)}
+/* ── Spinner ──────────────────────────────────────────────── */
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--muted-fg);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes pulse-anim{0%,100%{opacity:1}50%{opacity:.4}}
+.pulse{animation:pulse-anim 1.4s ease-in-out infinite}
+/* ── Online pill ──────────────────────────────────────────── */
+@keyframes ping{75%,100%{transform:scale(2);opacity:0}}
+.online-pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--primary);background:var(--primary-dim);padding:4px 10px;border-radius:20px;border:1px solid var(--primary-border)}
+.ping-dot{position:relative;width:8px;height:8px;flex-shrink:0}
+.ping-dot::before{content:'';position:absolute;inset:0;border-radius:50%;background:var(--primary);animation:ping 1s ease-in-out infinite;opacity:.75}
+.ping-dot::after{content:'';position:absolute;inset:0;border-radius:50%;background:var(--primary)}
+/* ── Detail grid ──────────────────────────────────────────── */
+.detail-kv{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+@media(max-width:500px){.detail-kv{grid-template-columns:1fr 1fr}}
+.kv-box{background:var(--muted);border-radius:6px;padding:10px 12px}
+.kv-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-fg);margin-bottom:3px}
+.kv-value{font-size:13px;font-weight:700}
+/* ── Lightbox ─────────────────────────────────────────────── */
+#lightbox{position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:200;display:flex;align-items:center;justify-content:center;cursor:pointer}
+#lightbox img{max-width:94vw;max-height:94vh;object-fit:contain;border-radius:8px}
+#lightbox-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:50%;width:36px;height:36px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+/* ── Search box ───────────────────────────────────────────── */
+.search-wrap{position:relative;display:inline-flex;align-items:center}
+.search-wrap svg{position:absolute;left:8px;width:14px;height:14px;color:var(--muted-fg);pointer-events:none}
+.search-wrap input{padding-left:28px;text-transform:none}
+/* ── Toast ────────────────────────────────────────────────── */
+#toast-container{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 16px;font-size:12px;color:var(--text);max-width:320px;pointer-events:auto;opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s}
+.toast.show{opacity:1;transform:none}
+.toast.success{border-color:var(--primary-border);color:var(--primary)}
+.toast.error{border-color:var(--danger-border);color:var(--danger)}
+/* ── Misc ─────────────────────────────────────────────────── */
+.empty-state{text-align:center;padding:48px 16px;color:var(--muted-fg)}
+.empty-state svg{width:40px;height:40px;margin:0 auto 10px;opacity:.3}
+.gap-8{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.gap-8.right{justify-content:flex-end}
+.spacer{flex:1}
+.text-primary{color:var(--primary)}
+.text-danger{color:var(--danger)}
+.text-amber{color:var(--amber)}
+.text-muted{color:var(--muted-fg)}
+.text-sm{font-size:11px}
+.text-xs{font-size:10px}
+.font-bold{font-weight:700}
+.mt-4{margin-top:4px}
+.mt-8{margin-top:8px}
+.mt-12{margin-top:12px}
+.mt-16{margin-top:16px}
+.hidden{display:none!important}
+</style>
 </head>
 <body>
 
-    <div class="sync-badge online" id="syncBadge">Online</div>
+<!-- ═══════════════════════════════════════════════════════════
+     SVGS (inline, reusable via <use>)
+═══════════════════════════════════════════════════════════ -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="ic-dashboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+  <symbol id="ic-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+  <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <symbol id="ic-check-sq" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+  <symbol id="ic-db" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+  <symbol id="ic-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+  <symbol id="ic-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  <symbol id="ic-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+  <symbol id="ic-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  <symbol id="ic-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+  <symbol id="ic-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+  <symbol id="ic-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+  <symbol id="ic-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  <symbol id="ic-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+  <symbol id="ic-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+  <symbol id="ic-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+  <symbol id="ic-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+  <symbol id="ic-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+  <symbol id="ic-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+  <symbol id="ic-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+  <symbol id="ic-file-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 11 17 15 13"/></svg>
+  <symbol id="ic-file-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/><line x1="12" y1="12" x2="12" y2="18"/></svg>
+  <symbol id="ic-rotate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg>
+</svg>
 
-    <div class="container">
+<!-- ═══════════════════════════════════════════════════════════
+     APP SHELL
+═══════════════════════════════════════════════════════════ -->
+<div id="app">
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <div class="brand">
+      <div class="brand-name">MG Packing</div>
+      <div class="brand-sub">System</div>
+    </div>
+    <div class="section-label">Staff</div>
+    <nav id="nav-staff">
+      <a href="#" data-page="packing-lists" onclick="nav('packing-lists');return false">
+        <svg><use href="#ic-list"/></svg>Packing Lists
+      </a>
+    </nav>
+    <div class="section-label">Supervisor</div>
+    <nav id="nav-sup">
+      <a href="#" data-page="dashboard" onclick="nav('dashboard');return false">
+        <svg><use href="#ic-dashboard"/></svg>Dashboard
+      </a>
+      <a href="#" data-page="checker" onclick="nav('checker');return false">
+        <svg><use href="#ic-check-sq"/></svg>Checker View
+      </a>
+      <a href="#" data-page="master" onclick="nav('master');return false">
+        <svg><use href="#ic-db"/></svg>Master Register
+      </a>
+      <a href="#" data-page="rejects" class="danger" onclick="nav('rejects');return false">
+        <svg><use href="#ic-alert"/></svg>Reject List
+      </a>
+    </nav>
+    <div style="flex:1"></div>
+    <!-- GAS URL config -->
+    <div style="padding:12px 10px;border-top:1px solid var(--border)">
+      <div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-fg);margin-bottom:5px">API Endpoint</div>
+      <input type="text" id="gas-url" placeholder="Paste GAS URL here..." style="font-size:10px;padding:5px 8px;text-transform:none" />
+      <button class="btn btn-primary btn-full mt-4" style="font-size:10px;padding:5px" onclick="saveUrl()">Save URL</button>
+    </div>
+  </div>
 
-        <div id="setupScreen">
-            <div class="card">
-                <h1>Carton Tracker</h1>
-                <div class="input-group"><label>Staff Name</label><input type="text" id="staffName" placeholder="Enter your name"></div>
-                <div class="input-group"><label>Customer Name</label><input type="text" id="customerName" placeholder="Enter customer name"></div>
-                <div class="input-group"><label>Shipment Date</label><input type="date" id="shipmentDate"></div>
-                <div class="input-group"><label>Carton Range</label>
-                    <div class="range-row">
-                        <div class="input-group"><input type="text" id="prefix" placeholder="Prefix" value="A"></div>
-                        <span class="range-sep">-</span>
-                        <div class="input-group"><input type="number" id="startNum" placeholder="Start" value="1" min="0"></div>
-                        <span class="range-sep">to</span>
-                        <div class="input-group"><input type="number" id="endNum" placeholder="End" value="100" min="0"></div>
-                    </div>
-                </div>
-                <button class="btn btn-primary" onclick="createJob()">Create Job</button>
-            </div>
-            <div class="card">
-                <h3 style="margin-bottom:15px;color:#555;">Existing Jobs</h3>
-                <div id="jobListContent"><div class="loading-dots"><span></span><span></span><span></span></div></div>
-            </div>
+  <!-- Main content -->
+  <div id="main">
+    <div id="page-dashboard" class="page hidden"></div>
+    <div id="page-packing-lists" class="page hidden"></div>
+    <div id="page-list-detail" class="page hidden"></div>
+    <div id="page-checker" class="page hidden"></div>
+    <div id="page-master" class="page hidden"></div>
+    <div id="page-rejects" class="page hidden"></div>
+  </div>
+</div>
+
+<!-- Camera Modal -->
+<div id="camera-modal" class="modal-backdrop hidden">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <div class="modal-title"><svg style="width:16px;height:16px"><use href="#ic-camera"/></svg><span id="camera-label">Scan Barcode</span></div>
+      <button class="btn-icon" onclick="closeCamera()"><svg style="width:14px;height:14px"><use href="#ic-x"/></svg></button>
+    </div>
+    <div style="background:#000;position:relative">
+      <video id="camera-video" playsinline muted></video>
+      <div class="scan-frame"><div class="scan-frame-inner"></div></div>
+      <div style="position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase">Point camera at barcode</div>
+    </div>
+    <div style="padding:12px 16px;border-top:1px solid var(--border)">
+      <div id="camera-error" class="hidden" style="color:var(--danger);font-size:11px;margin-bottom:8px"></div>
+      <button class="btn btn-outline btn-full" onclick="closeCamera()"><svg><use href="#ic-x"/></svg>Close Scanner</button>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" class="hidden" onclick="closeLightbox()">
+  <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="Photo" />
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN SCRIPT
+═══════════════════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+// ── Config ────────────────────────────────────────────────────
+const LS_URL = 'mg_gas_url';
+const LS_RECORDS = 'mg_records_cache';
+let GAS_URL = localStorage.getItem(LS_URL) || 'https://script.google.com/macros/s/AKfycbznlhODNjZ_Ho0HgMqs19Q01iz60Op1JNneUjaXW-MNq3FhJpUApbeE5MTPHmisdMqd/exec';
+let currentPage = '';
+let currentListId = null; // index into LISTS array
+let cameraCallback = null;
+let cameraReader = null;
+let pendingEditRow = null; // row number of carton being edited/resubmitted
+let allRecords = [];       // cached from GAS
+let masterData = [];       // from GAS lookup cache; keyed by partNo/pi
+
+// In-memory packing lists (stored in localStorage)
+const LS_LISTS = 'mg_packing_lists_v2';
+let LISTS = [];
+
+function saveLists() { localStorage.setItem(LS_LISTS, JSON.stringify(LISTS)); }
+function loadLists() {
+  try { LISTS = JSON.parse(localStorage.getItem(LS_LISTS) || '[]'); } catch { LISTS = []; }
+}
+
+// ── URL management ─────────────────────────────────────────────
+document.getElementById('gas-url').value = GAS_URL;
+function saveUrl() {
+  GAS_URL = document.getElementById('gas-url').value.trim();
+  localStorage.setItem(LS_URL, GAS_URL);
+  toast('API URL saved', 'success');
+  if (currentPage === 'dashboard') renderDashboard();
+  if (currentPage === 'checker') renderChecker();
+  if (currentPage === 'rejects') renderRejects();
+}
+
+// ── GAS API calls ──────────────────────────────────────────────
+async function gasGet(params) {
+  if (!GAS_URL) return null;
+  const url = GAS_URL + '?' + new URLSearchParams(params);
+  const r = await fetch(url);
+  return r.json();
+}
+async function gasPost(data) {
+  if (!GAS_URL) return null;
+  const r = await fetch(GAS_URL, {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+  return r.json();
+}
+
+// ── Toast ──────────────────────────────────────────────────────
+function toast(msg, type='') {
+  const el = document.createElement('div');
+  el.className = 'toast' + (type ? ' ' + type : '');
+  el.textContent = msg;
+  document.getElementById('toast-container').appendChild(el);
+  requestAnimationFrame(() => { el.classList.add('show'); });
+  setTimeout(() => {
+    el.classList.remove('show');
+    setTimeout(() => el.remove(), 300);
+  }, 3000);
+}
+
+// ── Navigation ─────────────────────────────────────────────────
+function nav(page, listId=null) {
+  document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  currentPage = page;
+  const el = document.getElementById('page-' + (page === 'list-detail' ? 'list-detail' : page));
+  if (el) el.classList.remove('hidden');
+  const link = document.querySelector(`nav a[data-page="${page}"]`);
+  if (link) link.classList.add('active');
+
+  if (page === 'dashboard') renderDashboard();
+  else if (page === 'packing-lists') renderPackingLists();
+  else if (page === 'list-detail') { currentListId = listId; renderListDetail(); }
+  else if (page === 'checker') renderChecker();
+  else if (page === 'master') renderMaster();
+  else if (page === 'rejects') renderRejects();
+}
+
+// ── Formatting helpers ─────────────────────────────────────────
+function fmtDate(ts) {
+  if (!ts) return '—';
+  const d = new Date(ts);
+  if (isNaN(d)) return String(ts).slice(0, 16);
+  return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'2-digit' })
+       + ' ' + d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+}
+function fmtTime(ts) {
+  if (!ts) return '—';
+  const d = new Date(ts);
+  if (isNaN(d)) return String(ts).slice(11, 16);
+  return d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+}
+
+// ── Image compression ──────────────────────────────────────────
+function compressImage(file, maxPx=800, q=0.7) {
+  return new Promise((res, rej) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let w=img.width, h=img.height;
+      if (w>h && w>maxPx) { h=Math.round(h*maxPx/w); w=maxPx; }
+      else if (h>maxPx) { w=Math.round(w*maxPx/h); h=maxPx; }
+      const c = document.createElement('canvas');
+      c.width=w; c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      res(c.toDataURL('image/jpeg', q));
+    };
+    img.onerror = rej;
+    img.src = url;
+  });
+}
+
+// ── Lightbox ───────────────────────────────────────────────────
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.remove('hidden');
+}
+function closeLightbox() { document.getElementById('lightbox').classList.add('hidden'); }
+
+// ── Camera ─────────────────────────────────────────────────────
+async function openCamera(label, cb) {
+  cameraCallback = cb;
+  document.getElementById('camera-label').textContent = 'Scan — ' + label;
+  document.getElementById('camera-error').classList.add('hidden');
+  document.getElementById('camera-modal').classList.remove('hidden');
+
+  const video = document.getElementById('camera-video');
+  const errEl = document.getElementById('camera-error');
+
+  try {
+    // Use @zxing/browser from CDN
+    const ZXing = window.ZXingBrowser || window['@zxing/browser'];
+    let Reader;
+    if (ZXing && ZXing.BrowserMultiFormatReader) {
+      Reader = ZXing.BrowserMultiFormatReader;
+    } else {
+      throw new Error('ZXing library not loaded');
+    }
+    const devices = await Reader.listVideoInputDevices();
+    if (!devices || devices.length === 0) throw new Error('No camera found');
+    const back = devices.find(d =>
+      d.label.toLowerCase().includes('back') ||
+      d.label.toLowerCase().includes('rear') ||
+      d.label.toLowerCase().includes('environment')
+    );
+    const deviceId = back ? back.deviceId : devices[0].deviceId;
+    cameraReader = new Reader();
+    await cameraReader.decodeFromVideoDevice(deviceId, video, (result, err) => {
+      if (result) {
+        const val = result.getText().trim().toUpperCase();
+        closeCamera();
+        cb(val);
+      }
+    });
+  } catch(e) {
+    errEl.textContent = e.message.includes('Permission')
+      ? 'Camera permission denied. Allow camera access or use a barcode scanner.'
+      : 'Camera unavailable: ' + e.message;
+    errEl.classList.remove('hidden');
+  }
+}
+
+function closeCamera() {
+  document.getElementById('camera-modal').classList.add('hidden');
+  try { if (cameraReader) { cameraReader.reset(); cameraReader = null; } } catch(_){}
+  const video = document.getElementById('camera-video');
+  if (video.srcObject) { video.srcObject.getTracks().forEach(t=>t.stop()); video.srcObject=null; }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════════════
+async function renderDashboard() {
+  const el = document.getElementById('page-dashboard');
+  el.innerHTML = `
+    <div class="page-header">
+      <div>
+        <div class="page-title"><svg><use href="#ic-dashboard"/></svg>System Status</div>
+        <div class="page-subtitle">Live overview of factory floor packing operations.</div>
+      </div>
+      <div class="online-pill"><div class="ping-dot"></div>SYSTEM ONLINE</div>
+    </div>
+    <div class="stat-grid" id="stat-grid"><div class="pulse text-muted text-sm">Loading stats...</div></div>`;
+
+  let records = [];
+  try {
+    const res = await gasGet({ action: 'records' });
+    if (res && res.records) { records = res.records; allRecords = records; }
+  } catch(_) {}
+
+  const today = new Date().toDateString();
+  const todayEntries = records.filter(r => new Date(r.timestamp).toDateString() === today).length;
+  const pending = records.filter(r => !r.status || r.status.toLowerCase() === '').length;
+  const approved = records.filter(r => r.status && r.status.toLowerCase().includes('approved')).length;
+  const rejected = records.filter(r => r.status && r.status.toLowerCase().includes('rejected')).length;
+
+  document.getElementById('stat-grid').innerHTML = [
+    { label: "Today's Entries", value: todayEntries, icon: 'ic-activity', color: '#3b82f6' },
+    { label: 'Pending Review', value: pending, icon: 'ic-clock', color: 'var(--amber)' },
+    { label: 'Approved', value: approved, icon: 'ic-check', color: 'var(--primary)' },
+    { label: 'Rejected', value: rejected, icon: 'ic-alert', color: 'var(--danger)' },
+    { label: 'Total Cartons', value: records.length, icon: 'ic-box', color: 'var(--muted-fg)' },
+  ].map(s => `
+    <div class="stat-card">
+      <svg class="icon" style="color:${s.color}"><use href="#${s.icon}"/></svg>
+      <div class="label">${s.label}</div>
+      <div class="value" style="color:${s.color}">${s.value}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PACKING LISTS (local, stored in localStorage)
+// ═══════════════════════════════════════════════════════════════
+function nextListRef() {
+  const max = LISTS.reduce((m, l) => {
+    const n = parseInt((l.listRef || '').replace('PL-', '') || '0');
+    return Math.max(m, n);
+  }, 0);
+  return 'PL-' + String(max + 1).padStart(4, '0');
+}
+
+function renderPackingLists() {
+  loadLists();
+  const el = document.getElementById('page-packing-lists');
+  el.innerHTML = `
+    <div class="page-header">
+      <div>
+        <div class="page-title"><svg><use href="#ic-list"/></svg>Packing Lists</div>
+        <div class="page-subtitle">Step 1 — create or select a list, then add carton entries.</div>
+      </div>
+      <button class="btn btn-primary" onclick="showCreateList()">
+        <svg><use href="#ic-plus"/></svg>New Packing List
+      </button>
+    </div>
+    <div id="create-list-form" class="hidden"></div>
+    <div class="text-xs text-muted" style="margin-bottom:8px">${LISTS.length} list${LISTS.length!==1?'s':''} found</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Ref</th><th>Customer</th><th>Packed By / Team</th><th>Status</th>
+          <th>Cartons</th><th>Total Qty</th><th>Created</th><th></th>
+        </tr></thead>
+        <tbody>
+        ${LISTS.length === 0 ? `<tr><td colspan="8"><div class="empty-state"><svg><use href="#ic-list"/></svg><p>No packing lists yet — click New Packing List above</p></div></td></tr>` :
+          LISTS.slice().reverse().map((l, ri) => {
+            const i = LISTS.length - 1 - ri;
+            const rejected = (l.cartons || []).filter(c => c.status === 'rejected').length;
+            return `<tr class="clickable" onclick="nav('list-detail',${i})">
+              <td class="font-bold text-primary">${l.listRef}</td>
+              <td>${l.customer}</td>
+              <td><div class="text-sm">${l.createdBy}</div><div class="text-xs text-muted">${l.team}</div></td>
+              <td><span class="badge ${l.status==='open'?'badge-green':'badge-muted'}">${l.status}</span></td>
+              <td style="text-align:center;font-weight:700">${(l.cartons||[]).length}</td>
+              <td style="text-align:center">${(l.cartons||[]).reduce((s,c)=>s+(+c.qty||0),0)}</td>
+              <td class="text-xs text-muted">${fmtDate(l.createdAt)}</td>
+              <td><svg style="width:14px;height:14px;color:var(--muted-fg)"><use href="#ic-arrow-right"/></svg></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function showCreateList() {
+  const el = document.getElementById('create-list-form');
+  el.classList.remove('hidden');
+  el.innerHTML = `
+    <div class="form-panel" style="margin-bottom:16px">
+      <div class="form-panel-header primary-bg">
+        <span class="font-bold text-primary text-sm" style="text-transform:uppercase;letter-spacing:.07em">
+          <svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="#ic-plus"/></svg>Create New Packing List
+        </span>
+        <button class="btn-icon" onclick="document.getElementById('create-list-form').classList.add('hidden')">
+          <svg style="width:12px;height:12px"><use href="#ic-x"/></svg>
+        </button>
+      </div>
+      <div class="form-panel-body">
+        <div class="grid-3" style="margin-bottom:14px">
+          <div class="form-group">
+            <label class="form-label">Customer Name <span class="req">*</span></label>
+            <input type="text" id="cl-customer" placeholder="Enter customer..." autofocus />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Packed By <span class="req">*</span></label>
+            <input type="text" id="cl-by" placeholder="Staff name or ID..." />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Team <span class="req">*</span></label>
+            <input type="text" id="cl-team" placeholder="Team A / Team B..." />
+          </div>
         </div>
-
-        <div id="trackingScreen" class="hidden">
-            <button class="back-btn" onclick="backToSetup()">Back to Jobs</button>
-            <div class="card">
-                <div class="info-bar">
-                    <span class="info-pill" id="dispCustomer">-</span>
-                    <span class="info-pill" id="dispDate">-</span>
-                    <span class="info-pill" id="dispTotal">-</span>
-                </div>
-            </div>
-            <div class="stats-grid">
-                <div class="stat-box"><div class="stat-value" id="checkedCount">0</div><div class="stat-label">Checked</div></div>
-                <div class="stat-box pending"><div class="stat-value" id="pendingCount">0</div><div class="stat-label">Pending</div></div>
-                <div class="stat-box progress"><div class="stat-value" id="percentCount">0%</div><div class="stat-label">Progress</div></div>
-            </div>
-            <div class="progress-outer"><div class="progress-inner" id="progressFill" style="width:0%"></div></div>
-            <div class="card">
-                <div class="controls">
-                    <button class="btn btn-success" onclick="markAll(true)">Check All</button>
-                    <button class="btn btn-danger" onclick="markAll(false)">Uncheck All</button>
-                    <button class="btn btn-warning" onclick="refreshData()">Refresh</button>
-                </div>
-            </div>
-            <div class="card"><div class="cartons-grid" id="cartonsGrid"></div></div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;padding-top:12px;border-top:1px solid var(--border)">
+          <button class="btn btn-outline" onclick="document.getElementById('create-list-form').classList.add('hidden')">Cancel</button>
+          <button class="btn btn-primary" onclick="submitCreateList()">
+            <svg><use href="#ic-arrow-right"/></svg>Create & Open List
+          </button>
         </div>
+      </div>
+    </div>`;
+}
 
-        <div id="editModal" class="hidden" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:2000;display:flex;align-items:center;justify-content:center;">
-            <div style="background:white;border-radius:20px;padding:25px;width:90%;max-width:500px;max-height:90vh;overflow-y:auto;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-                    <span style="font-size:20px;font-weight:700;color:#333;">Edit Job</span>
-                    <button onclick="closeEditModal()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#888;">&times;</button>
-                </div>
-                <div class="input-group"><label>Customer Name</label><input type="text" id="editCustomer"></div>
-                <div class="input-group"><label>Shipment Date</label><input type="date" id="editDate"></div>
-                <div class="input-group"><label>Current Range</label><input type="text" id="editCurrentRange" readonly style="background:#eee;"></div>
-                <div class="input-group"><label>New End Number</label><input type="number" id="editNewEnd" placeholder="Enter new end number"></div>
-                <p style="font-size:12px;color:#888;margin-top:-5px;margin-bottom:10px;">Higher = add cartons, Lower = remove cartons</p>
-                <div id="editWarning" class="hidden"></div>
-                <div style="display:flex;gap:10px;margin-top:20px;">
-                    <button class="btn btn-primary" onclick="saveEditJob()" style="flex:1;">Save Changes</button>
-                    <button class="btn btn-danger" onclick="closeEditModal()" style="flex:1;">Cancel</button>
-                </div>
-            </div>
+function submitCreateList() {
+  const customer = document.getElementById('cl-customer').value.trim();
+  const createdBy = document.getElementById('cl-by').value.trim();
+  const team = document.getElementById('cl-team').value.trim();
+  if (!customer || !createdBy || !team) { toast('Please fill all fields', 'error'); return; }
+  loadLists();
+  const list = {
+    id: Date.now(),
+    listRef: nextListRef(),
+    customer, createdBy, team,
+    status: 'open',
+    cartons: [],
+    createdAt: new Date().toISOString()
+  };
+  LISTS.push(list);
+  saveLists();
+  nav('list-detail', LISTS.length - 1);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PACKING LIST DETAIL
+// ═══════════════════════════════════════════════════════════════
+// Per-form state
+let formState = {
+  bag: { value:'', match:null }, // match: null|true|false|'no'
+  inner: { value:'', match:null },
+  outer: { value:'', match:null },
+  photos: { bag:null, inner:null, carton:null },
+  partNo: '', pi:'', cartonId:'', qty:'1', notes:'',
+  uploading: false
+};
+
+function resetFormState() {
+  formState = {
+    bag:{ value:'', match:null }, inner:{ value:'', match:null }, outer:{ value:'', match:null },
+    photos:{ bag:null, inner:null, carton:null },
+    partNo:'', pi:'', cartonId:'', qty:'1', notes:'', uploading:false
+  };
+  pendingEditRow = null;
+}
+
+function renderListDetail() {
+  loadLists();
+  const list = LISTS[currentListId];
+  if (!list) { nav('packing-lists'); return; }
+  const cartons = list.cartons || [];
+  const rejected = cartons.filter(c => c.status === 'rejected');
+  const el = document.getElementById('page-list-detail');
+
+  el.innerHTML = `
+    <div class="page-header">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="btn-icon" onclick="nav('packing-lists')"><svg style="width:16px;height:16px"><use href="#ic-back"/></svg></button>
+        <div>
+          <div class="page-title"><svg><use href="#ic-list"/></svg>${list.listRef}</div>
+          <div class="page-subtitle">${list.customer} — ${cartons.length} cartons — ${cartons.reduce((s,c)=>s+(+c.qty||0),0)} pcs</div>
         </div>
-
+      </div>
+      <span class="badge ${list.status==='open'?'badge-green':'badge-muted'}">${list.status}</span>
     </div>
 
-    <script>
-        // ============================================
-        // YOUR GAS WEB APP URL
-        // ============================================
-        const API_URL = 'https://script.google.com/macros/s/AKfycbwYaAs-z18yNWL8jDJlAnlLXmJ2EtpCFcbqpt-p-YmNMsDBQ4yrtrlJ8wKJgGHg3EFYDg/exec';
-        
-        let currentJobId = null;
-        let cartonData = {};
-        let cartons = [];
-        let editingJob = null;
+    <!-- Info bar -->
+    <div class="grid-3" style="margin-bottom:16px">
+      ${[
+        {icon:'ic-box',label:'Customer',val:list.customer},
+        {icon:'ic-activity',label:'Packed By',val:list.createdBy},
+        {icon:'ic-activity',label:'Team',val:list.team},
+      ].map(i=>`<div class="card" style="padding:12px;display:flex;align-items:center;gap:10px">
+        <svg style="width:16px;height:16px;color:var(--primary);flex-shrink:0"><use href="#${i.icon}"/></svg>
+        <div><div class="text-xs text-muted">${i.label}</div><div class="font-bold text-sm">${i.val}</div></div>
+      </div>`).join('')}
+    </div>
 
-        function setSync(status) {
-            const el = document.getElementById('syncBadge');
-            el.className = 'sync-badge ' + status;
-            if (status === 'syncing') el.textContent = 'Syncing...';
-            else if (status === 'online') el.textContent = 'Online';
-            else el.textContent = 'Offline';
+    ${rejected.length > 0 ? `
+    <div class="alert alert-danger" style="margin-bottom:16px">
+      <svg><use href="#ic-alert"/></svg>
+      <div><strong>${rejected.length} carton${rejected.length>1?'s':''} rejected by checker.</strong>
+      Click <strong>Edit</strong> on a rejected row to correct and resubmit.</div>
+    </div>` : ''}
+
+    <!-- Success banner placeholder -->
+    <div id="success-banner" class="hidden"></div>
+
+    <!-- Carton entries table -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div class="text-xs text-muted">Carton Entries (${cartons.length})</div>
+      <button class="btn btn-primary btn-sm" id="btn-add-entry" onclick="showEntryForm(false)">
+        <svg><use href="#ic-plus"/></svg>Add Entry
+      </button>
+    </div>
+    <div class="table-wrap" style="margin-bottom:16px">
+      <table>
+        <thead><tr>
+          <th>Ref</th><th>Carton ID</th><th>Part No</th><th>PI</th>
+          <th>Qty</th><th>Bag</th><th>Inner</th><th>Outer</th><th>Status</th><th>Time</th>
+        </tr></thead>
+        <tbody id="carton-tbody">
+        ${cartons.length===0 ? '<tr><td colspan="10"><div class="empty-state"><svg><use href="#ic-box"/></svg><p>No entries yet — click Add Entry</p></div></td></tr>' :
+          cartons.map((c,ci) => `
+          <tr class="${c.status==='rejected'?'rejected':''}">
+            <td class="font-bold text-primary">${c.cartonRef||'—'}</td>
+            <td class="text-sm">${c.cartonId||'—'}</td>
+            <td class="font-bold text-sm">${c.partNo||'—'}</td>
+            <td class="text-muted text-xs">${c.pi||'—'}</td>
+            <td style="text-align:center;font-weight:700">${c.qty}</td>
+            <td style="text-align:center">${matchDot(c.bagMatch)}</td>
+            <td style="text-align:center">${matchDot(c.innerMatch)}</td>
+            <td style="text-align:center">${matchDot(c.outerMatch)}</td>
+            <td>
+              <span class="badge ${statusBadgeClass(c.status)}">${c.status||'PENDING'}</span>
+              ${c.status==='rejected' ? `
+                <div style="margin-top:4px">
+                  <button class="btn btn-danger-outline btn-sm" onclick="startEditCarton(${ci})">
+                    <svg><use href="#ic-edit"/></svg>Edit
+                  </button>
+                  ${c.rejectionReason ? `<div class="text-xs text-danger" style="margin-top:3px;font-style:italic;max-width:120px">${c.rejectionReason}</div>` : ''}
+                </div>` : ''}
+            </td>
+            <td class="text-xs text-muted">${fmtTime(c.createdAt)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Entry form placeholder -->
+    <div id="entry-form-wrap"></div>`;
+}
+
+function matchDot(m) {
+  if (m===true||m==='true') return '<span style="color:var(--primary)">✅</span>';
+  if (m===false||m==='false') return '<span style="color:var(--danger)">❌</span>';
+  return '<span style="color:var(--muted-fg)">—</span>';
+}
+
+function statusBadgeClass(s) {
+  if (!s || s.toLowerCase()==='pending') return 'badge-amber';
+  if (s.toLowerCase().includes('approved')) return 'badge-green';
+  if (s.toLowerCase().includes('rejected')) return 'badge-red';
+  return 'badge-muted';
+}
+
+function startEditCarton(cartonIdx) {
+  loadLists();
+  const list = LISTS[currentListId];
+  const c = list.cartons[cartonIdx];
+  resetFormState();
+  formState.cartonId = c.cartonId || '';
+  formState.pi = c.pi || '';
+  formState.partNo = c.partNo || '';
+  formState.qty = String(c.qty || 1);
+  formState.photos = { bag: c.imgBagUrl||null, inner: c.imgInnerUrl||null, carton: c.imgCartonUrl||null };
+  pendingEditRow = { cartonIdx, row: c.row }; // row from GAS if previously submitted
+  showEntryForm(true);
+}
+
+function showEntryForm(isEdit) {
+  // Hide add button
+  const addBtn = document.getElementById('btn-add-entry');
+  if (addBtn) addBtn.style.display = 'none';
+
+  const wrap = document.getElementById('entry-form-wrap');
+  const list = LISTS[currentListId];
+  wrap.innerHTML = buildEntryForm(list, isEdit);
+  // Restore field values
+  restoreFormValues();
+}
+
+function buildEntryForm(list, isEdit) {
+  return `
+  <div class="form-panel ${isEdit?'danger-panel':''}" id="entry-form">
+    <div class="form-panel-header ${isEdit?'danger-bg':'primary-bg'}">
+      <span class="font-bold ${isEdit?'text-danger':'text-primary'} text-sm" style="text-transform:uppercase;letter-spacing:.07em">
+        <svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="${isEdit?'#ic-rotate':'#ic-box'}"/></svg>
+        ${isEdit ? `Edit & Resubmit — ${list.listRef}` : `New Entry — ${list.listRef}`}
+      </span>
+      <button class="btn-icon" onclick="cancelForm()"><svg style="width:12px;height:12px"><use href="#ic-x"/></svg></button>
+    </div>
+    <div class="info-row">
+      <span><strong>Customer:</strong> ${list.customer}</span>
+      <span><strong>Packed By:</strong> ${list.createdBy}</span>
+      <span><strong>Team:</strong> ${list.team}</span>
+    </div>
+    <div class="form-panel-body">
+
+      <!-- Order Info -->
+      <div class="section-title">Order Info</div>
+      <div class="grid-4" style="margin-bottom:16px">
+        <div class="form-group">
+          <label class="form-label">Carton ID <span class="req">*</span></label>
+          <input type="text" id="f-cartonId" placeholder="Scan or type..." />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Part No <span class="req">*</span></label>
+          <input type="text" id="f-partNo" placeholder="Auto-filled or type..." />
+        </div>
+        <div class="form-group">
+          <label class="form-label">PI No</label>
+          <input type="text" id="f-pi" placeholder="PI-2024-001..." />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Qty (pcs) <span class="req">*</span></label>
+          <input type="number" id="f-qty" min="1" value="1" />
+        </div>
+      </div>
+
+      <!-- Barcodes -->
+      <div class="section-title">Barcode Verification</div>
+      <p class="text-xs text-muted" style="margin-bottom:10px">Scan: Bag → Inner → Outer. Type <strong style="color:var(--amber)">NO</strong> if none. Use 📷 camera or barcode scanner.</p>
+      <div class="grid-3" style="margin-bottom:16px">
+        ${buildBarcodeField('bag','1. Bag Barcode')}
+        ${buildBarcodeField('inner','2. Inner Barcode')}
+        ${buildBarcodeField('outer','3. Outer Barcode')}
+      </div>
+
+      <!-- Photos -->
+      <div class="section-title">Photos</div>
+      <div class="grid-3" style="margin-bottom:16px">
+        ${buildPhotoField('bag','Bag with Part')}
+        ${buildPhotoField('inner','Inner Box / Label')}
+        ${buildPhotoField('carton','Carton / Label')}
+      </div>
+
+      <!-- Mismatch warning -->
+      <div id="mismatch-warn" class="alert alert-danger hidden">
+        <svg><use href="#ic-alert"/></svg>
+        <div>Mismatch detected — please recheck barcodes before submitting.</div>
+      </div>
+      <div id="form-error" class="hidden" style="color:var(--danger);font-size:12px;margin-bottom:8px"></div>
+
+      <!-- Submit row -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border);flex-wrap:wrap;gap:8px">
+        <div id="verify-hint" class="text-xs text-muted">Verify all three barcodes to enable submit.</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline" onclick="cancelForm()">Cancel</button>
+          <button class="btn ${isEdit?'btn-danger':'btn-primary'}" id="btn-submit" disabled onclick="submitEntry(${isEdit})">
+            <svg><use href="${isEdit?'#ic-rotate':'#ic-box'}"/></svg>
+            <span id="btn-submit-label">${isEdit ? 'Resubmit Corrected' : 'Save Entry'}</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>`;
+}
+
+function buildBarcodeField(which, label) {
+  return `<div class="form-group">
+    <div style="display:flex;align-items:center;justify-content:space-between;min-height:22px;margin-bottom:4px">
+      <span class="form-label">${label}</span>
+      <span id="match-badge-${which}" class="match-badge" style="display:none"></span>
+    </div>
+    <div class="input-wrap">
+      <input type="text" id="f-${which}" placeholder="Scan, type, or use camera..." oninput="onBarcodeInput('${which}')" />
+      <button type="button" class="btn-icon" title="Camera scan" onclick="openCamera('${label}', v=>{document.getElementById('f-${which}').value=v;onBarcodeInput('${which}')})">
+        <svg style="width:14px;height:14px"><use href="#ic-camera"/></svg>
+      </button>
+    </div>
+  </div>`;
+}
+
+function buildPhotoField(which, label) {
+  return `<div class="form-group" id="photo-group-${which}">
+    <label class="form-label">${label}</label>
+    <input type="file" id="photo-input-${which}" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto('${which}',this)" />
+    <button type="button" class="photo-btn" id="photo-btn-${which}" onclick="document.getElementById('photo-input-${which}').click()">
+      <svg><use href="#ic-camera"/></svg>
+      <div>
+        <div class="text-sm font-bold">${label}</div>
+        <div class="text-xs text-muted mt-4">Tap to capture photo</div>
+      </div>
+    </button>
+    <div id="photo-thumb-${which}"></div>
+  </div>`;
+}
+
+function restoreFormValues() {
+  const set = (id, val) => { const el=document.getElementById(id); if(el) el.value=val||''; };
+  set('f-cartonId', formState.cartonId);
+  set('f-partNo', formState.partNo);
+  set('f-pi', formState.pi);
+  set('f-qty', formState.qty);
+  // Restore photos
+  ['bag','inner','carton'].forEach(w => {
+    if (formState.photos[w]) renderPhotoThumb(w, formState.photos[w]);
+  });
+}
+
+async function handlePhoto(which, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const dataUri = await compressImage(file);
+  formState.photos[which] = dataUri;
+  renderPhotoThumb(which, dataUri);
+  input.value = '';
+}
+
+function renderPhotoThumb(which, dataUri) {
+  const btn = document.getElementById('photo-btn-' + which);
+  const thumb = document.getElementById('photo-thumb-' + which);
+  if (btn) btn.classList.add('has-photo');
+  if (thumb) {
+    thumb.innerHTML = `<img class="photo-thumb" src="${dataUri}" alt="Photo" onclick="openLightbox('${dataUri}')" style="cursor:pointer" />`;
+  }
+}
+
+// Barcode lookup state
+const lookupCache = {};
+const lookupDebounce = {};
+
+function onBarcodeInput(which) {
+  const el = document.getElementById('f-' + which);
+  if (!el) return;
+  const val = el.value.trim().toUpperCase();
+
+  // Update formState
+  if (which === 'bag') formState.bag.value = val;
+  if (which === 'inner') formState.inner.value = val;
+  if (which === 'outer') formState.outer.value = val;
+
+  el.value = val;
+
+  if (!val) { setMatchBadge(which, null); updateSubmitBtn(); return; }
+  if (val === 'NO') { setMatchBadge(which, 'no'); updateSubmitBtn(); return; }
+
+  // Debounce lookup
+  clearTimeout(lookupDebounce[which]);
+  setMatchBadge(which, 'checking');
+  lookupDebounce[which] = setTimeout(() => doLookup(which, val), 500);
+}
+
+async function doLookup(which, barcode) {
+  const partNo = (document.getElementById('f-partNo')||{}).value || '';
+  const pi = (document.getElementById('f-pi')||{}).value || '';
+  const key = `${barcode}|${partNo}|${pi}`;
+
+  if (lookupCache[key] !== undefined) {
+    applyLookupResult(which, barcode, lookupCache[key]);
+    return;
+  }
+
+  if (!GAS_URL) { setMatchBadge(which, false); updateSubmitBtn(); return; }
+
+  try {
+    const res = await gasGet({ action:'lookup', barcode, pi, partNo });
+    lookupCache[key] = res;
+    applyLookupResult(which, barcode, res);
+  } catch(_) { setMatchBadge(which, false); updateSubmitBtn(); }
+}
+
+function applyLookupResult(which, barcode, res) {
+  if (res && res.found) {
+    // Auto-fill part no from bag lookup
+    if (which === 'bag' && res.partNo) {
+      const pnEl = document.getElementById('f-partNo');
+      if (pnEl && !pnEl.value) { pnEl.value = String(res.partNo).toUpperCase(); formState.partNo = pnEl.value; }
+    }
+    if (which === 'bag') formState.bag.match = true;
+    if (which === 'inner') formState.inner.match = true;
+    if (which === 'outer') formState.outer.match = true;
+    setMatchBadge(which, true);
+  } else {
+    if (which === 'bag') formState.bag.match = false;
+    if (which === 'inner') formState.inner.match = false;
+    if (which === 'outer') formState.outer.match = false;
+    setMatchBadge(which, false);
+  }
+  updateSubmitBtn();
+}
+
+function setMatchBadge(which, state) {
+  if (which === 'bag') formState.bag.match = (state === 'no') ? 'no' : state;
+  if (which === 'inner') formState.inner.match = (state === 'no') ? 'no' : state;
+  if (which === 'outer') formState.outer.match = (state === 'no') ? 'no' : state;
+
+  const badge = document.getElementById('match-badge-' + which);
+  const input = document.getElementById('f-' + which);
+  if (!badge || !input) return;
+
+  input.className = '';
+  badge.style.display = '';
+  if (state === null) { badge.style.display='none'; return; }
+  if (state === true) { badge.textContent='✅ MATCH'; badge.className='match-badge ok'; input.className='match-ok'; }
+  else if (state === false) { badge.textContent='❌ MISMATCH'; badge.className='match-badge fail'; input.className='match-fail'; }
+  else if (state === 'no') { badge.textContent='NO BARCODE'; badge.className='match-badge no-bc'; input.className='match-amber'; }
+  else if (state === 'checking') { badge.textContent='CHECKING...'; badge.className='match-badge checking'; }
+}
+
+function updateSubmitBtn() {
+  const btn = document.getElementById('btn-submit');
+  const warn = document.getElementById('mismatch-warn');
+  const hint = document.getElementById('verify-hint');
+  if (!btn) return;
+
+  const {bag, inner, outer} = formState;
+  const hasMismatch = bag.match===false || inner.match===false || outer.match===false;
+  const allVerified = (bag.match===true||bag.match==='no') &&
+                      (inner.match===true||inner.match==='no') &&
+                      (outer.match===true||outer.match==='no');
+
+  if (warn) warn.classList.toggle('hidden', !hasMismatch);
+  if (hint) hint.style.display = allVerified ? 'none' : '';
+  btn.disabled = hasMismatch || !allVerified;
+}
+
+function cancelForm() {
+  resetFormState();
+  renderListDetail();
+}
+
+async function submitEntry(isEdit) {
+  loadLists();
+  const list = LISTS[currentListId];
+  const cartonId = (document.getElementById('f-cartonId')||{}).value?.trim() || '';
+  const partNo = (document.getElementById('f-partNo')||{}).value?.trim().toUpperCase() || '';
+  const pi = (document.getElementById('f-pi')||{}).value?.trim().toUpperCase() || '';
+  const qty = parseInt((document.getElementById('f-qty')||{}).value || '1');
+
+  if (!cartonId || !partNo || !qty) { toast('Fill all required fields', 'error'); return; }
+
+  const btn = document.getElementById('btn-submit');
+  const lbl = document.getElementById('btn-submit-label');
+  if (btn) btn.disabled = true;
+  if (lbl) lbl.textContent = 'Saving...';
+
+  const matchBool = m => m===true || m==='no';
+
+  // Upload photos to Google Drive if data URIs
+  async function maybeUpload(dataUri, filename) {
+    if (!dataUri || !dataUri.startsWith('data:')) return dataUri || '';
+    if (!GAS_URL) return dataUri; // store base64 locally
+    try {
+      const res = await gasPost({ action:'uploadPhoto', base64: dataUri, filename });
+      return (res && res.url) ? res.url : dataUri;
+    } catch { return dataUri; }
+  }
+
+  const [imgBagUrl, imgInnerUrl, imgCartonUrl] = await Promise.all([
+    maybeUpload(formState.photos.bag, `bag_${cartonId}.jpg`),
+    maybeUpload(formState.photos.inner, `inner_${cartonId}.jpg`),
+    maybeUpload(formState.photos.carton, `carton_${cartonId}.jpg`),
+  ]);
+
+  const now = new Date().toISOString();
+  // Auto-generate carton ref
+  const existingMax = (list.cartons||[]).reduce((m,c)=>{
+    const n=parseInt((c.cartonRef||'').replace('CTN-',''));
+    return isNaN(n)?m:Math.max(m,n);
+  },0);
+  // Global max across all lists
+  const globalMax = LISTS.reduce((m,l)=>(l.cartons||[]).reduce((m2,c)=>{
+    const n=parseInt((c.cartonRef||'').replace('CTN-',''));
+    return isNaN(n)?m2:Math.max(m2,n);
+  },m),0);
+  const nextNum = Math.max(existingMax, globalMax) + (isEdit ? 0 : 1);
+  const cartonRef = isEdit && pendingEditRow
+    ? (list.cartons[pendingEditRow.cartonIdx]?.cartonRef || 'CTN-'+String(nextNum).padStart(3,'0'))
+    : 'CTN-' + String(nextNum).padStart(3,'0');
+
+  const payload = {
+    cartonRef, cartonId, partNo, pi, qty,
+    bagBarcode: formState.bag.value,
+    innerBarcode: formState.inner.value,
+    outerBarcode: formState.outer.value,
+    bagMatch: matchBool(formState.bag.match),
+    innerMatch: matchBool(formState.inner.match),
+    outerMatch: matchBool(formState.outer.match),
+    imgBagUrl, imgInnerUrl, imgCartonUrl,
+    status: 'pending',
+    rejectionReason: null,
+    checkedBy: null,
+    createdAt: now,
+    row: null, // will be set if submitted to GAS
+  };
+
+  // Submit to GAS
+  if (GAS_URL) {
+    const gasPayload = {
+      cartonId, partNo, pi, qty,
+      bag: formState.bag.value, inner: formState.inner.value, outer: formState.outer.value,
+      bagMatch: payload.bagMatch, innerMatch: payload.innerMatch, outerMatch: payload.outerMatch,
+      imgBagUrl, imgInnerUrl, imgCartonUrl,
+      customer: list.customer, packedBy: list.createdBy, checkerBy: '', packedDate: '',
+    };
+
+    try {
+      if (isEdit && pendingEditRow?.row) {
+        await gasPost({ action:'resubmit', ...gasPayload, row: pendingEditRow.row });
+      } else {
+        await gasPost({ action:'submit', ...gasPayload });
+      }
+    } catch(e) { /* Non-fatal, still save locally */ }
+  }
+
+  // Save locally
+  if (isEdit && pendingEditRow !== null) {
+    const ci = pendingEditRow.cartonIdx;
+    list.cartons[ci] = { ...list.cartons[ci], ...payload };
+    list.cartons[ci].status = 'pending';
+    list.cartons[ci].rejectionReason = null;
+  } else {
+    if (!list.cartons) list.cartons = [];
+    list.cartons.push(payload);
+  }
+  LISTS[currentListId] = list;
+  saveLists();
+
+  resetFormState();
+  renderListDetail();
+
+  // Show success banner
+  const banner = document.getElementById('success-banner');
+  if (banner) {
+    banner.classList.remove('hidden');
+    banner.innerHTML = `<div class="alert alert-success" style="margin-bottom:12px">
+      <svg><use href="#ic-check"/></svg>
+      <div><strong>${isEdit?'Resubmitted':'Entry saved'} — ${cartonRef}</strong><br/>
+      <span class="text-sm">Carton ID: ${cartonId} — ${list.listRef}</span></div>
+      <button class="btn-icon" style="margin-left:auto" onclick="this.closest('.alert').parentElement.classList.add('hidden')"><svg style="width:12px;height:12px"><use href="#ic-x"/></svg></button>
+    </div>`;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CHECKER VIEW
+// ═══════════════════════════════════════════════════════════════
+let checkerFilter = 'pending';
+let checkerSearch = '';
+let checkerRecords = [];
+
+async function renderChecker() {
+  const el = document.getElementById('page-checker');
+  el.innerHTML = `
+    <div class="page-header">
+      <div>
+        <div class="page-title"><svg><use href="#ic-check-sq"/></svg>Checker View</div>
+        <div class="page-subtitle">Review carton submissions and approve or reject.</div>
+      </div>
+      <div class="gap-8">
+        <div class="search-wrap">
+          <svg><use href="#ic-search"/></svg>
+          <input type="text" id="checker-search" placeholder="Search..." style="width:180px" oninput="checkerSearch=this.value;renderCheckerTable()" />
+        </div>
+        <select onchange="checkerFilter=this.value;renderCheckerTable()" style="width:130px;text-transform:uppercase;font-size:11px">
+          <option value="pending">PENDING</option>
+          <option value="approved">APPROVED</option>
+          <option value="rejected">REJECTED</option>
+          <option value="all">ALL</option>
+        </select>
+        <button class="btn btn-outline btn-sm" onclick="loadCheckerRecords()"><svg><use href="#ic-refresh"/></svg>Refresh</button>
+      </div>
+    </div>
+    <div id="checker-table-wrap"><div class="pulse text-muted text-sm">Loading...</div></div>
+    <div id="checker-modal-wrap"></div>`;
+
+  await loadCheckerRecords();
+}
+
+async function loadCheckerRecords() {
+  // Merge GAS records with local cartons from packing lists
+  const gasRecords = [];
+  if (GAS_URL) {
+    try {
+      const res = await gasGet({ action:'records' });
+      if (res && res.records) {
+        res.records.forEach(r => gasRecords.push({ ...r, _source:'gas' }));
+        allRecords = res.records;
+      }
+    } catch(_) {}
+  }
+
+  // Also get local cartons that haven't been submitted to GAS
+  loadLists();
+  const localRecords = [];
+  LISTS.forEach(list => {
+    (list.cartons||[]).forEach(c => {
+      localRecords.push({
+        ...c,
+        customer: list.customer,
+        packedBy: list.createdBy,
+        team: list.team,
+        listRef: list.listRef,
+        bag: c.bagBarcode,
+        inner: c.innerBarcode,
+        outer: c.outerBarcode,
+        _source: 'local',
+        _list: list,
+      });
+    });
+  });
+
+  // Prefer GAS records; fall back to local
+  checkerRecords = gasRecords.length > 0 ? gasRecords : localRecords;
+  renderCheckerTable();
+}
+
+function renderCheckerTable() {
+  let recs = checkerRecords;
+
+  // Filter by status
+  if (checkerFilter !== 'all') {
+    recs = recs.filter(r => {
+      const s = (r.status||'').toLowerCase();
+      if (checkerFilter === 'pending') return !s || s === '' || s === 'pending';
+      if (checkerFilter === 'approved') return s.includes('approved');
+      if (checkerFilter === 'rejected') return s.includes('rejected');
+      return true;
+    });
+  }
+
+  // Filter by search
+  if (checkerSearch) {
+    const q = checkerSearch.toLowerCase();
+    recs = recs.filter(r =>
+      (r.cartonId||'').toLowerCase().includes(q) ||
+      (r.cartonRef||'').toLowerCase().includes(q) ||
+      (r.customer||'').toLowerCase().includes(q) ||
+      (r.partNo||'').toLowerCase().includes(q) ||
+      (r.packedBy||'').toLowerCase().includes(q)
+    );
+  }
+
+  const wrap = document.getElementById('checker-table-wrap');
+  if (!wrap) return;
+
+  wrap.innerHTML = `<div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th>Ref / List</th><th>Customer</th><th>Part No / PI</th><th>Packed By</th>
+        <th>Qty</th><th>Barcodes</th><th>Status</th><th>Time</th>
+      </tr></thead>
+      <tbody>
+      ${recs.length===0 ? `<tr><td colspan="8"><div class="empty-state"><svg><use href="#ic-check-sq"/></svg>
+        <p>${checkerFilter==='pending'?'No pending cartons — all reviewed':'No entries found'}</p></div></td></tr>` :
+        recs.map((r,i) => {
+          const bm = matchDot(r.bagMatch!==undefined ? r.bagMatch : (r.matchStatus||'').includes('Bag:✅'));
+          const im = matchDot(r.innerMatch!==undefined ? r.innerMatch : (r.matchStatus||'').includes('Inner:✅'));
+          const om = matchDot(r.outerMatch!==undefined ? r.outerMatch : (r.matchStatus||'').includes('Outer:✅'));
+          const st = (r.status||'').toLowerCase().includes('approved')?'badge-green':
+                     (r.status||'').toLowerCase().includes('rejected')?'badge-red':'badge-amber';
+          const stLabel = (r.status||'').toLowerCase().includes('approved')?'APPROVED':
+                          (r.status||'').toLowerCase().includes('rejected')?'REJECTED':'PENDING';
+          return `<tr class="clickable ${stLabel==='REJECTED'?'rejected':''}" onclick="openCheckerModal(${i})">
+            <td><div class="font-bold text-primary text-sm">${r.cartonRef||r.cartonId||'—'}</div>
+                <div class="text-xs text-muted">${r.listRef||'—'}</div></td>
+            <td><div class="text-sm">${r.customer||'—'}</div><div class="text-xs text-muted">${r.cartonId||'—'}</div></td>
+            <td><div class="font-bold text-sm">${r.partNo||'—'}</div><div class="text-xs text-muted">${r.pi||'—'}</div></td>
+            <td><div class="text-xs">${r.packedBy||r.checkerBy||'—'}</div><div class="text-xs text-muted">${r.team||'—'}</div></td>
+            <td style="text-align:center;font-weight:700">${r.qty||'—'}</td>
+            <td style="text-align:center">${bm}&nbsp;${im}&nbsp;${om}</td>
+            <td><span class="badge ${st}">${stLabel}</span></td>
+            <td class="text-xs text-muted">${fmtTime(r.timestamp||r.createdAt)}</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  </div>`;
+
+  // Store filtered list for modal indexing
+  window._checkerFiltered = recs;
+}
+
+function openCheckerModal(idx) {
+  const r = window._checkerFiltered[idx];
+  if (!r) return;
+  const isPending = !r.status || r.status==='' || r.status.toLowerCase()==='pending';
+
+  const wrap = document.getElementById('checker-modal-wrap');
+  wrap.innerHTML = `<div class="modal-backdrop" id="checker-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg style="width:16px;height:16px"><use href="#ic-check-sq"/></svg>
+          ${r.cartonRef||r.cartonId||'—'} — ${r.listRef||'—'}
+          <span class="badge ${statusBadgeClass(r.status)}" style="margin-left:8px">${(r.status||'PENDING').toUpperCase()}</span>
+        </div>
+        <button class="btn-icon" onclick="closeCheckerModal()"><svg style="width:14px;height:14px"><use href="#ic-x"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <!-- List info -->
+        <div class="detail-kv">
+          <div class="kv-box"><div class="kv-label">Customer</div><div class="kv-value">${r.customer||'—'}</div></div>
+          <div class="kv-box"><div class="kv-label">Packed By</div><div class="kv-value">${r.packedBy||r.checkerBy||'—'}</div></div>
+          <div class="kv-box"><div class="kv-label">Team</div><div class="kv-value">${r.team||'—'}</div></div>
+        </div>
+
+        <!-- Order details -->
+        <div class="section-title">Order Details</div>
+        <div class="detail-kv" style="margin-bottom:14px">
+          <div class="kv-box"><div class="kv-label">Carton ID</div><div class="kv-value">${r.cartonId||'—'}</div></div>
+          <div class="kv-box"><div class="kv-label">Part No</div><div class="kv-value">${r.partNo||'—'}</div></div>
+          <div class="kv-box"><div class="kv-label">PI No</div><div class="kv-value">${r.pi||'—'}</div></div>
+        </div>
+        <div style="margin-bottom:14px">
+          <div class="kv-label" style="margin-bottom:4px">QTY (pcs)</div>
+          <div style="font-size:28px;font-weight:700;color:var(--primary)">${r.qty||'—'}</div>
+        </div>
+
+        <!-- Barcodes -->
+        <div class="section-title">Barcode Verification</div>
+        <div style="margin-bottom:14px;display:flex;flex-direction:column;gap:5px">
+          ${[
+            ['Bag', r.bag||r.bagBarcode, r.bagMatch, (r.matchStatus||'').includes('Bag:✅')],
+            ['Inner', r.inner||r.innerBarcode, r.innerMatch, (r.matchStatus||'').includes('Inner:✅')],
+            ['Outer', r.outer||r.outerBarcode, r.outerMatch, (r.matchStatus||'').includes('Outer:✅')],
+          ].map(([label,bc,m,m2])=>{
+            const matched = m===true||m==='true'||m2;
+            return `<div style="display:flex;align-items:center;gap:8px;font-size:12px">
+              <span>${matched?'✅':'❌'}</span>
+              <span class="${matched?'text-primary':'text-danger'}">${label}: ${bc||'—'}</span>
+            </div>`;
+          }).join('')}
+          ${(r.matchStatus&&(!r.bagMatch&&!r.innerMatch&&!r.outerMatch)) ? `<div class="text-xs text-muted" style="margin-top:4px">${r.matchStatus}</div>` : ''}
+        </div>
+
+        <!-- Photos -->
+        <div class="section-title">Photos</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px">
+          ${[['Bag',r.imgBagUrl],['Inner',r.imgInnerUrl],['Carton',r.imgCartonUrl]].map(([lbl,url])=>`
+            <div style="text-align:center">
+              ${url ? `<img src="${url}" alt="${lbl}" style="width:80px;height:80px;object-fit:cover;border-radius:6px;border:1px solid var(--border);cursor:pointer" onclick="openLightbox('${url}')" />`
+                    : `<div style="width:80px;height:80px;border-radius:6px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;opacity:.3"><svg style="width:24px;height:24px"><use href="#ic-image"/></svg></div>`}
+              <div class="text-xs text-muted mt-4">${lbl}</div>
+            </div>`).join('')}
+        </div>
+
+        ${r.status&&r.status.toLowerCase().includes('rejected') ? `
+        <div class="alert alert-danger" style="margin-bottom:0">
+          <svg><use href="#ic-alert"/></svg>
+          <div><strong>Rejected by ${r.checker||r.checkedBy||'Checker'}</strong><br/><em>${r.remarks||r.rejectionReason||'No reason given'}</em></div>
+        </div>` : ''}
+      </div>
+
+      ${isPending ? `
+      <div class="modal-footer" id="checker-actions">
+        <button class="btn btn-primary" style="flex:1" onclick="checkerApprove(${idx})">
+          <svg><use href="#ic-file-check"/></svg>Approve
+        </button>
+        <button class="btn btn-danger-outline" style="flex:1" onclick="showRejectForm(${idx})">
+          <svg><use href="#ic-file-x"/></svg>Reject
+        </button>
+      </div>
+      <div id="reject-form-wrap" class="hidden" style="padding:14px 20px;border-top:1px solid var(--border)">
+        <div class="form-group" style="margin-bottom:10px">
+          <label class="form-label text-danger">Rejection Reason *</label>
+          <textarea id="reject-reason" rows="3" placeholder="Describe why this entry is rejected..." style="text-transform:none"></textarea>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline" style="flex:1" onclick="hideRejectForm()">Cancel</button>
+          <button class="btn btn-danger" style="flex:1" onclick="checkerReject(${idx})">
+            <svg><use href="#ic-file-x"/></svg>Confirm Reject
+          </button>
+        </div>
+      </div>` : ''}
+    </div>
+  </div>`;
+}
+
+function closeCheckerModal() {
+  const wrap = document.getElementById('checker-modal-wrap');
+  if (wrap) wrap.innerHTML = '';
+}
+function showRejectForm(idx) {
+  document.getElementById('checker-actions').classList.add('hidden');
+  document.getElementById('reject-form-wrap').classList.remove('hidden');
+  document.getElementById('reject-reason').focus();
+}
+function hideRejectForm() {
+  document.getElementById('checker-actions').classList.remove('hidden');
+  document.getElementById('reject-form-wrap').classList.add('hidden');
+}
+
+async function checkerApprove(idx) {
+  const r = window._checkerFiltered[idx];
+  if (!r) return;
+  if (GAS_URL && r.row) {
+    try { await gasPost({ action:'verify', row:r.row, checker:'CHECKER', status:'Approved', remarks:'' }); } catch(_){}
+  }
+  // Update locally
+  applyCheckerStatus(r, 'approved', '', 'CHECKER');
+  closeCheckerModal();
+  toast('Carton approved ✅', 'success');
+  renderCheckerTable();
+}
+
+async function checkerReject(idx) {
+  const r = window._checkerFiltered[idx];
+  const reason = (document.getElementById('reject-reason')||{}).value?.trim();
+  if (!reason) { toast('Please enter a rejection reason', 'error'); return; }
+  if (GAS_URL && r.row) {
+    try { await gasPost({ action:'verify', row:r.row, checker:'CHECKER', status:'Rejected', remarks:reason }); } catch(_){}
+  }
+  applyCheckerStatus(r, 'rejected', reason, 'CHECKER');
+  closeCheckerModal();
+  toast('Carton rejected ❌', 'error');
+  renderCheckerTable();
+}
+
+function applyCheckerStatus(r, status, reason, checker) {
+  // Update in local LISTS
+  if (r._source === 'local' || r._list) {
+    loadLists();
+    LISTS.forEach(list => {
+      (list.cartons||[]).forEach(c => {
+        if (c.cartonRef === r.cartonRef || c.cartonId === r.cartonId) {
+          c.status = status;
+          c.rejectionReason = reason || null;
+          c.checkedBy = checker;
         }
+      });
+    });
+    saveLists();
+  }
+  // Update in checkerRecords too
+  const cr = checkerRecords.find(x => x.cartonRef===r.cartonRef || x.cartonId===r.cartonId);
+  if (cr) { cr.status = status; cr.remarks = reason; cr.checker = checker; }
+}
 
-        // ============================================
-        // CRITICAL FIX: Use text/plain to bypass CORS preflight
-        // ============================================
-        async function apiCall(action, data) {
-            setSync('syncing');
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'text/plain;charset=utf-8'},
-                    body: JSON.stringify(Object.assign({action: action}, data))
-                });
-                const result = await response.json();
-                setSync('online');
-                return result;
-            } catch(err) {
-                setSync('offline');
-                console.error('API Error:', err);
-                alert('Error: ' + err.message);
-                return {success: false, error: err.message};
-            }
-        }
+// ═══════════════════════════════════════════════════════════════
+// MASTER REGISTER
+// ═══════════════════════════════════════════════════════════════
+const LS_MASTER = 'mg_master_records';
+let masterRecords = [];
 
-        async function createJob() {
-            const staff = document.getElementById('staffName').value.trim();
-            const customer = document.getElementById('customerName').value.trim();
-            const date = document.getElementById('shipmentDate').value;
-            const prefix = document.getElementById('prefix').value.trim().toUpperCase();
-            const start = parseInt(document.getElementById('startNum').value) || 1;
-            const end = parseInt(document.getElementById('endNum').value) || 100;
+function loadMasterRecords() {
+  try { masterRecords = JSON.parse(localStorage.getItem(LS_MASTER)||'[]'); } catch{ masterRecords=[]; }
+}
+function saveMasterRecords() { localStorage.setItem(LS_MASTER, JSON.stringify(masterRecords)); }
 
-            if (!staff) { alert('Please enter your name'); return; }
-            if (!customer || !date) { alert('Please fill Customer Name and Shipment Date'); return; }
-            if (end < start) { alert('End must be greater than start'); return; }
-            if (end - start > 5000) { alert('Maximum 5000 cartons'); return; }
+function renderMaster() {
+  loadMasterRecords();
+  const el = document.getElementById('page-master');
+  let searchVal = '';
+  renderMasterContent(el, searchVal);
+}
 
-            const cartonsArr = [];
-            for (let i = start; i <= end; i++) {
-                cartonsArr.push(prefix + String(i).padStart(3, '0'));
-            }
+function renderMasterContent(el, searchVal) {
+  const filtered = masterRecords.filter(r =>
+    !searchVal ||
+    (r.partNo||'').toLowerCase().includes(searchVal) ||
+    (r.customer||'').toLowerCase().includes(searchVal)
+  );
 
-            const result = await apiCall('createJob', {
-                customer: customer,
-                shipmentDate: date,
-                prefix: prefix,
-                startNum: start,
-                endNum: end,
-                totalCartons: cartonsArr.length,
-                cartons: cartonsArr
-            });
+  el.innerHTML = `
+    <div class="page-header">
+      <div>
+        <div class="page-title"><svg><use href="#ic-db"/></svg>Master Register</div>
+        <div class="page-subtitle">Manage approved barcodes for validation.</div>
+      </div>
+      <div class="gap-8">
+        <div class="search-wrap">
+          <svg><use href="#ic-search"/></svg>
+          <input type="text" id="master-search" placeholder="Search part / customer..." style="width:200px" value="${searchVal}"
+            oninput="renderMasterContent(document.getElementById('page-master'),this.value.toLowerCase())" />
+        </div>
+        <button class="btn btn-primary" onclick="showAddMasterModal()"><svg><use href="#ic-plus"/></svg>New Record</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Part No</th><th>Customer</th><th>PI</th><th>Bag Barcode</th><th>Inner Barcode</th><th>Outer Barcode</th><th></th>
+        </tr></thead>
+        <tbody>
+        ${filtered.length===0 ? `<tr><td colspan="7"><div class="empty-state"><svg><use href="#ic-db"/></svg><p>No records yet — add your first barcode set</p></div></td></tr>` :
+          filtered.map((r,i)=>`<tr>
+            <td class="font-bold text-primary">${r.partNo}</td>
+            <td>${r.customer}</td>
+            <td class="text-muted text-xs">${r.pi||'—'}</td>
+            <td class="text-xs text-muted" style="max-width:120px;overflow:hidden;text-overflow:ellipsis" title="${r.bagBarcode}">${r.bagBarcode}</td>
+            <td class="text-xs text-muted" style="max-width:120px;overflow:hidden;text-overflow:ellipsis" title="${r.innerBarcode}">${r.innerBarcode}</td>
+            <td class="text-xs text-muted" style="max-width:120px;overflow:hidden;text-overflow:ellipsis" title="${r.outerBarcode}">${r.outerBarcode}</td>
+            <td><button class="btn-icon" onclick="deleteMasterRecord(${i})" title="Delete"><svg style="width:13px;height:13px;color:var(--danger)"><use href="#ic-trash"/></svg></button></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    <div id="add-master-modal-wrap"></div>`;
+}
 
-            if (result.success) {
-                currentJobId = result.jobId;
-                localStorage.setItem('staffName', staff);
-                loadJob(currentJobId);
-            } else {
-                alert('Error: ' + (result.error || 'Unknown'));
-            }
-        }
+function showAddMasterModal() {
+  const wrap = document.getElementById('add-master-modal-wrap');
+  wrap.innerHTML = `<div class="modal-backdrop">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <div class="modal-title"><svg style="width:16px;height:16px"><use href="#ic-db"/></svg>Add Master Record</div>
+        <button class="btn-icon" onclick="this.closest('.modal-backdrop').remove()"><svg style="width:14px;height:14px"><use href="#ic-x"/></svg></button>
+      </div>
+      <div class="modal-body" style="display:flex;flex-direction:column;gap:12px">
+        <div class="form-group"><label class="form-label">Customer <span class="req">*</span></label><input type="text" id="mr-customer" /></div>
+        <div class="grid-2">
+          <div class="form-group"><label class="form-label">Part No <span class="req">*</span></label><input type="text" id="mr-partNo" /></div>
+          <div class="form-group"><label class="form-label">PI (Optional)</label><input type="text" id="mr-pi" /></div>
+        </div>
+        <div class="form-group"><label class="form-label">Bag Barcode <span class="req">*</span></label><input type="text" id="mr-bag" /></div>
+        <div class="form-group"><label class="form-label">Inner Barcode <span class="req">*</span></label><input type="text" id="mr-inner" /></div>
+        <div class="form-group"><label class="form-label">Outer Barcode <span class="req">*</span></label><input type="text" id="mr-outer" /></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" style="flex:1" onclick="this.closest('.modal-backdrop').remove()">Cancel</button>
+        <button class="btn btn-primary" style="flex:1" onclick="saveMasterRecord()">Save Record</button>
+      </div>
+    </div>
+  </div>`;
+}
 
-        function openEditModal(job) {
-            editingJob = job;
-            document.getElementById('editCustomer').value = job.customer;
-            document.getElementById('editDate').value = job.shipmentDate;
-            document.getElementById('editCurrentRange').value = job.prefix + job.startNum + ' to ' + job.endNum + ' (' + job.totalCartons + ' cartons)';
-            document.getElementById('editNewEnd').value = '';
-            document.getElementById('editNewEnd').placeholder = 'Current end: ' + job.endNum;
-            document.getElementById('editWarning').className = 'hidden';
-            document.getElementById('editWarning').innerHTML = '';
-            document.getElementById('editModal').classList.remove('hidden');
-        }
+function saveMasterRecord() {
+  const customer = document.getElementById('mr-customer')?.value.trim();
+  const partNo = document.getElementById('mr-partNo')?.value.trim().toUpperCase();
+  const pi = document.getElementById('mr-pi')?.value.trim().toUpperCase() || '';
+  const bag = document.getElementById('mr-bag')?.value.trim().toUpperCase();
+  const inner = document.getElementById('mr-inner')?.value.trim().toUpperCase();
+  const outer = document.getElementById('mr-outer')?.value.trim().toUpperCase();
 
-        function closeEditModal() {
-            document.getElementById('editModal').classList.add('hidden');
-            editingJob = null;
-        }
+  if (!customer||!partNo||!bag||!inner||!outer) { toast('Fill all required fields','error'); return; }
 
-        function checkWarning() {
-            if (!editingJob) return;
-            const newEnd = parseInt(document.getElementById('editNewEnd').value);
-            const warningDiv = document.getElementById('editWarning');
-            if (!newEnd || isNaN(newEnd)) {
-                warningDiv.className = 'hidden';
-                return;
-            }
-            if (newEnd < editingJob.endNum) {
-                const removed = editingJob.endNum - newEnd;
-                warningDiv.className = 'danger-box';
-                warningDiv.innerHTML = '<strong>WARNING: Cartons will be REMOVED</strong>You are about to delete ' + removed + ' cartons (from ' + editingJob.prefix + (newEnd+1) + ' to ' + editingJob.prefix + editingJob.endNum + '). Any checked data for these cartons will be LOST permanently.';
-            } else if (newEnd > editingJob.endNum) {
-                const added = newEnd - editingJob.endNum;
-                warningDiv.className = 'warning-box';
-                warningDiv.innerHTML = '<strong>Adding ' + added + ' new cartons</strong>New cartons will be added as unchecked. Existing checked data will be kept.';
-            } else {
-                warningDiv.className = 'hidden';
-            }
-        }
+  loadMasterRecords();
+  masterRecords.push({ customer, partNo, pi, bagBarcode:bag, innerBarcode:inner, outerBarcode:outer, createdAt:new Date().toISOString() });
+  saveMasterRecords();
+  toast('Master record saved','success');
+  document.querySelector('.modal-backdrop')?.remove();
+  renderMaster();
+}
 
-        async function saveEditJob() {
-            if (!editingJob) return;
-            const newEnd = parseInt(document.getElementById('editNewEnd').value);
-            const customer = document.getElementById('editCustomer').value.trim();
-            const date = document.getElementById('editDate').value;
-            if (!customer || !date) { alert('Please fill all fields'); return; }
-            if (!newEnd || isNaN(newEnd)) { alert('Please enter a valid end number'); return; }
-            if (newEnd < editingJob.startNum) { alert('End number cannot be less than start: ' + editingJob.startNum); return; }
-            if (newEnd - editingJob.startNum + 1 > 5000) { alert('Maximum 5000 cartons allowed'); return; }
-            if (newEnd < editingJob.endNum) {
-                const removed = editingJob.endNum - newEnd;
-                if (!confirm('DANGER: This will permanently delete ' + removed + ' cartons and all their checked data.\n\nAre you absolutely sure?')) return;
-            }
-            const staff = localStorage.getItem('staffName') || 'Unknown';
-            const result = await apiCall('editJob', {
-                jobId: editingJob.jobId,
-                customer: customer,
-                shipmentDate: date,
-                newEndNum: newEnd,
-                editedBy: staff
-            });
-            if (result.success) {
-                alert('Job updated!\n' + result.message);
-                closeEditModal();
-                loadJobList();
-            } else {
-                alert('Error: ' + (result.error || 'Unknown'));
-            }
-        }
+function deleteMasterRecord(i) {
+  if (!confirm('Delete this master record?')) return;
+  loadMasterRecords();
+  masterRecords.splice(i,1);
+  saveMasterRecords();
+  toast('Record deleted');
+  renderMaster();
+}
 
-        async function loadJob(jobId) {
-            const result = await apiCall('getJob', {jobId: jobId});
-            if (!result.success) { alert('Error: ' + result.error); return; }
-            currentJobId = jobId;
-            const job = result.job;
-            cartons = result.cartons.map(c => c.cartonNo);
-            cartonData = {};
-            result.cartons.forEach(c => cartonData[c.cartonNo] = c.checked);
-            document.getElementById('dispCustomer').textContent = job.customer;
-            document.getElementById('dispDate').textContent = job.shipmentDate;
-            document.getElementById('dispTotal').textContent = job.totalCartons + ' cartons';
-            document.getElementById('setupScreen').classList.add('hidden');
-            document.getElementById('trackingScreen').classList.remove('hidden');
-            renderCartons();
-            updateStats();
-        }
+// ═══════════════════════════════════════════════════════════════
+// REJECT LIST
+// ═══════════════════════════════════════════════════════════════
+async function renderRejects() {
+  const el = document.getElementById('page-rejects');
+  el.innerHTML = `
+    <div class="page-header">
+      <div>
+        <div class="page-title" style="color:var(--danger)"><svg style="color:var(--danger)"><use href="#ic-alert"/></svg>Reject List</div>
+        <div class="page-subtitle">Cartons rejected by checker — staff must correct and resubmit from the packing list.</div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="renderRejects()"><svg><use href="#ic-refresh"/></svg>Refresh</button>
+    </div>
+    <div id="reject-content"><div class="pulse text-muted text-sm">Loading...</div></div>`;
 
-        async function loadJobList() {
-            const result = await apiCall('getAllJobs', {});
-            const container = document.getElementById('jobListContent');
-            if (!result.success || !result.jobs || result.jobs.length === 0) {
-                container.innerHTML = '<div class="empty-state"><p>No jobs yet. Create one above!</p></div>';
-                return;
-            }
-            container.innerHTML = '';
-            result.jobs.forEach(job => {
-                const div = document.createElement('div');
-                div.className = 'job-card';
-                div.innerHTML = '<div class="job-title">' + job.customer + '</div><div class="job-meta">' + job.shipmentDate + ' &bull; ' + job.prefix + job.startNum + '-' + job.endNum + ' &bull; ' + job.totalCartons + ' cartons</div>';
-                const actions = document.createElement('div');
-                actions.className = 'job-actions';
-                actions.innerHTML = '<button class="btn btn-success" style="flex:1;">Open</button><button class="btn btn-info" style="flex:1;">Edit</button>';
-                actions.children[0].onclick = function(e) { e.stopPropagation(); loadJob(job.jobId); };
-                actions.children[1].onclick = function(e) { e.stopPropagation(); openEditModal(job); };
-                div.appendChild(actions);
-                container.appendChild(div);
-            });
-        }
+  // Collect rejected from local lists
+  loadLists();
+  let rejected = [];
+  LISTS.forEach(list => {
+    (list.cartons||[]).filter(c=>c.status==='rejected').forEach(c => {
+      rejected.push({...c, listRef:list.listRef, customer:list.customer, packedBy:list.createdBy, team:list.team, _listIdx:LISTS.indexOf(list)});
+    });
+  });
 
-        function backToSetup() {
-            document.getElementById('trackingScreen').classList.add('hidden');
-            document.getElementById('setupScreen').classList.remove('hidden');
-            currentJobId = null;
-            loadJobList();
-        }
+  // Also try to get GAS records
+  if (GAS_URL) {
+    try {
+      const res = await gasGet({ action:'records' });
+      if (res && res.records) {
+        res.records.filter(r=>(r.status||'').toLowerCase().includes('rejected')).forEach(r=>{
+          // Only add if not already in local
+          const dup = rejected.find(x=>x.cartonId===r.cartonId&&x.cartonRef===r.cartonRef);
+          if (!dup) rejected.push({...r,_source:'gas'});
+        });
+      }
+    } catch(_){}
+  }
 
-        function renderCartons() {
-            const grid = document.getElementById('cartonsGrid');
-            grid.innerHTML = '';
-            cartons.forEach(num => {
-                const div = document.createElement('div');
-                div.className = 'carton' + (cartonData[num] ? ' checked' : '');
-                div.ondblclick = () => toggleCarton(num);
-                div.id = 'carton-' + num;
-                div.innerHTML = '<span class="carton-number">' + num + '</span><span class="carton-status">' + (cartonData[num] ? 'CHECKED' : 'PENDING') + '</span><span class="carton-hint">double-click</span>';
-                grid.appendChild(div);
-            });
-        }
+  const now = Date.now();
+  const recent = rejected.filter(r=>{
+    const d=new Date(r.timestamp||r.createdAt); return (now-d)<7*24*3600*1000;
+  }).length;
 
-        async function toggleCarton(num) {
-            const staff = localStorage.getItem('staffName') || 'Unknown';
-            const newChecked = !cartonData[num];
-            const result = await apiCall('toggleCarton', {
-                jobId: currentJobId,
-                cartonNo: num,
-                checked: newChecked,
-                checkedBy: staff
-            });
-            if (result.success) {
-                cartonData[num] = newChecked;
-                const div = document.getElementById('carton-' + num);
-                div.className = 'carton' + (newChecked ? ' checked' : '');
-                div.querySelector('.carton-status').textContent = newChecked ? 'CHECKED' : 'PENDING';
-                updateStats();
-            }
-        }
+  const el2 = document.getElementById('reject-content');
+  el2.innerHTML = `
+    <div class="grid-2" style="max-width:400px;margin-bottom:20px">
+      <div class="stat-card"><div class="label">Total Rejected</div><div class="value text-danger">${rejected.length}</div></div>
+      <div class="stat-card"><div class="label">Last 7 Days</div><div class="value text-amber">${recent}</div></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Ref / List</th><th>Customer / PI</th><th>Carton ID / Part No</th><th>Packed By</th><th>Qty</th><th>Rejection Reason</th><th>Action</th>
+        </tr></thead>
+        <tbody>
+        ${rejected.length===0 ? `<tr><td colspan="7"><div class="empty-state"><svg><use href="#ic-alert"/></svg><p>No rejected entries — great job!</p></div></td></tr>` :
+          rejected.map(r=>`<tr class="rejected">
+            <td><div class="font-bold text-danger text-sm">${r.cartonRef||r.cartonId||'—'}</div>
+                <div class="text-xs text-muted">${r.listRef||'—'}</div>
+                <div class="text-xs text-muted">${fmtDate(r.timestamp||r.createdAt)}</div></td>
+            <td><div class="text-sm">${r.customer||'—'}</div><div class="text-xs text-muted">${r.pi||'—'}</div></td>
+            <td><div class="text-xs">${r.cartonId||'—'}</div><div class="font-bold text-sm">${r.partNo||'—'}</div></td>
+            <td><div class="text-xs">${r.packedBy||r.checkerBy||'—'}</div><div class="text-xs text-muted">${r.team||'—'}</div></td>
+            <td style="text-align:center;font-weight:700">${r.qty||'—'}</td>
+            <td><div class="text-xs text-danger" style="font-style:italic;max-width:200px">${r.rejectionReason||r.remarks||'No reason given'}</div>
+                ${r.checkedBy||r.checker?`<div class="text-xs text-muted mt-4">By: ${r.checkedBy||r.checker}</div>`:''}
+            </td>
+            <td>
+              ${r._listIdx!==undefined ?
+                `<button class="btn btn-outline btn-sm" onclick="nav('list-detail',${r._listIdx})" title="Go to packing list to edit">
+                  <svg><use href="#ic-external"/></svg>Edit
+                </button>` :
+                `<span class="text-xs text-muted">Edit in packing list</span>`}
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
 
-        async function markAll(checked) {
-            if (!confirm(checked ? 'Mark all as checked?' : 'Mark all as unchecked?')) return;
-            const staff = localStorage.getItem('staffName') || 'Unknown';
-            const result = await apiCall('markAll', {
-                jobId: currentJobId,
-                checked: checked,
-                checkedBy: staff
-            });
-            if (result.success) {
-                cartons.forEach(c => cartonData[c] = checked);
-                renderCartons();
-                updateStats();
-            }
-        }
-
-        async function refreshData() {
-            if (!currentJobId) return;
-            await loadJob(currentJobId);
-        }
-
-        function updateStats() {
-            const checked = Object.values(cartonData).filter(v => v).length;
-            const total = cartons.length;
-            const pending = total - checked;
-            const percent = total > 0 ? Math.round((checked / total) * 100) : 0;
-            document.getElementById('checkedCount').textContent = checked;
-            document.getElementById('pendingCount').textContent = pending;
-            document.getElementById('percentCount').textContent = percent + '%';
-            document.getElementById('progressFill').style.width = percent + '%';
-        }
-
-        const savedStaff = localStorage.getItem('staffName');
-        if (savedStaff) document.getElementById('staffName').value = savedStaff;
-        document.getElementById('shipmentDate').valueAsDate = new Date();
-        document.getElementById('editNewEnd').addEventListener('input', checkWarning);
-        loadJobList();
-    </script>
-
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+loadLists();
+nav('dashboard');
+</script>
 </body>
 </html>
