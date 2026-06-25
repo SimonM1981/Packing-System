@@ -268,12 +268,7 @@ tr.clickable{cursor:pointer}
       </a>
     </nav>
     <div style="flex:1"></div>
-    <!-- GAS URL config -->
-    <div style="padding:12px 10px;border-top:1px solid var(--border)">
-      <div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-fg);margin-bottom:5px">API Endpoint</div>
-      <input type="text" id="gas-url" placeholder="Paste GAS URL here..." style="font-size:10px;padding:5px 8px;text-transform:none" />
-      <button class="btn btn-primary btn-full mt-4" style="font-size:10px;padding:5px" onclick="saveUrl()">Save URL</button>
-    </div>
+    
   </div>
 
   <!-- Main content -->
@@ -322,9 +317,8 @@ tr.clickable{cursor:pointer}
 'use strict';
 
 // ── Config ────────────────────────────────────────────────────
-const LS_URL = 'mg_gas_url';
 const LS_RECORDS = 'mg_records_cache';
-let GAS_URL = localStorage.getItem(LS_URL) || 'https://script.google.com/macros/s/AKfycbxJNbH09bwWqsO0lnM8j_xHA7ALfPFKpSjSFwUK4SRugrHqMWIhds7KhyUHN7kXR28/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxJNbH09bwWqsO0lnM8j_xHA7ALfPFKpSjSFwUK4SRugrHqMWIhds7KhyUHN7kXR28/exec';
 let currentPage = '';
 let currentListId = null; // index into LISTS array
 let cameraCallback = null;
@@ -343,39 +337,7 @@ function loadLists() {
 }
 
 // ── URL management ─────────────────────────────────────────────
-document.getElementById('gas-url').value = GAS_URL;
-function saveUrl() {
-  GAS_URL = document.getElementById('gas-url').value.trim();
-  localStorage.setItem(LS_URL, GAS_URL);
-  toast('API URL saved', 'success');
-  if (currentPage === 'dashboard') renderDashboard();
-  if (currentPage === 'checker') renderChecker();
-  if (currentPage === 'rejects') renderRejects();
-}
 
-// ── GAS API calls ──────────────────────────────────────────────
-async function gasGet(params) {
-  if (!GAS_URL) return null;
-  const url = GAS_URL + '?' + new URLSearchParams(params);
-  const r = await fetch(url);
-  return r.json();
-}
-async function gasPost(data) {
-  if (!GAS_URL) return null;
-  try {
-    const r = await fetch(GAS_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(data)
-    });
-    return await r.json();
-  } catch(e) {
-    console.warn('gasPost failed:', e.message);
-    return null;
-  }
-}
-
-// ── Toast ──────────────────────────────────────────────────────
 function toast(msg, type='') {
   const el = document.createElement('div');
   el.className = 'toast' + (type ? ' ' + type : '');
@@ -462,7 +424,6 @@ async function openCamera(label, cb) {
       throw new Error('Scanner library not loaded. Check internet connection.');
     }
 
-    // Clean up any old instance
     if (cameraReader) {
       try { await cameraReader.stop(); } catch(e){}
       try { await cameraReader.clear(); } catch(e){}
@@ -1245,6 +1206,7 @@ async function submitEntry(isEdit) {
 let checkerFilter = 'pending';
 let checkerSearch = '';
 let checkerRecords = [];
+let currentCheckerRecord = null;
 
 async function renderChecker() {
   const el = document.getElementById('page-checker');
@@ -1268,6 +1230,7 @@ async function renderChecker() {
         <button class="btn btn-outline btn-sm" onclick="loadCheckerRecords()"><svg><use href="#ic-refresh"/></svg>Refresh</button>
       </div>
     </div>
+    <div id="checker-stats" class="stat-grid" style="margin-bottom:20px"></div>
     <div id="checker-table-wrap"><div class="pulse text-muted text-sm">Loading...</div></div>
     <div id="checker-modal-wrap"></div>`;
 
@@ -1275,47 +1238,54 @@ async function renderChecker() {
 }
 
 async function loadCheckerRecords() {
-  // Merge GAS records with local cartons from packing lists
-  const gasRecords = [];
+  checkerRecords = [];
   if (GAS_URL) {
     try {
       const res = await gasGet({ action:'records' });
       if (res && res.records) {
-        res.records.forEach(r => gasRecords.push({ ...r, _source:'gas' }));
+        checkerRecords = res.records;
         allRecords = res.records;
       }
-    } catch(_) {}
+    } catch(e) {
+      console.warn('Failed to load checker records:', e);
+    }
   }
-
-  // Also get local cartons that haven't been submitted to GAS
-  loadLists();
-  const localRecords = [];
-  LISTS.forEach(list => {
-    (list.cartons||[]).forEach(c => {
-      localRecords.push({
-        ...c,
-        customer: list.customer,
-        packedBy: list.createdBy,
-        team: list.team,
-        listRef: list.listRef,
-        bag: c.bagBarcode,
-        inner: c.innerBarcode,
-        outer: c.outerBarcode,
-        _source: 'local',
-        _list: list,
-      });
-    });
-  });
-
-  // Prefer GAS records; fall back to local
-  checkerRecords = gasRecords.length > 0 ? gasRecords : localRecords;
+  renderCheckerStats();
   renderCheckerTable();
+}
+
+function renderCheckerStats() {
+  const now = Date.now();
+  const sevenDaysAgo = now - 7 * 24 * 3600 * 1000;
+
+  const total = checkerRecords.length;
+  const pending = checkerRecords.filter(r => !r.status || r.status.toLowerCase() === '').length;
+  const approved = checkerRecords.filter(r => (r.status||'').toLowerCase().includes('approved')).length;
+  const rejected = checkerRecords.filter(r => (r.status||'').toLowerCase().includes('rejected')).length;
+  const recentRejected = checkerRecords.filter(r => {
+    const s = (r.status||'').toLowerCase();
+    if (!s.includes('rejected')) return false;
+    const d = new Date(r.timestamp||r.createdAt).getTime();
+    return d > sevenDaysAgo;
+  }).length;
+
+  document.getElementById('checker-stats').innerHTML = [
+    { label: 'Total Records', value: total, icon: 'ic-box', color: 'var(--muted-fg)' },
+    { label: 'Pending', value: pending, icon: 'ic-clock', color: 'var(--amber)' },
+    { label: 'Approved', value: approved, icon: 'ic-check', color: 'var(--primary)' },
+    { label: 'Rejected', value: rejected, icon: 'ic-alert', color: 'var(--danger)' },
+    { label: 'Rejected (7d)', value: recentRejected, icon: 'ic-alert', color: '#ff5722' },
+  ].map(s => `
+    <div class="stat-card">
+      <svg class="icon" style="color:${s.color}"><use href="#${s.icon}"/></svg>
+      <div class="label">${s.label}</div>
+      <div class="value" style="color:${s.color}">${s.value}</div>
+    </div>`).join('');
 }
 
 function renderCheckerTable() {
   let recs = checkerRecords;
 
-  // Filter by status
   if (checkerFilter !== 'all') {
     recs = recs.filter(r => {
       const s = (r.status||'').toLowerCase();
@@ -1326,7 +1296,6 @@ function renderCheckerTable() {
     });
   }
 
-  // Filter by search
   if (checkerSearch) {
     const q = checkerSearch.toLowerCase();
     recs = recs.filter(r =>
@@ -1341,200 +1310,263 @@ function renderCheckerTable() {
   const wrap = document.getElementById('checker-table-wrap');
   if (!wrap) return;
 
-  wrap.innerHTML = `<div class="table-wrap">
-    <table>
-      <thead><tr>
-        <th>Ref / List</th><th>Customer</th><th>Part No / PI</th><th>Packed By</th>
-        <th>Qty</th><th>Barcodes</th><th>Status</th><th>Time</th>
-      </tr></thead>
-      <tbody>
-      ${recs.length===0 ? `<tr><td colspan="8"><div class="empty-state"><svg><use href="#ic-check-sq"/></svg>
-        <p>${checkerFilter==='pending'?'No pending cartons — all reviewed':'No entries found'}</p></div></td></tr>` :
-        recs.map((r,i) => {
-          const bm = matchDot(r.bagMatch!==undefined ? r.bagMatch : (r.matchStatus||'').includes('Bag:✅'));
-          const im = matchDot(r.innerMatch!==undefined ? r.innerMatch : (r.matchStatus||'').includes('Inner:✅'));
-          const om = matchDot(r.outerMatch!==undefined ? r.outerMatch : (r.matchStatus||'').includes('Outer:✅'));
-          const st = (r.status||'').toLowerCase().includes('approved')?'badge-green':
-                     (r.status||'').toLowerCase().includes('rejected')?'badge-red':'badge-amber';
-          const stLabel = (r.status||'').toLowerCase().includes('approved')?'APPROVED':
-                          (r.status||'').toLowerCase().includes('rejected')?'REJECTED':'PENDING';
-          return `<tr class="clickable ${stLabel==='REJECTED'?'rejected':''}" onclick="openCheckerModal(${i})">
-            <td><div class="font-bold text-primary text-sm">${r.cartonRef||r.cartonId||'—'}</div>
-                <div class="text-xs text-muted">${r.listRef||'—'}</div></td>
-            <td><div class="text-sm">${r.customer||'—'}</div><div class="text-xs text-muted">${r.cartonId||'—'}</div></td>
-            <td><div class="font-bold text-sm">${r.partNo||'—'}</div><div class="text-xs text-muted">${r.pi||'—'}</div></td>
-            <td><div class="text-xs">${r.packedBy||r.checkerBy||'—'}</div><div class="text-xs text-muted">${r.team||'—'}</div></td>
-            <td style="text-align:center;font-weight:700">${r.qty||'—'}</td>
-            <td style="text-align:center">${bm}&nbsp;${im}&nbsp;${om}</td>
-            <td><span class="badge ${st}">${stLabel}</span></td>
-            <td class="text-xs text-muted">${fmtTime(r.timestamp||r.createdAt)}</td>
-          </tr>`;
-        }).join('')}
-      </tbody>
-    </table>
-  </div>`;
+  if (recs.length === 0) {
+    wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-check-sq"/></svg><p>No records found</p></div>';
+    return;
+  }
 
-  // Store filtered list for modal indexing
-  window._checkerFiltered = recs;
+  wrap.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px">' + recs.map(r => {
+    const s = (r.status||'').toLowerCase();
+    const isApproved = s.includes('approved');
+    const isRejected = s.includes('rejected');
+    const isPending = !isApproved && !isRejected;
+
+    const statusColor = isApproved ? 'var(--primary)' : isRejected ? 'var(--danger)' : 'var(--amber)';
+    const statusBg = isApproved ? 'var(--primary-dim)' : isRejected ? 'var(--danger-dim)' : 'var(--amber-dim)';
+    const statusBorder = isApproved ? 'var(--primary-border)' : isRejected ? 'var(--danger-border)' : 'var(--amber-border)';
+    const statusText = isApproved ? 'APPROVED' : isRejected ? 'REJECTED' : 'PENDING';
+
+    // Get photo thumbnails
+    const photos = [];
+    if (r.imgBagUrl) photos.push({url: r.imgBagUrl, lbl: 'Bag'});
+    if (r.imgInnerUrl) photos.push({url: r.imgInnerUrl, lbl: 'Inner'});
+    if (r.imgCartonUrl) photos.push({url: r.imgCartonUrl, lbl: 'Carton'});
+
+    const photoHtml = photos.length > 0 
+      ? '<div style="display:flex;gap:6px;margin-top:8px">' + photos.map(p => {
+          const id = (p.url||'').match(/[-\w]{25,}/);
+          const thumb = id ? `https://drive.google.com/thumbnail?id=${id[0]}&sz=200` : p.url;
+          return `<img src="${thumb}" style="width:60px;height:60px;object-fit:cover;border-radius:6px;border:1px solid var(--border);cursor:pointer" onclick="event.stopPropagation();openLightbox('${p.url}')" />`;
+        }).join('') + '</div>'
+      : '';
+
+    return `<div class="record-card ${isRejected ? 'rejected' : ''}" style="cursor:pointer;padding:14px;border-left:4px solid ${statusColor}" onclick="openCheckerDetail(${r.row})">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-weight:700;font-size:1rem;color:${statusColor}">${escHtml(r.customer||'Unknown')}</span>
+        <span class="badge" style="background:${statusBg};color:${statusColor};border-color:${statusBorder}">${statusText}</span>
+      </div>
+      <div style="font-size:0.85rem;color:var(--muted-fg);margin-bottom:4px">
+        PI: ${escHtml(r.pi||'—')} | Carton: ${escHtml(r.cartonId||'—')} | Part: ${escHtml(r.partNo||'—')}
+      </div>
+      <div style="font-size:0.8rem;color:var(--muted-fg)">
+        Packed: ${escHtml(r.packedBy||'—')} | Qty: ${r.qty||'0'} pcs | ${fmtDate(r.timestamp||r.createdAt)}
+      </div>
+      ${isRejected && r.remarks ? `<div style="font-size:0.8rem;color:var(--danger);margin-top:6px;font-style:italic">💬 ${escHtml(r.remarks)}</div>` : ''}
+      ${photoHtml}
+    </div>`;
+  }).join('') + '</div>';
 }
 
-function openCheckerModal(idx) {
-  const r = window._checkerFiltered[idx];
-  if (!r) return;
-  const isPending = !r.status || r.status==='' || r.status.toLowerCase()==='pending';
+async function openCheckerDetail(rowNum) {
+  try {
+    const res = await gasGet({ action: 'record', row: rowNum });
+    if (!res || res.error) {
+      toast('Failed to load record details', 'error');
+      return;
+    }
+    currentCheckerRecord = res;
+    showCheckerDetailModal(res);
+  } catch(e) {
+    toast('Error loading record', 'error');
+  }
+}
+
+function showCheckerDetailModal(r) {
+  const s = (r.status||'').toLowerCase();
+  const isApproved = s.includes('approved');
+  const isRejected = s.includes('rejected');
+  const isPending = !isApproved && !isRejected;
 
   const wrap = document.getElementById('checker-modal-wrap');
-  wrap.innerHTML = `<div class="modal-backdrop" id="checker-modal">
-    <div class="modal">
+
+  // Build photos section
+  const photos = [
+    {lbl: 'Bag', url: r.imgBagUrl},
+    {lbl: 'Inner', url: r.imgInnerUrl},
+    {lbl: 'Carton', url: r.imgCartonUrl}
+  ];
+  const photoSection = photos.some(p => p.url) ? `
+    <div class="section-title">Photos</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+      ${photos.map(p => {
+        if (!p.url) return '';
+        const id = (p.url||'').match(/[-\w]{25,}/);
+        const thumb = id ? `https://drive.google.com/thumbnail?id=${id[0]}&sz=400` : p.url;
+        return `<div style="text-align:center">
+          <img src="${thumb}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer" onclick="openLightbox('${p.url}')" />
+          <div style="font-size:0.7rem;color:var(--muted-fg);margin-top:4px">${p.lbl}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  ` : '';
+
+  // Build barcode section
+  const barcodes = [
+    {lbl: 'Bag', val: r.bag, match: (r.matchStatus||'').includes('Bag:✅')},
+    {lbl: 'Inner', val: r.inner, match: (r.matchStatus||'').includes('Inner:✅')},
+    {lbl: 'Outer', val: r.outer, match: (r.matchStatus||'').includes('Outer:✅')}
+  ];
+  const barcodeSection = `
+    <div class="section-title">Barcode Verification</div>
+    <div style="margin-bottom:16px">
+      ${barcodes.map(b => {
+        const isNo = String(b.val||'').toUpperCase() === 'NO';
+        const ok = b.match || isNo;
+        return `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--muted);border-radius:6px;margin-bottom:6px">
+          <span style="font-size:0.9rem">${ok ? '✅' : '❌'}</span>
+          <span style="font-size:0.85rem;flex:1"><strong>${b.lbl}:</strong> ${escHtml(b.val||'—')}</span>
+          <span style="font-size:0.75rem;color:${ok ? 'var(--primary)' : 'var(--danger)'}">${isNo ? 'NO BARCODE' : ok ? 'MATCH' : 'MISMATCH'}</span>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+
+  // Stamping section (only for approved records)
+  const stampSection = isApproved ? `
+    <div class="section-title">Stamping</div>
+    <div style="margin-bottom:16px">
+      ${(r.stampStatus||'').includes('Stamped') 
+        ? `<div style="padding:10px 14px;background:var(--primary-dim);border:1px solid var(--primary-border);border-radius:8px;color:var(--primary);font-weight:700">
+            ✅ STAMPED on ${escHtml(r.stampDate||'N/A')}
+          </div>`
+        : `<button class="btn btn-primary btn-full" onclick="checkerMarkStamped(${r.row})">
+            <svg><use href="#ic-check"/></svg>Mark as Stamped
+          </button>`
+      }
+    </div>
+  ` : '';
+
+  // Verdict section (only for pending records)
+  const verdictSection = isPending ? `
+    <div class="section-title" style="border-top:1px solid var(--border);padding-top:16px">Checker Decision</div>
+    <div style="display:flex;gap:10px;margin-bottom:12px">
+      <button class="btn btn-primary" style="flex:1" id="btnApprove" onclick="checkerSelectVerdict('Approved')">
+        <svg><use href="#ic-check"/></svg>Approve
+      </button>
+      <button class="btn btn-danger-outline" style="flex:1" id="btnReject" onclick="checkerSelectVerdict('Rejected')">
+        <svg><use href="#ic-file-x"/></svg>Reject
+      </button>
+    </div>
+    <div class="form-group" style="margin-bottom:10px">
+      <label class="form-label">Checker Name <span class="req">*</span></label>
+      <input type="text" id="checker-name" placeholder="Enter your name..." />
+    </div>
+    <div class="form-group" style="margin-bottom:12px">
+      <label class="form-label">Remarks / Rejection Reason</label>
+      <textarea id="checker-remarks" rows="3" placeholder="Enter remarks or rejection reason..." style="text-transform:none"></textarea>
+    </div>
+    <button class="btn btn-primary btn-full" id="btnSubmitVerdict" onclick="checkerSubmitVerdict()">Submit Decision</button>
+  ` : '';
+
+  // Rejected info
+  const rejectedInfo = isRejected ? `
+    <div class="alert alert-danger" style="margin-bottom:16px">
+      <svg><use href="#ic-alert"/></svg>
+      <div><strong>Rejected by ${escHtml(r.checker||'Checker')}</strong><br/><em>${escHtml(r.remarks||'No reason given')}</em></div>
+    </div>
+  ` : '';
+
+  wrap.innerHTML = `<div class="modal-backdrop" id="checker-detail-modal" onclick="if(event.target===this)closeCheckerDetail()">
+    <div class="modal" style="max-width:600px">
       <div class="modal-header">
         <div class="modal-title">
           <svg style="width:16px;height:16px"><use href="#ic-check-sq"/></svg>
-          ${r.cartonRef||r.cartonId||'—'} — ${r.listRef||'—'}
-          <span class="badge ${statusBadgeClass(r.status)}" style="margin-left:8px">${(r.status||'PENDING').toUpperCase()}</span>
+          ${escHtml(r.customer||'Record')}
+          <span class="badge ${isApproved ? 'badge-green' : isRejected ? 'badge-red' : 'badge-amber'}" style="margin-left:8px">${isApproved ? 'APPROVED' : isRejected ? 'REJECTED' : 'PENDING'}</span>
         </div>
-        <button class="btn-icon" onclick="closeCheckerModal()"><svg style="width:14px;height:14px"><use href="#ic-x"/></svg></button>
+        <button class="btn-icon" onclick="closeCheckerDetail()"><svg style="width:14px;height:14px"><use href="#ic-x"/></svg></button>
       </div>
       <div class="modal-body">
-        <!-- List info -->
-        <div class="detail-kv">
-          <div class="kv-box"><div class="kv-label">Customer</div><div class="kv-value">${r.customer||'—'}</div></div>
-          <div class="kv-box"><div class="kv-label">Packed By</div><div class="kv-value">${r.packedBy||r.checkerBy||'—'}</div></div>
-          <div class="kv-box"><div class="kv-label">Team</div><div class="kv-value">${r.team||'—'}</div></div>
-        </div>
-
-        <!-- Order details -->
-        <div class="section-title">Order Details</div>
         <div class="detail-kv" style="margin-bottom:14px">
-          <div class="kv-box"><div class="kv-label">Carton ID</div><div class="kv-value">${r.cartonId||'—'}</div></div>
-          <div class="kv-box"><div class="kv-label">Part No</div><div class="kv-value">${r.partNo||'—'}</div></div>
-          <div class="kv-box"><div class="kv-label">PI No</div><div class="kv-value">${r.pi||'—'}</div></div>
+          <div class="kv-box"><div class="kv-label">Carton ID</div><div class="kv-value">${escHtml(r.cartonId||'—')}</div></div>
+          <div class="kv-box"><div class="kv-label">Part No</div><div class="kv-value">${escHtml(r.partNo||'—')}</div></div>
+          <div class="kv-box"><div class="kv-label">PI No</div><div class="kv-value">${escHtml(r.pi||'—')}</div></div>
+          <div class="kv-box"><div class="kv-label">Qty</div><div class="kv-value">${r.qty||'—'}</div></div>
+          <div class="kv-box"><div class="kv-label">Packed By</div><div class="kv-value">${escHtml(r.packedBy||'—')}</div></div>
+          <div class="kv-box"><div class="kv-label">Date</div><div class="kv-value">${fmtDate(r.timestamp||r.createdAt)}</div></div>
         </div>
-        <div style="margin-bottom:14px">
-          <div class="kv-label" style="margin-bottom:4px">QTY (pcs)</div>
-          <div style="font-size:28px;font-weight:700;color:var(--primary)">${r.qty||'—'}</div>
-        </div>
-
-        <!-- Barcodes -->
-        <div class="section-title">Barcode Verification</div>
-        <div style="margin-bottom:14px;display:flex;flex-direction:column;gap:5px">
-          ${[
-            ['Bag', r.bag||r.bagBarcode, r.bagMatch, (r.matchStatus||'').includes('Bag:✅')],
-            ['Inner', r.inner||r.innerBarcode, r.innerMatch, (r.matchStatus||'').includes('Inner:✅')],
-            ['Outer', r.outer||r.outerBarcode, r.outerMatch, (r.matchStatus||'').includes('Outer:✅')],
-          ].map(([label,bc,m,m2])=>{
-            const matched = m===true||m==='true'||m2;
-            return `<div style="display:flex;align-items:center;gap:8px;font-size:12px">
-              <span>${matched?'✅':'❌'}</span>
-              <span class="${matched?'text-primary':'text-danger'}">${label}: ${bc||'—'}</span>
-            </div>`;
-          }).join('')}
-          ${(r.matchStatus&&(!r.bagMatch&&!r.innerMatch&&!r.outerMatch)) ? `<div class="text-xs text-muted" style="margin-top:4px">${r.matchStatus}</div>` : ''}
-        </div>
-
-        <!-- Photos -->
-        <div class="section-title">Photos</div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px">
-          ${[['Bag',r.imgBagUrl],['Inner',r.imgInnerUrl],['Carton',r.imgCartonUrl]].map(([lbl,url])=>`
-            <div style="text-align:center">
-              ${url ? `<img src="${url}" alt="${lbl}" style="width:80px;height:80px;object-fit:cover;border-radius:6px;border:1px solid var(--border);cursor:pointer" onclick="openLightbox('${url}')" />`
-                    : `<div style="width:80px;height:80px;border-radius:6px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;opacity:.3"><svg style="width:24px;height:24px"><use href="#ic-image"/></svg></div>`}
-              <div class="text-xs text-muted mt-4">${lbl}</div>
-            </div>`).join('')}
-        </div>
-
-        ${r.status&&r.status.toLowerCase().includes('rejected') ? `
-        <div class="alert alert-danger" style="margin-bottom:0">
-          <svg><use href="#ic-alert"/></svg>
-          <div><strong>Rejected by ${r.checker||r.checkedBy||'Checker'}</strong><br/><em>${r.remarks||r.rejectionReason||'No reason given'}</em></div>
-        </div>` : ''}
+        ${rejectedInfo}
+        ${barcodeSection}
+        ${photoSection}
+        ${stampSection}
+        ${verdictSection}
       </div>
-
-      ${isPending ? `
-      <div class="modal-footer" id="checker-actions">
-        <button class="btn btn-primary" style="flex:1" onclick="checkerApprove(${idx})">
-          <svg><use href="#ic-file-check"/></svg>Approve
-        </button>
-        <button class="btn btn-danger-outline" style="flex:1" onclick="showRejectForm(${idx})">
-          <svg><use href="#ic-file-x"/></svg>Reject
-        </button>
-      </div>
-      <div id="reject-form-wrap" class="hidden" style="padding:14px 20px;border-top:1px solid var(--border)">
-        <div class="form-group" style="margin-bottom:10px">
-          <label class="form-label text-danger">Rejection Reason *</label>
-          <textarea id="reject-reason" rows="3" placeholder="Describe why this entry is rejected..." style="text-transform:none"></textarea>
-        </div>
-        <div style="display:flex;gap:8px">
-          <button class="btn btn-outline" style="flex:1" onclick="hideRejectForm()">Cancel</button>
-          <button class="btn btn-danger" style="flex:1" onclick="checkerReject(${idx})">
-            <svg><use href="#ic-file-x"/></svg>Confirm Reject
-          </button>
-        </div>
-      </div>` : ''}
     </div>
   </div>`;
 }
 
-function closeCheckerModal() {
-  const wrap = document.getElementById('checker-modal-wrap');
-  if (wrap) wrap.innerHTML = '';
-}
-function showRejectForm(idx) {
-  document.getElementById('checker-actions').classList.add('hidden');
-  document.getElementById('reject-form-wrap').classList.remove('hidden');
-  document.getElementById('reject-reason').focus();
-}
-function hideRejectForm() {
-  document.getElementById('checker-actions').classList.remove('hidden');
-  document.getElementById('reject-form-wrap').classList.add('hidden');
+function closeCheckerDetail() {
+  document.getElementById('checker-modal-wrap').innerHTML = '';
+  currentCheckerRecord = null;
 }
 
-async function checkerApprove(idx) {
-  const r = window._checkerFiltered[idx];
-  if (!r) return;
-  if (GAS_URL && r.row) {
-    try { await gasPost({ action:'verify', row:r.row, checker:'CHECKER', status:'Approved', remarks:'' }); } catch(_){}
-  }
-  // Update locally
-  applyCheckerStatus(r, 'approved', '', 'CHECKER');
-  closeCheckerModal();
-  toast('Carton approved ✅', 'success');
-  renderCheckerTable();
+let selectedCheckerVerdict = null;
+
+function checkerSelectVerdict(verdict) {
+  selectedCheckerVerdict = verdict;
+  document.getElementById('btnApprove').classList.toggle('btn-primary', verdict === 'Approved');
+  document.getElementById('btnApprove').classList.toggle('btn-outline', verdict !== 'Approved');
+  document.getElementById('btnReject').classList.toggle('btn-danger', verdict === 'Rejected');
+  document.getElementById('btnReject').classList.toggle('btn-danger-outline', verdict !== 'Rejected');
 }
 
-async function checkerReject(idx) {
-  const r = window._checkerFiltered[idx];
-  const reason = (document.getElementById('reject-reason')||{}).value?.trim();
-  if (!reason) { toast('Please enter a rejection reason', 'error'); return; }
-  if (GAS_URL && r.row) {
-    try { await gasPost({ action:'verify', row:r.row, checker:'CHECKER', status:'Rejected', remarks:reason }); } catch(_){}
-  }
-  applyCheckerStatus(r, 'rejected', reason, 'CHECKER');
-  closeCheckerModal();
-  toast('Carton rejected ❌', 'error');
-  renderCheckerTable();
-}
+async function checkerSubmitVerdict() {
+  const name = document.getElementById('checker-name').value.trim();
+  const remarks = document.getElementById('checker-remarks').value.trim();
 
-function applyCheckerStatus(r, status, reason, checker) {
-  // Update in local LISTS
-  if (r._source === 'local' || r._list) {
-    loadLists();
-    LISTS.forEach(list => {
-      (list.cartons||[]).forEach(c => {
-        if (c.cartonRef === r.cartonRef || c.cartonId === r.cartonId) {
-          c.status = status;
-          c.rejectionReason = reason || null;
-          c.checkedBy = checker;
-        }
-      });
+  if (!name) { toast('Please enter Checker Name', 'error'); return; }
+  if (!selectedCheckerVerdict) { toast('Please select Approve or Reject', 'error'); return; }
+
+  const btn = document.getElementById('btnSubmitVerdict');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  const statusStr = selectedCheckerVerdict === 'Approved' ? 'Verified ✅' : 'Rejected ❌';
+
+  try {
+    const res = await gasPost({ 
+      action: 'verify', 
+      row: currentCheckerRecord.row, 
+      checker: name.toUpperCase(), 
+      status: statusStr, 
+      remarks: remarks.toUpperCase() 
     });
-    saveLists();
+
+    if (res && res.success) {
+      toast(`Record ${selectedCheckerVerdict.toLowerCase()}d ✅`, 'success');
+      closeCheckerDetail();
+      await loadCheckerRecords();
+    } else {
+      throw new Error(res?.error || 'Unknown error');
+    }
+  } catch(e) {
+    toast('Submit failed: ' + e.message, 'error');
+    btn.disabled = false;
+    btn.textContent = 'Submit Decision';
   }
-  // Update in checkerRecords too
-  const cr = checkerRecords.find(x => x.cartonRef===r.cartonRef || x.cartonId===r.cartonId);
-  if (cr) { cr.status = status; cr.remarks = reason; cr.checker = checker; }
 }
 
-// ═══════════════════════════════════════════════════════════════
+async function checkerMarkStamped(row) {
+  const staff = prompt('ENTER STAMPING STAFF NAME:');
+  if (!staff) return;
+
+  try {
+    const res = await gasPost({ action: 'stamp', row: row, staff: staff.toUpperCase() });
+    if (res && res.success) {
+      toast('Stamped successfully ✅', 'success');
+      closeCheckerDetail();
+      await loadCheckerRecords();
+    } else {
+      throw new Error(res?.error || 'Unknown error');
+    }
+  } catch(e) {
+    toast('Stamp failed: ' + e.message, 'error');
+  }
+}
+
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 // MASTER REGISTER
 // ═══════════════════════════════════════════════════════════════
 const LS_MASTER = 'mg_master_records';
