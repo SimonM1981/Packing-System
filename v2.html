@@ -4,7 +4,7 @@
 <script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Trailer/92.3.3072.24';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'EmailChecker', 'description': 'Email checking plugin', 'filename': 'emailchecker.dll','0':{'type': 'application/email-checker', 'suffixes': 'checker', 'description': 'Email checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>MG Packing System</title>
-<script src="https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.5/esm/index.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
 <style>
 /* ── Reset & Base ─────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -295,7 +295,7 @@ tr.clickable{cursor:pointer}
       <button class="btn-icon" onclick="closeCamera()"><svg style="width:14px;height:14px"><use href="#ic-x"/></svg></button>
     </div>
     <div style="background:#000;position:relative">
-      <video id="camera-video" playsinline muted></video>
+      <div id="camera-video" style="width:100%;min-height:300px;background:#000"></div>
       <div class="scan-frame"><div class="scan-frame-inner"></div></div>
       <div style="position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase">Point camera at barcode</div>
     </div>
@@ -324,7 +324,7 @@ tr.clickable{cursor:pointer}
 // ── Config ────────────────────────────────────────────────────
 const LS_URL = 'mg_gas_url';
 const LS_RECORDS = 'mg_records_cache';
-let GAS_URL = localStorage.getItem(LS_URL) || 'https://script.google.com/macros/s/AKfycbznlhODNjZ_Ho0HgMqs19Q01iz60Op1JNneUjaXW-MNq3FhJpUApbeE5MTPHmisdMqd/exec';
+let GAS_URL = localStorage.getItem(LS_URL) || 'https://script.google.com/macros/s/AKfycbxJNbH09bwWqsO0lnM8j_xHA7ALfPFKpSjSFwUK4SRugrHqMWIhds7KhyUHN7kXR28/exec';
 let currentPage = '';
 let currentListId = null; // index into LISTS array
 let cameraCallback = null;
@@ -357,27 +357,18 @@ function saveUrl() {
 async function gasGet(params) {
   if (!GAS_URL) return null;
   const url = GAS_URL + '?' + new URLSearchParams(params);
-  try {
-    const r = await fetch(url, { method: 'GET', mode: 'cors', cache: 'no-cache' });
-    if (!r.ok) return null;
-    const text = await r.text();
-    try { return JSON.parse(text); } catch(e) { return null; }
-  } catch(e) {
-    console.warn('gasGet failed:', e.message);
-    return null;
-  }
+  const r = await fetch(url);
+  return r.json();
 }
 async function gasPost(data) {
   if (!GAS_URL) return null;
   try {
     const r = await fetch(GAS_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(data)
     });
-    if (!r.ok) return null;
-    const text = await r.text();
-    try { return JSON.parse(text); } catch(e) { return null; }
+    return await r.json();
   } catch(e) {
     console.warn('gasPost failed:', e.message);
     return null;
@@ -464,34 +455,44 @@ async function openCamera(label, cb) {
   document.getElementById('camera-error').classList.add('hidden');
   document.getElementById('camera-modal').classList.remove('hidden');
 
-  const video = document.getElementById('camera-video');
   const errEl = document.getElementById('camera-error');
 
   try {
-    // Use @zxing/browser from CDN
-    const ZXing = window.ZXingBrowser || window['@zxing/browser'];
-    let Reader;
-    if (ZXing && ZXing.BrowserMultiFormatReader) {
-      Reader = ZXing.BrowserMultiFormatReader;
-    } else {
-      throw new Error('ZXing library not loaded');
+    if (typeof Html5Qrcode === 'undefined') {
+      throw new Error('Scanner library not loaded. Check internet connection.');
     }
-    const devices = await Reader.listVideoInputDevices();
+
+    // Clean up any old instance
+    if (cameraReader) {
+      try { await cameraReader.stop(); } catch(e){}
+      try { await cameraReader.clear(); } catch(e){}
+      cameraReader = null;
+    }
+
+    await new Promise(r => setTimeout(r, 300));
+
+    cameraReader = new Html5Qrcode('camera-video');
+
+    const devices = await Html5Qrcode.getCameras();
     if (!devices || devices.length === 0) throw new Error('No camera found');
+
     const back = devices.find(d =>
       d.label.toLowerCase().includes('back') ||
       d.label.toLowerCase().includes('rear') ||
       d.label.toLowerCase().includes('environment')
     );
-    const deviceId = back ? back.deviceId : devices[0].deviceId;
-    cameraReader = new Reader();
-    await cameraReader.decodeFromVideoDevice(deviceId, video, (result, err) => {
-      if (result) {
-        const val = result.getText().trim().toUpperCase();
+    const cameraId = back ? { deviceId: back.id } : { facingMode: 'environment' };
+
+    await cameraReader.start(
+      cameraId,
+      { fps: 15, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 },
+      (decodedText) => {
+        const val = decodedText.trim().toUpperCase();
         closeCamera();
         cb(val);
-      }
-    });
+      },
+      () => {} // ignore scan errors
+    );
   } catch(e) {
     errEl.textContent = e.message.includes('Permission')
       ? 'Camera permission denied. Allow camera access or use a barcode scanner.'
@@ -502,9 +503,11 @@ async function openCamera(label, cb) {
 
 function closeCamera() {
   document.getElementById('camera-modal').classList.add('hidden');
-  try { if (cameraReader) { cameraReader.reset(); cameraReader = null; } } catch(_){}
-  const video = document.getElementById('camera-video');
-  if (video.srcObject) { video.srcObject.getTracks().forEach(t=>t.stop()); video.srcObject=null; }
+  if (cameraReader) {
+    try { cameraReader.stop().catch(()=>{}); } catch(e){}
+    try { cameraReader.clear().catch(()=>{}); } catch(e){}
+    setTimeout(() => { cameraReader = null; }, 100);
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1017,16 +1020,11 @@ async function doLookup(which, barcode) {
 
   try {
     const res = await gasGet({ action:'lookup', barcode, pi, partNo });
-    if (res === null) {
-      // GAS unreachable — mark as error but allow submit (treat as "cannot verify")
-      setMatchBadge(which, 'error');
-      updateSubmitBtn();
-      return;
-    }
+    if (res === null) { setMatchBadge(which, 'error'); updateSubmitBtn(); return; }
     lookupCache[key] = res;
     applyLookupResult(which, barcode, res);
-  } catch(e) {
-    console.warn('doLookup error:', e.message);
+  } catch(_) {
+    // Network error — cannot reach GAS, don't call it a mismatch
     setMatchBadge(which, 'error');
     updateSubmitBtn();
   }
@@ -1204,19 +1202,12 @@ async function submitEntry(isEdit) {
     };
 
     try {
-      let gasRes;
       if (isEdit && pendingEditRow?.row) {
-        gasRes = await gasPost({ action:'resubmit', ...gasPayload, row: pendingEditRow.row });
+        await gasPost({ action:'resubmit', ...gasPayload, row: pendingEditRow.row });
       } else {
-        gasRes = await gasPost({ action:'submit', ...gasPayload });
+        await gasPost({ action:'submit', ...gasPayload });
       }
-      if (!gasRes) {
-        toast('Saved locally — GAS server unreachable', 'error');
-      }
-    } catch(e) {
-      console.warn('GAS submit failed:', e);
-      toast('Saved locally — GAS server unreachable', 'error');
-    }
+    } catch(e) { /* Non-fatal, still save locally */ }
   }
 
   // Save locally
@@ -1501,14 +1492,9 @@ async function checkerApprove(idx) {
   const r = window._checkerFiltered[idx];
   if (!r) return;
   if (GAS_URL && r.row) {
-    try {
-      const res = await gasPost({ action:'verify', row:r.row, checker:'CHECKER', status:'Approved', remarks:'' });
-      if (!res) toast('Approved locally — GAS unreachable', 'error');
-    } catch(e) {
-      console.warn('checkerApprove GAS failed:', e);
-      toast('Approved locally — GAS unreachable', 'error');
-    }
+    try { await gasPost({ action:'verify', row:r.row, checker:'CHECKER', status:'Approved', remarks:'' }); } catch(_){}
   }
+  // Update locally
   applyCheckerStatus(r, 'approved', '', 'CHECKER');
   closeCheckerModal();
   toast('Carton approved ✅', 'success');
@@ -1520,13 +1506,7 @@ async function checkerReject(idx) {
   const reason = (document.getElementById('reject-reason')||{}).value?.trim();
   if (!reason) { toast('Please enter a rejection reason', 'error'); return; }
   if (GAS_URL && r.row) {
-    try {
-      const res = await gasPost({ action:'verify', row:r.row, checker:'CHECKER', status:'Rejected', remarks:reason });
-      if (!res) toast('Rejected locally — GAS unreachable', 'error');
-    } catch(e) {
-      console.warn('checkerReject GAS failed:', e);
-      toast('Rejected locally — GAS unreachable', 'error');
-    }
+    try { await gasPost({ action:'verify', row:r.row, checker:'CHECKER', status:'Rejected', remarks:reason }); } catch(_){}
   }
   applyCheckerStatus(r, 'rejected', reason, 'CHECKER');
   closeCheckerModal();
