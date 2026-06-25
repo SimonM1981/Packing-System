@@ -812,15 +812,24 @@ function buildEntryForm(list, isEdit) {
       <div class="grid-4" style="margin-bottom:16px">
         <div class="form-group">
           <label class="form-label">Carton ID <span class="req">*</span></label>
-          <input type="text" id="f-cartonId" placeholder="Scan or type..." />
+          <div class="input-wrap">
+            <input type="text" id="f-cartonId" placeholder="Scan or type..." />
+            <button type="button" class="btn-icon" title="Camera scan — Carton ID" onclick="openCamera('Carton ID',v=>{const el=document.getElementById('f-cartonId');el.value=v;formState.cartonId=v;})"><svg style="width:14px;height:14px"><use href="#ic-camera"/></svg></button>
+          </div>
         </div>
         <div class="form-group">
           <label class="form-label">Part No <span class="req">*</span></label>
-          <input type="text" id="f-partNo" placeholder="Auto-filled or type..." />
+          <div class="input-wrap">
+            <input type="text" id="f-partNo" placeholder="Auto-filled or type..." oninput="onOrderFieldChange('partNo')" />
+            <button type="button" class="btn-icon" title="Camera scan — Part No" onclick="openCamera('Part No',v=>{const el=document.getElementById('f-partNo');el.value=v;onOrderFieldChange('partNo');})"><svg style="width:14px;height:14px"><use href="#ic-camera"/></svg></button>
+          </div>
         </div>
         <div class="form-group">
           <label class="form-label">PI No</label>
-          <input type="text" id="f-pi" placeholder="PI-2024-001..." />
+          <div class="input-wrap">
+            <input type="text" id="f-pi" placeholder="123456/26..." oninput="onOrderFieldChange('pi')" />
+            <button type="button" class="btn-icon" title="Camera scan — PI No" onclick="openCamera('PI No',v=>{const el=document.getElementById('f-pi');el.value=v;onOrderFieldChange('pi');})"><svg style="width:14px;height:14px"><use href="#ic-camera"/></svg></button>
+          </div>
         </div>
         <div class="form-group">
           <label class="form-label">Qty (pcs) <span class="req">*</span></label>
@@ -929,7 +938,7 @@ function renderPhotoThumb(which, dataUri) {
 }
 
 // Barcode lookup state
-const lookupCache = {};
+let lookupCache = {};
 const lookupDebounce = {};
 
 function onBarcodeInput(which) {
@@ -953,49 +962,97 @@ function onBarcodeInput(which) {
   lookupDebounce[which] = setTimeout(() => doLookup(which, val), 500);
 }
 
+// Called when Part No or PI field changes — flush cache and re-verify all filled barcodes
+function onOrderFieldChange(field) {
+  const val = (document.getElementById(field === 'partNo' ? 'f-partNo' : 'f-pi')||{}).value || '';
+  if (field === 'partNo') formState.partNo = val.trim().toUpperCase();
+  if (field === 'pi') formState.pi = val.trim().toUpperCase();
+  // Update the input to uppercase
+  const inp = document.getElementById(field === 'partNo' ? 'f-partNo' : 'f-pi');
+  if (inp) inp.value = formState[field];
+  // Clear cache so lookups re-run with new values
+  lookupCache = {};
+  // Re-trigger any barcodes that are already filled
+  ['bag','inner','outer'].forEach(w => {
+    const bc = formState[w] && formState[w].value;
+    if (bc && bc !== 'NO') {
+      clearTimeout(lookupDebounce[w]);
+      setMatchBadge(w, 'checking');
+      lookupDebounce[w] = setTimeout(() => doLookup(w, bc), 400);
+    }
+  });
+}
+
 async function doLookup(which, barcode) {
-  const partNo = (document.getElementById('f-partNo')||{}).value || '';
-  const pi = (document.getElementById('f-pi')||{}).value || '';
-  const key = `${barcode}|${partNo}|${pi}`;
+  const partNo = ((document.getElementById('f-partNo')||{}).value || '').trim().toUpperCase();
+  const pi     = ((document.getElementById('f-pi')||{}).value || '').trim().toUpperCase();
+  const key    = `${barcode}|${partNo}|${pi}`;
 
   if (lookupCache[key] !== undefined) {
     applyLookupResult(which, barcode, lookupCache[key]);
     return;
   }
 
-  if (!GAS_URL) { setMatchBadge(which, false); updateSubmitBtn(); return; }
+  if (!GAS_URL) {
+    setMatchBadge(which, 'error');
+    updateSubmitBtn();
+    return;
+  }
 
   try {
     const res = await gasGet({ action:'lookup', barcode, pi, partNo });
+    if (res === null) { setMatchBadge(which, 'error'); updateSubmitBtn(); return; }
     lookupCache[key] = res;
     applyLookupResult(which, barcode, res);
-  } catch(_) { setMatchBadge(which, false); updateSubmitBtn(); }
+  } catch(_) {
+    // Network error — cannot reach GAS, don't call it a mismatch
+    setMatchBadge(which, 'error');
+    updateSubmitBtn();
+  }
 }
 
 function applyLookupResult(which, barcode, res) {
   if (res && res.found) {
-    // Auto-fill part no from bag lookup
-    if (which === 'bag' && res.partNo) {
-      const pnEl = document.getElementById('f-partNo');
-      if (pnEl && !pnEl.value) { pnEl.value = String(res.partNo).toUpperCase(); formState.partNo = pnEl.value; }
+    // Auto-fill Part No and PI from bag lookup result when fields are empty
+    if (which === 'bag') {
+      if (res.partNo) {
+        const pnEl = document.getElementById('f-partNo');
+        if (pnEl && !pnEl.value) {
+          pnEl.value = String(res.partNo).toUpperCase();
+          formState.partNo = pnEl.value;
+          // Re-trigger inner/outer with the now-known Part No
+          lookupCache = {};
+          ['inner','outer'].forEach(w => {
+            const bc = formState[w] && formState[w].value;
+            if (bc && bc !== 'NO') {
+              clearTimeout(lookupDebounce[w]);
+              setMatchBadge(w, 'checking');
+              lookupDebounce[w] = setTimeout(() => doLookup(w, bc), 400);
+            }
+          });
+        }
+      }
+      if (res.pi) {
+        const piEl = document.getElementById('f-pi');
+        if (piEl && !piEl.value) {
+          piEl.value = String(res.pi).toUpperCase();
+          formState.pi = piEl.value;
+        }
+      }
     }
-    if (which === 'bag') formState.bag.match = true;
-    if (which === 'inner') formState.inner.match = true;
-    if (which === 'outer') formState.outer.match = true;
+    formState[which].match = true;
     setMatchBadge(which, true);
   } else {
-    if (which === 'bag') formState.bag.match = false;
-    if (which === 'inner') formState.inner.match = false;
-    if (which === 'outer') formState.outer.match = false;
+    formState[which].match = false;
     setMatchBadge(which, false);
   }
   updateSubmitBtn();
 }
 
 function setMatchBadge(which, state) {
-  if (which === 'bag') formState.bag.match = (state === 'no') ? 'no' : state;
-  if (which === 'inner') formState.inner.match = (state === 'no') ? 'no' : state;
-  if (which === 'outer') formState.outer.match = (state === 'no') ? 'no' : state;
+  if (which === 'bag' || which === 'inner' || which === 'outer') {
+    formState[which].match = (state === 'no') ? 'no' : state;
+  }
 
   const badge = document.getElementById('match-badge-' + which);
   const input = document.getElementById('f-' + which);
@@ -1006,6 +1063,7 @@ function setMatchBadge(which, state) {
   if (state === null) { badge.style.display='none'; return; }
   if (state === true) { badge.textContent='✅ MATCH'; badge.className='match-badge ok'; input.className='match-ok'; }
   else if (state === false) { badge.textContent='❌ MISMATCH'; badge.className='match-badge fail'; input.className='match-fail'; }
+  else if (state === 'error') { badge.textContent='⚠️ CANNOT VERIFY'; badge.className='match-badge checking'; input.className='match-amber'; }
   else if (state === 'no') { badge.textContent='NO BARCODE'; badge.className='match-badge no-bc'; input.className='match-amber'; }
   else if (state === 'checking') { badge.textContent='CHECKING...'; badge.className='match-badge checking'; }
 }
@@ -1018,11 +1076,28 @@ function updateSubmitBtn() {
 
   const {bag, inner, outer} = formState;
   const hasMismatch = bag.match===false || inner.match===false || outer.match===false;
-  const allVerified = (bag.match===true||bag.match==='no') &&
-                      (inner.match===true||inner.match==='no') &&
-                      (outer.match===true||outer.match==='no');
+  const hasError    = bag.match==='error' || inner.match==='error' || outer.match==='error';
 
-  if (warn) warn.classList.toggle('hidden', !hasMismatch);
+  // A barcode slot is "done" when it is matched, marked NO, or cannot be verified (network error)
+  const done = m => m===true || m==='no' || m==='error';
+  const allVerified = done(bag.match) && done(inner.match) && done(outer.match);
+
+  if (warn) {
+    const warnText = warn.querySelector('div') || warn;
+    if (hasMismatch) {
+      warnText.textContent = 'Mismatch detected — please recheck barcodes before submitting.';
+      warn.classList.remove('hidden');
+    } else if (hasError) {
+      warnText.textContent = '⚠️ Some barcodes could not be verified (server unreachable). Proceed with caution.';
+      warn.classList.remove('hidden');
+      warn.style.borderColor = 'var(--amber)';
+      warn.style.color = 'var(--amber)';
+    } else {
+      warn.classList.add('hidden');
+      warn.style.borderColor = '';
+      warn.style.color = '';
+    }
+  }
   if (hint) hint.style.display = allVerified ? 'none' : '';
   btn.disabled = hasMismatch || !allVerified;
 }
