@@ -145,10 +145,11 @@ tr.clickable{cursor:pointer}
 .section-title:first-child{margin-top:0}
 
 /* ── Grid ───────────────────────────────────────────────── */
+.grid-1{display:grid;grid-template-columns:1fr;gap:12px;max-width:400px}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 .grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
-@media(max-width:600px){.grid-2{grid-template-columns:1fr}.grid-3{grid-template-columns:1fr}.grid-4{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.grid-1{max-width:none}.grid-2{grid-template-columns:1fr}.grid-3{grid-template-columns:1fr}.grid-4{grid-template-columns:1fr 1fr}}
 
 /* ── Modal ──────────────────────────────────────────────── */
 .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:100;display:flex;align-items:flex-end;justify-content:center;padding:0}
@@ -378,7 +379,7 @@ tr.clickable{cursor:pointer}
 // ── Configuration ────────────────────────────────────────────
 // !!! REPLACE THIS WITH YOUR OWN GAS WEB APP URL AFTER DEPLOYMENT !!!
 // Deploy: script.google.com → Deploy → New deployment → Web app → Anyone
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxV_vugDmSHL6IIm2UTSSY3ibaZlvnG0yREpp-AvC_KWff4_nfIGjANHT2T6wHXtItF/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxBkY7nLgesBwa10GLrN2NgpXp_nXAGfnbMnWLDyJGo7luEoIQ0_wsY-pKcnIFrr4N5/exec';
 
 // ── State ────────────────────────────────────────────────────
 let currentPage = '';
@@ -395,9 +396,15 @@ const LS_LISTS = 'mg_packing_lists_v3';
 let LISTS = [];
 
 // ── Form State (Multi-Part with Per-Part Photos) ─────────────
+// cartonType: 'single' | 'kit' | 'multiple'
+//   single   = 1 part with its own PI, Qty, barcodes, photos
+//   kit      = multiple parts sharing ONE PI and ONE Qty (PI/Qty at carton level)
+//   multiple = each part has its own PI, Qty, barcodes, photos
 let formState = {
   cartonId: '',
-  // Each part: { partNo, pi, qty, bag, inner, outer, bagMatch, innerMatch, outerMatch, photos: { bag, inner, outer } }
+  cartonType: 'single',  // 'single' | 'kit' | 'multiple'
+  cartonPi: '',          // For kit mode: shared PI
+  cartonQty: '1',        // For kit mode: shared Qty
   parts: [],
   uploading: false
 };
@@ -737,7 +744,12 @@ function submitCreateList() {
 // ═══════════════════════════════════════════════════════════════
 function resetFormState() {
   formState = {
-    cartonId: '', parts: [], uploading: false
+    cartonId: '',
+    cartonType: 'single',
+    cartonPi: '',
+    cartonQty: '1',
+    parts: [],
+    uploading: false
   };
   pendingEditRow = null;
   lookupCache = {};
@@ -834,17 +846,19 @@ function renderListDetail() {
     <div class="table-wrap" style="margin-bottom:16px">
       <table class="table-responsive">
         <thead><tr>
-          <th>Ref</th><th>Carton ID</th><th>Parts</th><th>Total Qty</th><th>Status</th><th>Time</th>
+          <th>Ref</th><th>Carton ID</th><th>Type</th><th>Parts</th><th>Total Qty</th><th>Status</th><th>Time</th>
         </tr></thead>
         <tbody id="carton-tbody">
-        ${cartons.length===0 ? '<tr><td colspan="6"><div class="empty-state"><svg><use href="#ic-box"/></svg><p>No entries yet \u2014 click Add Carton</p></div></td></tr>' :
+        ${cartons.length===0 ? '<tr><td colspan="7"><div class="empty-state"><svg><use href="#ic-box"/></svg><p>No entries yet \u2014 click Add Carton</p></div></td></tr>' :
           cartons.map((c,ci) => {
             const partCount = (c.parts||[]).length;
             const totalQty = (c.parts||[]).reduce((s,p) => s + (+p.qty||0), 0);
+            const typeLabel = c.cartonType==='kit'?'KIT':c.cartonType==='multiple'?'MULTI':'SINGLE';
             return `
             <tr class="${c.status==='rejected'?'rejected':'clickable'}" ${c.status!=='rejected' ? `onclick="viewCartonDetail(${ci})"` : ''}>
               <td data-label="Ref" class="font-bold text-primary">${c.cartonRef||'\u2014'}</td>
               <td data-label="Carton ID" class="text-sm">${escHtml(c.cartonId||'\u2014')}</td>
+              <td data-label="Type"><span class="badge ${c.cartonType==='kit'?'badge-amber':c.cartonType==='multiple'?'badge-blue':'badge-muted'}">${typeLabel}</span></td>
               <td data-label="Parts"><span class="badge badge-muted">${partCount} part${partCount!==1?'s':''}</span></td>
               <td data-label="Total Qty" style="text-align:center;font-weight:700;font-family:var(--font-mono)">${totalQty}</td>
               <td data-label="Status">
@@ -991,6 +1005,9 @@ function viewCartonDetail(ci) {
     </div>`;
   }
 
+  const isKit = c.cartonType === 'kit';
+  const typeLabel = isKit?'KIT':c.cartonType==='multiple'?'MULTIPLE':'SINGLE ITEM';
+
   el.innerHTML = `
     <div class="modal-backdrop" onclick="if(event.target===this)closeCartonDetail()">
       <div class="modal" style="max-width:560px">
@@ -1002,8 +1019,13 @@ function viewCartonDetail(ci) {
           <div class="detail-kv" style="margin-bottom:14px">
             <div class="kv-box"><div class="kv-label">Carton ID</div><div class="kv-value">${escHtml(c.cartonId)}</div></div>
             <div class="kv-box"><div class="kv-label">Carton Ref</div><div class="kv-value">${c.cartonRef}</div></div>
-            <div class="kv-box"><div class="kv-label">Status</div><div class="kv-value ${c.status==='rejected'?'text-danger':c.status==='pending'?'text-amber':'text-primary'}">${c.status||'PENDING'}</div></div>
+            <div class="kv-box"><div class="kv-label">Type</div><div class="kv-value">${typeLabel}</div></div>
           </div>
+          ${isKit ? `
+          <div class="detail-kv" style="margin-bottom:14px">
+            <div class="kv-box"><div class="kv-label">PI No (Kit)</div><div class="kv-value">${escHtml(c.cartonPi||c.pi||'\u2014')}</div></div>
+            <div class="kv-box"><div class="kv-label">Qty (Kit)</div><div class="kv-value">${c.cartonQty||c.qty||'\u2014'}</div></div>
+          </div>` : ''}
           ${partsHtml}
           ${photoHtml}
           ${c.rejectionReason ? `<div class="alert alert-danger"><svg><use href="#ic-alert"/></svg><div><strong>Rejection Reason:</strong> ${escHtml(c.rejectionReason)}</div></div>` : ''}
@@ -1037,6 +1059,9 @@ function startEditCarton(cartonIdx) {
   const c = list.cartons[cartonIdx];
   resetFormState();
   formState.cartonId = c.cartonId || '';
+  formState.cartonType = c.cartonType || 'single';
+  formState.cartonPi = c.cartonPi || '';
+  formState.cartonQty = String(c.cartonQty || c.qty || '1');
   if (c.parts && c.parts.length > 0) {
     c.parts.forEach(p => {
       formState.parts.push({
@@ -1088,7 +1113,7 @@ function showEntryForm(isEdit) {
     <div class="form-panel-body">
 
       <div class="section-title">Carton Info</div>
-      <div class="grid-2" style="margin-bottom:16px">
+      <div class="grid-2" style="margin-bottom:12px">
         <div class="form-group">
           <label class="form-label">Carton ID <span class="req">*</span></label>
           <div class="input-wrap">
@@ -1098,13 +1123,41 @@ function showEntryForm(isEdit) {
         </div>
       </div>
 
+      <!-- Carton Type Selector -->
+      <div style="margin-bottom:16px">
+        <label class="form-label">Contents Type <span class="req">*</span></label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="btn ${formState.cartonType==='single'?'btn-primary':'btn-outline'}" style="flex:1" id="btn-type-single" onclick="setCartonType('single')">Single Item</button>
+          <button type="button" class="btn ${formState.cartonType==='kit'?'btn-primary':'btn-outline'}" style="flex:1" id="btn-type-kit" onclick="setCartonType('kit')">Kit</button>
+          <button type="button" class="btn ${formState.cartonType==='multiple'?'btn-primary':'btn-outline'}" style="flex:1" id="btn-type-multiple" onclick="setCartonType('multiple')">Multiple Parts</button>
+        </div>
+        <div class="text-xs text-muted mt-4">
+          ${formState.cartonType==='single' ? 'One item with its own PI, Qty, barcodes and photos.' :
+            formState.cartonType==='kit' ? 'Multiple items sharing ONE PI and ONE Qty (e.g. 10 different parts in one kit box).' :
+            'Each item has its own PI and Qty.'}
+        </div>
+      </div>
+
+      <!-- Kit Mode: Shared PI and Qty at carton level -->
+      <div id="kit-level-fields" class="${formState.cartonType==='kit'?'':'hidden'}" style="margin-bottom:16px">
+        <div class="grid-3">
+          <div class="form-group">
+            <label class="form-label">PI No <span class="req">*</span></label>
+            <div class="input-wrap">
+              <input type="text" id="f-cartonPi" placeholder="123456/26..." value="${escHtml(formState.cartonPi)}" oninput="formState.cartonPi=this.value.trim().toUpperCase()" />
+              <button type="button" class="btn-icon" onclick="openCamera('PI No',v=>{document.getElementById('f-cartonPi').value=v;formState.cartonPi=v.trim().toUpperCase();syncKitPiToParts();})"><svg style="width:14px;height:14px"><use href="#ic-camera"/></svg></button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Qty (pcs) <span class="req">*</span></label>
+            <input type="number" id="f-cartonQty" min="1" value="${formState.cartonQty}" oninput="formState.cartonQty=this.value;syncKitQtyToParts();" />
+          </div>
+        </div>
+      </div>
+
       <div class="section-title">
-        Parts in this Carton
-        <span style="float:right">
-          <button class="btn btn-primary btn-xs" onclick="addNewPart()">
-            <svg><use href="#ic-plus"/></svg>Add Part
-          </button>
-        </span>
+        ${formState.cartonType==='single' ? 'Item Details' : formState.cartonType==='kit' ? 'Items in this Kit' : 'Parts in this Carton'}
+        ${formState.cartonType !== 'single' ? `<span style="float:right"><button class="btn btn-primary btn-xs" onclick="addNewPart()"><svg><use href="#ic-plus"/></svg>Add ${formState.cartonType==='kit'?'Item':'Part'}</button></span>` : ''}
       </div>
       <div id="parts-container"></div>
 
@@ -1140,13 +1193,16 @@ function renderPartCards() {
   const container = document.getElementById('parts-container');
   if (!container) return;
 
+  const isKit = formState.cartonType === 'kit';
+  const isSingle = formState.cartonType === 'single';
+
   container.innerHTML = formState.parts.map((part, idx) => `
     <div class="part-card" id="part-card-${idx}">
       <div class="part-card-header">
-        <span class="part-number">Part ${idx + 1}</span>
+        <span class="part-number">${isSingle ? 'Item' : isKit ? 'Kit Item' : 'Part'} ${idx + 1}</span>
         ${formState.parts.length > 1 ? `<button class="part-remove" onclick="removePartFromForm(${idx})"><svg style="width:12px;height:12px;vertical-align:middle;margin-right:2px"><use href="#ic-trash"/></svg>Remove</button>` : ''}
       </div>
-      <div class="grid-4" style="margin-bottom:12px">
+      <div class="${isKit ? 'grid-1' : 'grid-4'}" style="margin-bottom:12px">
         <div class="form-group">
           <label class="form-label">Part No <span class="req">*</span></label>
           <div class="input-wrap">
@@ -1155,6 +1211,7 @@ function renderPartCards() {
             <button type="button" class="btn-icon" onclick="openCamera('Part ${idx+1} No',v=>{document.getElementById('f-partNo-${idx}').value=v;onPartFieldChange(${idx},'partNo');})"><svg style="width:14px;height:14px"><use href="#ic-camera"/></svg></button>
           </div>
         </div>
+        ${!isKit ? `
         <div class="form-group">
           <label class="form-label">PI No</label>
           <div class="input-wrap">
@@ -1167,6 +1224,7 @@ function renderPartCards() {
           <label class="form-label">Qty <span class="req">*</span></label>
           <input type="number" id="f-qty-${idx}" min="1" value="${part.qty}" oninput="onPartFieldChange(${idx},'qty')" />
         </div>
+        ` : ''}
       </div>
       <div style="font-size:10px;color:var(--muted-fg);margin-bottom:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Barcode Verification \u2014 Type NO if none</div>
       <div class="grid-3">
@@ -1269,8 +1327,55 @@ function renderPartPhotoThumb(partIdx, which, dataUri) {
   }
 }
 
+function setCartonType(type) {
+  formState.cartonType = type;
+  // Reset parts when switching types
+  if (type === 'single') {
+    // Single = exactly 1 part
+    if (formState.parts.length !== 1) {
+      formState.parts = [];
+      addPartToForm();
+    }
+  }
+  showEntryForm(pendingEditRow !== null);
+}
+
+function syncKitPiToParts() {
+  if (formState.cartonType !== 'kit') return;
+  const pi = formState.cartonPi;
+  formState.parts.forEach(p => { p.pi = pi; });
+  // Re-trigger barcode lookups with new PI
+  lookupCache = {};
+  formState.parts.forEach((p, idx) => {
+    ['bag','inner','outer'].forEach(w => {
+      if (p[w] && p[w] !== 'NO') {
+        clearTimeout(lookupDebounce[`${idx}-${w}`]);
+        lookupDebounce[`${idx}-${w}`] = setTimeout(() => doPartLookup(idx, w, p[w]), 300);
+      }
+    });
+  });
+}
+
+function syncKitQtyToParts() {
+  if (formState.cartonType !== 'kit') return;
+  const qty = formState.cartonQty;
+  formState.parts.forEach(p => { p.qty = qty; });
+}
+
 function addNewPart() {
-  addPartToForm();
+  // For kit mode, auto-fill PI and Qty from carton level
+  if (formState.cartonType === 'kit') {
+    const lastPart = formState.parts[formState.parts.length - 1];
+    addPartToForm({
+      pi: formState.cartonPi,
+      qty: formState.cartonQty,
+      bag: '', inner: '', outer: '',
+      bagMatch: null, innerMatch: null, outerMatch: null,
+      photos: { bag: null, inner: null, outer: null }
+    });
+  } else {
+    addPartToForm();
+  }
   renderPartCards();
   // Scroll to bottom of parts container
   setTimeout(() => {
@@ -1478,6 +1583,17 @@ async function submitEntry(isEdit) {
   const cartonId = (document.getElementById('f-cartonId')||{}).value?.trim() || '';
   if (!cartonId) { toast('Carton ID is required', 'error'); return; }
 
+  // Apply kit-mode PI/Qty to all parts before validation
+  if (formState.cartonType === 'kit') {
+    const kitPi = (document.getElementById('f-cartonPi')||{}).value?.trim().toUpperCase() || formState.cartonPi;
+    const kitQty = (document.getElementById('f-cartonQty')||{}).value || formState.cartonQty;
+    if (!kitPi) { toast('PI No is required for Kit mode', 'error'); return; }
+    if (!kitQty || parseInt(kitQty) < 1) { toast('Qty is required for Kit mode', 'error'); return; }
+    formState.cartonPi = kitPi;
+    formState.cartonQty = kitQty;
+    formState.parts.forEach(p => { p.pi = kitPi; p.qty = kitQty; });
+  }
+
   // Validate parts
   for (let i = 0; i < formState.parts.length; i++) {
     const p = formState.parts[i];
@@ -1494,6 +1610,8 @@ async function submitEntry(isEdit) {
   if (btn) btn.disabled = true;
   if (lbl) lbl.textContent = 'Saving...';
 
+  // Helper: "NO" means no barcode → store as empty string in Sheet
+  const cleanBarcode = v => (v||'').toUpperCase() === 'NO' ? '' : (v||'');
   const matchBool = m => m===true || m==='no';
 
   async function maybeUpload(dataUri, filename) {
@@ -1530,11 +1648,14 @@ async function submitEntry(isEdit) {
     : 'CTN-' + String(nextNum).padStart(3,'0');
 
   // Build parts array (with per-part photos)
+  // "NO" barcodes → empty string in Google Sheet
   const parts = formState.parts.map((p, idx) => ({
     partNo: p.partNo.toUpperCase(),
     pi: (p.pi||'').toUpperCase(),
     qty: parseInt(p.qty) || 1,
-    bag: p.bag || '', inner: p.inner || '', outer: p.outer || '',
+    bag: cleanBarcode(p.bag),
+    inner: cleanBarcode(p.inner),
+    outer: cleanBarcode(p.outer),
     bagMatch: matchBool(p.bagMatch),
     innerMatch: matchBool(p.innerMatch),
     outerMatch: matchBool(p.outerMatch),
@@ -1544,10 +1665,14 @@ async function submitEntry(isEdit) {
   // Also include legacy single fields for backward compatibility
   const legacyPart = parts[0] || {};
   const payload = {
-    cartonRef, cartonId, partNo: legacyPart.partNo||'', pi: legacyPart.pi||'', qty: legacyPart.qty||1,
+    cartonRef, cartonId,
+    cartonType: formState.cartonType,
+    cartonPi: formState.cartonPi,
+    cartonQty: formState.cartonQty,
+    partNo: legacyPart.partNo||'', pi: legacyPart.pi||'', qty: legacyPart.qty||1,
     bagBarcode: legacyPart.bag||'', innerBarcode: legacyPart.inner||'', outerBarcode: legacyPart.outer||'',
     bagMatch: legacyPart.bagMatch, innerMatch: legacyPart.innerMatch, outerMatch: legacyPart.outerMatch,
-    parts, // NEW: multi-part array
+    parts,
     imgBagUrl, imgInnerUrl, imgCartonUrl,
     status: 'pending', rejectionReason: null, checkedBy: null,
     createdAt: now, row: null,
