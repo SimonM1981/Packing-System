@@ -1,1673 +1,1172 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>MG Packing System</title>
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
-<style>
-/* ── Reset & Base ─────────────────────────────────────────── */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0d0d0d;--card:#141414;--border:#272727;--muted:#1e1e1e;
-  --text:#e8e8e8;--muted-fg:#666;--primary:#22c55e;--primary-dim:rgba(34,197,94,.12);
-  --primary-border:rgba(34,197,94,.35);--danger:#ef4444;--danger-dim:rgba(239,68,68,.12);
-  --danger-border:rgba(239,68,68,.35);--amber:#f59e0b;--amber-dim:rgba(245,158,11,.12);
-  --amber-border:rgba(245,158,11,.35);--font:'JetBrains Mono',ui-monospace,monospace;
-  --radius:8px;
-}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.5}
-a{color:inherit;text-decoration:none}
-button{cursor:pointer;font-family:var(--font)}
-input,textarea,select{font-family:var(--font)}
-img{max-width:100%;display:block}
-#app{display:flex;height:100vh;overflow:hidden}
-#sidebar{width:220px;flex-shrink:0;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
-#main{flex:1;overflow-y:auto;padding:28px 32px}
-@media(max-width:700px){
-  #app{flex-direction:column}
-  #sidebar{width:100%;flex-direction:row;flex-wrap:wrap;height:auto;border-right:none;border-bottom:1px solid var(--border);padding:8px}
-  #main{padding:16px}
-  #sidebar .brand{display:none}
-  #sidebar .section-label{display:none}
-  #sidebar nav{display:flex;flex-wrap:wrap;gap:4px}
-}
-.brand{padding:20px 16px 12px;border-bottom:1px solid var(--border)}
-.brand-name{font-weight:700;font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--primary)}
-.brand-sub{font-size:10px;color:var(--muted-fg);letter-spacing:.15em;text-transform:uppercase;margin-top:2px}
-.section-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-fg);padding:16px 16px 4px}
-nav a{display:flex;align-items:center;gap:9px;padding:8px 14px;border-radius:6px;margin:2px 8px;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-fg);transition:background .15s,color .15s}
-nav a svg{width:15px;height:15px;flex-shrink:0}
-nav a:hover{background:var(--muted);color:var(--text)}
-nav a.active{background:var(--primary-dim);color:var(--primary)}
-nav a.danger{color:var(--danger)}
-nav a.danger.active{background:var(--danger-dim);color:var(--danger)}
-.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:24px;flex-wrap:wrap}
-.page-title{font-size:20px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:8px}
-.page-title svg{width:22px;height:22px;color:var(--primary);flex-shrink:0}
-.page-subtitle{font-size:12px;color:var(--muted-fg);margin-top:4px}
-.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:24px}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;position:relative;overflow:hidden}
-.stat-card .icon{position:absolute;right:12px;top:12px;opacity:.08;width:48px;height:48px}
-.stat-card .label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted-fg)}
-.stat-card .value{font-size:34px;font-weight:700;margin-top:4px}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;border:none;transition:opacity .15s,background .15s;cursor:pointer}
-.btn svg{width:14px;height:14px;flex-shrink:0}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-.btn-primary{background:var(--primary);color:#000}
-.btn-primary:hover:not(:disabled){background:#16a34a}
-.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
-.btn-outline:hover:not(:disabled){border-color:var(--primary);color:var(--primary)}
-.btn-danger{background:var(--danger);color:#fff}
-.btn-danger:hover:not(:disabled){background:#dc2626}
-.btn-danger-outline{background:transparent;color:var(--danger);border:1px solid var(--danger-border)}
-.btn-danger-outline:hover:not(:disabled){background:var(--danger-dim)}
-.btn-sm{padding:4px 10px;font-size:10px}
-.btn-icon{padding:6px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted-fg)}
-.btn-icon:hover{border-color:var(--primary);color:var(--primary)}
-.btn-full{width:100%;justify-content:center}
-.form-group{display:flex;flex-direction:column;gap:5px}
-.form-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-fg)}
-.form-label .req{color:var(--primary)}
-input[type=text],input[type=number],textarea,select{
-  width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);
-  padding:7px 10px;border-radius:6px;font-size:13px;outline:none;transition:border-color .15s;
-  font-family:var(--font);text-transform:uppercase
-}
-textarea{text-transform:none}
-input:focus,textarea:focus,select:focus{border-color:var(--primary)}
-input.match-ok{border-color:var(--primary);background:rgba(34,197,94,.06)}
-input.match-fail{border-color:var(--danger);background:rgba(239,68,68,.06)}
-input.match-amber{border-color:var(--amber);background:var(--amber-dim)}
-.form-error{font-size:11px;color:var(--danger)}
-.input-wrap{display:flex;gap:6px;align-items:stretch}
-.input-wrap input{flex:1}
-.table-wrap{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
-table{width:100%;border-collapse:collapse}
-thead{background:rgba(255,255,255,.03)}
-th{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-fg);padding:9px 12px;text-align:left;white-space:nowrap}
-td{padding:10px 12px;border-top:1px solid var(--border);font-size:12px;vertical-align:top}
-tr:hover td{background:rgba(255,255,255,.02)}
-tr.rejected td{border-left:3px solid var(--danger)}
-tr.clickable{cursor:pointer}
-.badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid}
-.badge-green{background:var(--primary-dim);color:var(--primary);border-color:var(--primary-border)}
-.badge-red{background:var(--danger-dim);color:var(--danger);border-color:var(--danger-border)}
-.badge-amber{background:var(--amber-dim);color:var(--amber);border-color:var(--amber-border)}
-.badge-muted{background:var(--muted);color:var(--muted-fg);border-color:var(--border)}
-.alert{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:var(--radius);border:1px solid;font-size:12px;margin-bottom:14px}
-.alert svg{width:16px;height:16px;flex-shrink:0;margin-top:1px}
-.alert-danger{background:var(--danger-dim);border-color:var(--danger-border);color:var(--danger)}
-.alert-success{background:var(--primary-dim);border-color:var(--primary-border);color:var(--primary)}
-.alert-amber{background:var(--amber-dim);border-color:var(--amber-border);color:var(--amber)}
-.section-title{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-fg);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:14px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
-.card-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
-.card-body{padding:16px}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
-@media(max-width:600px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
-.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:12px;width:100%;max-width:640px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column}
-.modal-sm{max-width:400px}
-.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.modal-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:8px}
-.modal-body{padding:20px;overflow-y:auto;flex:1}
-.modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;flex-shrink:0}
-#camera-modal .modal{max-width:440px}
-#camera-video{width:100%;display:block;background:#000;max-height:300px;object-fit:cover}
-.scan-overlay{position:relative}
-.scan-frame{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
-.scan-frame-inner{border:2px solid rgba(34,197,94,.5);border-radius:8px;width:220px;height:110px}
-.photo-btn{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--muted);color:var(--muted-fg);cursor:pointer;transition:border-color .15s,color .15s,background .15s;text-align:left}
-.photo-btn.has-photo{border-color:var(--primary-border);background:var(--primary-dim);color:var(--primary)}
-.photo-btn svg{width:18px;height:18px;flex-shrink:0}
-.photo-thumb{width:100%;max-height:110px;object-fit:cover;border-radius:6px;border:1px solid var(--border);margin-top:6px}
-.form-panel{border:1px solid var(--primary-border);border-radius:var(--radius);background:var(--card);overflow:hidden;margin-top:16px}
-.form-panel.danger-panel{border-color:var(--danger-border)}
-.form-panel-header{padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.form-panel-header.primary-bg{background:var(--primary-dim);border-bottom:1px solid var(--primary-border)}
-.form-panel-header.danger-bg{background:var(--danger-dim);border-bottom:1px solid var(--danger-border)}
-.form-panel-body{padding:16px}
-.match-badge{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:4px;border:1px solid;white-space:nowrap}
-.match-badge.ok{background:var(--primary-dim);color:var(--primary);border-color:var(--primary-border)}
-.match-badge.fail{background:var(--danger-dim);color:var(--danger);border-color:var(--danger-border)}
-.match-badge.no-bc{background:var(--amber-dim);color:var(--amber);border-color:var(--amber-border)}
-.match-badge.checking{background:var(--muted);color:var(--muted-fg);border-color:var(--border)}
-.info-row{display:flex;flex-wrap:wrap;gap:6px 24px;font-size:11px;color:var(--muted-fg);padding:8px 16px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--border)}
-.info-row strong{color:var(--text)}
-@keyframes spin{to{transform:rotate(360deg)}}
-.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--muted-fg);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
-@keyframes pulse-anim{0%,100%{opacity:1}50%{opacity:.4}}
-.pulse{animation:pulse-anim 1.4s ease-in-out infinite}
-.online-pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--primary);background:var(--primary-dim);padding:4px 10px;border-radius:20px;border:1px solid var(--primary-border)}
-.ping-dot{position:relative;width:8px;height:8px;flex-shrink:0}
-.ping-dot::before{content:'';position:absolute;inset:0;border-radius:50%;background:var(--primary);animation:ping 1s ease-in-out infinite;opacity:.75}
-.ping-dot::after{content:'';position:absolute;inset:0;border-radius:50%;background:var(--primary)}
-.detail-kv{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
-@media(max-width:500px){.detail-kv{grid-template-columns:1fr 1fr}}
-.kv-box{background:var(--muted);border-radius:6px;padding:10px 12px}
-.kv-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-fg);margin-bottom:3px}
-.kv-value{font-size:13px;font-weight:700}
-#lightbox{position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:200;display:flex;align-items:center;justify-content:center;cursor:pointer}
-#lightbox img{max-width:94vw;max-height:94vh;object-fit:contain;border-radius:8px}
-#lightbox-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:50%;width:36px;height:36px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.search-wrap{position:relative;display:inline-flex;align-items:center}
-.search-wrap svg{position:absolute;left:8px;width:14px;height:14px;color:var(--muted-fg);pointer-events:none}
-.search-wrap input{padding-left:28px;text-transform:none}
-#toast-container{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
-.toast{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 16px;font-size:12px;color:var(--text);max-width:320px;pointer-events:auto;opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s}
-.toast.show{opacity:1;transform:none}
-.toast.success{border-color:var(--primary-border);color:var(--primary)}
-.toast.error{border-color:var(--danger-border);color:var(--danger)}
-.empty-state{text-align:center;padding:48px 16px;color:var(--muted-fg)}
-.empty-state svg{width:40px;height:40px;margin:0 auto 10px;opacity:.3}
-.gap-8{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.gap-8.right{justify-content:flex-end}
-.spacer{flex:1}
-.text-primary{color:var(--primary)}
-.text-danger{color:var(--danger)}
-.text-amber{color:var(--amber)}
-.text-muted{color:var(--muted-fg)}
-.text-sm{font-size:11px}
-.text-xs{font-size:10px}
-.font-bold{font-weight:700}
-.mt-4{margin-top:4px}
-.mt-8{margin-top:8px}
-.mt-12{margin-top:12px}
-.mt-16{margin-top:16px}
-.hidden{display:none!important}
-.record-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
-.record-card:hover{border-color:var(--primary)}
-</style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>MG Packing — Combined Checker</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0a; color: #e0e0e0; margin: 0; padding: 0; min-height: 100vh; }
+
+    /* ── APP HEADER ── */
+    .app-header { background: #111; border-bottom: 1px solid #2a2a2a; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 60; }
+    .app-title { font-size: 1rem; font-weight: 800; color: #fff; letter-spacing: 0.05em; }
+    .app-title span { color: #ffb74d; }
+    .refresh-btn { background: #222; border: 1px solid #444; color: #aaa; padding: 6px 14px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; font-weight: 600; }
+    .refresh-btn:active { background: #333; }
+
+    /* ── MODULE TABS (top level: Packing / KIT / Multi) ── */
+    .module-tabs { display: flex; background: #161616; border-bottom: 2px solid #222; position: sticky; top: 49px; z-index: 55; }
+    .module-tab { flex: 1; padding: 14px 6px; text-align: center; font-size: 0.75rem; font-weight: 800; color: #555; cursor: pointer; border-bottom: 3px solid transparent; text-transform: uppercase; letter-spacing: 0.06em; transition: all 0.2s; }
+    .module-tab.active-packing { color: #ffb74d; border-bottom-color: #ffb74d; background: #1a1501; }
+    .module-tab.active-kit     { color: #ce93d8; border-bottom-color: #ce93d8; background: #180f1c; }
+    .module-tab.active-multi   { color: #64b5f6; border-bottom-color: #64b5f6; background: #0d1520; }
+    .module-dot-packing { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #ffb74d; margin-right: 5px; vertical-align: middle; }
+    .module-dot-kit     { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #ce93d8; margin-right: 5px; vertical-align: middle; }
+    .module-dot-multi   { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #64b5f6; margin-right: 5px; vertical-align: middle; }
+
+    /* ── MODULE PANELS ── */
+    .module-panel { display: none; }
+    .module-panel.active { display: block; }
+
+    /* ── SUB TABS (Check List / Stamping per module) ── */
+    .sub-tabs { display: flex; background: #141414; border-bottom: 1px solid #2a2a2a; }
+    .sub-tab { flex: 1; padding: 13px 8px; text-align: center; font-size: 0.8rem; font-weight: 700; color: #555; cursor: pointer; border-bottom: 3px solid transparent; text-transform: uppercase; }
+    .sub-tab.active { border-bottom-color: var(--accent); color: var(--accent); background: #1a1a1a; }
+
+    /* ── STATS ROW ── */
+    .stats-row { display: flex; gap: 8px; margin: 14px 14px 0; }
+    .stat-box { flex: 1; background: #1a1a1a; border: 1px solid #2e2e2e; border-radius: 10px; padding: 12px 4px; text-align: center; cursor: pointer; transition: border 0.2s; }
+    .stat-box.af { border: 2px solid var(--accent) !important; }
+    .stat-box.af-pass { border: 2px solid #4caf50 !important; }
+    .stat-box.af-fail { border: 2px solid #f44336 !important; }
+    .stat-box.af-stamp { border: 2px solid #4caf50 !important; }
+    .stat-num { font-size: 1.3rem; font-weight: 700; display: block; color: white; }
+    .stat-lbl { font-size: 0.6rem; color: #666; text-transform: uppercase; margin-top: 4px; display: block; letter-spacing: 0.05em; }
+
+    /* ── SEARCH ── */
+    .search-wrap { padding: 10px 14px 4px; }
+    .search-wrap input { width: 100%; padding: 11px 14px; background: #1e1e1e; border: 1px solid #3a3a3a; border-radius: 8px; color: white; font-size: 0.9rem; }
+    .search-wrap input:focus { outline: none; border-color: var(--accent); }
+    .search-wrap input::placeholder { color: #484848; }
+
+    /* ── LIST AREA ── */
+    .list-area { padding: 10px 14px 80px; }
+
+    /* ── CARDS ── */
+    .record-card { background: #1a1a1a; border: 1px solid #2e2e2e; border-left: 4px solid #444; border-radius: 12px; padding: 13px; margin-bottom: 9px; cursor: pointer; transition: border-color 0.15s; }
+    .record-card.verified { border-left-color: #4caf50; }
+    .record-card.rejected { border-left-color: #f44336; }
+    .record-card.pending  { border-left-color: #ff9800; }
+    .record-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .record-customer { font-weight: 700; font-size: 1rem; }
+    .status-pill { padding: 3px 9px; border-radius: 20px; font-size: 0.67rem; font-weight: bold; color: white; white-space: nowrap; }
+    .status-pill.verified { background: #2e7d32; }
+    .status-pill.rejected { background: #b71c1c; }
+    .status-pill.pending  { background: #e65100; }
+    .record-meta { font-size: 0.8rem; color: #888; }
+    .part-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+    .part-chip { background: #252525; border: 1px solid #3a3a3a; border-radius: 5px; padding: 3px 8px; font-size: 0.72rem; color: #aaa; }
+    .part-chip.ok   { border-color: #4caf50; color: #a5d6a7; }
+    .part-chip.fail { border-color: #f44336; color: #ef9a9a; }
+
+    /* ── STAMP CARDS ── */
+    .stamp-card { background: #1a1a1a; border: 1px solid #2e2e2e; border-left: 4px solid #ff9800; border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+    .stamp-card.done { border-left-color: #4caf50; }
+    .stamp-btn { width: 100%; padding: 13px; background: #1565c0; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 0.9rem; }
+    .stamp-btn:disabled { background: #2a2a2a; color: #555; cursor: not-allowed; }
+
+    /* ── EMPTY / LOADING ── */
+    .empty-msg { text-align: center; padding: 48px 20px; color: #444; font-size: 0.9rem; }
+    .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: center; justify-content: center; display: none; }
+    .loading-overlay.show { display: flex; }
+    .loading-box { background: #1e1e1e; border: 1px solid #444; border-radius: 12px; padding: 28px 36px; text-align: center; }
+    .loading-spinner { width: 36px; height: 36px; border: 3px solid #333; border-top-color: #ffb74d; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── DETAIL MODAL ── */
+    #detailModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 100; overflow-y: auto; padding: 10px; display: none; }
+    .modal-card { background: #1a1a1a; border-radius: 14px; padding: 18px; max-width: 960px; margin: 0 auto 60px; border: 1px solid #2e2e2e; }
+    .modal-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
+    .modal-customer { font-size: 1.2rem; font-weight: 800; margin: 0; }
+    .modal-sub { font-size: 0.8rem; color: #888; margin-top: 3px; }
+    .close-btn { background: #2a2a2a; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; flex-shrink: 0; }
+
+    .section-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #555; letter-spacing: 0.08em; margin: 16px 0 8px; border-top: 1px solid #252525; padding-top: 14px; }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; margin-bottom: 8px; }
+    .detail-item label { display: block; font-size: 0.62rem; color: #666; text-transform: uppercase; margin-bottom: 3px; }
+    .detail-item span  { font-size: 1rem; font-weight: bold; color: #eee; word-break: break-all; }
+
+    /* Barcodes */
+    .barcode-check { display: flex; align-items: center; background: #222; border-radius: 7px; padding: 10px 12px; margin-bottom: 6px; gap: 8px; }
+    .bc-label { font-size: 0.73rem; color: #777; min-width: 50px; }
+    .bc-value { font-size: 0.82rem; font-weight: bold; flex: 1; color: #eee; word-break: break-all; }
+    .bc-badge { font-size: 0.7rem; font-weight: bold; padding: 3px 9px; border-radius: 5px; white-space: nowrap; }
+    .bc-badge.ok    { border: 1px solid #4caf50; color: #4caf50; }
+    .bc-badge.fail  { border: 1px solid #f44336; color: #f44336; }
+    .bc-badge.no-bc { border: 1px solid #ff9800; color: #ff9800; }
+
+    /* Photos */
+    .photo-row { display: flex; gap: 8px; margin: 10px 0; }
+    .photo-wrap { flex: 1; text-align: center; background: #111; padding: 6px; border-radius: 8px; border: 1px solid #2e2e2e; }
+    .photo-wrap img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 6px; cursor: pointer; }
+    .photo-wrap.missing { opacity: 0.3; }
+    .photo-lbl { font-size: 0.7rem; font-weight: bold; margin-bottom: 4px; text-transform: uppercase; }
+
+    /* Parts table (KIT) */
+    .parts-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; background: #151515; border-radius: 8px; overflow: hidden; }
+    .parts-table th { background: #222; font-size: 0.72rem; padding: 10px; text-align: left; text-transform: uppercase; color: #ce93d8; }
+    .parts-table td { padding: 10px; border-bottom: 1px solid #252525; font-size: 0.88rem; }
+    .match-tag { font-size: 0.68rem; font-weight: bold; padding: 2px 7px; border-radius: 4px; }
+    .match-ok   { background: #1b5e20; color: #c8e6c9; }
+    .match-fail { background: #b71c1c; color: #ffcdd2; }
+
+    /* Part block (Multi) */
+    .part-block { background: #151515; border: 1px solid #2e2e2e; border-radius: 10px; padding: 13px; margin-bottom: 11px; }
+    .part-block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px; }
+    .part-block-title { font-weight: 700; color: #ffb74d; font-size: 0.92rem; }
+    .part-status-badge { font-size: 0.7rem; font-weight: bold; padding: 3px 9px; border-radius: 9px; }
+    .part-status-badge.ok      { background: #1b5e20; color: #a5d6a7; }
+    .part-status-badge.fail    { background: #b71c1c; color: #ef9a9a; }
+    .part-status-badge.pending { background: #2a2a2a; color: #ffb74d; }
+
+    /* ── VERDICT / SUBMIT ── */
+    .verdict-section { border-top: 1px solid #252525; padding-top: 18px; margin-top: 18px; }
+    .verdict-row { display: flex; gap: 10px; margin-bottom: 13px; }
+    .verdict-btn { flex: 1; padding: 16px; border-radius: 10px; font-weight: bold; color: white; cursor: pointer; font-size: 0.95rem; opacity: 0.5; transition: opacity 0.2s; border: 2px solid transparent; }
+    .verdict-btn.v-approve { background: #2e7d32; border-color: #4caf50; }
+    .verdict-btn.v-reject  { background: #b71c1c; border-color: #f44336; }
+    .verdict-btn.selected  { opacity: 1; outline: 2px solid white; }
+    .verdict-btn:disabled  { opacity: 0.3; cursor: not-allowed; }
+    .checker-input { width: 100%; padding: 13px; background: #161616; border: 1px solid #3a3a3a; border-radius: 8px; color: white; margin-bottom: 10px; font-size: 0.95rem; }
+    .checker-input:disabled { opacity: 0.5; cursor: not-allowed; }
+    textarea.remarks-input { width: 100%; height: 85px; background: #161616; border: 1px solid #3a3a3a; border-radius: 8px; color: white; padding: 12px; font-size: 0.95rem; resize: vertical; }
+    textarea.remarks-input:disabled { opacity: 0.5; cursor: not-allowed; }
+    .submit-btn { width: 100%; padding: 16px; background: #1565c0; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 10px; }
+    .submit-btn:disabled { background: #1e1e1e; color: #555; cursor: not-allowed; border: 1px solid #2e2e2e; }
+
+    /* Approved lock notice */
+    .approved-notice { background: #0d2818; border: 1px solid #2e7d32; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+    .approved-notice .icon { font-size: 1.4rem; }
+    .approved-notice .text { font-size: 0.85rem; color: #a5d6a7; font-weight: 600; }
+
+    /* ── LIGHTBOX ── */
+    #lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1000; display: none; align-items: center; justify-content: center; touch-action: none; }
+    #lightboxImg { max-width: 100%; max-height: 100%; object-fit: contain; transform-origin: center center; cursor: grab; transition: transform 0.05s; }
+    .close-lb { position: absolute; top: 18px; right: 18px; background: #333; color: white; border: none; padding: 10px 18px; border-radius: 8px; z-index: 1001; font-weight: bold; cursor: pointer; }
+  </style>
 </head>
 <body>
 
-<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
-  <symbol id="ic-dashboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-  <symbol id="ic-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-  <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-  <symbol id="ic-check-sq" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-  <symbol id="ic-db" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
-  <symbol id="ic-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-  <symbol id="ic-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-  <symbol id="ic-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-  <symbol id="ic-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  <symbol id="ic-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-  <symbol id="ic-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-  <symbol id="ic-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-  <symbol id="ic-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-  <symbol id="ic-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-  <symbol id="ic-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-  <symbol id="ic-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-  <symbol id="ic-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-  <symbol id="ic-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-  <symbol id="ic-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-  <symbol id="ic-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-  <symbol id="ic-file-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 11 17 15 13"/></svg>
-  <symbol id="ic-file-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/><line x1="12" y1="12" x2="12" y2="18"/></svg>
-  <symbol id="ic-rotate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg>
-</svg>
-
-<div id="app">
-  <div id="sidebar">
-    <div class="brand">
-      <div class="brand-name">MG Packing</div>
-      <div class="brand-sub">System</div>
-    </div>
-    <div class="section-label">Staff</div>
-    <nav id="nav-staff">
-      <a href="#" data-page="packing-lists" onclick="nav('packing-lists');return false">
-        <svg><use href="#ic-list"/></svg>Packing Lists
-      </a>
-    </nav>
-    <div class="section-label">Supervisor</div>
-    <nav id="nav-sup">
-      <a href="#" data-page="dashboard" onclick="nav('dashboard');return false">
-        <svg><use href="#ic-dashboard"/></svg>Dashboard
-      </a>
-      <a href="#" data-page="checker" onclick="nav('checker');return false">
-        <svg><use href="#ic-check-sq"/></svg>Checker View
-      </a>
-      <a href="#" data-page="master" onclick="nav('master');return false">
-        <svg><use href="#ic-db"/></svg>Master Register
-      </a>
-      <a href="#" data-page="rejects" class="danger" onclick="nav('rejects');return false">
-        <svg><use href="#ic-alert"/></svg>Reject List
-      </a>
-    </nav>
-    <div style="flex:1"></div>
-  </div>
-
-  <div id="main">
-    <div id="page-dashboard" class="page hidden"></div>
-    <div id="page-packing-lists" class="page hidden"></div>
-    <div id="page-list-detail" class="page hidden"></div>
-    <div id="page-checker" class="page hidden"></div>
-    <div id="page-master" class="page hidden"></div>
-    <div id="page-rejects" class="page hidden"></div>
+<!-- GLOBAL LOADING OVERLAY -->
+<div class="loading-overlay" id="globalLoading">
+  <div class="loading-box">
+    <div class="loading-spinner"></div>
+    <div style="color:#aaa; font-size:0.9rem;">Loading data…</div>
   </div>
 </div>
 
-<div id="camera-modal" class="modal-backdrop hidden">
-  <div class="modal modal-sm">
-    <div class="modal-header">
-      <div class="modal-title"><svg style="width:16px;height:16px"><use href="#ic-camera"/></svg><span id="camera-label">Scan Barcode</span></div>
-      <button class="btn-icon" onclick="closeCamera()"><svg style="width:14px;height:14px"><use href="#ic-x"/></svg></button>
+<!-- APP HEADER -->
+<div class="app-header">
+  <div class="app-title">MG <span>PACKING</span> CHECKER</div>
+  <button class="refresh-btn" onclick="reloadAll()">↻ REFRESH</button>
+</div>
+
+<!-- MODULE TABS -->
+<div class="module-tabs">
+  <div class="module-tab active-packing" id="modTab_packing" onclick="switchModule('packing')">
+    <span class="module-dot-packing"></span>PACKING
+  </div>
+  <div class="module-tab" id="modTab_kit" onclick="switchModule('kit')">
+    <span class="module-dot-kit"></span>KIT
+  </div>
+  <div class="module-tab" id="modTab_multi" onclick="switchModule('multi')">
+    <span class="module-dot-multi"></span>MULTI
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  MODULE: PACKING                            -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="module-panel active" id="panel_packing" style="--accent:#ffb74d">
+  <div class="sub-tabs">
+    <div class="sub-tab active" id="pSubTab_verify" onclick="pSwitchTab('verify')">CHECK LIST</div>
+    <div class="sub-tab" id="pSubTab_stamp" onclick="pSwitchTab('stamp')">STAMPING</div>
+  </div>
+
+  <!-- VERIFY sub-tab -->
+  <div id="pContent_verify">
+    <div class="stats-row">
+      <div class="stat-box af" id="pf_all"      onclick="pSetFilter('all')"><span class="stat-num" id="pv_total">-</span><span class="stat-lbl">ALL</span></div>
+      <div class="stat-box"    id="pf_pending"   onclick="pSetFilter('pending')"><span class="stat-num" id="pv_pending">-</span><span class="stat-lbl">PENDING</span></div>
+      <div class="stat-box"    id="pf_verified"  onclick="pSetFilter('verified')"><span class="stat-num" id="pv_verified">-</span><span class="stat-lbl">PASS</span></div>
+      <div class="stat-box"    id="pf_rejected"  onclick="pSetFilter('rejected')"><span class="stat-num" id="pv_rejected">-</span><span class="stat-lbl">FAIL</span></div>
     </div>
-    <div style="background:#000;position:relative">
-      <div id="camera-video" style="width:100%;min-height:300px;background:#000"></div>
-      <div class="scan-frame"><div class="scan-frame-inner"></div></div>
-      <div style="position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase">Point camera at barcode</div>
+    <div class="search-wrap"><input type="text" id="pSearch" placeholder="🔍  Search Customer, P/I No., or Carton ID…" oninput="pRenderList()"></div>
+    <div class="list-area" id="pList"><div class="empty-msg">Loading…</div></div>
+  </div>
+
+  <!-- STAMP sub-tab -->
+  <div id="pContent_stamp" style="display:none">
+    <div class="stats-row">
+      <div class="stat-box af" id="psf_wait" onclick="pSetStampFilter('wait')"><span class="stat-num" id="ps_wait">-</span><span class="stat-lbl">WAIT STAMP</span></div>
+      <div class="stat-box"   id="psf_done" onclick="pSetStampFilter('done')"><span class="stat-num" id="ps_done">-</span><span class="stat-lbl">STAMPED</span></div>
     </div>
-    <div style="padding:12px 16px;border-top:1px solid var(--border)">
-      <div id="camera-error" class="hidden" style="color:var(--danger);font-size:11px;margin-bottom:8px"></div>
-      <button class="btn btn-outline btn-full" onclick="closeCamera()"><svg><use href="#ic-x"/></svg>Close Scanner</button>
+    <div class="search-wrap"><input type="text" id="psSearch" placeholder="🔍  Search Customer, P/I No., or Carton ID…" oninput="pRenderStampList()"></div>
+    <div class="list-area" id="pStampList"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  MODULE: KIT                               -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="module-panel" id="panel_kit" style="--accent:#ce93d8">
+  <div class="sub-tabs">
+    <div class="sub-tab active" id="kSubTab_verify" onclick="kSwitchTab('verify')">CHECK LIST</div>
+    <div class="sub-tab" id="kSubTab_stamp" onclick="kSwitchTab('stamp')">STAMPING</div>
+  </div>
+
+  <div id="kContent_verify">
+    <div class="stats-row">
+      <div class="stat-box af" id="kf_all"     onclick="kSetFilter('all')"><span class="stat-num" id="kv_total">-</span><span class="stat-lbl">ALL</span></div>
+      <div class="stat-box"   id="kf_pending"  onclick="kSetFilter('pending')"><span class="stat-num" id="kv_pending">-</span><span class="stat-lbl">PENDING</span></div>
+      <div class="stat-box"   id="kf_verified" onclick="kSetFilter('verified')"><span class="stat-num" id="kv_verified">-</span><span class="stat-lbl">PASS</span></div>
+      <div class="stat-box"   id="kf_rejected" onclick="kSetFilter('rejected')"><span class="stat-num" id="kv_rejected">-</span><span class="stat-lbl">FAIL</span></div>
+    </div>
+    <div class="search-wrap"><input type="text" id="kSearch" placeholder="🔍  Search Customer, P/I No., or Carton ID…" oninput="kRenderList()"></div>
+    <div class="list-area" id="kList"><div class="empty-msg">Loading…</div></div>
+  </div>
+
+  <div id="kContent_stamp" style="display:none">
+    <div class="stats-row">
+      <div class="stat-box af" id="ksf_wait" onclick="kSetStampFilter('wait')"><span class="stat-num" id="ks_wait">-</span><span class="stat-lbl">WAIT STAMP</span></div>
+      <div class="stat-box"   id="ksf_done" onclick="kSetStampFilter('done')"><span class="stat-num" id="ks_done">-</span><span class="stat-lbl">STAMPED</span></div>
+    </div>
+    <div class="search-wrap"><input type="text" id="ksSearch" placeholder="🔍  Search Customer, P/I No., or Carton ID…" oninput="kRenderStampList()"></div>
+    <div class="list-area" id="kStampList"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  MODULE: MULTI                             -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="module-panel" id="panel_multi" style="--accent:#64b5f6">
+  <div class="sub-tabs">
+    <div class="sub-tab active" id="mSubTab_verify" onclick="mSwitchTab('verify')">CHECK LIST</div>
+    <div class="sub-tab" id="mSubTab_stamp" onclick="mSwitchTab('stamp')">STAMPING</div>
+  </div>
+
+  <div id="mContent_verify">
+    <div class="stats-row">
+      <div class="stat-box af" id="mf_all"     onclick="mSetFilter('all')"><span class="stat-num" id="mv_total">-</span><span class="stat-lbl">ALL</span></div>
+      <div class="stat-box"   id="mf_pending"  onclick="mSetFilter('pending')"><span class="stat-num" id="mv_pending">-</span><span class="stat-lbl">PENDING</span></div>
+      <div class="stat-box"   id="mf_verified" onclick="mSetFilter('verified')"><span class="stat-num" id="mv_verified">-</span><span class="stat-lbl">PASS</span></div>
+      <div class="stat-box"   id="mf_rejected" onclick="mSetFilter('rejected')"><span class="stat-num" id="mv_rejected">-</span><span class="stat-lbl">FAIL</span></div>
+    </div>
+    <div class="search-wrap"><input type="text" id="mSearch" placeholder="🔍  Search Customer, P/I No., or Carton ID…" oninput="mRenderList()"></div>
+    <div class="list-area" id="mList"><div class="empty-msg">Loading…</div></div>
+  </div>
+
+  <div id="mContent_stamp" style="display:none">
+    <div class="stats-row">
+      <div class="stat-box af" id="msf_wait" onclick="mSetStampFilter('wait')"><span class="stat-num" id="ms_wait">-</span><span class="stat-lbl">WAIT STAMP</span></div>
+      <div class="stat-box"   id="msf_done" onclick="mSetStampFilter('done')"><span class="stat-num" id="ms_done">-</span><span class="stat-lbl">STAMPED</span></div>
+    </div>
+    <div class="search-wrap"><input type="text" id="msSearch" placeholder="🔍  Search Customer, P/I No., or Carton ID…" oninput="mRenderStampList()"></div>
+    <div class="list-area" id="mStampList"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  SHARED DETAIL MODAL                        -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="detailModal">
+  <div class="modal-card">
+    <div class="modal-top">
+      <div>
+        <div class="modal-customer" id="modalTitle"></div>
+        <div class="modal-sub" id="modalSub"></div>
+      </div>
+      <button class="close-btn" onclick="closeModal()">✕ CLOSE</button>
+    </div>
+
+    <!-- APPROVED LOCK NOTICE (shown when verified) -->
+    <div class="approved-notice" id="approvedNotice" style="display:none">
+      <div class="icon">🔒</div>
+      <div class="text">This record has been APPROVED. View only — resubmission is not allowed.</div>
+    </div>
+
+    <div class="section-label" id="sec_info">RECORD INFO</div>
+    <div class="detail-grid" id="detailGrid"></div>
+
+    <!-- Barcode section (Packing + Multi) -->
+    <div id="barcodeSection"></div>
+
+    <!-- Parts table section (KIT) -->
+    <div id="partsSection"></div>
+
+    <!-- Photos -->
+    <div class="section-label" id="sec_photos" style="display:none">PHOTOS</div>
+    <div class="photo-row" id="photosGrid" style="display:none"></div>
+
+    <!-- Carton Photo (Multi) -->
+    <div id="cartonPhotoWrap"></div>
+
+    <!-- Parts detail (Multi) -->
+    <div id="partsDetail"></div>
+
+    <!-- VERDICT SECTION -->
+    <div class="verdict-section" id="verdictSection">
+      <div style="font-size:0.7rem; color:#666; text-transform:uppercase; margin-bottom:11px; font-weight:700; letter-spacing:0.06em;">CHECKER DECISION</div>
+      <div class="verdict-row">
+        <button class="verdict-btn v-approve" id="btnVerified" onclick="selectVerdict('Verified')">✅ APPROVE</button>
+        <button class="verdict-btn v-reject"  id="btnRejected" onclick="selectVerdict('Rejected')">❌ REJECT</button>
+      </div>
+      <input type="text" class="checker-input" id="checkerNameInput" placeholder="CHECKER STAFF NAME">
+      <textarea class="remarks-input" id="remarksInput" placeholder="REMARKS / REJECTION REASON (optional)"></textarea>
+      <button class="submit-btn" id="submitBtn" onclick="saveVerification()">SUBMIT REPORT</button>
     </div>
   </div>
 </div>
 
-<div id="lightbox" class="hidden" onclick="closeLightbox()">
-  <button id="lightbox-close" onclick="closeLightbox()">✕</button>
-  <img id="lightbox-img" src="" alt="Photo" />
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <button class="close-lb" onclick="closeLightbox()">CLOSE ✕</button>
+  <img id="lightboxImg" alt="Photo">
 </div>
-
-<div id="toast-container"></div>
 
 <script>
-'use strict';
-
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxJNbH09bwWqsO0lnM8j_xHA7ALfPFKpSjSFwUK4SRugrHqMWIhds7KhyUHN7kXR28/exec';
-let currentPage = '';
-let currentListId = null;
-let cameraCallback = null;
-let cameraReader = null;
-let pendingEditRow = null;
-let allRecords = [];
-let masterData = [];
-
-const LS_LISTS = 'mg_packing_lists_v2';
-let LISTS = [];
-
-function saveLists() { localStorage.setItem(LS_LISTS, JSON.stringify(LISTS)); }
-function loadLists() {
-  try { LISTS = JSON.parse(localStorage.getItem(LS_LISTS) || '[]'); } catch { LISTS = []; }
-}
-
-async function gasGet(params) {
-  if (!GAS_URL) return null;
-  const url = GAS_URL + '?' + new URLSearchParams(params);
-  try {
-    const r = await fetch(url);
-    return await r.json();
-  } catch(e) {
-    console.warn('gasGet failed:', e.message);
-    return null;
-  }
-}
-
-async function gasPost(data) {
-  if (!GAS_URL) return null;
-  try {
-    const r = await fetch(GAS_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(data)
-    });
-    return await r.json();
-  } catch(e) {
-    console.warn('gasPost failed:', e.message);
-    return null;
-  }
-}
-
-function toast(msg, type='') {
-  const el = document.createElement('div');
-  el.className = 'toast' + (type ? ' ' + type : '');
-  el.textContent = msg;
-  document.getElementById('toast-container').appendChild(el);
-  requestAnimationFrame(() => { el.classList.add('show'); });
-  setTimeout(() => {
-    el.classList.remove('show');
-    setTimeout(() => el.remove(), 300);
-  }, 3000);
-}
-
-function nav(page, listId=null) {
-  document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-  currentPage = page;
-  const el = document.getElementById('page-' + (page === 'list-detail' ? 'list-detail' : page));
-  if (el) el.classList.remove('hidden');
-  const link = document.querySelector(`nav a[data-page="${page}"]`);
-  if (link) link.classList.add('active');
-
-  if (page === 'dashboard') renderDashboard();
-  else if (page === 'packing-lists') renderPackingLists();
-  else if (page === 'list-detail') { currentListId = listId; renderListDetail(); }
-  else if (page === 'checker') renderChecker();
-  else if (page === 'master') renderMaster();
-  else if (page === 'rejects') renderRejects();
-}
-
-function fmtDate(ts) {
-  if (!ts) return '—';
-  const d = new Date(ts);
-  if (isNaN(d)) return String(ts).slice(0, 16);
-  return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'2-digit' })
-       + ' ' + d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
-}
-function fmtTime(ts) {
-  if (!ts) return '—';
-  const d = new Date(ts);
-  if (isNaN(d)) return String(ts).slice(11, 16);
-  return d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
-}
-
-function compressImage(file, maxPx=800, q=0.7) {
-  return new Promise((res, rej) => {
-    const img = new Image();
-    const url = URL.createObjectURL(file);
-    img.onload = () => {
-      URL.revokeObjectURL(url);
-      let w=img.width, h=img.height;
-      if (w>h && w>maxPx) { h=Math.round(h*maxPx/w); w=maxPx; }
-      else if (h>maxPx) { w=Math.round(w*maxPx/h); h=maxPx; }
-      const c = document.createElement('canvas');
-      c.width=w; c.height=h;
-      c.getContext('2d').drawImage(img,0,0,w,h);
-      res(c.toDataURL('image/jpeg', q));
-    };
-    img.onerror = rej;
-    img.src = url;
-  });
-}
-
-function openLightbox(src) {
-  document.getElementById('lightbox-img').src = src;
-  document.getElementById('lightbox').classList.remove('hidden');
-}
-function closeLightbox() { document.getElementById('lightbox').classList.add('hidden'); }
-
-async function openCamera(label, cb) {
-  cameraCallback = cb;
-  document.getElementById('camera-label').textContent = 'Scan — ' + label;
-  document.getElementById('camera-error').classList.add('hidden');
-  document.getElementById('camera-modal').classList.remove('hidden');
-
-  const errEl = document.getElementById('camera-error');
-
-  try {
-    if (typeof Html5Qrcode === 'undefined') {
-      throw new Error('Scanner library not loaded. Check internet connection.');
-    }
-
-    if (cameraReader) {
-      try { await cameraReader.stop(); } catch(e){}
-      try { await cameraReader.clear(); } catch(e){}
-      cameraReader = null;
-    }
-
-    await new Promise(r => setTimeout(r, 300));
-
-    cameraReader = new Html5Qrcode('camera-video');
-
-    const devices = await Html5Qrcode.getCameras();
-    if (!devices || devices.length === 0) throw new Error('No camera found');
-
-    const back = devices.find(d =>
-      d.label.toLowerCase().includes('back') ||
-      d.label.toLowerCase().includes('rear') ||
-      d.label.toLowerCase().includes('environment')
-    );
-    const cameraId = back ? { deviceId: back.id } : { facingMode: 'environment' };
-
-    await cameraReader.start(
-      cameraId,
-      { fps: 15, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 },
-      (decodedText) => {
-        const val = decodedText.trim().toUpperCase();
-        closeCamera();
-        cb(val);
-      },
-      () => {}
-    );
-  } catch(e) {
-    errEl.textContent = e.message.includes('Permission')
-      ? 'Camera permission denied. Allow camera access or use a barcode scanner.'
-      : 'Camera unavailable: ' + e.message;
-    errEl.classList.remove('hidden');
-  }
-}
-
-function closeCamera() {
-  document.getElementById('camera-modal').classList.add('hidden');
-  if (cameraReader) {
-    try { cameraReader.stop().catch(()=>{}); } catch(e){}
-    try { cameraReader.clear().catch(()=>{}); } catch(e){}
-    setTimeout(() => { cameraReader = null; }, 100);
-  }
-}
-
-async function renderDashboard() {
-  const el = document.getElementById('page-dashboard');
-  el.innerHTML = `
-    <div class="page-header">
-      <div>
-        <div class="page-title"><svg><use href="#ic-dashboard"/></svg>System Status</div>
-        <div class="page-subtitle">Live overview of factory floor packing operations.</div>
-      </div>
-      <div class="online-pill"><div class="ping-dot"></div>SYSTEM ONLINE</div>
-    </div>
-    <div class="stat-grid" id="stat-grid"><div class="pulse text-muted text-sm">Loading stats...</div></div>`;
-
-  let records = [];
-  try {
-    const res = await gasGet({ action: 'records' });
-    if (res && res.records) { records = res.records; allRecords = records; }
-  } catch(_) {}
-
-  const today = new Date().toDateString();
-  const todayEntries = records.filter(r => new Date(r.timestamp).toDateString() === today).length;
-  const pending = records.filter(r => !r.status || r.status.toLowerCase() === '').length;
-  const approved = records.filter(r => r.status && r.status.toLowerCase().includes('approved')).length;
-  const rejected = records.filter(r => r.status && r.status.toLowerCase().includes('rejected')).length;
-
-  document.getElementById('stat-grid').innerHTML = [
-    { label: "Today's Entries", value: todayEntries, icon: 'ic-activity', color: '#3b82f6' },
-    { label: 'Pending Review', value: pending, icon: 'ic-clock', color: 'var(--amber)' },
-    { label: 'Approved', value: approved, icon: 'ic-check', color: 'var(--primary)' },
-    { label: 'Rejected', value: rejected, icon: 'ic-alert', color: 'var(--danger)' },
-    { label: 'Total Cartons', value: records.length, icon: 'ic-box', color: 'var(--muted-fg)' },
-  ].map(s => `
-    <div class="stat-card">
-      <svg class="icon" style="color:${s.color}"><use href="#${s.icon}"/></svg>
-      <div class="label">${s.label}</div>
-      <div class="value" style="color:${s.color}">${s.value}</div>
-    </div>`).join('');
-}
-
-function nextListRef() {
-  const max = LISTS.reduce((m, l) => {
-    const n = parseInt((l.listRef || '').replace('PL-', '') || '0');
-    return Math.max(m, n);
-  }, 0);
-  return 'PL-' + String(max + 1).padStart(4, '0');
-}
-
-function renderPackingLists() {
-  loadLists();
-  const el = document.getElementById('page-packing-lists');
-  el.innerHTML = `
-    <div class="page-header">
-      <div>
-        <div class="page-title"><svg><use href="#ic-list"/></svg>Packing Lists</div>
-        <div class="page-subtitle">Step 1 — create or select a list, then add carton entries.</div>
-      </div>
-      <button class="btn btn-primary" onclick="showCreateList()">
-        <svg><use href="#ic-plus"/></svg>New Packing List
-      </button>
-    </div>
-    <div id="create-list-form" class="hidden"></div>
-    <div class="text-xs text-muted" style="margin-bottom:8px">${LISTS.length} list${LISTS.length!==1?'s':''} found</div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr>
-          <th>Ref</th><th>Customer</th><th>Packed By / Team</th><th>Status</th>
-          <th>Cartons</th><th>Total Qty</th><th>Created</th><th></th>
-        </tr></thead>
-        <tbody>
-        ${LISTS.length === 0 ? `<tr><td colspan="8"><div class="empty-state"><svg><use href="#ic-list"/></svg><p>No packing lists yet — click New Packing List above</p></div></td></tr>` :
-          LISTS.slice().reverse().map((l, ri) => {
-            const i = LISTS.length - 1 - ri;
-            const rejected = (l.cartons || []).filter(c => c.status === 'rejected').length;
-            return `<tr class="clickable" onclick="nav('list-detail',${i})">
-              <td class="font-bold text-primary">${l.listRef}</td>
-              <td>${l.customer}</td>
-              <td><div class="text-sm">${l.createdBy}</div><div class="text-xs text-muted">${l.team}</div></td>
-              <td><span class="badge ${l.status==='open'?'badge-green':'badge-muted'}">${l.status}</span></td>
-              <td style="text-align:center;font-weight:700">${(l.cartons||[]).length}</td>
-              <td style="text-align:center">${(l.cartons||[]).reduce((s,c)=>s+(+c.qty||0),0)}</td>
-              <td class="text-xs text-muted">${fmtDate(l.createdAt)}</td>
-              <td><svg style="width:14px;height:14px;color:var(--muted-fg)"><use href="#ic-arrow-right"/></svg></td>
-            </tr>`;
-          }).join('')}
-        </tbody>
-      </table>
-    </div>`;
-}
-
-function showCreateList() {
-  const el = document.getElementById('create-list-form');
-  el.classList.remove('hidden');
-  el.innerHTML = `
-    <div class="form-panel" style="margin-bottom:16px">
-      <div class="form-panel-header primary-bg">
-        <span class="font-bold text-primary text-sm" style="text-transform:uppercase;letter-spacing:.07em">
-          <svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="#ic-plus"/></svg>Create New Packing List
-        </span>
-        <button class="btn-icon" onclick="document.getElementById('create-list-form').classList.add('hidden')">
-          <svg style="width:12px;height:12px"><use href="#ic-x"/></svg>
-        </button>
-      </div>
-      <div class="form-panel-body">
-        <div class="grid-3" style="margin-bottom:14px">
-          <div class="form-group">
-            <label class="form-label">Customer Name <span class="req">*</span></label>
-            <input type="text" id="cl-customer" placeholder="Enter customer..." autofocus />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Packed By <span class="req">*</span></label>
-            <input type="text" id="cl-by" placeholder="Staff name or ID..." />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Team <span class="req">*</span></label>
-            <input type="text" id="cl-team" placeholder="Team A / Team B..." />
-          </div>
-        </div>
-        <div style="display:flex;justify-content:flex-end;gap:8px;padding-top:12px;border-top:1px solid var(--border)">
-          <button class="btn btn-outline" onclick="document.getElementById('create-list-form').classList.add('hidden')">Cancel</button>
-          <button class="btn btn-primary" onclick="submitCreateList()">
-            <svg><use href="#ic-arrow-right"/></svg>Create & Open List
-          </button>
-        </div>
-      </div>
-    </div>`;
-}
-
-function submitCreateList() {
-  const customer = document.getElementById('cl-customer').value.trim();
-  const createdBy = document.getElementById('cl-by').value.trim();
-  const team = document.getElementById('cl-team').value.trim();
-  if (!customer || !createdBy || !team) { toast('Please fill all fields', 'error'); return; }
-  loadLists();
-  const list = {
-    id: Date.now(),
-    listRef: nextListRef(),
-    customer, createdBy, team,
-    status: 'open',
-    cartons: [],
-    createdAt: new Date().toISOString()
-  };
-  LISTS.push(list);
-  saveLists();
-  nav('list-detail', LISTS.length - 1);
-}
-
-let formState = {
-  bag: { value:'', match:null },
-  inner: { value:'', match:null },
-  outer: { value:'', match:null },
-  photos: { bag:null, inner:null, carton:null },
-  partNo: '', pi:'', cartonId:'', qty:'1', notes:'',
-  uploading: false
+// ═══════════════════════════════════════════
+//  API ENDPOINTS
+// ═══════════════════════════════════════════
+const URLS = {
+  packing: "https://script.google.com/macros/s/AKfycbxJNbH09bwWqsO0lnM8j_xHA7ALfPFKpSjSFwUK4SRugrHqMWIhds7KhyUHN7kXR28/exec",
+  kit:     "https://script.google.com/macros/s/AKfycby2FVQwcyhqkzdqaRl7xfDaFbKoL7AAE-dSKE-WQVs-niQkwept7oUv6vSOiqeEvJ3x/exec",
+  multi:   "https://script.google.com/macros/s/AKfycbzN9vkrRCGET4VqTSGSHNa72Kqsceord8xLy17Rp1CZxjxv-s9BmccfwoFlm_Dnsgrg/exec"
 };
 
-function resetFormState() {
-  formState = {
-    bag:{ value:'', match:null }, inner:{ value:'', match:null }, outer:{ value:'', match:null },
-    photos:{ bag:null, inner:null, carton:null },
-    partNo:'', pi:'', cartonId:'', qty:'1', notes:'', uploading:false
-  };
-  pendingEditRow = null;
+// ═══════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════
+const state = {
+  packing: { records: [], filter: 'all', stampFilter: 'wait' },
+  kit:     { records: [], filter: 'all', stampFilter: 'wait' },
+  multi:   { records: [], groups: {}, filter: 'all', stampFilter: 'wait' }
+};
+
+let currentModule = 'packing';
+let currentRecord = null;
+let currentModuleOpen = null;
+let selectedVerdict = null;
+let isApproved = false;
+
+// Lightbox state
+let scale=1, posX=0, posY=0, lastPX=0, lastPY=0, isDragging=false, initialDist=0;
+
+// ═══════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════
+window.onload = () => {
+  loadModule('packing');
+  loadModule('kit');
+  loadModule('multi');
+};
+
+function reloadAll() {
+  loadModule('packing');
+  loadModule('kit');
+  loadModule('multi');
 }
 
-function renderListDetail() {
-  loadLists();
-  const list = LISTS[currentListId];
-  if (!list) { nav('packing-lists'); return; }
-  const cartons = list.cartons || [];
-  const rejected = cartons.filter(c => c.status === 'rejected');
-  const el = document.getElementById('page-list-detail');
-
-  el.innerHTML = `
-    <div class="page-header">
-      <div style="display:flex;align-items:center;gap:10px">
-        <button class="btn-icon" onclick="nav('packing-lists')"><svg style="width:16px;height:16px"><use href="#ic-back"/></svg></button>
-        <div>
-          <div class="page-title"><svg><use href="#ic-list"/></svg>${list.listRef}</div>
-          <div class="page-subtitle">${list.customer} — ${cartons.length} cartons — ${cartons.reduce((s,c)=>s+(+c.qty||0),0)} pcs</div>
-        </div>
-      </div>
-      <span class="badge ${list.status==='open'?'badge-green':'badge-muted'}">${list.status}</span>
-    </div>
-
-    <div class="grid-3" style="margin-bottom:16px">
-      ${[
-        {icon:'ic-box',label:'Customer',val:list.customer},
-        {icon:'ic-activity',label:'Packed By',val:list.createdBy},
-        {icon:'ic-activity',label:'Team',val:list.team},
-      ].map(i=>`<div class="card" style="padding:12px;display:flex;align-items:center;gap:10px">
-        <svg style="width:16px;height:16px;color:var(--primary);flex-shrink:0"><use href="#${i.icon}"/></svg>
-        <div><div class="text-xs text-muted">${i.label}</div><div class="font-bold text-sm">${i.val}</div></div>
-      </div>`).join('')}
-    </div>
-
-    ${rejected.length > 0 ? `
-    <div class="alert alert-danger" style="margin-bottom:16px">
-      <svg><use href="#ic-alert"/></svg>
-      <div><strong>${rejected.length} carton${rejected.length>1?'s':''} rejected by checker.</strong>
-      Click <strong>Edit</strong> on a rejected row to correct and resubmit.</div>
-    </div>` : ''}
-
-    <div id="success-banner" class="hidden"></div>
-
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-      <div class="text-xs text-muted">Carton Entries (${cartons.length})</div>
-      <button class="btn btn-primary btn-sm" id="btn-add-entry" onclick="showEntryForm(false)">
-        <svg><use href="#ic-plus"/></svg>Add Entry
-      </button>
-    </div>
-    <div class="table-wrap" style="margin-bottom:16px">
-      <table>
-        <thead><tr>
-          <th>Ref</th><th>Carton ID</th><th>Part No</th><th>PI</th>
-          <th>Qty</th><th>Bag</th><th>Inner</th><th>Outer</th><th>Status</th><th>Time</th>
-        </tr></thead>
-        <tbody id="carton-tbody">
-        ${cartons.length===0 ? '<tr><td colspan="10"><div class="empty-state"><svg><use href="#ic-box"/></svg><p>No entries yet — click Add Entry</p></div></td></tr>' :
-          cartons.map((c,ci) => `
-          <tr class="${c.status==='rejected'?'rejected':''}">
-            <td class="font-bold text-primary">${c.cartonRef||'—'}</td>
-            <td class="text-sm">${c.cartonId||'—'}</td>
-            <td class="font-bold text-sm">${c.partNo||'—'}</td>
-            <td class="text-muted text-xs">${c.pi||'—'}</td>
-            <td style="text-align:center;font-weight:700">${c.qty}</td>
-            <td style="text-align:center">${matchDot(c.bagMatch)}</td>
-            <td style="text-align:center">${matchDot(c.innerMatch)}</td>
-            <td style="text-align:center">${matchDot(c.outerMatch)}</td>
-            <td>
-              <span class="badge ${statusBadgeClass(c.status)}">${c.status||'PENDING'}</span>
-              ${c.status==='rejected' ? `
-                <div style="margin-top:4px">
-                  <button class="btn btn-danger-outline btn-sm" onclick="startEditCarton(${ci})">
-                    <svg><use href="#ic-edit"/></svg>Edit
-                  </button>
-                  ${c.rejectionReason ? `<div class="text-xs text-danger" style="margin-top:3px;font-style:italic;max-width:120px">${c.rejectionReason}</div>` : ''}
-                </div>` : ''}
-            </td>
-            <td class="text-xs text-muted">${fmtTime(c.createdAt)}</td>
-          </tr>`).join('')}
-        </tbody>
-      </table>
-    </div>
-
-    <div id="entry-form-wrap"></div>`;
+function showLoading(show) {
+  document.getElementById('globalLoading').classList.toggle('show', show);
 }
 
-function matchDot(m) {
-  if (m===true||m==='true') return '<span style="color:var(--primary)">✅</span>';
-  if (m===false||m==='false') return '<span style="color:var(--danger)">❌</span>';
-  return '<span style="color:var(--muted-fg)">—</span>';
-}
-
-function statusBadgeClass(s) {
-  if (!s || s.toLowerCase()==='pending') return 'badge-amber';
-  if (s.toLowerCase().includes('approved')) return 'badge-green';
-  if (s.toLowerCase().includes('rejected')) return 'badge-red';
-  return 'badge-muted';
-}
-
-function startEditCarton(cartonIdx) {
-  loadLists();
-  const list = LISTS[currentListId];
-  const c = list.cartons[cartonIdx];
-  resetFormState();
-  formState.cartonId = c.cartonId || '';
-  formState.pi = c.pi || '';
-  formState.partNo = c.partNo || '';
-  formState.qty = String(c.qty || 1);
-  formState.photos = { bag: c.imgBagUrl||null, inner: c.imgInnerUrl||null, carton: c.imgCartonUrl||null };
-  pendingEditRow = { cartonIdx, row: c.row };
-  showEntryForm(true);
-}
-
-function showEntryForm(isEdit) {
-  const addBtn = document.getElementById('btn-add-entry');
-  if (addBtn) addBtn.style.display = 'none';
-  const wrap = document.getElementById('entry-form-wrap');
-  const list = LISTS[currentListId];
-  wrap.innerHTML = buildEntryForm(list, isEdit);
-  restoreFormValues();
-}
-
-function buildEntryForm(list, isEdit) {
-  return `
-  <div class="form-panel ${isEdit?'danger-panel':''}" id="entry-form">
-    <div class="form-panel-header ${isEdit?'danger-bg':'primary-bg'}">
-      <span class="font-bold ${isEdit?'text-danger':'text-primary'} text-sm" style="text-transform:uppercase;letter-spacing:.07em">
-        <svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="${isEdit?'#ic-rotate':'#ic-box'}"/></svg>
-        ${isEdit ? `Edit & Resubmit — ${list.listRef}` : `New Entry — ${list.listRef}`}
-      </span>
-      <button class="btn-icon" onclick="cancelForm()"><svg style="width:12px;height:12px"><use href="#ic-x"/></svg></button>
-    </div>
-    <div class="info-row">
-      <span><strong>Customer:</strong> ${list.customer}</span>
-      <span><strong>Packed By:</strong> ${list.createdBy}</span>
-      <span><strong>Team:</strong> ${list.team}</span>
-    </div>
-    <div class="form-panel-body">
-
-      <div class="section-title">Order Info</div>
-      <div class="grid-4" style="margin-bottom:16px">
-        <div class="form-group">
-          <label class="form-label">Carton ID <span class="req">*</span></label>
-          <div class="input-wrap">
-            <input type="text" id="f-cartonId" placeholder="Scan or type..." />
-            <button type="button" class="btn-icon" title="Camera scan — Carton ID" onclick="openCamera('Carton ID',v=>{const el=document.getElementById('f-cartonId');el.value=v;formState.cartonId=v;})"><svg style="width:14px;height:14px"><use href="#ic-camera"/></svg></button>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Part No <span class="req">*</span></label>
-          <div class="input-wrap">
-            <input type="text" id="f-partNo" placeholder="Auto-filled or type..." oninput="onOrderFieldChange('partNo')" />
-            <button type="button" class="btn-icon" title="Camera scan — Part No" onclick="openCamera('Part No',v=>{const el=document.getElementById('f-partNo');el.value=v;onOrderFieldChange('partNo');})"><svg style="width:14px;height:14px"><use href="#ic-camera"/></svg></button>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">PI No</label>
-          <div class="input-wrap">
-            <input type="text" id="f-pi" placeholder="123456/26..." oninput="onOrderFieldChange('pi')" />
-            <button type="button" class="btn-icon" title="Camera scan — PI No" onclick="openCamera('PI No',v=>{const el=document.getElementById('f-pi');el.value=v;onOrderFieldChange('pi');})"><svg style="width:14px;height:14px"><use href="#ic-camera"/></svg></button>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Qty (pcs) <span class="req">*</span></label>
-          <input type="number" id="f-qty" min="1" value="1" />
-        </div>
-      </div>
-
-      <div class="section-title">Barcode Verification</div>
-      <p class="text-xs text-muted" style="margin-bottom:10px">Scan: Bag → Inner → Outer. Type <strong style="color:var(--amber)">NO</strong> if none. Use 📷 camera or barcode scanner.</p>
-      <div class="grid-3" style="margin-bottom:16px">
-        ${buildBarcodeField('bag','1. Bag Barcode')}
-        ${buildBarcodeField('inner','2. Inner Barcode')}
-        ${buildBarcodeField('outer','3. Outer Barcode')}
-      </div>
-
-      <div class="section-title">Photos</div>
-      <div class="grid-3" style="margin-bottom:16px">
-        ${buildPhotoField('bag','Bag with Part')}
-        ${buildPhotoField('inner','Inner Box / Label')}
-        ${buildPhotoField('carton','Carton / Label')}
-      </div>
-
-      <div id="mismatch-warn" class="alert alert-danger hidden">
-        <svg><use href="#ic-alert"/></svg>
-        <div>Mismatch detected — please recheck barcodes before submitting.</div>
-      </div>
-      <div id="form-error" class="hidden" style="color:var(--danger);font-size:12px;margin-bottom:8px"></div>
-
-      <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border);flex-wrap:wrap;gap:8px">
-        <div id="verify-hint" class="text-xs text-muted">Verify all three barcodes to enable submit.</div>
-        <div style="display:flex;gap:8px">
-          <button class="btn btn-outline" onclick="cancelForm()">Cancel</button>
-          <button class="btn ${isEdit?'btn-danger':'btn-primary'}" id="btn-submit" disabled onclick="submitEntry(${isEdit})">
-            <svg><use href="${isEdit?'#ic-rotate':'#ic-box'}"/></svg>
-            <span id="btn-submit-label">${isEdit ? 'Resubmit Corrected' : 'Save Entry'}</span>
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </div>`;
-}
-
-function buildBarcodeField(which, label) {
-  return `<div class="form-group">
-    <div style="display:flex;align-items:center;justify-content:space-between;min-height:22px;margin-bottom:4px">
-      <span class="form-label">${label}</span>
-      <span id="match-badge-${which}" class="match-badge" style="display:none"></span>
-    </div>
-    <div class="input-wrap">
-      <input type="text" id="f-${which}" placeholder="Scan, type, or use camera..." oninput="onBarcodeInput('${which}')" />
-      <button type="button" class="btn-icon" title="Camera scan" onclick="openCamera('${label}', v=>{document.getElementById('f-${which}').value=v;onBarcodeInput('${which}')})">
-        <svg style="width:14px;height:14px"><use href="#ic-camera"/></svg>
-      </button>
-    </div>
-  </div>`;
-}
-
-function buildPhotoField(which, label) {
-  return `<div class="form-group" id="photo-group-${which}">
-    <label class="form-label">${label}</label>
-    <input type="file" id="photo-input-${which}" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto('${which}',this)" />
-    <button type="button" class="photo-btn" id="photo-btn-${which}" onclick="document.getElementById('photo-input-${which}').click()">
-      <svg><use href="#ic-camera"/></svg>
-      <div>
-        <div class="text-sm font-bold">${label}</div>
-        <div class="text-xs text-muted mt-4">Tap to capture photo</div>
-      </div>
-    </button>
-    <div id="photo-thumb-${which}"></div>
-  </div>`;
-}
-
-function restoreFormValues() {
-  const set = (id, val) => { const el=document.getElementById(id); if(el) el.value=val||''; };
-  set('f-cartonId', formState.cartonId);
-  set('f-partNo', formState.partNo);
-  set('f-pi', formState.pi);
-  set('f-qty', formState.qty);
-  ['bag','inner','carton'].forEach(w => {
-    if (formState.photos[w]) renderPhotoThumb(w, formState.photos[w]);
+// ═══════════════════════════════════════════
+//  MODULE SWITCHING
+// ═══════════════════════════════════════════
+function switchModule(mod) {
+  currentModule = mod;
+  ['packing','kit','multi'].forEach(m => {
+    document.getElementById('panel_' + m).classList.remove('active');
+    const t = document.getElementById('modTab_' + m);
+    t.className = 'module-tab';
   });
+  document.getElementById('panel_' + mod).classList.add('active');
+  document.getElementById('modTab_' + mod).classList.add('active-' + mod);
 }
 
-async function handlePhoto(which, input) {
-  const file = input.files[0];
-  if (!file) return;
-  const dataUri = await compressImage(file);
-  formState.photos[which] = dataUri;
-  renderPhotoThumb(which, dataUri);
-  input.value = '';
-}
-
-function renderPhotoThumb(which, dataUri) {
-  const btn = document.getElementById('photo-btn-' + which);
-  const thumb = document.getElementById('photo-thumb-' + which);
-  if (btn) btn.classList.add('has-photo');
-  if (thumb) {
-    thumb.innerHTML = `<img class="photo-thumb" src="${dataUri}" alt="Photo" onclick="openLightbox('${dataUri}')" style="cursor:pointer" />`;
-  }
-}
-
-let lookupCache = {};
-const lookupDebounce = {};
-
-function onBarcodeInput(which) {
-  const el = document.getElementById('f-' + which);
-  if (!el) return;
-  const val = el.value.trim().toUpperCase();
-  if (which === 'bag') formState.bag.value = val;
-  if (which === 'inner') formState.inner.value = val;
-  if (which === 'outer') formState.outer.value = val;
-  el.value = val;
-  if (!val) { setMatchBadge(which, null); updateSubmitBtn(); return; }
-  if (val === 'NO') { setMatchBadge(which, 'no'); updateSubmitBtn(); return; }
-  clearTimeout(lookupDebounce[which]);
-  setMatchBadge(which, 'checking');
-  lookupDebounce[which] = setTimeout(() => doLookup(which, val), 500);
-}
-
-function onOrderFieldChange(field) {
-  const val = (document.getElementById(field === 'partNo' ? 'f-partNo' : 'f-pi')||{}).value || '';
-  if (field === 'partNo') formState.partNo = val.trim().toUpperCase();
-  if (field === 'pi') formState.pi = val.trim().toUpperCase();
-  const inp = document.getElementById(field === 'partNo' ? 'f-partNo' : 'f-pi');
-  if (inp) inp.value = formState[field];
-  lookupCache = {};
-  ['bag','inner','outer'].forEach(w => {
-    const bc = formState[w] && formState[w].value;
-    if (bc && bc !== 'NO') {
-      clearTimeout(lookupDebounce[w]);
-      setMatchBadge(w, 'checking');
-      lookupDebounce[w] = setTimeout(() => doLookup(w, bc), 400);
-    }
-  });
-}
-
-async function doLookup(which, barcode) {
-  const partNo = ((document.getElementById('f-partNo')||{}).value || '').trim().toUpperCase();
-  const pi     = ((document.getElementById('f-pi')||{}).value || '').trim().toUpperCase();
-  const key    = `${barcode}|${partNo}|${pi}`;
-  if (lookupCache[key] !== undefined) {
-    applyLookupResult(which, barcode, lookupCache[key]);
-    return;
-  }
-  if (!GAS_URL) {
-    setMatchBadge(which, 'error');
-    updateSubmitBtn();
-    return;
-  }
-  try {
-    const res = await gasGet({ action:'lookup', barcode, pi, partNo });
-    if (res === null) { setMatchBadge(which, 'error'); updateSubmitBtn(); return; }
-    lookupCache[key] = res;
-    applyLookupResult(which, barcode, res);
-  } catch(e) {
-    setMatchBadge(which, 'error');
-    updateSubmitBtn();
-  }
-}
-
-function applyLookupResult(which, barcode, res) {
-  if (res && res.found) {
-    if (which === 'bag') {
-      if (res.partNo) {
-        const pnEl = document.getElementById('f-partNo');
-        if (pnEl && !pnEl.value) {
-          pnEl.value = String(res.partNo).toUpperCase();
-          formState.partNo = pnEl.value;
-          lookupCache = {};
-          ['inner','outer'].forEach(w => {
-            const bc = formState[w] && formState[w].value;
-            if (bc && bc !== 'NO') {
-              clearTimeout(lookupDebounce[w]);
-              setMatchBadge(w, 'checking');
-              lookupDebounce[w] = setTimeout(() => doLookup(w, bc), 400);
-            }
-          });
-        }
-      }
-      if (res.pi) {
-        const piEl = document.getElementById('f-pi');
-        if (piEl && !piEl.value) {
-          piEl.value = String(res.pi).toUpperCase();
-          formState.pi = piEl.value;
-        }
-      }
-    }
-    formState[which].match = true;
-    setMatchBadge(which, true);
-  } else {
-    formState[which].match = false;
-    setMatchBadge(which, false);
-  }
-  updateSubmitBtn();
-}
-
-function setMatchBadge(which, state) {
-  if (which === 'bag' || which === 'inner' || which === 'outer') {
-    formState[which].match = (state === 'no') ? 'no' : state;
-  }
-  const badge = document.getElementById('match-badge-' + which);
-  const input = document.getElementById('f-' + which);
-  if (!badge || !input) return;
-  input.className = '';
-  badge.style.display = '';
-  if (state === null) { badge.style.display='none'; return; }
-  if (state === true) { badge.textContent='✅ MATCH'; badge.className='match-badge ok'; input.className='match-ok'; }
-  else if (state === false) { badge.textContent='❌ MISMATCH'; badge.className='match-badge fail'; input.className='match-fail'; }
-  else if (state === 'error') { badge.textContent='⚠️ CANNOT VERIFY'; badge.className='match-badge checking'; input.className='match-amber'; }
-  else if (state === 'no') { badge.textContent='NO BARCODE'; badge.className='match-badge no-bc'; input.className='match-amber'; }
-  else if (state === 'checking') { badge.textContent='CHECKING...'; badge.className='match-badge checking'; }
-}
-
-function updateSubmitBtn() {
-  const btn = document.getElementById('btn-submit');
-  const warn = document.getElementById('mismatch-warn');
-  const hint = document.getElementById('verify-hint');
-  if (!btn) return;
-  const {bag, inner, outer} = formState;
-  const hasMismatch = bag.match===false || inner.match===false || outer.match===false;
-  const hasError    = bag.match==='error' || inner.match==='error' || outer.match==='error';
-  const done = m => m===true || m==='no' || m==='error';
-  const allVerified = done(bag.match) && done(inner.match) && done(outer.match);
-  if (warn) {
-    const warnText = warn.querySelector('div') || warn;
-    if (hasMismatch) {
-      warnText.textContent = 'Mismatch detected — please recheck barcodes before submitting.';
-      warn.classList.remove('hidden');
-    } else if (hasError) {
-      warnText.textContent = '⚠️ Some barcodes could not be verified (server unreachable). Proceed with caution.';
-      warn.classList.remove('hidden');
-      warn.style.borderColor = 'var(--amber)';
-      warn.style.color = 'var(--amber)';
-    } else {
-      warn.classList.add('hidden');
-      warn.style.borderColor = '';
-      warn.style.color = '';
-    }
-  }
-  if (hint) hint.style.display = allVerified ? 'none' : '';
-  btn.disabled = hasMismatch || !allVerified;
-}
-
-function cancelForm() {
-  resetFormState();
-  renderListDetail();
-}
-
-async function submitEntry(isEdit) {
-  loadLists();
-  const list = LISTS[currentListId];
-  const cartonId = (document.getElementById('f-cartonId')||{}).value?.trim() || '';
-  const partNo = (document.getElementById('f-partNo')||{}).value?.trim().toUpperCase() || '';
-  const pi = (document.getElementById('f-pi')||{}).value?.trim().toUpperCase() || '';
-  const qty = parseInt((document.getElementById('f-qty')||{}).value || '1');
-  if (!cartonId || !partNo || !qty) { toast('Fill all required fields', 'error'); return; }
-
-  const btn = document.getElementById('btn-submit');
-  const lbl = document.getElementById('btn-submit-label');
-  if (btn) btn.disabled = true;
-  if (lbl) lbl.textContent = 'Saving...';
-
-  const matchBool = m => m===true || m==='no';
-
-  async function maybeUpload(dataUri, filename) {
-    if (!dataUri || !dataUri.startsWith('data:')) return dataUri || '';
-    if (!GAS_URL) return dataUri;
-    try {
-      const res = await gasPost({ action:'uploadPhoto', base64: dataUri, filename });
-      return (res && res.url) ? res.url : dataUri;
-    } catch { return dataUri; }
-  }
-
-  const [imgBagUrl, imgInnerUrl, imgCartonUrl] = await Promise.all([
-    maybeUpload(formState.photos.bag, `bag_${cartonId}.jpg`),
-    maybeUpload(formState.photos.inner, `inner_${cartonId}.jpg`),
-    maybeUpload(formState.photos.carton, `carton_${cartonId}.jpg`),
-  ]);
-
-  const now = new Date().toISOString();
-  const existingMax = (list.cartons||[]).reduce((m,c)=>{
-    const n=parseInt((c.cartonRef||'').replace('CTN-',''));
-    return isNaN(n)?m:Math.max(m,n);
-  },0);
-  const globalMax = LISTS.reduce((m,l)=>(l.cartons||[]).reduce((m2,c)=>{
-    const n=parseInt((c.cartonRef||'').replace('CTN-',''));
-    return isNaN(n)?m2:Math.max(m2,n);
-  },m),0);
-  const nextNum = Math.max(existingMax, globalMax) + (isEdit ? 0 : 1);
-  const cartonRef = isEdit && pendingEditRow
-    ? (list.cartons[pendingEditRow.cartonIdx]?.cartonRef || 'CTN-'+String(nextNum).padStart(3,'0'))
-    : 'CTN-' + String(nextNum).padStart(3,'0');
-
-  const payload = {
-    cartonRef, cartonId, partNo, pi, qty,
-    bagBarcode: formState.bag.value,
-    innerBarcode: formState.inner.value,
-    outerBarcode: formState.outer.value,
-    bagMatch: matchBool(formState.bag.match),
-    innerMatch: matchBool(formState.inner.match),
-    outerMatch: matchBool(formState.outer.match),
-    imgBagUrl, imgInnerUrl, imgCartonUrl,
-    status: 'pending',
-    rejectionReason: null,
-    checkedBy: null,
-    createdAt: now,
-    row: null,
-  };
-
-  if (GAS_URL) {
-    const gasPayload = {
-      cartonId, partNo, pi, qty,
-      bag: formState.bag.value, inner: formState.inner.value, outer: formState.outer.value,
-      bagMatch: payload.bagMatch, innerMatch: payload.innerMatch, outerMatch: payload.outerMatch,
-      imgBagUrl, imgInnerUrl, imgCartonUrl,
-      customer: list.customer, packedBy: list.createdBy, checkerBy: '', packedDate: '',
-    };
-    try {
-      if (isEdit && pendingEditRow?.row) {
-        await gasPost({ action:'resubmit', ...gasPayload, row: pendingEditRow.row });
-      } else {
-        await gasPost({ action:'submit', ...gasPayload });
-      }
-    } catch(e) {}
-  }
-
-  if (isEdit && pendingEditRow !== null) {
-    const ci = pendingEditRow.cartonIdx;
-    list.cartons[ci] = { ...list.cartons[ci], ...payload };
-    list.cartons[ci].status = 'pending';
-    list.cartons[ci].rejectionReason = null;
-  } else {
-    if (!list.cartons) list.cartons = [];
-    list.cartons.push(payload);
-  }
-  LISTS[currentListId] = list;
-  saveLists();
-
-  resetFormState();
-  renderListDetail();
-
-  const banner = document.getElementById('success-banner');
-  if (banner) {
-    banner.classList.remove('hidden');
-    banner.innerHTML = `<div class="alert alert-success" style="margin-bottom:12px">
-      <svg><use href="#ic-check"/></svg>
-      <div><strong>${isEdit?'Resubmitted':'Entry saved'} — ${cartonRef}</strong><br/>
-      <span class="text-sm">Carton ID: ${cartonId} — ${list.listRef}</span></div>
-      <button class="btn-icon" style="margin-left:auto" onclick="this.closest('.alert').parentElement.classList.add('hidden')"><svg style="width:12px;height:12px"><use href="#ic-x"/></svg></button>
-    </div>`;
-  }
-}
-
-let checkerFilter = 'pending';
-let checkerSearch = '';
-let checkerRecords = [];
-let currentCheckerRecord = null;
-
-async function renderChecker() {
-  const el = document.getElementById('page-checker');
-  el.innerHTML = `
-    <div class="page-header">
-      <div>
-        <div class="page-title"><svg><use href="#ic-check-sq"/></svg>Checker View</div>
-        <div class="page-subtitle">Review carton submissions and approve or reject.</div>
-      </div>
-      <div class="gap-8">
-        <div class="search-wrap">
-          <svg><use href="#ic-search"/></svg>
-          <input type="text" id="checker-search" placeholder="Search..." style="width:180px" oninput="checkerSearch=this.value;renderCheckerTable()" />
-        </div>
-        <select onchange="checkerFilter=this.value;renderCheckerTable()" style="width:130px;text-transform:uppercase;font-size:11px">
-          <option value="pending">PENDING</option>
-          <option value="approved">APPROVED</option>
-          <option value="rejected">REJECTED</option>
-          <option value="all">ALL</option>
-        </select>
-        <button class="btn btn-outline btn-sm" onclick="loadCheckerRecords()"><svg><use href="#ic-refresh"/></svg>Refresh</button>
-      </div>
-    </div>
-    <div id="checker-stats" class="stat-grid" style="margin-bottom:20px"></div>
-    <div id="checker-table-wrap"><div class="pulse text-muted text-sm">Loading...</div></div>
-    <div id="checker-modal-wrap"></div>`;
-  await loadCheckerRecords();
-}
-
-async function loadCheckerRecords() {
-  checkerRecords = [];
-  if (GAS_URL) {
-    try {
-      const res = await gasGet({ action:'records' });
-      if (res && res.records) {
-        checkerRecords = res.records;
-        allRecords = res.records;
-      }
-    } catch(e) {
-      console.warn('Failed to load checker records:', e);
-    }
-  }
-  renderCheckerStats();
-  renderCheckerTable();
-}
-
-function renderCheckerStats() {
-  const now = Date.now();
-  const sevenDaysAgo = now - 7 * 24 * 3600 * 1000;
-  const total = checkerRecords.length;
-  const pending = checkerRecords.filter(r => !r.status || r.status.toLowerCase() === '').length;
-  const approved = checkerRecords.filter(r => (r.status||'').toLowerCase().includes('approved')).length;
-  const rejected = checkerRecords.filter(r => (r.status||'').toLowerCase().includes('rejected')).length;
-  const recentRejected = checkerRecords.filter(r => {
-    const s = (r.status||'').toLowerCase();
-    if (!s.includes('rejected')) return false;
-    const d = new Date(r.timestamp||r.createdAt).getTime();
-    return d > sevenDaysAgo;
-  }).length;
-
-  const statsEl = document.getElementById('checker-stats');
-  if (!statsEl) return;
-  statsEl.innerHTML = [
-    { label: "Total Records", value: total, icon: 'ic-box', color: 'var(--muted-fg)' },
-    { label: "Pending", value: pending, icon: 'ic-clock', color: 'var(--amber)' },
-    { label: "Approved", value: approved, icon: 'ic-check', color: 'var(--primary)' },
-    { label: "Rejected", value: rejected, icon: 'ic-alert', color: 'var(--danger)' },
-    { label: "Rejected (7d)", value: recentRejected, icon: 'ic-alert', color: '#ff5722' },
-  ].map(s => `
-    <div class="stat-card">
-      <svg class="icon" style="color:${s.color}"><use href="#${s.icon}"/></svg>
-      <div class="label">${s.label}</div>
-      <div class="value" style="color:${s.color}">${s.value}</div>
-    </div>`).join('');
-}
-
-function renderCheckerTable() {
-  let recs = checkerRecords;
-  if (checkerFilter !== 'all') {
-    recs = recs.filter(r => {
-      const s = (r.status||'').toLowerCase();
-      if (checkerFilter === 'pending') return !s || s === '' || s === 'pending';
-      if (checkerFilter === 'approved') return s.includes('approved');
-      if (checkerFilter === 'rejected') return s.includes('rejected');
-      return true;
-    });
-  }
-  if (checkerSearch) {
-    const q = checkerSearch.toLowerCase();
-    recs = recs.filter(r =>
-      (r.cartonId||'').toLowerCase().includes(q) ||
-      (r.cartonRef||'').toLowerCase().includes(q) ||
-      (r.customer||'').toLowerCase().includes(q) ||
-      (r.partNo||'').toLowerCase().includes(q) ||
-      (r.packedBy||'').toLowerCase().includes(q)
-    );
-  }
-
-  const wrap = document.getElementById('checker-table-wrap');
-  if (!wrap) return;
-  if (recs.length === 0) {
-    wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-check-sq"/></svg><p>No records found</p></div>';
-    return;
-  }
-
-  wrap.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px">' + recs.map(r => {
-    const s = (r.status||'').toLowerCase();
-    const isApproved = s.includes('approved');
-    const isRejected = s.includes('rejected');
-    const statusColor = isApproved ? 'var(--primary)' : isRejected ? 'var(--danger)' : 'var(--amber)';
-    const statusBg = isApproved ? 'var(--primary-dim)' : isRejected ? 'var(--danger-dim)' : 'var(--amber-dim)';
-    const statusBorder = isApproved ? 'var(--primary-border)' : isRejected ? 'var(--danger-border)' : 'var(--amber-border)';
-    const statusText = isApproved ? 'APPROVED' : isRejected ? 'REJECTED' : 'PENDING';
-    
-    const photos = [];
-    if (r.imgBagUrl) photos.push({url: r.imgBagUrl, lbl: 'Bag'});
-    if (r.imgInnerUrl) photos.push({url: r.imgInnerUrl, lbl: 'Inner'});
-    if (r.imgCartonUrl) photos.push({url: r.imgCartonUrl, lbl: 'Carton'});
-    
-    const photoHtml = photos.length > 0 
-      ? '<div style="display:flex;gap:6px;margin-top:8px">' + photos.map(p => {
-          const id = (p.url||'').match(/[-\\w]{25,}/);
-          const thumb = id ? `https://drive.google.com/thumbnail?id=${id[0]}&sz=200` : p.url;
-          return `<img src="${thumb}" style="width:60px;height:60px;object-fit:cover;border-radius:6px;border:1px solid var(--border);cursor:pointer" onclick="event.stopPropagation();openLightbox('${p.url}')" />`;
-        }).join('') + '</div>'
-      : '';
-    
-    return `<div class="record-card ${isRejected ? 'rejected' : ''}" style="cursor:pointer;padding:14px;border-left:4px solid ${statusColor}" onclick="openCheckerDetail(${r.row})">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-        <span style="font-weight:700;font-size:1rem;color:${statusColor}">${escHtml(r.customer||'Unknown')}</span>
-        <span class="badge" style="background:${statusBg};color:${statusColor};border-color:${statusBorder}">${statusText}</span>
-      </div>
-      <div style="font-size:0.85rem;color:var(--muted-fg);margin-bottom:4px">
-        PI: ${escHtml(r.pi||'—')} | Carton: ${escHtml(r.cartonId||'—')} | Part: ${escHtml(r.partNo||'—')}
-      </div>
-      <div style="font-size:0.8rem;color:var(--muted-fg)">
-        Packed: ${escHtml(r.packedBy||'—')} | Qty: ${r.qty||'0'} pcs | ${fmtDate(r.timestamp||r.createdAt)}
-      </div>
-      ${isRejected && r.remarks ? `<div style="font-size:0.8rem;color:var(--danger);margin-top:6px;font-style:italic">💬 ${escHtml(r.remarks)}</div>` : ''}
-      ${photoHtml}
-    </div>`;
-  }).join('') + '</div>';
-}
-
-async function openCheckerDetail(rowNum) {
-  try {
-    const res = await gasGet({ action: 'record', row: rowNum });
-    if (!res || res.error) {
-      toast('Failed to load record details', 'error');
-      return;
-    }
-    currentCheckerRecord = res;
-    showCheckerDetailModal(res);
-  } catch(e) {
-    toast('Error loading record', 'error');
-  }
-}
-
-function showCheckerDetailModal(r) {
-  const s = (r.status||'').toLowerCase();
-  const isApproved = s.includes('approved');
-  const isRejected = s.includes('rejected');
-  const isPending = !isApproved && !isRejected;
-  const wrap = document.getElementById('checker-modal-wrap');
-  
-  const photos = [
-    {lbl: 'Bag', url: r.imgBagUrl},
-    {lbl: 'Inner', url: r.imgInnerUrl},
-    {lbl: 'Carton', url: r.imgCartonUrl}
-  ];
-  const photoSection = photos.some(p => p.url) ? `
-    <div class="section-title">Photos</div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
-      ${photos.map(p => {
-        if (!p.url) return '';
-        const id = (p.url||'').match(/[-\\w]{25,}/);
-        const thumb = id ? `https://drive.google.com/thumbnail?id=${id[0]}&sz=400` : p.url;
-        return `<div style="text-align:center">
-          <img src="${thumb}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer" onclick="openLightbox('${p.url}')" />
-          <div style="font-size:0.7rem;color:var(--muted-fg);margin-top:4px">${p.lbl}</div>
-        </div>`;
-      }).join('')}
-    </div>
-  ` : '';
-  
-  const barcodes = [
-    {lbl: 'Bag', val: r.bag, match: (r.matchStatus||'').includes('Bag:✅')},
-    {lbl: 'Inner', val: r.inner, match: (r.matchStatus||'').includes('Inner:✅')},
-    {lbl: 'Outer', val: r.outer, match: (r.matchStatus||'').includes('Outer:✅')}
-  ];
-  const barcodeSection = `
-    <div class="section-title">Barcode Verification</div>
-    <div style="margin-bottom:16px">
-      ${barcodes.map(b => {
-        const isNo = String(b.val||'').toUpperCase() === 'NO';
-        const ok = b.match || isNo;
-        return `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--muted);border-radius:6px;margin-bottom:6px">
-          <span style="font-size:0.9rem">${ok ? '✅' : '❌'}</span>
-          <span style="font-size:0.85rem;flex:1"><strong>${b.lbl}:</strong> ${escHtml(b.val||'—')}</span>
-          <span style="font-size:0.75rem;color:${ok ? 'var(--primary)' : 'var(--danger)'}">${isNo ? 'NO BARCODE' : ok ? 'MATCH' : 'MISMATCH'}</span>
-        </div>`;
-      }).join('')}
-    </div>
-  `;
-  
-  const stampSection = isApproved ? `
-    <div class="section-title">Stamping</div>
-    <div style="margin-bottom:16px">
-      ${(r.stampStatus||'').includes('Stamped') 
-        ? `<div style="padding:10px 14px;background:var(--primary-dim);border:1px solid var(--primary-border);border-radius:8px;color:var(--primary);font-weight:700">
-            ✅ STAMPED on ${escHtml(r.stampDate||'N/A')}
-          </div>`
-        : `<button class="btn btn-primary btn-full" onclick="checkerMarkStamped(${r.row})">
-            <svg><use href="#ic-check"/></svg>Mark as Stamped
-          </button>`
-      }
-    </div>
-  ` : '';
-  
-  const verdictSection = isPending ? `
-    <div class="section-title" style="border-top:1px solid var(--border);padding-top:16px">Checker Decision</div>
-    <div style="display:flex;gap:10px;margin-bottom:12px">
-      <button class="btn btn-primary" style="flex:1" id="btnApprove" onclick="checkerSelectVerdict('Approved')">
-        <svg><use href="#ic-check"/></svg>Approve
-      </button>
-      <button class="btn btn-danger-outline" style="flex:1" id="btnReject" onclick="checkerSelectVerdict('Rejected')">
-        <svg><use href="#ic-file-x"/></svg>Reject
-      </button>
-    </div>
-    <div class="form-group" style="margin-bottom:10px">
-      <label class="form-label">Checker Name <span class="req">*</span></label>
-      <input type="text" id="checker-name" placeholder="Enter your name..." />
-    </div>
-    <div class="form-group" style="margin-bottom:12px">
-      <label class="form-label">Remarks / Rejection Reason</label>
-      <textarea id="checker-remarks" rows="3" placeholder="Enter remarks or rejection reason..." style="text-transform:none"></textarea>
-    </div>
-    <button class="btn btn-primary btn-full" id="btnSubmitVerdict" onclick="checkerSubmitVerdict()">Submit Decision</button>
-  ` : '';
-  
-  const rejectedInfo = isRejected ? `
-    <div class="alert alert-danger" style="margin-bottom:16px">
-      <svg><use href="#ic-alert"/></svg>
-      <div><strong>Rejected by ${escHtml(r.checker||'Checker')}</strong><br/><em>${escHtml(r.remarks||'No reason given')}</em></div>
-    </div>
-  ` : '';
-  
-  wrap.innerHTML = `<div class="modal-backdrop" id="checker-detail-modal" onclick="if(event.target===this)closeCheckerDetail()">
-    <div class="modal" style="max-width:600px">
-      <div class="modal-header">
-        <div class="modal-title">
-          <svg style="width:16px;height:16px"><use href="#ic-check-sq"/></svg>
-          ${escHtml(r.customer||'Record')}
-          <span class="badge ${isApproved ? 'badge-green' : isRejected ? 'badge-red' : 'badge-amber'}" style="margin-left:8px">${isApproved ? 'APPROVED' : isRejected ? 'REJECTED' : 'PENDING'}</span>
-        </div>
-        <button class="btn-icon" onclick="closeCheckerDetail()"><svg style="width:14px;height:14px"><use href="#ic-x"/></svg></button>
-      </div>
-      <div class="modal-body">
-        <div class="detail-kv" style="margin-bottom:14px">
-          <div class="kv-box"><div class="kv-label">Carton ID</div><div class="kv-value">${escHtml(r.cartonId||'—')}</div></div>
-          <div class="kv-box"><div class="kv-label">Part No</div><div class="kv-value">${escHtml(r.partNo||'—')}</div></div>
-          <div class="kv-box"><div class="kv-label">PI No</div><div class="kv-value">${escHtml(r.pi||'—')}</div></div>
-          <div class="kv-box"><div class="kv-label">Qty</div><div class="kv-value">${r.qty||'—'}</div></div>
-          <div class="kv-box"><div class="kv-label">Packed By</div><div class="kv-value">${escHtml(r.packedBy||'—')}</div></div>
-          <div class="kv-box"><div class="kv-label">Date</div><div class="kv-value">${fmtDate(r.timestamp||r.createdAt)}</div></div>
-        </div>
-        ${rejectedInfo}
-        ${barcodeSection}
-        ${photoSection}
-        ${stampSection}
-        ${verdictSection}
-      </div>
-    </div>
-  </div>`;
-}
-
-function closeCheckerDetail() {
-  document.getElementById('checker-modal-wrap').innerHTML = '';
-  currentCheckerRecord = null;
-}
-
-let selectedCheckerVerdict = null;
-
-function checkerSelectVerdict(verdict) {
-  selectedCheckerVerdict = verdict;
-  const btnA = document.getElementById('btnApprove');
-  const btnR = document.getElementById('btnReject');
-  if (btnA) {
-    btnA.className = verdict === 'Approved' ? 'btn btn-primary' : 'btn btn-outline';
-    btnA.style.flex = '1';
-  }
-  if (btnR) {
-    btnR.className = verdict === 'Rejected' ? 'btn btn-danger' : 'btn btn-danger-outline';
-    btnR.style.flex = '1';
-  }
-}
-
-async function checkerSubmitVerdict() {
-  const name = document.getElementById('checker-name').value.trim();
-  const remarks = document.getElementById('checker-remarks').value.trim();
-  if (!name) { toast('Please enter Checker Name', 'error'); return; }
-  if (!selectedCheckerVerdict) { toast('Please select Approve or Reject', 'error'); return; }
-  
-  const btn = document.getElementById('btnSubmitVerdict');
-  if (btn) { btn.disabled = true; btn.textContent = 'Submitting...'; }
-  
-  const statusStr = selectedCheckerVerdict === 'Approved' ? 'Verified ✅' : 'Rejected ❌';
-  
-  try {
-    const res = await gasPost({ 
-      action: 'verify', 
-      row: currentCheckerRecord.row, 
-      checker: name.toUpperCase(), 
-      status: statusStr, 
-      remarks: remarks.toUpperCase() 
-    });
-    
-    if (res && res.success) {
-      toast(`Record ${selectedCheckerVerdict.toLowerCase()}d ✅`, 'success');
-      closeCheckerDetail();
-      await loadCheckerRecords();
-    } else {
-      throw new Error(res?.error || 'Unknown error');
-    }
-  } catch(e) {
-    toast('Submit failed: ' + e.message, 'error');
-    if (btn) { btn.disabled = false; btn.textContent = 'Submit Decision'; }
-  }
-}
-
-async function checkerMarkStamped(row) {
-  const staff = prompt('ENTER STAMPING STAFF NAME:');
-  if (!staff) return;
-  try {
-    const res = await gasPost({ action: 'stamp', row: row, staff: staff.toUpperCase() });
-    if (res && res.success) {
-      toast('Stamped successfully ✅', 'success');
-      closeCheckerDetail();
-      await loadCheckerRecords();
-    } else {
-      throw new Error(res?.error || 'Unknown error');
-    }
-  } catch(e) {
-    toast('Stamp failed: ' + e.message, 'error');
-  }
-}
-
+// ═══════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════
 function escHtml(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-const LS_MASTER = 'mg_master_records';
-let masterRecords = [];
-
-function loadMasterRecords() {
-  try { masterRecords = JSON.parse(localStorage.getItem(LS_MASTER)||'[]'); } catch{ masterRecords=[]; }
-}
-function saveMasterRecords() { localStorage.setItem(LS_MASTER, JSON.stringify(masterRecords)); }
-
-function renderMaster() {
-  loadMasterRecords();
-  const el = document.getElementById('page-master');
-  let searchVal = '';
-  renderMasterContent(el, searchVal);
+// FIXED: Better driveThumb with data URI support and error fallback
+function driveThumb(url, sz='800') {
+  if (!url) return '';
+  // If it's already a data URI, return as-is
+  if (url.startsWith('data:')) return url;
+  // Extract Google Drive file ID
+  const m = String(url).match(/[-\w]{25,}/);
+  if (!m) return url; // Return original if no ID found
+  return `https://drive.google.com/thumbnail?id=${m[0]}&sz=${sz}`;
 }
 
-function renderMasterContent(el, searchVal) {
-  const filtered = masterRecords.filter(r =>
-    !searchVal ||
-    (r.partNo||'').toLowerCase().includes(searchVal) ||
-    (r.customer||'').toLowerCase().includes(searchVal)
-  );
+// Photo error fallback SVG
+const PHOTO_ERROR_SVG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect width='200' height='200' fill='%23222'/%3E%3Ctext x='100' y='105' text-anchor='middle' fill='%23666' font-size='14' font-family='sans-serif'%3EPhoto Error%3C/text%3E%3C/svg%3E";
 
-  el.innerHTML = `
-    <div class="page-header">
-      <div>
-        <div class="page-title"><svg><use href="#ic-db"/></svg>Master Register</div>
-        <div class="page-subtitle">Manage approved barcodes for validation.</div>
-      </div>
-      <div class="gap-8">
-        <div class="search-wrap">
-          <svg><use href="#ic-search"/></svg>
-          <input type="text" id="master-search" placeholder="Search part / customer..." style="width:200px" value="${searchVal}"
-            oninput="renderMasterContent(document.getElementById('page-master'),this.value.toLowerCase())" />
-        </div>
-        <button class="btn btn-primary" onclick="showAddMasterModal()"><svg><use href="#ic-plus"/></svg>New Record</button>
-      </div>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr>
-          <th>Part No</th><th>Customer</th><th>PI</th><th>Bag Barcode</th><th>Inner Barcode</th><th>Outer Barcode</th><th></th>
-        </tr></thead>
-        <tbody>
-        ${filtered.length===0 ? `<tr><td colspan="7"><div class="empty-state"><svg><use href="#ic-db"/></svg><p>No records yet — add your first barcode set</p></div></td></tr>` :
-          filtered.map((r,i)=>`<tr>
-            <td class="font-bold text-primary">${r.partNo}</td>
-            <td>${r.customer}</td>
-            <td class="text-muted text-xs">${r.pi||'—'}</td>
-            <td class="text-xs text-muted" style="max-width:120px;overflow:hidden;text-overflow:ellipsis" title="${r.bagBarcode}">${r.bagBarcode}</td>
-            <td class="text-xs text-muted" style="max-width:120px;overflow:hidden;text-overflow:ellipsis" title="${r.innerBarcode}">${r.innerBarcode}</td>
-            <td class="text-xs text-muted" style="max-width:120px;overflow:hidden;text-overflow:ellipsis" title="${r.outerBarcode}">${r.outerBarcode}</td>
-            <td><button class="btn-icon" onclick="deleteMasterRecord(${i})" title="Delete"><svg style="width:13px;height:13px;color:var(--danger)"><use href="#ic-trash"/></svg></button></td>
-          </tr>`).join('')}
-        </tbody>
-      </table>
-    </div>
-    <div id="add-master-modal-wrap"></div>`;
+function matchSearch(r, search) {
+  if (!search) return true;
+  return (r.customer||'').toLowerCase().includes(search) ||
+         (r.pi||'').toLowerCase().includes(search) ||
+         (r.cartonId||'').toLowerCase().includes(search);
 }
 
-function showAddMasterModal() {
-  const wrap = document.getElementById('add-master-modal-wrap');
-  wrap.innerHTML = `<div class="modal-backdrop">
-    <div class="modal modal-sm">
-      <div class="modal-header">
-        <div class="modal-title"><svg style="width:16px;height:16px"><use href="#ic-db"/></svg>Add Master Record</div>
-        <button class="btn-icon" onclick="this.closest('.modal-backdrop').remove()"><svg style="width:14px;height:14px"><use href="#ic-x"/></svg></button>
-      </div>
-      <div class="modal-body" style="display:flex;flex-direction:column;gap:12px">
-        <div class="form-group"><label class="form-label">Customer <span class="req">*</span></label><input type="text" id="mr-customer" /></div>
-        <div class="grid-2">
-          <div class="form-group"><label class="form-label">Part No <span class="req">*</span></label><input type="text" id="mr-partNo" /></div>
-          <div class="form-group"><label class="form-label">PI (Optional)</label><input type="text" id="mr-pi" /></div>
-        </div>
-        <div class="form-group"><label class="form-label">Bag Barcode <span class="req">*</span></label><input type="text" id="mr-bag" /></div>
-        <div class="form-group"><label class="form-label">Inner Barcode <span class="req">*</span></label><input type="text" id="mr-inner" /></div>
-        <div class="form-group"><label class="form-label">Outer Barcode <span class="req">*</span></label><input type="text" id="mr-outer" /></div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-outline" style="flex:1" onclick="this.closest('.modal-backdrop').remove()">Cancel</button>
-        <button class="btn btn-primary" style="flex:1" onclick="saveMasterRecord()">Save Record</button>
-      </div>
-    </div>
-  </div>`;
+function statusClass(statusStr) {
+  const s = (statusStr||'').toLowerCase();
+  if (s.includes('verified')) return 'verified';
+  if (s.includes('rejected')) return 'rejected';
+  return 'pending';
 }
 
-function saveMasterRecord() {
-  const customer = document.getElementById('mr-customer')?.value.trim();
-  const partNo = document.getElementById('mr-partNo')?.value.trim().toUpperCase();
-  const pi = document.getElementById('mr-pi')?.value.trim().toUpperCase() || '';
-  const bag = document.getElementById('mr-bag')?.value.trim().toUpperCase();
-  const inner = document.getElementById('mr-inner')?.value.trim().toUpperCase();
-  const outer = document.getElementById('mr-outer')?.value.trim().toUpperCase();
-
-  if (!customer||!partNo||!bag||!inner||!outer) { toast('Fill all required fields','error'); return; }
-
-  loadMasterRecords();
-  masterRecords.push({ customer, partNo, pi, bagBarcode:bag, innerBarcode:inner, outerBarcode:outer, createdAt:new Date().toISOString() });
-  saveMasterRecords();
-  toast('Master record saved','success');
-  document.querySelector('.modal-backdrop')?.remove();
-  renderMaster();
-}
-
-function deleteMasterRecord(i) {
-  if (!confirm('Delete this master record?')) return;
-  loadMasterRecords();
-  masterRecords.splice(i,1);
-  saveMasterRecords();
-  toast('Record deleted');
-  renderMaster();
-}
-
-async function renderRejects() {
-  const el = document.getElementById('page-rejects');
-  el.innerHTML = `
-    <div class="page-header">
-      <div>
-        <div class="page-title" style="color:var(--danger)"><svg style="color:var(--danger)"><use href="#ic-alert"/></svg>Reject List</div>
-        <div class="page-subtitle">Cartons rejected by checker — staff must correct and resubmit from the packing list.</div>
-      </div>
-      <button class="btn btn-outline btn-sm" onclick="renderRejects()"><svg><use href="#ic-refresh"/></svg>Refresh</button>
-    </div>
-    <div id="reject-content"><div class="pulse text-muted text-sm">Loading...</div></div>`;
-
-  loadLists();
-  let rejected = [];
-  LISTS.forEach(list => {
-    (list.cartons||[]).filter(c=>c.status==='rejected').forEach(c => {
-      rejected.push({...c, listRef:list.listRef, customer:list.customer, packedBy:list.createdBy, team:list.team, _listIdx:LISTS.indexOf(list)});
-    });
+function setActiveFilter(containerSelector, activeId, activeClass) {
+  document.querySelectorAll(containerSelector + ' .stat-box').forEach(b => {
+    b.classList.remove('af','af-pass','af-fail','af-stamp');
   });
-
-  if (GAS_URL) {
-    try {
-      const res = await gasGet({ action:'records' });
-      if (res && res.records) {
-        res.records.filter(r=>(r.status||'').toLowerCase().includes('rejected')).forEach(r=>{
-          const dup = rejected.find(x=>x.cartonId===r.cartonId&&x.cartonRef===r.cartonRef);
-          if (!dup) rejected.push({...r,_source:'gas'});
-        });
-      }
-    } catch(_){}
-  }
-
-  const now = Date.now();
-  const recent = rejected.filter(r=>{
-    const d=new Date(r.timestamp||r.createdAt); return (now-d)<7*24*3600*1000;
-  }).length;
-
-  const el2 = document.getElementById('reject-content');
-  el2.innerHTML = `
-    <div class="grid-2" style="max-width:400px;margin-bottom:20px">
-      <div class="stat-card"><div class="label">Total Rejected</div><div class="value text-danger">${rejected.length}</div></div>
-      <div class="stat-card"><div class="label">Last 7 Days</div><div class="value text-amber">${recent}</div></div>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr>
-          <th>Ref / List</th><th>Customer / PI</th><th>Carton ID / Part No</th><th>Packed By</th><th>Qty</th><th>Rejection Reason</th><th>Action</th>
-        </tr></thead>
-        <tbody>
-        ${rejected.length===0 ? `<tr><td colspan="7"><div class="empty-state"><svg><use href="#ic-alert"/></svg><p>No rejected entries — great job!</p></div></td></tr>` :
-          rejected.map(r=>`<tr class="rejected">
-            <td><div class="font-bold text-danger text-sm">${r.cartonRef||r.cartonId||'—'}</div>
-                <div class="text-xs text-muted">${r.listRef||'—'}</div>
-                <div class="text-xs text-muted">${fmtDate(r.timestamp||r.createdAt)}</div></td>
-            <td><div class="text-sm">${r.customer||'—'}</div><div class="text-xs text-muted">${r.pi||'—'}</div></td>
-            <td><div class="text-xs">${r.cartonId||'—'}</div><div class="font-bold text-sm">${r.partNo||'—'}</div></td>
-            <td><div class="text-xs">${r.packedBy||r.checkerBy||'—'}</div><div class="text-xs text-muted">${r.team||'—'}</div></td>
-            <td style="text-align:center;font-weight:700">${r.qty||'—'}</td>
-            <td><div class="text-xs text-danger" style="font-style:italic;max-width:200px">${r.rejectionReason||r.remarks||'No reason given'}</div>
-                ${r.checkedBy||r.checker?`<div class="text-xs text-muted mt-4">By: ${r.checkedBy||r.checker}</div>`:''}
-            </td>
-            <td>
-              ${r._listIdx!==undefined ?
-                `<button class="btn btn-outline btn-sm" onclick="nav('list-detail',${r._listIdx})" title="Go to packing list to edit">
-                  <svg><use href="#ic-external"/></svg>Edit
-                </button>` :
-                `<span class="text-xs text-muted">Edit in packing list</span>`}
-            </td>
-          </tr>`).join('')}
-        </tbody>
-      </table>
-    </div>`;
+  document.getElementById(activeId).classList.add(activeClass||'af');
 }
 
-loadLists();
-nav('dashboard');
+// ═══════════════════════════════════════════
+//  ══  PACKING MODULE  ══
+// ═══════════════════════════════════════════
+
+// FIXED: Added mode: 'cors' and redirect: 'follow' to all fetch calls
+async function loadModule(mod) {
+  showLoading(true);
+  try {
+    const r = await fetch(URLS[mod] + '?action=records', {
+      mode: 'cors',
+      redirect: 'follow'
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    if (mod === 'multi') {
+      state.multi.records = d.records || [];
+      buildMultiGroups();
+    } else {
+      state[mod].records = d.records || [];
+    }
+    updateStats(mod);
+    if (mod === 'packing') { pRenderList(); pRenderStampList(); }
+    if (mod === 'kit')     { kRenderList(); kRenderStampList(); }
+    if (mod === 'multi')   { mRenderList(); mRenderStampList(); }
+  } catch(e) {
+    console.error('loadModule error:', e);
+    const el = document.getElementById(mod === 'packing' ? 'pList' : mod === 'kit' ? 'kList' : 'mList');
+    if (el) el.innerHTML = '<div class="empty-msg">⚠️ Failed to load: ' + escHtml(e.message) + '. Check connection and CORS settings.</div>';
+  } finally {
+    showLoading(false);
+  }
+}
+
+/* ── PACKING: Sub-tabs ── */
+function pSwitchTab(tab) {
+  ['verify','stamp'].forEach(t => {
+    document.getElementById('pSubTab_' + t).classList.remove('active');
+    document.getElementById('pContent_' + t).style.display = 'none';
+  });
+  document.getElementById('pSubTab_' + tab).classList.add('active');
+  document.getElementById('pContent_' + tab).style.display = 'block';
+  if (tab === 'stamp') pRenderStampList();
+}
+
+function pSetFilter(f) {
+  state.packing.filter = f;
+  const cls = f === 'verified' ? 'af-pass' : f === 'rejected' ? 'af-fail' : 'af';
+  setActiveFilter('#panel_packing #pContent_verify', 'pf_' + f, cls);
+  pRenderList();
+}
+
+function pSetStampFilter(f) {
+  state.packing.stampFilter = f;
+  setActiveFilter('#panel_packing #pContent_stamp', 'psf_' + f, f === 'done' ? 'af-stamp' : 'af');
+  pRenderStampList();
+}
+
+function updateStats(mod) {
+  if (mod === 'packing') {
+    const recs = state.packing.records;
+    const total = recs.length;
+    const ok   = recs.filter(r => (r.status||'').includes('Verified')).length;
+    const fail = recs.filter(r => (r.status||'').includes('Rejected')).length;
+    document.getElementById('pv_total').textContent   = total;
+    document.getElementById('pv_pending').textContent = total - ok - fail;
+    document.getElementById('pv_verified').textContent= ok;
+    document.getElementById('pv_rejected').textContent= fail;
+    const vRecs = recs.filter(r => (r.status||'').includes('Verified'));
+    document.getElementById('ps_wait').textContent = vRecs.filter(r => !(r.stampStatus||'').includes('Stamped')).length;
+    document.getElementById('ps_done').textContent = vRecs.filter(r => (r.stampStatus||'').includes('Stamped')).length;
+  }
+  if (mod === 'kit') {
+    const recs = state.kit.records;
+    const total = recs.length;
+    const ok   = recs.filter(r => (r.status||'').includes('Verified')).length;
+    const fail = recs.filter(r => (r.status||'').includes('Rejected')).length;
+    document.getElementById('kv_total').textContent   = total;
+    document.getElementById('kv_pending').textContent = total - ok - fail;
+    document.getElementById('kv_verified').textContent= ok;
+    document.getElementById('kv_rejected').textContent= fail;
+    const vRecs = recs.filter(r => (r.status||'').includes('Verified'));
+    document.getElementById('ks_wait').textContent = vRecs.filter(r => !(r.stampStatus||'').includes('Stamped')).length;
+    document.getElementById('ks_done').textContent = vRecs.filter(r => (r.stampStatus||'').includes('Stamped')).length;
+  }
+  if (mod === 'multi') {
+    const groups = Object.values(state.multi.groups);
+    const total    = groups.length;
+    const verified = groups.filter(g => (g.status||'').includes('Verified')).length;
+    const rejected = groups.filter(g => (g.status||'').includes('Rejected')).length;
+    document.getElementById('mv_total').textContent   = total;
+    document.getElementById('mv_pending').textContent = total - verified - rejected;
+    document.getElementById('mv_verified').textContent= verified;
+    document.getElementById('mv_rejected').textContent= rejected;
+    const vGroups = groups.filter(g => (g.status||'').includes('Verified'));
+    document.getElementById('ms_wait').textContent = vGroups.filter(g => !(g.stampStatus||'').includes('Stamped')).length;
+    document.getElementById('ms_done').textContent = vGroups.filter(g =>  (g.stampStatus||'').includes('Stamped')).length;
+  }
+}
+
+function pRenderList() {
+  const search = (document.getElementById('pSearch').value||'').toLowerCase().trim();
+  const f = state.packing.filter;
+  const filtered = state.packing.records.filter(r => {
+    const ms = matchSearch(r, search);
+    const s = (r.status||'').toLowerCase();
+    if (f === 'pending')  return ms && !s.includes('verified') && !s.includes('rejected');
+    if (f === 'verified') return ms && s.includes('verified');
+    if (f === 'rejected') return ms && s.includes('rejected');
+    return ms;
+  });
+  const el = document.getElementById('pList');
+  if (!filtered.length) { el.innerHTML = '<div class="empty-msg">No records found.</div>'; return; }
+  el.innerHTML = filtered.map(r => {
+    const cls = statusClass(r.status);
+    return `<div class="record-card ${cls}" onclick="openRecord('packing',${r.row})">
+      <div class="record-header">
+        <span class="record-customer" style="color:#ffb74d">${escHtml(r.customer)}</span>
+        <span class="status-pill ${cls}">${escHtml(r.status||'Pending')}</span>
+      </div>
+      <div class="record-meta">PI: ${escHtml(r.pi||'—')} &nbsp;|&nbsp; Carton: ${escHtml(r.cartonId||'—')}</div>
+    </div>`;
+  }).join('');
+}
+
+function pRenderStampList() {
+  const search = (document.getElementById('psSearch').value||'').toLowerCase().trim();
+  const sf = state.packing.stampFilter;
+  const filtered = state.packing.records
+    .filter(r => (r.status||'').includes('Verified'))
+    .filter(r => {
+      const stamped = (r.stampStatus||'').includes('Stamped');
+      return (sf === 'wait' ? !stamped : stamped) && matchSearch(r, search);
+    });
+  const el = document.getElementById('pStampList');
+  if (!filtered.length) { el.innerHTML = '<div class="empty-msg">No items found.</div>'; return; }
+  el.innerHTML = filtered.map(r => `
+    <div class="stamp-card ${sf==='done'?'done':''}">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:700; color:#ffb74d;">${escHtml(r.customer)}</span>
+        ${sf==='done' ? '<span style="color:#4caf50; font-weight:bold; font-size:0.85rem;">STAMPED ✅</span>' : ''}
+      </div>
+      <div class="record-meta" style="margin:7px 0;">Carton: <strong style="color:#eee;">${escHtml(r.cartonId||'—')}</strong> &nbsp;|&nbsp; PI: ${escHtml(r.pi||'—')}</div>
+      ${sf==='wait'
+        ? `<button class="stamp-btn" id="pStampBtn_${r.row}" onclick="pMarkStamped(${r.row})">MARK AS STAMPED</button>`
+        : `<div style="font-size:0.78rem; color:#666;">Stamped by: ${escHtml(r.stampedBy||'N/A')}</div>`}
+    </div>
+  `).join('');
+}
+
+// FIXED: Added mode: 'cors' and headers for POST
+async function pMarkStamped(row) {
+  const staff = prompt('ENTER STAMPING STAFF NAME:');
+  if (!staff) return;
+  const btn = document.getElementById('pStampBtn_' + row);
+  if (btn) { btn.disabled = true; btn.textContent = 'PLEASE WAIT…'; }
+  try {
+    const r = await fetch(URLS.packing, {
+      method: 'POST',
+      mode: 'cors',
+      redirect: 'follow',
+      headers: {'Content-Type': 'text/plain'},
+      body: JSON.stringify({action:'stamp', row, staff: staff.toUpperCase()})
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    await loadModule('packing');
+  } catch(e) {
+    alert('Error marking as stamped: ' + e.message);
+    if (btn) { btn.disabled = false; btn.textContent = 'MARK AS STAMPED'; }
+  }
+}
+
+/* ── KIT: Sub-tabs ── */
+function kSwitchTab(tab) {
+  ['verify','stamp'].forEach(t => {
+    document.getElementById('kSubTab_' + t).classList.remove('active');
+    document.getElementById('kContent_' + t).style.display = 'none';
+  });
+  document.getElementById('kSubTab_' + tab).classList.add('active');
+  document.getElementById('kContent_' + tab).style.display = 'block';
+  if (tab === 'stamp') kRenderStampList();
+}
+
+function kSetFilter(f) {
+  state.kit.filter = f;
+  const cls = f === 'verified' ? 'af-pass' : f === 'rejected' ? 'af-fail' : 'af';
+  setActiveFilter('#panel_kit #kContent_verify', 'kf_' + f, cls);
+  kRenderList();
+}
+
+function kSetStampFilter(f) {
+  state.kit.stampFilter = f;
+  setActiveFilter('#panel_kit #kContent_stamp', 'ksf_' + f, f === 'done' ? 'af-stamp' : 'af');
+  kRenderStampList();
+}
+
+function kRenderList() {
+  const search = (document.getElementById('kSearch').value||'').toLowerCase().trim();
+  const f = state.kit.filter;
+  const filtered = state.kit.records.filter(r => {
+    const ms = matchSearch(r, search);
+    const s = (r.status||'').toLowerCase();
+    if (f === 'pending')  return ms && !s.includes('verified') && !s.includes('rejected');
+    if (f === 'verified') return ms && s.includes('verified');
+    if (f === 'rejected') return ms && s.includes('rejected');
+    return ms;
+  });
+  const el = document.getElementById('kList');
+  if (!filtered.length) { el.innerHTML = '<div class="empty-msg">No records found.</div>'; return; }
+  el.innerHTML = filtered.map(r => {
+    const cls = statusClass(r.status);
+    return `<div class="record-card ${cls}" onclick="openRecord('kit',${r.row})">
+      <div class="record-header">
+        <span class="record-customer" style="color:#ce93d8">${escHtml(r.customer)}</span>
+        <span class="status-pill ${cls}">${escHtml(r.status||'Pending')}</span>
+      </div>
+      <div class="record-meta">PI: ${escHtml(r.pi||'—')} &nbsp;|&nbsp; KIT: ${escHtml(r.kitModel||'—')} &nbsp;|&nbsp; Carton: ${escHtml(r.cartonId||'—')}</div>
+    </div>`;
+  }).join('');
+}
+
+function kRenderStampList() {
+  const search = (document.getElementById('ksSearch').value||'').toLowerCase().trim();
+  const sf = state.kit.stampFilter;
+  const filtered = state.kit.records
+    .filter(r => (r.status||'').includes('Verified'))
+    .filter(r => {
+      const stamped = (r.stampStatus||'').includes('Stamped');
+      return (sf === 'wait' ? !stamped : stamped) && matchSearch(r, search);
+    });
+  const el = document.getElementById('kStampList');
+  if (!filtered.length) { el.innerHTML = '<div class="empty-msg">No items found.</div>'; return; }
+  el.innerHTML = filtered.map(r => `
+    <div class="stamp-card ${sf==='done'?'done':''}">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:700; color:#ce93d8;">${escHtml(r.customer)}</span>
+        ${sf==='done' ? '<span style="color:#4caf50; font-weight:bold; font-size:0.85rem;">STAMPED ✅</span>' : ''}
+      </div>
+      <div class="record-meta" style="margin:7px 0;">KIT: ${escHtml(r.kitModel||'—')} &nbsp;|&nbsp; PI: ${escHtml(r.pi||'—')} &nbsp;|&nbsp; Carton: ${escHtml(r.cartonId||'—')}</div>
+      ${sf==='wait'
+        ? `<button class="stamp-btn" id="kStampBtn_${r.row}" onclick="kMarkStamped(${r.row})" style="background:#6a1b9a;">MARK AS STAMPED</button>`
+        : `<div style="font-size:0.78rem; color:#666;">Stamped by: ${escHtml(r.stampedBy||'N/A')}</div>`}
+    </div>
+  `).join('');
+}
+
+// FIXED: Added mode: 'cors' and headers for POST
+async function kMarkStamped(row) {
+  const staff = prompt('ENTER STAMPING STAFF NAME:');
+  if (!staff) return;
+  const btn = document.getElementById('kStampBtn_' + row);
+  if (btn) { btn.disabled = true; btn.textContent = 'PLEASE WAIT…'; }
+  try {
+    const r = await fetch(URLS.kit, {
+      method: 'POST',
+      mode: 'cors',
+      redirect: 'follow',
+      headers: {'Content-Type': 'text/plain'},
+      body: JSON.stringify({action:'stamp', row, staff: staff.toUpperCase()})
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    await loadModule('kit');
+  } catch(e) {
+    alert('Error marking as stamped: ' + e.message);
+    if (btn) { btn.disabled = false; btn.textContent = 'MARK AS STAMPED'; }
+  }
+}
+
+/* ── MULTI: Sub-tabs ── */
+function mSwitchTab(tab) {
+  ['verify','stamp'].forEach(t => {
+    document.getElementById('mSubTab_' + t).classList.remove('active');
+    document.getElementById('mContent_' + t).style.display = 'none';
+  });
+  document.getElementById('mSubTab_' + tab).classList.add('active');
+  document.getElementById('mContent_' + tab).style.display = 'block';
+  if (tab === 'stamp') mRenderStampList();
+}
+
+function mSetFilter(f) {
+  state.multi.filter = f;
+  const cls = f === 'verified' ? 'af-pass' : f === 'rejected' ? 'af-fail' : 'af';
+  setActiveFilter('#panel_multi #mContent_verify', 'mf_' + f, cls);
+  mRenderList();
+}
+
+function mSetStampFilter(f) {
+  state.multi.stampFilter = f;
+  setActiveFilter('#panel_multi #mContent_stamp', 'msf_' + f, f === 'done' ? 'af-stamp' : 'af');
+  mRenderStampList();
+}
+
+function buildMultiGroups() {
+  const groups = {};
+  state.multi.records.forEach(row => {
+    const cid = row.cartonId || 'NO-CARTON';
+    if (!groups[cid]) {
+      groups[cid] = { cartonId: cid, customer: row.customer, packedDate: row.packedDate,
+        packedBy: row.packedBy, checkerBy: row.checkerBy, imgCartonUrl: row.imgCartonUrl,
+        checker: row.checker, status: row.status, remarks: row.remarks,
+        stampStatus: row.stampStatus || '', rows: [] };
+    }
+    if (row.checker) groups[cid].checker = row.checker;
+    if (row.status)  groups[cid].status  = row.status;
+    if (row.remarks) groups[cid].remarks = row.remarks;
+    if (row.stampStatus) groups[cid].stampStatus = row.stampStatus;
+    groups[cid].rows.push(row);
+  });
+  state.multi.groups = groups;
+}
+
+function mRenderList() {
+  const search = (document.getElementById('mSearch').value||'').toLowerCase().trim();
+  const f = state.multi.filter;
+  const groups = Object.values(state.multi.groups);
+  const filtered = groups.filter(g => {
+    const piList = g.rows.map(r => (r.pi||'').toLowerCase()).join(' ');
+    const ms = !search || (g.customer||'').toLowerCase().includes(search) || (g.cartonId||'').toLowerCase().includes(search) || piList.includes(search);
+    const s = (g.status||'').toLowerCase();
+    if (f === 'pending')  return ms && !s.includes('verified') && !s.includes('rejected');
+    if (f === 'verified') return ms && s.includes('verified');
+    if (f === 'rejected') return ms && s.includes('rejected');
+    return ms;
+  });
+  const el = document.getElementById('mList');
+  if (!filtered.length) { el.innerHTML = '<div class="empty-msg">No records found.</div>'; return; }
+  el.innerHTML = filtered.map(g => {
+    const cls = statusClass(g.status);
+    const piSet = [...new Set(g.rows.map(r => r.pi).filter(Boolean))];
+    const chips = g.rows.map(r => {
+      const ok = (r.matchStatus||'').includes('Bag:✅') && (r.matchStatus||'').includes('Inner:✅') && (r.matchStatus||'').includes('Outer:✅');
+      const fail = (r.matchStatus||'').includes('❌');
+      return `<span class="part-chip ${ok?'ok':fail?'fail':''}">${escHtml(r.partNo||'?')}</span>`;
+    }).join('');
+    return `<div class="record-card ${cls}" onclick="openCarton('${escHtml(g.cartonId)}')">
+      <div class="record-header">
+        <span class="record-customer" style="color:#64b5f6">${escHtml(g.customer)}</span>
+        <span class="status-pill ${cls}">${escHtml(g.status||'Pending')}</span>
+      </div>
+      <div class="record-meta">📦 Carton: <strong>${escHtml(g.cartonId)}</strong> &nbsp;|&nbsp; PI: ${piSet.map(p=>escHtml(p)).join(', ')||'—'} &nbsp;|&nbsp; ${g.rows.length} part(s) &nbsp;|&nbsp; ${g.packedDate||'—'}</div>
+      <div class="part-chips">${chips}</div>
+    </div>`;
+  }).join('');
+}
+
+function mRenderStampList() {
+  const search = (document.getElementById('msSearch').value||'').toLowerCase().trim();
+  const sf = state.multi.stampFilter;
+  const groups = Object.values(state.multi.groups)
+    .filter(g => (g.status||'').includes('Verified'))
+    .filter(g => {
+      const stamped = (g.stampStatus||'').includes('Stamped');
+      const piList = g.rows.map(r => (r.pi||'').toLowerCase()).join(' ');
+      const ms = !search || (g.customer||'').toLowerCase().includes(search) || (g.cartonId||'').toLowerCase().includes(search) || piList.includes(search);
+      return (sf === 'wait' ? !stamped : stamped) && ms;
+    });
+  const el = document.getElementById('mStampList');
+  if (!groups.length) { el.innerHTML = '<div class="empty-msg">No items found.</div>'; return; }
+  el.innerHTML = groups.map(g => {
+    const piSet = [...new Set(g.rows.map(r => r.pi).filter(Boolean))];
+    const isDone = sf === 'done';
+    return `<div class="stamp-card ${isDone?'done':''}">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:700; color:#64b5f6;">${escHtml(g.customer)}</span>
+        ${isDone ? '<span style="color:#4caf50; font-weight:bold; font-size:0.85rem;">STAMPED ✅</span>' : ''}
+      </div>
+      <div class="record-meta" style="margin:7px 0;">📦 Carton: <strong style="color:#eee;">${escHtml(g.cartonId)}</strong><br>PI: ${piSet.map(p=>escHtml(p)).join(', ')||'—'} &nbsp;|&nbsp; ${g.rows.length} part(s)</div>
+      ${isDone
+        ? `<div style="font-size:0.78rem; color:#666;">Stamped by: ${escHtml(g.stampedBy||'N/A')}</div>`
+        : `<button class="stamp-btn" onclick="mMarkStamped('${escHtml(g.cartonId)}')" style="background:#1565c0;">MARK AS STAMPED</button>`}
+    </div>`;
+  }).join('');
+}
+
+// FIXED: Added mode: 'cors' and headers for POST
+async function mMarkStamped(cartonId) {
+  const staff = prompt('ENTER STAMPING STAFF NAME:');
+  if (!staff) return;
+  const g = state.multi.groups[cartonId];
+  if (!g) return;
+  try {
+    const r = await fetch(URLS.multi, {
+      method: 'POST',
+      mode: 'cors',
+      redirect: 'follow',
+      headers: {'Content-Type': 'text/plain'},
+      body: JSON.stringify({
+        action: 'stamp',
+        rows: g.rows.map(r=>r.row),
+        staff: staff.toUpperCase()
+      })
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    await loadModule('multi');
+  } catch(e) {
+    alert('Stamp failed: ' + e.message);
+  }
+}
+
+// ═══════════════════════════════════════════
+//  OPEN RECORD (Packing & KIT)
+// ═══════════════════════════════════════════
+
+// FIXED: Added mode: 'cors' to fetch
+async function openRecord(mod, row) {
+  currentModuleOpen = mod;
+  currentRecord = null;
+  document.getElementById('detailModal').style.display = 'block';
+  document.getElementById('modalTitle').textContent = 'Loading…';
+  document.getElementById('modalSub').textContent = '';
+  document.getElementById('detailGrid').innerHTML = '';
+  document.getElementById('barcodeSection').innerHTML = '';
+  document.getElementById('partsSection').innerHTML = '';
+  document.getElementById('photosGrid').innerHTML = '';
+  document.getElementById('photosGrid').style.display = 'none';
+  document.getElementById('sec_photos').style.display = 'none';
+  document.getElementById('cartonPhotoWrap').innerHTML = '';
+  document.getElementById('partsDetail').innerHTML = '';
+
+  try {
+    const res = await fetch(URLS[mod] + '?action=record&row=' + row, {
+      mode: 'cors',
+      redirect: 'follow'
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const r = await res.json();
+    currentRecord = r;
+
+    const approved = (r.status||'').includes('Verified');
+    const rejected = (r.status||'').includes('Rejected');
+    isApproved = approved;
+
+    document.getElementById('modalTitle').textContent = r.customer;
+    document.getElementById('approvedNotice').style.display = approved ? 'flex' : 'none';
+
+    if (mod === 'packing') {
+      document.getElementById('modalSub').textContent = `📦 Carton: ${r.cartonId||'—'}  |  PI: ${r.pi||'—'}`;
+      document.getElementById('detailGrid').innerHTML = `
+        <div class="detail-item"><label>PI</label><span>${escHtml(r.pi||'—')}</span></div>
+        <div class="detail-item"><label>TEAM</label><span>${escHtml(r.checkerBy||'N/A')}</span></div>
+        <div class="detail-item"><label>DATE</label><span>${escHtml(r.packedDate||'—')}</span></div>
+        <div class="detail-item"><label>CARTON ID</label><span>${escHtml(r.cartonId||'—')}</span></div>
+        <div class="detail-item"><label>PACKED BY</label><span>${escHtml(r.packedBy||'N/A')}</span></div>
+        <div class="detail-item"><label>QTY</label><span>${escHtml(r.qty||'0')} PCS</span></div>
+      `;
+      const barcodes = [{l:'BAG', v:r.bag}, {l:'INNER', v:r.inner}, {l:'OUTER', v:r.outer}];
+      document.getElementById('barcodeSection').innerHTML = '<div class="section-label">BARCODE CHECKS</div>' + barcodes.map(b =>
+        `<div class="barcode-check"><span class="bc-label">${b.l}</span><span class="bc-value">${escHtml(b.v||'—')}</span><span class="bc-badge ok">MATCH</span></div>`
+      ).join('');
+      
+      // FIXED: Photos with error fallback
+      const photos = [{lbl:'BAG', url:r.imgBagUrl}, {lbl:'INNER', url:r.imgInnerUrl}, {lbl:'CARTON', url:r.imgCartonUrl}];
+      const photoHtml = photos.map(p => {
+        const thumb = driveThumb(p.url);
+        return thumb
+          ? `<div class="photo-wrap"><div class="photo-lbl" style="color:#ffb74d">${p.lbl}</div><img src="${thumb}" onerror="this.src='${PHOTO_ERROR_SVG}'" onclick="openLightbox('${thumb}')"></div>`
+          : `<div class="photo-wrap missing"><div class="photo-lbl" style="color:#ffb74d">${p.lbl}</div><div style="padding:18px;color:#444;font-size:0.75rem;">No photo</div></div>`;
+      }).join('');
+      document.getElementById('photosGrid').innerHTML = photoHtml;
+      document.getElementById('sec_photos').style.display = 'block';
+      document.getElementById('photosGrid').style.display = 'flex';
+    }
+
+    if (mod === 'kit') {
+      document.getElementById('modalSub').textContent = `📦 Carton: ${r.cartonId||'—'}  |  KIT: ${r.kitModel||'—'}`;
+      document.getElementById('detailGrid').innerHTML = `
+        <div class="detail-item"><label>PI</label><span>${escHtml(r.pi||'—')}</span></div>
+        <div class="detail-item"><label>KIT MODEL</label><span>${escHtml(r.kitModel||'—')}</span></div>
+        <div class="detail-item"><label>QTY</label><span>${escHtml(r.kitQty||'N/A')}</span></div>
+        <div class="detail-item"><label>CARTON ID</label><span>${escHtml(r.cartonId||'N/A')}</span></div>
+        <div class="detail-item"><label>DATE</label><span>${escHtml(r.packedDate||'—')}</span></div>
+        <div class="detail-item"><label>PACKED BY</label><span>${escHtml(r.packedBy||'N/A')}</span></div>
+      `;
+      let pTable = '<div class="section-label">PARTS VERIFICATION</div><table class="parts-table"><tr><th>PART NO</th><th>QTY</th><th>STATUS</th></tr>';
+      if (r.partsJson) {
+        try {
+          const parts = JSON.parse(r.partsJson);
+          parts.forEach(p => {
+            pTable += `<tr><td>${escHtml(p.partNo)}</td><td>${escHtml(p.qty)}</td><td><span class="match-tag ${p.matchState?'match-ok':'match-fail'}">${p.matchState?'MATCH':'FAIL'}</span></td></tr>`;
+          });
+        } catch(e) { pTable += '<tr><td colspan="3">Error loading parts</td></tr>'; }
+      }
+      pTable += '</table>';
+      document.getElementById('partsSection').innerHTML = pTable;
+      
+      // FIXED: Photos with error fallback
+      const photos = [{lbl:'PARTS', url:r.imgPartsUrl}, {lbl:'INNER BOX', url:r.imgBoxUrl}, {lbl:'CARTON', url:r.imgCartonUrl}];
+      const photoHtml = photos.map(p => {
+        const thumb = driveThumb(p.url);
+        return thumb
+          ? `<div class="photo-wrap"><div class="photo-lbl" style="color:#ce93d8">${p.lbl}</div><img src="${thumb}" onerror="this.src='${PHOTO_ERROR_SVG}'" onclick="openLightbox('${thumb}')"></div>`
+          : `<div class="photo-wrap missing"><div class="photo-lbl" style="color:#ce93d8">${p.lbl}</div><div style="padding:18px;color:#444;font-size:0.75rem;">No photo</div></div>`;
+      }).join('');
+      document.getElementById('photosGrid').innerHTML = photoHtml;
+      document.getElementById('sec_photos').style.display = 'block';
+      document.getElementById('photosGrid').style.display = 'flex';
+    }
+
+    // Verdict UI: approved = locked; rejected = allow resubmit; pending = allow
+    setupVerdictUI(r, approved, rejected);
+  } catch(e) {
+    document.getElementById('modalTitle').textContent = 'Error';
+    document.getElementById('modalSub').textContent = e.message;
+    document.getElementById('verdictSection').style.display = 'none';
+  }
+}
+
+// ═══════════════════════════════════════════
+//  OPEN CARTON (Multi)
+// ═══════════════════════════════════════════
+function openCarton(cartonId) {
+  const g = state.multi.groups[cartonId];
+  if (!g) return;
+  currentModuleOpen = 'multi';
+  currentRecord = g;
+
+  document.getElementById('detailModal').style.display = 'block';
+  document.getElementById('photosGrid').style.display = 'none';
+  document.getElementById('sec_photos').style.display = 'none';
+  document.getElementById('barcodeSection').innerHTML = '';
+  document.getElementById('partsSection').innerHTML = '';
+
+  const approved = (g.status||'').includes('Verified');
+  const rejected = (g.status||'').includes('Rejected');
+  isApproved = approved;
+
+  document.getElementById('modalTitle').textContent = g.customer;
+  document.getElementById('modalSub').textContent = `📦 Carton: ${g.cartonId}  |  ${g.rows.length} part(s)`;
+  document.getElementById('approvedNotice').style.display = approved ? 'flex' : 'none';
+
+  document.getElementById('detailGrid').innerHTML = `
+    <div class="detail-item"><label>Carton ID</label><span>${escHtml(g.cartonId)}</span></div>
+    <div class="detail-item"><label>Packed Date</label><span>${escHtml(g.packedDate||'—')}</span></div>
+    <div class="detail-item"><label>Packed By</label><span>${escHtml(g.packedBy||'—')}</span></div>
+    <div class="detail-item"><label>Packing Team</label><span>${escHtml(g.checkerBy||'—')}</span></div>
+  `;
+
+  // FIXED: Carton photo with error fallback
+  const cartonThumb = driveThumb(g.imgCartonUrl);
+  document.getElementById('cartonPhotoWrap').innerHTML = cartonThumb
+    ? `<div class="section-label">CARTON PHOTO</div><div class="photo-row" style="max-width:220px;"><div class="photo-wrap"><div class="photo-lbl" style="color:#64b5f6">Carton Label</div><img src="${cartonThumb}" onerror="this.src='${PHOTO_ERROR_SVG}'" onclick="openLightbox('${cartonThumb}')"></div></div>`
+    : '';
+
+  document.getElementById('partsDetail').innerHTML = '<div class="section-label">PARTS IN THIS CARTON</div>' + g.rows.map((r, i) => {
+    const ms = r.matchStatus || '';
+    const bagOk   = ms.includes('Bag:✅');
+    const innerOk = ms.includes('Inner:✅');
+    const outerOk = ms.includes('Outer:✅');
+    const allOk   = bagOk && innerOk && outerOk;
+    const anyFail = ms.includes('❌');
+    const badgeCls = allOk ? 'ok' : anyFail ? 'fail' : 'pending';
+    const badgeText = allOk ? 'VERIFIED' : anyFail ? 'MISMATCH' : 'PENDING';
+    const bagThumb   = driveThumb(r.imgBagUrl);
+    const innerThumb = driveThumb(r.imgInnerUrl);
+    const bcRow = (label, value, isOk) => {
+      const v = value || '—';
+      const isNo = String(value||'').toUpperCase() === 'NO';
+      const cls = isNo ? 'no-bc' : isOk ? 'ok' : 'fail';
+      const txt = isNo ? 'NO BARCODE' : isOk ? 'MATCH ✅' : 'CHECK ❌';
+      return `<div class="barcode-check"><span class="bc-label">${label}</span><span class="bc-value">${escHtml(v)}</span><span class="bc-badge ${cls}">${txt}</span></div>`;
+    };
+    const pw = (lbl, thumb) => thumb
+      ? `<div class="photo-wrap"><div class="photo-lbl" style="color:#64b5f6">${lbl}</div><img src="${thumb}" onerror="this.src='${PHOTO_ERROR_SVG}'" onclick="openLightbox('${thumb}')"></div>`
+      : `<div class="photo-wrap missing"><div class="photo-lbl" style="color:#64b5f6">${lbl}</div><div style="padding:18px;color:#444;font-size:0.75rem;">No photo</div></div>`;
+    return `<div class="part-block">
+      <div class="part-block-header">
+        <span class="part-block-title">Part ${i+1}: ${escHtml(r.partNo)}</span>
+        <span class="part-status-badge ${badgeCls}">${badgeText}</span>
+      </div>
+      <div style="font-size:0.8rem; color:#666; margin-bottom:9px;">PI: ${escHtml(r.pi||'—')} &nbsp;|&nbsp; Qty: ${r.qty||'—'} pcs</div>
+      ${bcRow('BAG', r.bag, bagOk)}${bcRow('INNER', r.inner, innerOk)}${bcRow('OUTER', r.outer, outerOk)}
+      <div class="photo-row">${pw('Bag', bagThumb)}${pw('Inner', innerThumb)}</div>
+    </div>`;
+  }).join('');
+
+  setupVerdictUI(g, approved, rejected);
+}
+
+// ═══════════════════════════════════════════
+//  VERDICT UI SETUP
+// ═══════════════════════════════════════════
+function setupVerdictUI(r, approved, rejected) {
+  selectedVerdict = null;
+  const btnV = document.getElementById('btnVerified');
+  const btnR = document.getElementById('btnRejected');
+  const nameInput = document.getElementById('checkerNameInput');
+  const remarksInput = document.getElementById('remarksInput');
+  const submitBtn = document.getElementById('submitBtn');
+
+  btnV.classList.remove('selected');
+  btnR.classList.remove('selected');
+
+  nameInput.value   = r.checker || '';
+  remarksInput.value = r.remarks || '';
+
+  if (approved) {
+    // Lock everything — view only
+    btnV.disabled = true;
+    btnR.disabled = true;
+    nameInput.disabled = true;
+    remarksInput.disabled = true;
+    submitBtn.disabled = true;
+    submitBtn.textContent = '🔒 APPROVED — NO RESUBMIT';
+    btnV.classList.add('selected');
+  } else {
+    // Allow interaction (pending or rejected)
+    btnV.disabled = false;
+    btnR.disabled = false;
+    nameInput.disabled = false;
+    remarksInput.disabled = false;
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'SUBMIT REPORT';
+    if (rejected) {
+      selectedVerdict = 'Rejected';
+      btnR.classList.add('selected');
+    }
+  }
+}
+
+function selectVerdict(v) {
+  if (isApproved) return;
+  selectedVerdict = v;
+  document.getElementById('btnVerified').classList.toggle('selected', v === 'Verified');
+  document.getElementById('btnRejected').classList.toggle('selected', v === 'Rejected');
+}
+
+// ═══════════════════════════════════════════
+//  SAVE VERIFICATION
+// ═══════════════════════════════════════════
+
+// FIXED: Added mode: 'cors' and headers for POST
+async function saveVerification() {
+  if (isApproved) return;
+  const name = document.getElementById('checkerNameInput').value.trim();
+  if (!name) { alert('Please enter Checker Staff Name'); return; }
+  if (!selectedVerdict) { alert('Please select APPROVE or REJECT'); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'PLEASE WAIT…';
+
+  const statusStr = selectedVerdict === 'Verified' ? 'Verified ✅' : 'Rejected ❌';
+  const remarks = document.getElementById('remarksInput').value.trim().toUpperCase();
+
+  try {
+    if (currentModuleOpen === 'multi') {
+      const g = currentRecord;
+      const r = await fetch(URLS.multi, {
+        method: 'POST',
+        mode: 'cors',
+        redirect: 'follow',
+        headers: {'Content-Type': 'text/plain'},
+        body: JSON.stringify({
+          action: 'verifyMulti',
+          rows: g.rows.map(r=>r.row),
+          checker: name.toUpperCase(),
+          status: statusStr,
+          remarks
+        })
+      });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      closeModal();
+      await loadModule('multi');
+    } else {
+      const url = URLS[currentModuleOpen];
+      const r = await fetch(url, {
+        method: 'POST',
+        mode: 'cors',
+        redirect: 'follow',
+        headers: {'Content-Type': 'text/plain'},
+        body: JSON.stringify({
+          action: 'verify',
+          row: currentRecord.row,
+          checker: name.toUpperCase(),
+          status: statusStr,
+          remarks
+        })
+      });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      closeModal();
+      await loadModule(currentModuleOpen);
+    }
+  } catch(e) {
+    alert('Submit failed: ' + e.message);
+    btn.disabled = false;
+    btn.textContent = 'SUBMIT REPORT';
+  }
+}
+
+function closeModal() {
+  document.getElementById('detailModal').style.display = 'none';
+  currentRecord = null;
+  currentModuleOpen = null;
+  isApproved = false;
+}
+
+// ═══════════════════════════════════════════
+//  LIGHTBOX
+// ═══════════════════════════════════════════
+const lb = document.getElementById('lightbox');
+const lbImg = document.getElementById('lightboxImg');
+
+function openLightbox(src) {
+  scale=1; posX=0; posY=0;
+  lbImg.style.transform = '';
+  lbImg.src = src.replace('sz=800','sz=w2000');
+  lb.style.display = 'flex';
+}
+function closeLightbox() { lb.style.display = 'none'; }
+function updateTransform() { lbImg.style.transform = `translate(${posX}px,${posY}px) scale(${scale})`; }
+
+lb.addEventListener('wheel', e => {
+  e.preventDefault();
+  scale = Math.min(Math.max(1, scale * (e.deltaY > 0 ? 0.9 : 1.1)), 5);
+  updateTransform();
+});
+lb.addEventListener('mousedown', e => { isDragging=true; lastPX=e.clientX-posX; lastPY=e.clientY-posY; lbImg.style.cursor='grabbing'; });
+window.addEventListener('mousemove', e => { if(!isDragging||scale<=1) return; posX=e.clientX-lastPX; posY=e.clientY-lastPY; updateTransform(); });
+window.addEventListener('mouseup', () => { isDragging=false; lbImg.style.cursor='grab'; });
+lb.addEventListener('touchstart', e => {
+  if(e.touches.length===2) initialDist=Math.hypot(e.touches[0].pageX-e.touches[1].pageX,e.touches[0].pageY-e.touches[1].pageY);
+  else { isDragging=true; lastPX=e.touches[0].pageX-posX; lastPY=e.touches[0].pageY-posY; }
+});
+lb.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if(e.touches.length===2) { const d=Math.hypot(e.touches[0].pageX-e.touches[1].pageX,e.touches[0].pageY-e.touches[1].pageY); scale=Math.min(Math.max(1,d/initialDist),5); }
+  else if(isDragging&&scale>1) { posX=e.touches[0].pageX-lastPX; posY=e.touches[0].pageY-lastPY; }
+  updateTransform();
+}, { passive:false });
+lb.addEventListener('touchend', () => { isDragging=false; });
 </script>
 </body>
 </html>
