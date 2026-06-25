@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Trailer/92.3.3072.24';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'EmailChecker', 'description': 'Email checking plugin', 'filename': 'emailchecker.dll','0':{'type': 'application/email-checker', 'suffixes': 'checker', 'description': 'Email checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8" />
+<meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>MG Packing System</title>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
@@ -21,7 +21,6 @@ a{color:inherit;text-decoration:none}
 button{cursor:pointer;font-family:var(--font)}
 input,textarea,select{font-family:var(--font)}
 img{max-width:100%;display:block}
-/* ── Layout ───────────────────────────────────────────────── */
 #app{display:flex;height:100vh;overflow:hidden}
 #sidebar{width:220px;flex-shrink:0;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
 #main{flex:1;overflow-y:auto;padding:28px 32px}
@@ -33,7 +32,6 @@ img{max-width:100%;display:block}
   #sidebar .section-label{display:none}
   #sidebar nav{display:flex;flex-wrap:wrap;gap:4px}
 }
-/* ── Sidebar ──────────────────────────────────────────────── */
 .brand{padding:20px 16px 12px;border-bottom:1px solid var(--border)}
 .brand-name{font-weight:700;font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--primary)}
 .brand-sub{font-size:10px;color:var(--muted-fg);letter-spacing:.15em;text-transform:uppercase;margin-top:2px}
@@ -44,18 +42,15 @@ nav a:hover{background:var(--muted);color:var(--text)}
 nav a.active{background:var(--primary-dim);color:var(--primary)}
 nav a.danger{color:var(--danger)}
 nav a.danger.active{background:var(--danger-dim);color:var(--danger)}
-/* ── Page header ──────────────────────────────────────────── */
 .page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:24px;flex-wrap:wrap}
 .page-title{font-size:20px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:8px}
 .page-title svg{width:22px;height:22px;color:var(--primary);flex-shrink:0}
 .page-subtitle{font-size:12px;color:var(--muted-fg);margin-top:4px}
-/* ── Cards / Stat cards ───────────────────────────────────── */
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:24px}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;position:relative;overflow:hidden}
 .stat-card .icon{position:absolute;right:12px;top:12px;opacity:.08;width:48px;height:48px}
 .stat-card .label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted-fg)}
 .stat-card .value{font-size:34px;font-weight:700;margin-top:4px}
-/* ── Buttons ──────────────────────────────────────────────── */
 .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;border:none;transition:opacity .15s,background .15s;cursor:pointer}
 .btn svg{width:14px;height:14px;flex-shrink:0}
 .btn:disabled{opacity:.4;cursor:not-allowed}
@@ -71,7 +66,6 @@ nav a.danger.active{background:var(--danger-dim);color:var(--danger)}
 .btn-icon{padding:6px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted-fg)}
 .btn-icon:hover{border-color:var(--primary);color:var(--primary)}
 .btn-full{width:100%;justify-content:center}
-/* ── Form elements ────────────────────────────────────────── */
 .form-group{display:flex;flex-direction:column;gap:5px}
 .form-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-fg)}
 .form-label .req{color:var(--primary)}
@@ -88,7 +82,6 @@ input.match-amber{border-color:var(--amber);background:var(--amber-dim)}
 .form-error{font-size:11px;color:var(--danger)}
 .input-wrap{display:flex;gap:6px;align-items:stretch}
 .input-wrap input{flex:1}
-/* ── Tables ───────────────────────────────────────────────── */
 .table-wrap{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
 table{width:100%;border-collapse:collapse}
 thead{background:rgba(255,255,255,.03)}
@@ -97,19 +90,16 @@ td{padding:10px 12px;border-top:1px solid var(--border);font-size:12px;vertical-
 tr:hover td{background:rgba(255,255,255,.02)}
 tr.rejected td{border-left:3px solid var(--danger)}
 tr.clickable{cursor:pointer}
-/* ── Badges ───────────────────────────────────────────────── */
 .badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid}
 .badge-green{background:var(--primary-dim);color:var(--primary);border-color:var(--primary-border)}
 .badge-red{background:var(--danger-dim);color:var(--danger);border-color:var(--danger-border)}
 .badge-amber{background:var(--amber-dim);color:var(--amber);border-color:var(--amber-border)}
 .badge-muted{background:var(--muted);color:var(--muted-fg);border-color:var(--border)}
-/* ── Alerts ───────────────────────────────────────────────── */
 .alert{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:var(--radius);border:1px solid;font-size:12px;margin-bottom:14px}
 .alert svg{width:16px;height:16px;flex-shrink:0;margin-top:1px}
 .alert-danger{background:var(--danger-dim);border-color:var(--danger-border);color:var(--danger)}
 .alert-success{background:var(--primary-dim);border-color:var(--primary-border);color:var(--primary)}
 .alert-amber{background:var(--amber-dim);border-color:var(--amber-border);color:var(--amber)}
-/* ── Sections ─────────────────────────────────────────────── */
 .section-title{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-fg);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:14px}
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
 .card-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -118,7 +108,6 @@ tr.clickable{cursor:pointer}
 .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 .grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
 @media(max-width:600px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
-/* ── Modal ────────────────────────────────────────────────── */
 .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
 .modal{background:var(--card);border:1px solid var(--border);border-radius:12px;width:100%;max-width:640px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column}
 .modal-sm{max-width:400px}
@@ -126,65 +115,52 @@ tr.clickable{cursor:pointer}
 .modal-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:8px}
 .modal-body{padding:20px;overflow-y:auto;flex:1}
 .modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;flex-shrink:0}
-/* ── Camera modal ─────────────────────────────────────────── */
 #camera-modal .modal{max-width:440px}
 #camera-video{width:100%;display:block;background:#000;max-height:300px;object-fit:cover}
 .scan-overlay{position:relative}
 .scan-frame{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
 .scan-frame-inner{border:2px solid rgba(34,197,94,.5);border-radius:8px;width:220px;height:110px}
-/* ── Photo capture ────────────────────────────────────────── */
 .photo-btn{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--muted);color:var(--muted-fg);cursor:pointer;transition:border-color .15s,color .15s,background .15s;text-align:left}
 .photo-btn.has-photo{border-color:var(--primary-border);background:var(--primary-dim);color:var(--primary)}
 .photo-btn svg{width:18px;height:18px;flex-shrink:0}
 .photo-thumb{width:100%;max-height:110px;object-fit:cover;border-radius:6px;border:1px solid var(--border);margin-top:6px}
-/* ── Form panel ───────────────────────────────────────────── */
 .form-panel{border:1px solid var(--primary-border);border-radius:var(--radius);background:var(--card);overflow:hidden;margin-top:16px}
 .form-panel.danger-panel{border-color:var(--danger-border)}
 .form-panel-header{padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .form-panel-header.primary-bg{background:var(--primary-dim);border-bottom:1px solid var(--primary-border)}
 .form-panel-header.danger-bg{background:var(--danger-dim);border-bottom:1px solid var(--danger-border)}
 .form-panel-body{padding:16px}
-/* ── Match badge (inline) ─────────────────────────────────── */
 .match-badge{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:4px;border:1px solid;white-space:nowrap}
 .match-badge.ok{background:var(--primary-dim);color:var(--primary);border-color:var(--primary-border)}
 .match-badge.fail{background:var(--danger-dim);color:var(--danger);border-color:var(--danger-border)}
 .match-badge.no-bc{background:var(--amber-dim);color:var(--amber);border-color:var(--amber-border)}
 .match-badge.checking{background:var(--muted);color:var(--muted-fg);border-color:var(--border)}
-/* ── Info row ─────────────────────────────────────────────── */
 .info-row{display:flex;flex-wrap:wrap;gap:6px 24px;font-size:11px;color:var(--muted-fg);padding:8px 16px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--border)}
 .info-row strong{color:var(--text)}
-/* ── Spinner ──────────────────────────────────────────────── */
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--muted-fg);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
 @keyframes pulse-anim{0%,100%{opacity:1}50%{opacity:.4}}
 .pulse{animation:pulse-anim 1.4s ease-in-out infinite}
-/* ── Online pill ──────────────────────────────────────────── */
-@keyframes ping{75%,100%{transform:scale(2);opacity:0}}
 .online-pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--primary);background:var(--primary-dim);padding:4px 10px;border-radius:20px;border:1px solid var(--primary-border)}
 .ping-dot{position:relative;width:8px;height:8px;flex-shrink:0}
 .ping-dot::before{content:'';position:absolute;inset:0;border-radius:50%;background:var(--primary);animation:ping 1s ease-in-out infinite;opacity:.75}
 .ping-dot::after{content:'';position:absolute;inset:0;border-radius:50%;background:var(--primary)}
-/* ── Detail grid ──────────────────────────────────────────── */
 .detail-kv{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
 @media(max-width:500px){.detail-kv{grid-template-columns:1fr 1fr}}
 .kv-box{background:var(--muted);border-radius:6px;padding:10px 12px}
 .kv-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-fg);margin-bottom:3px}
 .kv-value{font-size:13px;font-weight:700}
-/* ── Lightbox ─────────────────────────────────────────────── */
 #lightbox{position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:200;display:flex;align-items:center;justify-content:center;cursor:pointer}
 #lightbox img{max-width:94vw;max-height:94vh;object-fit:contain;border-radius:8px}
 #lightbox-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:50%;width:36px;height:36px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-/* ── Search box ───────────────────────────────────────────── */
 .search-wrap{position:relative;display:inline-flex;align-items:center}
 .search-wrap svg{position:absolute;left:8px;width:14px;height:14px;color:var(--muted-fg);pointer-events:none}
 .search-wrap input{padding-left:28px;text-transform:none}
-/* ── Toast ────────────────────────────────────────────────── */
 #toast-container{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
 .toast{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 16px;font-size:12px;color:var(--text);max-width:320px;pointer-events:auto;opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s}
 .toast.show{opacity:1;transform:none}
 .toast.success{border-color:var(--primary-border);color:var(--primary)}
 .toast.error{border-color:var(--danger-border);color:var(--danger)}
-/* ── Misc ─────────────────────────────────────────────────── */
 .empty-state{text-align:center;padding:48px 16px;color:var(--muted-fg)}
 .empty-state svg{width:40px;height:40px;margin:0 auto 10px;opacity:.3}
 .gap-8{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -202,14 +178,12 @@ tr.clickable{cursor:pointer}
 .mt-12{margin-top:12px}
 .mt-16{margin-top:16px}
 .hidden{display:none!important}
+.record-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+.record-card:hover{border-color:var(--primary)}
 </style>
-<base target="_blank">
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════════
-     SVGS (inline, reusable via <use>)
-═══════════════════════════════════════════════════════════ -->
 <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
   <symbol id="ic-dashboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
   <symbol id="ic-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
@@ -236,11 +210,7 @@ tr.clickable{cursor:pointer}
   <symbol id="ic-rotate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg>
 </svg>
 
-<!-- ═══════════════════════════════════════════════════════════
-     APP SHELL
-═══════════════════════════════════════════════════════════ -->
 <div id="app">
-  <!-- Sidebar -->
   <div id="sidebar">
     <div class="brand">
       <div class="brand-name">MG Packing</div>
@@ -268,10 +238,8 @@ tr.clickable{cursor:pointer}
       </a>
     </nav>
     <div style="flex:1"></div>
-    
   </div>
 
-  <!-- Main content -->
   <div id="main">
     <div id="page-dashboard" class="page hidden"></div>
     <div id="page-packing-lists" class="page hidden"></div>
@@ -282,7 +250,6 @@ tr.clickable{cursor:pointer}
   </div>
 </div>
 
-<!-- Camera Modal -->
 <div id="camera-modal" class="modal-backdrop hidden">
   <div class="modal modal-sm">
     <div class="modal-header">
@@ -301,33 +268,25 @@ tr.clickable{cursor:pointer}
   </div>
 </div>
 
-<!-- Lightbox -->
 <div id="lightbox" class="hidden" onclick="closeLightbox()">
   <button id="lightbox-close" onclick="closeLightbox()">✕</button>
   <img id="lightbox-img" src="" alt="Photo" />
 </div>
 
-<!-- Toast container -->
 <div id="toast-container"></div>
 
-<!-- ═══════════════════════════════════════════════════════════
-     MAIN SCRIPT
-═══════════════════════════════════════════════════════════ -->
 <script>
 'use strict';
 
-// ── Config ────────────────────────────────────────────────────
-const LS_RECORDS = 'mg_records_cache';
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbxJNbH09bwWqsO0lnM8j_xHA7ALfPFKpSjSFwUK4SRugrHqMWIhds7KhyUHN7kXR28/exec';
 let currentPage = '';
-let currentListId = null; // index into LISTS array
+let currentListId = null;
 let cameraCallback = null;
 let cameraReader = null;
-let pendingEditRow = null; // row number of carton being edited/resubmitted
-let allRecords = [];       // cached from GAS
-let masterData = [];       // from GAS lookup cache; keyed by partNo/pi
+let pendingEditRow = null;
+let allRecords = [];
+let masterData = [];
 
-// In-memory packing lists (stored in localStorage)
 const LS_LISTS = 'mg_packing_lists_v2';
 let LISTS = [];
 
@@ -336,7 +295,32 @@ function loadLists() {
   try { LISTS = JSON.parse(localStorage.getItem(LS_LISTS) || '[]'); } catch { LISTS = []; }
 }
 
-// ── URL management ─────────────────────────────────────────────
+async function gasGet(params) {
+  if (!GAS_URL) return null;
+  const url = GAS_URL + '?' + new URLSearchParams(params);
+  try {
+    const r = await fetch(url);
+    return await r.json();
+  } catch(e) {
+    console.warn('gasGet failed:', e.message);
+    return null;
+  }
+}
+
+async function gasPost(data) {
+  if (!GAS_URL) return null;
+  try {
+    const r = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(data)
+    });
+    return await r.json();
+  } catch(e) {
+    console.warn('gasPost failed:', e.message);
+    return null;
+  }
+}
 
 function toast(msg, type='') {
   const el = document.createElement('div');
@@ -350,7 +334,6 @@ function toast(msg, type='') {
   }, 3000);
 }
 
-// ── Navigation ─────────────────────────────────────────────────
 function nav(page, listId=null) {
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
   document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
@@ -368,7 +351,6 @@ function nav(page, listId=null) {
   else if (page === 'rejects') renderRejects();
 }
 
-// ── Formatting helpers ─────────────────────────────────────────
 function fmtDate(ts) {
   if (!ts) return '—';
   const d = new Date(ts);
@@ -383,7 +365,6 @@ function fmtTime(ts) {
   return d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
 }
 
-// ── Image compression ──────────────────────────────────────────
 function compressImage(file, maxPx=800, q=0.7) {
   return new Promise((res, rej) => {
     const img = new Image();
@@ -403,14 +384,12 @@ function compressImage(file, maxPx=800, q=0.7) {
   });
 }
 
-// ── Lightbox ───────────────────────────────────────────────────
 function openLightbox(src) {
   document.getElementById('lightbox-img').src = src;
   document.getElementById('lightbox').classList.remove('hidden');
 }
 function closeLightbox() { document.getElementById('lightbox').classList.add('hidden'); }
 
-// ── Camera ─────────────────────────────────────────────────────
 async function openCamera(label, cb) {
   cameraCallback = cb;
   document.getElementById('camera-label').textContent = 'Scan — ' + label;
@@ -452,7 +431,7 @@ async function openCamera(label, cb) {
         closeCamera();
         cb(val);
       },
-      () => {} // ignore scan errors
+      () => {}
     );
   } catch(e) {
     errEl.textContent = e.message.includes('Permission')
@@ -471,9 +450,6 @@ function closeCamera() {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// DASHBOARD
-// ═══════════════════════════════════════════════════════════════
 async function renderDashboard() {
   const el = document.getElementById('page-dashboard');
   el.innerHTML = `
@@ -512,9 +488,6 @@ async function renderDashboard() {
     </div>`).join('');
 }
 
-// ═══════════════════════════════════════════════════════════════
-// PACKING LISTS (local, stored in localStorage)
-// ═══════════════════════════════════════════════════════════════
 function nextListRef() {
   const max = LISTS.reduce((m, l) => {
     const n = parseInt((l.listRef || '').replace('PL-', '') || '0');
@@ -622,12 +595,8 @@ function submitCreateList() {
   nav('list-detail', LISTS.length - 1);
 }
 
-// ═══════════════════════════════════════════════════════════════
-// PACKING LIST DETAIL
-// ═══════════════════════════════════════════════════════════════
-// Per-form state
 let formState = {
-  bag: { value:'', match:null }, // match: null|true|false|'no'
+  bag: { value:'', match:null },
   inner: { value:'', match:null },
   outer: { value:'', match:null },
   photos: { bag:null, inner:null, carton:null },
@@ -664,7 +633,6 @@ function renderListDetail() {
       <span class="badge ${list.status==='open'?'badge-green':'badge-muted'}">${list.status}</span>
     </div>
 
-    <!-- Info bar -->
     <div class="grid-3" style="margin-bottom:16px">
       ${[
         {icon:'ic-box',label:'Customer',val:list.customer},
@@ -683,10 +651,8 @@ function renderListDetail() {
       Click <strong>Edit</strong> on a rejected row to correct and resubmit.</div>
     </div>` : ''}
 
-    <!-- Success banner placeholder -->
     <div id="success-banner" class="hidden"></div>
 
-    <!-- Carton entries table -->
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
       <div class="text-xs text-muted">Carton Entries (${cartons.length})</div>
       <button class="btn btn-primary btn-sm" id="btn-add-entry" onclick="showEntryForm(false)">
@@ -727,7 +693,6 @@ function renderListDetail() {
       </table>
     </div>
 
-    <!-- Entry form placeholder -->
     <div id="entry-form-wrap"></div>`;
 }
 
@@ -754,19 +719,16 @@ function startEditCarton(cartonIdx) {
   formState.partNo = c.partNo || '';
   formState.qty = String(c.qty || 1);
   formState.photos = { bag: c.imgBagUrl||null, inner: c.imgInnerUrl||null, carton: c.imgCartonUrl||null };
-  pendingEditRow = { cartonIdx, row: c.row }; // row from GAS if previously submitted
+  pendingEditRow = { cartonIdx, row: c.row };
   showEntryForm(true);
 }
 
 function showEntryForm(isEdit) {
-  // Hide add button
   const addBtn = document.getElementById('btn-add-entry');
   if (addBtn) addBtn.style.display = 'none';
-
   const wrap = document.getElementById('entry-form-wrap');
   const list = LISTS[currentListId];
   wrap.innerHTML = buildEntryForm(list, isEdit);
-  // Restore field values
   restoreFormValues();
 }
 
@@ -787,7 +749,6 @@ function buildEntryForm(list, isEdit) {
     </div>
     <div class="form-panel-body">
 
-      <!-- Order Info -->
       <div class="section-title">Order Info</div>
       <div class="grid-4" style="margin-bottom:16px">
         <div class="form-group">
@@ -817,7 +778,6 @@ function buildEntryForm(list, isEdit) {
         </div>
       </div>
 
-      <!-- Barcodes -->
       <div class="section-title">Barcode Verification</div>
       <p class="text-xs text-muted" style="margin-bottom:10px">Scan: Bag → Inner → Outer. Type <strong style="color:var(--amber)">NO</strong> if none. Use 📷 camera or barcode scanner.</p>
       <div class="grid-3" style="margin-bottom:16px">
@@ -826,7 +786,6 @@ function buildEntryForm(list, isEdit) {
         ${buildBarcodeField('outer','3. Outer Barcode')}
       </div>
 
-      <!-- Photos -->
       <div class="section-title">Photos</div>
       <div class="grid-3" style="margin-bottom:16px">
         ${buildPhotoField('bag','Bag with Part')}
@@ -834,14 +793,12 @@ function buildEntryForm(list, isEdit) {
         ${buildPhotoField('carton','Carton / Label')}
       </div>
 
-      <!-- Mismatch warning -->
       <div id="mismatch-warn" class="alert alert-danger hidden">
         <svg><use href="#ic-alert"/></svg>
         <div>Mismatch detected — please recheck barcodes before submitting.</div>
       </div>
       <div id="form-error" class="hidden" style="color:var(--danger);font-size:12px;margin-bottom:8px"></div>
 
-      <!-- Submit row -->
       <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border);flex-wrap:wrap;gap:8px">
         <div id="verify-hint" class="text-xs text-muted">Verify all three barcodes to enable submit.</div>
         <div style="display:flex;gap:8px">
@@ -893,7 +850,6 @@ function restoreFormValues() {
   set('f-partNo', formState.partNo);
   set('f-pi', formState.pi);
   set('f-qty', formState.qty);
-  // Restore photos
   ['bag','inner','carton'].forEach(w => {
     if (formState.photos[w]) renderPhotoThumb(w, formState.photos[w]);
   });
@@ -917,7 +873,6 @@ function renderPhotoThumb(which, dataUri) {
   }
 }
 
-// Barcode lookup state
 let lookupCache = {};
 const lookupDebounce = {};
 
@@ -925,34 +880,24 @@ function onBarcodeInput(which) {
   const el = document.getElementById('f-' + which);
   if (!el) return;
   const val = el.value.trim().toUpperCase();
-
-  // Update formState
   if (which === 'bag') formState.bag.value = val;
   if (which === 'inner') formState.inner.value = val;
   if (which === 'outer') formState.outer.value = val;
-
   el.value = val;
-
   if (!val) { setMatchBadge(which, null); updateSubmitBtn(); return; }
   if (val === 'NO') { setMatchBadge(which, 'no'); updateSubmitBtn(); return; }
-
-  // Debounce lookup
   clearTimeout(lookupDebounce[which]);
   setMatchBadge(which, 'checking');
   lookupDebounce[which] = setTimeout(() => doLookup(which, val), 500);
 }
 
-// Called when Part No or PI field changes — flush cache and re-verify all filled barcodes
 function onOrderFieldChange(field) {
   const val = (document.getElementById(field === 'partNo' ? 'f-partNo' : 'f-pi')||{}).value || '';
   if (field === 'partNo') formState.partNo = val.trim().toUpperCase();
   if (field === 'pi') formState.pi = val.trim().toUpperCase();
-  // Update the input to uppercase
   const inp = document.getElementById(field === 'partNo' ? 'f-partNo' : 'f-pi');
   if (inp) inp.value = formState[field];
-  // Clear cache so lookups re-run with new values
   lookupCache = {};
-  // Re-trigger any barcodes that are already filled
   ['bag','inner','outer'].forEach(w => {
     const bc = formState[w] && formState[w].value;
     if (bc && bc !== 'NO') {
@@ -967,25 +912,21 @@ async function doLookup(which, barcode) {
   const partNo = ((document.getElementById('f-partNo')||{}).value || '').trim().toUpperCase();
   const pi     = ((document.getElementById('f-pi')||{}).value || '').trim().toUpperCase();
   const key    = `${barcode}|${partNo}|${pi}`;
-
   if (lookupCache[key] !== undefined) {
     applyLookupResult(which, barcode, lookupCache[key]);
     return;
   }
-
   if (!GAS_URL) {
     setMatchBadge(which, 'error');
     updateSubmitBtn();
     return;
   }
-
   try {
     const res = await gasGet({ action:'lookup', barcode, pi, partNo });
     if (res === null) { setMatchBadge(which, 'error'); updateSubmitBtn(); return; }
     lookupCache[key] = res;
     applyLookupResult(which, barcode, res);
-  } catch(_) {
-    // Network error — cannot reach GAS, don't call it a mismatch
+  } catch(e) {
     setMatchBadge(which, 'error');
     updateSubmitBtn();
   }
@@ -993,14 +934,12 @@ async function doLookup(which, barcode) {
 
 function applyLookupResult(which, barcode, res) {
   if (res && res.found) {
-    // Auto-fill Part No and PI from bag lookup result when fields are empty
     if (which === 'bag') {
       if (res.partNo) {
         const pnEl = document.getElementById('f-partNo');
         if (pnEl && !pnEl.value) {
           pnEl.value = String(res.partNo).toUpperCase();
           formState.partNo = pnEl.value;
-          // Re-trigger inner/outer with the now-known Part No
           lookupCache = {};
           ['inner','outer'].forEach(w => {
             const bc = formState[w] && formState[w].value;
@@ -1033,11 +972,9 @@ function setMatchBadge(which, state) {
   if (which === 'bag' || which === 'inner' || which === 'outer') {
     formState[which].match = (state === 'no') ? 'no' : state;
   }
-
   const badge = document.getElementById('match-badge-' + which);
   const input = document.getElementById('f-' + which);
   if (!badge || !input) return;
-
   input.className = '';
   badge.style.display = '';
   if (state === null) { badge.style.display='none'; return; }
@@ -1053,15 +990,11 @@ function updateSubmitBtn() {
   const warn = document.getElementById('mismatch-warn');
   const hint = document.getElementById('verify-hint');
   if (!btn) return;
-
   const {bag, inner, outer} = formState;
   const hasMismatch = bag.match===false || inner.match===false || outer.match===false;
   const hasError    = bag.match==='error' || inner.match==='error' || outer.match==='error';
-
-  // A barcode slot is "done" when it is matched, marked NO, or cannot be verified (network error)
   const done = m => m===true || m==='no' || m==='error';
   const allVerified = done(bag.match) && done(inner.match) && done(outer.match);
-
   if (warn) {
     const warnText = warn.querySelector('div') || warn;
     if (hasMismatch) {
@@ -1094,7 +1027,6 @@ async function submitEntry(isEdit) {
   const partNo = (document.getElementById('f-partNo')||{}).value?.trim().toUpperCase() || '';
   const pi = (document.getElementById('f-pi')||{}).value?.trim().toUpperCase() || '';
   const qty = parseInt((document.getElementById('f-qty')||{}).value || '1');
-
   if (!cartonId || !partNo || !qty) { toast('Fill all required fields', 'error'); return; }
 
   const btn = document.getElementById('btn-submit');
@@ -1104,10 +1036,9 @@ async function submitEntry(isEdit) {
 
   const matchBool = m => m===true || m==='no';
 
-  // Upload photos to Google Drive if data URIs
   async function maybeUpload(dataUri, filename) {
     if (!dataUri || !dataUri.startsWith('data:')) return dataUri || '';
-    if (!GAS_URL) return dataUri; // store base64 locally
+    if (!GAS_URL) return dataUri;
     try {
       const res = await gasPost({ action:'uploadPhoto', base64: dataUri, filename });
       return (res && res.url) ? res.url : dataUri;
@@ -1121,12 +1052,10 @@ async function submitEntry(isEdit) {
   ]);
 
   const now = new Date().toISOString();
-  // Auto-generate carton ref
   const existingMax = (list.cartons||[]).reduce((m,c)=>{
     const n=parseInt((c.cartonRef||'').replace('CTN-',''));
     return isNaN(n)?m:Math.max(m,n);
   },0);
-  // Global max across all lists
   const globalMax = LISTS.reduce((m,l)=>(l.cartons||[]).reduce((m2,c)=>{
     const n=parseInt((c.cartonRef||'').replace('CTN-',''));
     return isNaN(n)?m2:Math.max(m2,n);
@@ -1149,10 +1078,9 @@ async function submitEntry(isEdit) {
     rejectionReason: null,
     checkedBy: null,
     createdAt: now,
-    row: null, // will be set if submitted to GAS
+    row: null,
   };
 
-  // Submit to GAS
   if (GAS_URL) {
     const gasPayload = {
       cartonId, partNo, pi, qty,
@@ -1161,17 +1089,15 @@ async function submitEntry(isEdit) {
       imgBagUrl, imgInnerUrl, imgCartonUrl,
       customer: list.customer, packedBy: list.createdBy, checkerBy: '', packedDate: '',
     };
-
     try {
       if (isEdit && pendingEditRow?.row) {
         await gasPost({ action:'resubmit', ...gasPayload, row: pendingEditRow.row });
       } else {
         await gasPost({ action:'submit', ...gasPayload });
       }
-    } catch(e) { /* Non-fatal, still save locally */ }
+    } catch(e) {}
   }
 
-  // Save locally
   if (isEdit && pendingEditRow !== null) {
     const ci = pendingEditRow.cartonIdx;
     list.cartons[ci] = { ...list.cartons[ci], ...payload };
@@ -1187,7 +1113,6 @@ async function submitEntry(isEdit) {
   resetFormState();
   renderListDetail();
 
-  // Show success banner
   const banner = document.getElementById('success-banner');
   if (banner) {
     banner.classList.remove('hidden');
@@ -1200,9 +1125,6 @@ async function submitEntry(isEdit) {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// CHECKER VIEW
-// ═══════════════════════════════════════════════════════════════
 let checkerFilter = 'pending';
 let checkerSearch = '';
 let checkerRecords = [];
@@ -1233,7 +1155,6 @@ async function renderChecker() {
     <div id="checker-stats" class="stat-grid" style="margin-bottom:20px"></div>
     <div id="checker-table-wrap"><div class="pulse text-muted text-sm">Loading...</div></div>
     <div id="checker-modal-wrap"></div>`;
-
   await loadCheckerRecords();
 }
 
@@ -1257,7 +1178,6 @@ async function loadCheckerRecords() {
 function renderCheckerStats() {
   const now = Date.now();
   const sevenDaysAgo = now - 7 * 24 * 3600 * 1000;
-
   const total = checkerRecords.length;
   const pending = checkerRecords.filter(r => !r.status || r.status.toLowerCase() === '').length;
   const approved = checkerRecords.filter(r => (r.status||'').toLowerCase().includes('approved')).length;
@@ -1269,12 +1189,14 @@ function renderCheckerStats() {
     return d > sevenDaysAgo;
   }).length;
 
-  document.getElementById('checker-stats').innerHTML = [
-    { label: 'Total Records', value: total, icon: 'ic-box', color: 'var(--muted-fg)' },
-    { label: 'Pending', value: pending, icon: 'ic-clock', color: 'var(--amber)' },
-    { label: 'Approved', value: approved, icon: 'ic-check', color: 'var(--primary)' },
-    { label: 'Rejected', value: rejected, icon: 'ic-alert', color: 'var(--danger)' },
-    { label: 'Rejected (7d)', value: recentRejected, icon: 'ic-alert', color: '#ff5722' },
+  const statsEl = document.getElementById('checker-stats');
+  if (!statsEl) return;
+  statsEl.innerHTML = [
+    { label: "Total Records", value: total, icon: 'ic-box', color: 'var(--muted-fg)' },
+    { label: "Pending", value: pending, icon: 'ic-clock', color: 'var(--amber)' },
+    { label: "Approved", value: approved, icon: 'ic-check', color: 'var(--primary)' },
+    { label: "Rejected", value: rejected, icon: 'ic-alert', color: 'var(--danger)' },
+    { label: "Rejected (7d)", value: recentRejected, icon: 'ic-alert', color: '#ff5722' },
   ].map(s => `
     <div class="stat-card">
       <svg class="icon" style="color:${s.color}"><use href="#${s.icon}"/></svg>
@@ -1285,7 +1207,6 @@ function renderCheckerStats() {
 
 function renderCheckerTable() {
   let recs = checkerRecords;
-
   if (checkerFilter !== 'all') {
     recs = recs.filter(r => {
       const s = (r.status||'').toLowerCase();
@@ -1295,7 +1216,6 @@ function renderCheckerTable() {
       return true;
     });
   }
-
   if (checkerSearch) {
     const q = checkerSearch.toLowerCase();
     recs = recs.filter(r =>
@@ -1309,7 +1229,6 @@ function renderCheckerTable() {
 
   const wrap = document.getElementById('checker-table-wrap');
   if (!wrap) return;
-
   if (recs.length === 0) {
     wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-check-sq"/></svg><p>No records found</p></div>';
     return;
@@ -1319,27 +1238,24 @@ function renderCheckerTable() {
     const s = (r.status||'').toLowerCase();
     const isApproved = s.includes('approved');
     const isRejected = s.includes('rejected');
-    const isPending = !isApproved && !isRejected;
-
     const statusColor = isApproved ? 'var(--primary)' : isRejected ? 'var(--danger)' : 'var(--amber)';
     const statusBg = isApproved ? 'var(--primary-dim)' : isRejected ? 'var(--danger-dim)' : 'var(--amber-dim)';
     const statusBorder = isApproved ? 'var(--primary-border)' : isRejected ? 'var(--danger-border)' : 'var(--amber-border)';
     const statusText = isApproved ? 'APPROVED' : isRejected ? 'REJECTED' : 'PENDING';
-
-    // Get photo thumbnails
+    
     const photos = [];
     if (r.imgBagUrl) photos.push({url: r.imgBagUrl, lbl: 'Bag'});
     if (r.imgInnerUrl) photos.push({url: r.imgInnerUrl, lbl: 'Inner'});
     if (r.imgCartonUrl) photos.push({url: r.imgCartonUrl, lbl: 'Carton'});
-
+    
     const photoHtml = photos.length > 0 
       ? '<div style="display:flex;gap:6px;margin-top:8px">' + photos.map(p => {
-          const id = (p.url||'').match(/[-\w]{25,}/);
+          const id = (p.url||'').match(/[-\\w]{25,}/);
           const thumb = id ? `https://drive.google.com/thumbnail?id=${id[0]}&sz=200` : p.url;
           return `<img src="${thumb}" style="width:60px;height:60px;object-fit:cover;border-radius:6px;border:1px solid var(--border);cursor:pointer" onclick="event.stopPropagation();openLightbox('${p.url}')" />`;
         }).join('') + '</div>'
       : '';
-
+    
     return `<div class="record-card ${isRejected ? 'rejected' : ''}" style="cursor:pointer;padding:14px;border-left:4px solid ${statusColor}" onclick="openCheckerDetail(${r.row})">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
         <span style="font-weight:700;font-size:1rem;color:${statusColor}">${escHtml(r.customer||'Unknown')}</span>
@@ -1376,10 +1292,8 @@ function showCheckerDetailModal(r) {
   const isApproved = s.includes('approved');
   const isRejected = s.includes('rejected');
   const isPending = !isApproved && !isRejected;
-
   const wrap = document.getElementById('checker-modal-wrap');
-
-  // Build photos section
+  
   const photos = [
     {lbl: 'Bag', url: r.imgBagUrl},
     {lbl: 'Inner', url: r.imgInnerUrl},
@@ -1390,7 +1304,7 @@ function showCheckerDetailModal(r) {
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
       ${photos.map(p => {
         if (!p.url) return '';
-        const id = (p.url||'').match(/[-\w]{25,}/);
+        const id = (p.url||'').match(/[-\\w]{25,}/);
         const thumb = id ? `https://drive.google.com/thumbnail?id=${id[0]}&sz=400` : p.url;
         return `<div style="text-align:center">
           <img src="${thumb}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer" onclick="openLightbox('${p.url}')" />
@@ -1399,8 +1313,7 @@ function showCheckerDetailModal(r) {
       }).join('')}
     </div>
   ` : '';
-
-  // Build barcode section
+  
   const barcodes = [
     {lbl: 'Bag', val: r.bag, match: (r.matchStatus||'').includes('Bag:✅')},
     {lbl: 'Inner', val: r.inner, match: (r.matchStatus||'').includes('Inner:✅')},
@@ -1420,8 +1333,7 @@ function showCheckerDetailModal(r) {
       }).join('')}
     </div>
   `;
-
-  // Stamping section (only for approved records)
+  
   const stampSection = isApproved ? `
     <div class="section-title">Stamping</div>
     <div style="margin-bottom:16px">
@@ -1435,8 +1347,7 @@ function showCheckerDetailModal(r) {
       }
     </div>
   ` : '';
-
-  // Verdict section (only for pending records)
+  
   const verdictSection = isPending ? `
     <div class="section-title" style="border-top:1px solid var(--border);padding-top:16px">Checker Decision</div>
     <div style="display:flex;gap:10px;margin-bottom:12px">
@@ -1457,15 +1368,14 @@ function showCheckerDetailModal(r) {
     </div>
     <button class="btn btn-primary btn-full" id="btnSubmitVerdict" onclick="checkerSubmitVerdict()">Submit Decision</button>
   ` : '';
-
-  // Rejected info
+  
   const rejectedInfo = isRejected ? `
     <div class="alert alert-danger" style="margin-bottom:16px">
       <svg><use href="#ic-alert"/></svg>
       <div><strong>Rejected by ${escHtml(r.checker||'Checker')}</strong><br/><em>${escHtml(r.remarks||'No reason given')}</em></div>
     </div>
   ` : '';
-
+  
   wrap.innerHTML = `<div class="modal-backdrop" id="checker-detail-modal" onclick="if(event.target===this)closeCheckerDetail()">
     <div class="modal" style="max-width:600px">
       <div class="modal-header">
@@ -1504,25 +1414,29 @@ let selectedCheckerVerdict = null;
 
 function checkerSelectVerdict(verdict) {
   selectedCheckerVerdict = verdict;
-  document.getElementById('btnApprove').classList.toggle('btn-primary', verdict === 'Approved');
-  document.getElementById('btnApprove').classList.toggle('btn-outline', verdict !== 'Approved');
-  document.getElementById('btnReject').classList.toggle('btn-danger', verdict === 'Rejected');
-  document.getElementById('btnReject').classList.toggle('btn-danger-outline', verdict !== 'Rejected');
+  const btnA = document.getElementById('btnApprove');
+  const btnR = document.getElementById('btnReject');
+  if (btnA) {
+    btnA.className = verdict === 'Approved' ? 'btn btn-primary' : 'btn btn-outline';
+    btnA.style.flex = '1';
+  }
+  if (btnR) {
+    btnR.className = verdict === 'Rejected' ? 'btn btn-danger' : 'btn btn-danger-outline';
+    btnR.style.flex = '1';
+  }
 }
 
 async function checkerSubmitVerdict() {
   const name = document.getElementById('checker-name').value.trim();
   const remarks = document.getElementById('checker-remarks').value.trim();
-
   if (!name) { toast('Please enter Checker Name', 'error'); return; }
   if (!selectedCheckerVerdict) { toast('Please select Approve or Reject', 'error'); return; }
-
+  
   const btn = document.getElementById('btnSubmitVerdict');
-  btn.disabled = true;
-  btn.textContent = 'Submitting...';
-
+  if (btn) { btn.disabled = true; btn.textContent = 'Submitting...'; }
+  
   const statusStr = selectedCheckerVerdict === 'Approved' ? 'Verified ✅' : 'Rejected ❌';
-
+  
   try {
     const res = await gasPost({ 
       action: 'verify', 
@@ -1531,7 +1445,7 @@ async function checkerSubmitVerdict() {
       status: statusStr, 
       remarks: remarks.toUpperCase() 
     });
-
+    
     if (res && res.success) {
       toast(`Record ${selectedCheckerVerdict.toLowerCase()}d ✅`, 'success');
       closeCheckerDetail();
@@ -1541,15 +1455,13 @@ async function checkerSubmitVerdict() {
     }
   } catch(e) {
     toast('Submit failed: ' + e.message, 'error');
-    btn.disabled = false;
-    btn.textContent = 'Submit Decision';
+    if (btn) { btn.disabled = false; btn.textContent = 'Submit Decision'; }
   }
 }
 
 async function checkerMarkStamped(row) {
   const staff = prompt('ENTER STAMPING STAFF NAME:');
   if (!staff) return;
-
   try {
     const res = await gasPost({ action: 'stamp', row: row, staff: staff.toUpperCase() });
     if (res && res.success) {
@@ -1567,8 +1479,7 @@ async function checkerMarkStamped(row) {
 function escHtml(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-// MASTER REGISTER
-// ═══════════════════════════════════════════════════════════════
+
 const LS_MASTER = 'mg_master_records';
 let masterRecords = [];
 
@@ -1681,9 +1592,6 @@ function deleteMasterRecord(i) {
   renderMaster();
 }
 
-// ═══════════════════════════════════════════════════════════════
-// REJECT LIST
-// ═══════════════════════════════════════════════════════════════
 async function renderRejects() {
   const el = document.getElementById('page-rejects');
   el.innerHTML = `
@@ -1696,7 +1604,6 @@ async function renderRejects() {
     </div>
     <div id="reject-content"><div class="pulse text-muted text-sm">Loading...</div></div>`;
 
-  // Collect rejected from local lists
   loadLists();
   let rejected = [];
   LISTS.forEach(list => {
@@ -1705,13 +1612,11 @@ async function renderRejects() {
     });
   });
 
-  // Also try to get GAS records
   if (GAS_URL) {
     try {
       const res = await gasGet({ action:'records' });
       if (res && res.records) {
         res.records.filter(r=>(r.status||'').toLowerCase().includes('rejected')).forEach(r=>{
-          // Only add if not already in local
           const dup = rejected.find(x=>x.cartonId===r.cartonId&&x.cartonRef===r.cartonRef);
           if (!dup) rejected.push({...r,_source:'gas'});
         });
@@ -1761,9 +1666,6 @@ async function renderRejects() {
     </div>`;
 }
 
-// ═══════════════════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════════════════
 loadLists();
 nav('dashboard');
 </script>
