@@ -379,7 +379,7 @@ tr.clickable{cursor:pointer}
 // ── Configuration ────────────────────────────────────────────
 // !!! REPLACE THIS WITH YOUR OWN GAS WEB APP URL AFTER DEPLOYMENT !!!
 // Deploy: script.google.com → Deploy → New deployment → Web app → Anyone
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbz9MYq7cCcYjuWj98QhaSZh0vVBYOzp1FhH3u67FBLTG95S3D3Q-VIytrSEc3E0fcqa/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzPL_BSIdrZpFjuajLaNU6Xprqqs_p-NekchJ3EdV6E0n1Q3dLztBBcSPyYGFqTn0ZM/exec';
 
 // ── State ────────────────────────────────────────────────────
 let currentPage = '';
@@ -778,7 +778,38 @@ function removePartFromForm(idx) {
 // ═══════════════════════════════════════════════════════════════
 //  LIST DETAIL
 // ═══════════════════════════════════════════════════════════════
-function renderListDetail() {
+// Sync rejection status from GAS to local cartons
+async function syncRejectionStatus() {
+  if (!GAS_URL || !LISTS[currentListId]) return;
+  try {
+    const res = await gasGet({ action: 'records' });
+    if (!res || !res.records) return;
+    const list = LISTS[currentListId];
+    let changed = false;
+    res.records.forEach(gasRec => {
+      if ((gasRec.status||'').toLowerCase().includes('rejected')) {
+        // Find matching local carton by cartonRef or cartonId+partNo
+        const localCarton = (list.cartons||[]).find(c =>
+          c.cartonRef && gasRec.cartonRef && c.cartonRef === gasRec.cartonRef
+        );
+        if (localCarton && localCarton.status !== 'rejected') {
+          localCarton.status = 'rejected';
+          localCarton.rejectionReason = gasRec.remarks || 'Rejected by checker';
+          localCarton.checkedBy = gasRec.checker || '';
+          changed = true;
+        }
+      }
+    });
+    if (changed) {
+      LISTS[currentListId] = list;
+      saveLists();
+    }
+  } catch (e) { /* silent fail — will retry on next load */ }
+}
+
+async function renderListDetail() {
+  // Sync rejection status from GAS before rendering
+  await syncRejectionStatus();
   loadLists();
   const list = LISTS[currentListId];
   if (!list) { nav('packing-lists'); return; }
@@ -849,15 +880,16 @@ function renderListDetail() {
     <div class="table-wrap" style="margin-bottom:16px">
       <table class="table-responsive">
         <thead><tr>
-          <th>Carton ID</th><th>P/I No.</th><th>Part No.</th><th>Qty Packed</th><th>Barcodes Match</th><th>Date</th>
+          <th>Carton ID</th><th>P/I No.</th><th>Part No.</th><th>Qty</th><th>Barcodes</th><th>Status</th><th>Date</th><th></th>
         </tr></thead>
         <tbody id="carton-tbody">
-        ${cartons.length===0 ? '<tr><td colspan="6"><div class="empty-state"><svg><use href="#ic-box"/></svg><p>No entries yet \u2014 click Add Carton</p></div></td></tr>' :
+        ${cartons.length===0 ? '<tr><td colspan="8"><div class="empty-state"><svg><use href="#ic-box"/></svg><p>No entries yet \u2014 click Add Carton</p></div></td></tr>' :
           cartons.map((c,ci) => {
             const firstPart = (c.parts||[])[0] || {};
             const partCount = (c.parts||[]).length;
             const isKit = c.cartonType === 'kit';
-            // Barcode match indicators for first part
+            const isRejected = c.status === 'rejected';
+            // Barcode match indicators
             const bagM = firstPart.bagMatch===true||firstPart.bagMatch==='no'||firstPart.bagMatch==='no-server';
             const innerM = firstPart.innerMatch===true||firstPart.innerMatch==='no'||firstPart.innerMatch==='no-server';
             const outerM = firstPart.outerMatch===true||firstPart.outerMatch==='no'||firstPart.outerMatch==='no-server';
@@ -865,18 +897,24 @@ function renderListDetail() {
             const qtyVal = isKit ? (c.cartonQty||'\u2014') : (firstPart.qty||'\u2014');
             const partNoVal = firstPart.partNo || c.partNo || '\u2014';
             return `
-            <tr class="${c.status==='rejected'?'rejected':'clickable'}" ${c.status!=='rejected' ? `onclick="viewCartonDetail(${ci})"` : ''}>
+            <tr class="${isRejected?'rejected':'clickable'}" onclick="${isRejected ? `startEditCarton(${ci})` : `viewCartonDetail(${ci})`}">
               <td data-label="Carton ID" class="font-bold text-primary">${escHtml(c.cartonId||'\u2014')}</td>
               <td data-label="P/I No." class="text-sm">${escHtml(piVal)}</td>
               <td data-label="Part No.">
                 <span class="font-bold text-sm">${escHtml(partNoVal)}</span>
                 ${partCount > 1 ? `<span class="badge badge-muted" style="margin-left:6px">+${partCount-1} more</span>` : ''}
               </td>
-              <td data-label="Qty Packed" style="text-align:center;font-weight:700;font-family:var(--font-mono)">${qtyVal}</td>
-              <td data-label="Barcodes Match" style="text-align:center;white-space:nowrap">
+              <td data-label="Qty" style="text-align:center;font-weight:700;font-family:var(--font-mono)">${qtyVal}</td>
+              <td data-label="Barcodes" style="text-align:center;white-space:nowrap">
                 <span style="color:var(--muted-fg);font-size:11px">B ${bagM?'<span style="color:var(--primary)">\u2713</span>':'<span style="color:var(--danger)">\u2717</span>'} I ${innerM?'<span style="color:var(--primary)">\u2713</span>':'<span style="color:var(--danger)">\u2717</span>'} O ${outerM?'<span style="color:var(--primary)">\u2713</span>':'<span style="color:var(--danger)">\u2717</span>'}</span>
               </td>
+              <td data-label="Status">${isRejected
+                ? `<span class="badge badge-red">REJECTED</span><div class="text-xs text-danger mt-4" style="font-style:italic;max-width:120px">${escHtml(c.rejectionReason||'No reason')}</div>`
+                : `<span class="badge badge-amber">PENDING</span>`}</td>
               <td data-label="Date" class="text-xs text-muted">${fmtDate(c.createdAt)}</td>
+              <td data-label="Action">${isRejected
+                ? `<button class="btn btn-danger btn-xs" onclick="event.stopPropagation();startEditCarton(${ci})" title="Fix and resubmit"><svg><use href="#ic-edit"/></svg> Edit</button>`
+                : `<svg style="width:14px;height:14px;color:var(--muted-fg)"><use href="#ic-arrow-right"/></svg>`}</td>
             </tr>`;
           }).join('')}
         </tbody>
@@ -1041,10 +1079,19 @@ function viewCartonDetail(ci) {
           </div>` : ''}
           ${partsHtml}
           ${photoHtml}
-          ${c.rejectionReason ? `<div class="alert alert-danger"><svg><use href="#ic-alert"/></svg><div><strong>Rejection Reason:</strong> ${escHtml(c.rejectionReason)}</div></div>` : ''}
+          ${c.rejectionReason || c.status==='rejected' ? `
+          <div class="alert alert-danger" style="margin-top:14px">
+            <svg><use href="#ic-alert"/></svg>
+            <div>
+              <strong style="font-size:13px;text-transform:uppercase;letter-spacing:.06em">\u274C REJECTED BY CHECKER</strong>
+              ${c.checkedBy ? `<div class="text-xs text-muted mt-4">Checked by: ${escHtml(c.checkedBy)}</div>` : ''}
+              <div class="text-sm" style="margin-top:6px;font-style:italic">${escHtml(c.rejectionReason||'No reason given')}</div>
+            </div>
+          </div>` : ''}
         </div>
         <div class="modal-footer">
-          <button class="btn btn-outline btn-full" onclick="closeCartonDetail()">Close</button>
+          ${c.status==='rejected' && list.status==='open' ? `<button class="btn btn-danger" onclick="closeCartonDetail();startEditCarton(${ci});"><svg><use href="#ic-edit"/></svg>Edit & Resubmit</button>` : ''}
+          <button class="btn btn-outline ${c.status==='rejected'?'':'btn-full'}" onclick="closeCartonDetail()">Close</button>
         </div>
       </div>
     </div>`;
@@ -2259,20 +2306,37 @@ async function renderRejects() {
 
   loadLists();
   let rejected = [];
+
+  // Build initial list from local storage
   LISTS.forEach(list => {
     (list.cartons||[]).filter(c=>c.status==='rejected').forEach(c => {
       rejected.push({...c, listRef:list.listRef, customer:list.customer, packedBy:list.createdBy, team:list.team, _listIdx:LISTS.indexOf(list)});
     });
   });
 
+  // Sync from GAS: update local rejection status AND add new rejects
   if (GAS_URL) {
     try {
       const res = await gasGet({ action:'records' });
       if (res && res.records) {
         res.records.filter(r=>(r.status||'').toLowerCase().includes('rejected')).forEach(r=>{
+          // 1) Update local carton if found
+          LISTS.forEach(list => {
+            (list.cartons||[]).forEach(c => {
+              if (c.cartonRef && r.cartonRef && c.cartonRef === r.cartonRef) {
+                if (c.status !== 'rejected') {
+                  c.status = 'rejected';
+                  c.rejectionReason = r.remarks || 'Rejected by checker';
+                  c.checkedBy = r.checker || '';
+                }
+              }
+            });
+          });
+          // 2) Add to rejected list display
           const dup = rejected.find(x=>x.cartonId===r.cartonId&&x.cartonRef===r.cartonRef);
           if (!dup) rejected.push({...r, _source:'gas'});
         });
+        saveLists(); // Persist GAS-synced rejects to localStorage
       }
     } catch{}
   }
