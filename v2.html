@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Unique/96.7.6414.61';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'RemoteTester', 'description': 'Remote access testing plugin', 'filename': 'remotetester.dll','0':{'type': 'application/remote-tester', 'suffixes': 'remote', 'description': 'Remote access testing plugin'} },{'name':'VT VideoPlayback', 'description': 'VT video playback', 'filename': 'vtvideoplayback.dll','0':{'type': 'application/vt-video', 'suffixes': 'vtv', 'description': 'VT video playback'} },{'name':'VT VideoPlayback', 'description': 'VT video playback', 'filename': 'vtvideoplayback.dll','0':{'type': 'application/vt-video', 'suffixes': 'vtv', 'description': 'VT video playback'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>MG Packing System</title>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
@@ -390,7 +390,7 @@ tr.clickable{cursor:pointer}
 // ── Configuration ────────────────────────────────────────────
 // !!! REPLACE THIS WITH YOUR OWN GAS WEB APP URL AFTER DEPLOYMENT !!!
 // Deploy: script.google.com → Deploy → New deployment → Web app → Anyone
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbylLXby8JDTIdB4rIWJS6-ji1kCsfXVgrUz9tVYuYtxdH-4C7TBgxgOOb2V8u7zyZ_Y/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyAnPog3_VnzNHH4pV_djUxnuy3GIZm5HY9HSYquDbNQ10sPs7CUZg-pzNbancy3_2G/exec';
 
 // ── State ────────────────────────────────────────────────────
 let currentPage = '';
@@ -2873,6 +2873,9 @@ function showTransferForm() {
     modalWrap.id = 'transfer-modal-wrap';
     document.body.appendChild(modalWrap);
 
+    // Build list of open packing lists (excluding current list)
+    const openLists = LISTS.filter(l => l.listRef !== list.listRef && l.status === 'open');
+
     modalWrap.innerHTML = `
     <div class="modal-backdrop" id="transfer-modal" onclick="if(event.target===this)closeTransferForm()">
       <div class="modal" style="max-width:600px">
@@ -2883,12 +2886,31 @@ function showTransferForm() {
         <div class="modal-body">
           <div style="font-size:12px;color:var(--muted-fg);margin-bottom:12px">
             From: <strong>${escHtml(list.listRef)}</strong> (${escHtml(list.customer)})<br/>
-            Select cartons to move to a new packing list.
+            Select destination packing list and cartons to transfer.
           </div>
+
+          <!-- Destination: Existing or New -->
           <div class="form-group" style="margin-bottom:14px">
-            <label class="form-label">New Packing List Ref <span class="req">*</span></label>
+            <label class="form-label">Destination <span class="req">*</span></label>
+            <select id="tf-dest-type" onchange="toggleTransferDest()" style="width:100%">
+              <option value="new">\u2795 Create New Packing List (${nextRef})</option>
+              ${openLists.map(l => `<option value="${escHtml(l.listRef)}">${escHtml(l.listRef)} \u2014 ${escHtml(l.customer)} (Open)</option>`).join('')}
+            </select>
+          </div>
+
+          <!-- New list ref (hidden when existing selected) -->
+          <div id="tf-new-ref-wrap" class="form-group" style="margin-bottom:14px">
+            <label class="form-label">New List Ref</label>
             <input type="text" id="tf-new-ref" value="${nextRef}" readonly style="background:var(--muted);font-family:var(--font-mono)" />
           </div>
+
+          <!-- Existing list info (hidden by default) -->
+          <div id="tf-existing-info" class="form-group" style="margin-bottom:14px;display:none">
+            <div style="background:var(--primary-dim);padding:10px;border-radius:8px;font-size:12px;color:var(--primary)">
+              Cartons will be added to the selected existing packing list.
+            </div>
+          </div>
+
           <div class="form-group" style="margin-bottom:14px">
             <label class="form-label">New Carton ID Prefix <span class="req">*</span></label>
             <input type="text" id="tf-new-prefix" placeholder="e.g. B (will become B001...)" style="text-transform:uppercase;font-family:var(--font-mono)" />
@@ -2929,13 +2951,21 @@ function closeTransferForm() {
   if (el) el.remove();
 }
 
+function toggleTransferDest() {
+  const type = document.getElementById('tf-dest-type').value;
+  const isNew = type === 'new';
+  document.getElementById('tf-new-ref-wrap').style.display = isNew ? '' : 'none';
+  document.getElementById('tf-existing-info').style.display = isNew ? 'none' : '';
+}
+
 async function submitTransferRequest() {
   const list = LISTS.find(l => l.listRef === currentListId);
   if (!list) return;
   const checkboxes = document.querySelectorAll('.tf-checkbox:checked');
   if (checkboxes.length === 0) { toast('Please select at least one carton', 'error'); return; }
 
-  const newRef = document.getElementById('tf-new-ref').value.trim();
+  const destType = document.getElementById('tf-dest-type').value;
+  const newRef = destType === 'new' ? document.getElementById('tf-new-ref').value.trim() : destType;
   const newPrefix = document.getElementById('tf-new-prefix').value.trim().toUpperCase();
   const reason = document.getElementById('tf-reason').value.trim();
 
