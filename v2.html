@@ -2839,9 +2839,32 @@ async function stampRecord(row) {
 // Carton Transfer State
 const LS_TRANSFERS = 'mg_transfer_requests_v2';
 let currentTransferSelections = [];
+let transferAuthenticated = false;
 
 function _saveTransferRequests(reqs) { _lsSet(LS_TRANSFERS, reqs); }
 function _getTransferRequests() { return _lsGet(LS_TRANSFERS, []); }
+
+// Generate next packing list ref (e.g. PL-0001) based on existing lists
+function getNextListRef() {
+  const lists = _lsGet(LS_LISTS, []);
+  let max = 0;
+  lists.forEach(l => {
+    const m = String(l.listRef || '').match(/PL-(\d+)/);
+    if (m) max = Math.max(max, parseInt(m[1]));
+  });
+  return 'PL-' + String(max + 1).padStart(4, '0');
+}
+
+function checkTransferPassword() {
+  const pw = prompt('ENTER MANAGER PASSWORD TO ACCESS TRANSFER:');
+  if (pw === 'simon1981') {
+    transferAuthenticated = true;
+    renderTransfer();
+  } else {
+    toast('Incorrect password', 'error');
+    nav('dashboard');
+  }
+}
 
 function showTransferForm() {
   const list = LISTS.find(l => l.listRef === currentListId);
@@ -2849,10 +2872,10 @@ function showTransferForm() {
   const cartons = LIST_CARTONS[list.listRef] || [];
   if (cartons.length === 0) { toast('No cartons to transfer', 'error'); return; }
 
-  getNextListRef().then(nextRef => {
-    const modalWrap = document.createElement('div');
-    modalWrap.id = 'transfer-modal-wrap';
-    document.body.appendChild(modalWrap);
+  const nextRef = getNextListRef();
+  const modalWrap = document.createElement('div');
+  modalWrap.id = 'transfer-modal-wrap';
+  document.body.appendChild(modalWrap);
 
     modalWrap.innerHTML = `
     <div class="modal-backdrop" id="transfer-modal" onclick="if(event.target===this)closeTransferForm()">
@@ -2902,7 +2925,6 @@ function showTransferForm() {
         </div>
       </div>
     </div>`;
-  });
 }
 
 function closeTransferForm() {
@@ -2955,6 +2977,23 @@ async function submitTransferRequest() {
 
 async function renderTransfer() {
   const el = document.getElementById('page-transfer');
+  if (!transferAuthenticated) {
+    el.innerHTML = `
+    <div class="page-header">
+      <div>
+        <div class="page-title"><svg style="color:var(--primary)"><use href="#ic-transfer"/></svg>Transfer Approval</div>
+        <div class="page-subtitle">Manager approval required.</div>
+      </div>
+    </div>
+    <div class="empty-state">
+      <svg><use href="#ic-lock"/></svg>
+      <p>This page is password protected.</p>
+      <button class="btn btn-primary" style="margin-top:16px" onclick="checkTransferPassword()">
+        <svg><use href="#ic-unlock"/></svg>Enter Password
+      </button>
+    </div>`;
+    return;
+  }
   const reqs = _getTransferRequests();
 
   el.innerHTML = `
@@ -2962,6 +3001,9 @@ async function renderTransfer() {
       <div>
         <div class="page-title"><svg style="color:var(--primary)"><use href="#ic-transfer"/></svg>Transfer Approval</div>
         <div class="page-subtitle">Review and approve carton transfer requests.</div>
+      </div>
+      <div class="gap-8">
+        <button class="btn btn-outline btn-sm" onclick="transferAuthenticated=false;renderTransfer();"><svg><use href="#ic-lock"/></svg>Lock</button>
       </div>
       <div class="gap-8">
         <button class="btn btn-outline btn-sm" onclick="renderTransfer()"><svg><use href="#ic-refresh"/></svg>Refresh</button>
