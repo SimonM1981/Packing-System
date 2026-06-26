@@ -390,7 +390,7 @@ tr.clickable{cursor:pointer}
 // ── Configuration ────────────────────────────────────────────
 // !!! REPLACE THIS WITH YOUR OWN GAS WEB APP URL AFTER DEPLOYMENT !!!
 // Deploy: script.google.com → Deploy → New deployment → Web app → Anyone
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzeb97VMUNgvmc29vkkCe07UaGdI4b2iXeWNBexl_3Ly13bneDxQ-b_PyGV8hINvxMC/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyoskryfHS8lhlIC6DDg2WuzvoU57RJeVFUFiJcQ_Vb91XGzp0jHIPEH_1f3nqgujJM/exec';
 
 // ── State ────────────────────────────────────────────────────
 let currentPage = '';
@@ -514,17 +514,20 @@ async function gasUpdatePackingList(listRef, status, completedAt) {
 
 // GAS API: Cartons (with LS fallback)
 async function gasGetCartons(listRef) {
-  if (GAS_URL && !GAS_URL.includes("AKfycbxJNbH09bw")) {
+  // Always read localStorage first (local changes take priority)
+  const all = _lsGet(LS_CARTONS, {});
+  const localCartons = all[listRef] || [];
+
+  // Try GAS only if localStorage is empty (sync from GAS)
+  if (localCartons.length === 0 && GAS_URL && !GAS_URL.includes("AKfycbxJNbH09bw")) {
     const res = await gasGet({ action: "cartons", listRef });
     if (res && res.cartons) {
-      const all = _lsGet(LS_CARTONS, {});
       all[listRef] = res.cartons;
       _lsSet(LS_CARTONS, all);
       return res.cartons;
     }
   }
-  const all = _lsGet(LS_CARTONS, {});
-  return all[listRef] || [];
+  return localCartons;
 }
 
 async function gasSaveCarton(data) {
@@ -3088,6 +3091,10 @@ async function approveTransfer(transferId) {
     c => !transferredRefs.includes(c.cartonRef) && !transferredIds.includes(c.cartonId)
   );
   _lsSet(LS_CARTONS, allCartons);
+
+  // CRITICAL: Update memory cache so nav back to packing list shows correct data
+  LIST_CARTONS[req.fromListRef] = allCartons[req.fromListRef];
+  LIST_CARTONS[req.toListRef] = allCartons[req.toListRef];
 
   req.status = 'approved';
   req.approvedBy = manager.toUpperCase();
