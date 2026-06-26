@@ -378,7 +378,7 @@ tr.clickable{cursor:pointer}
 // ── Configuration ────────────────────────────────────────────
 // !!! REPLACE THIS WITH YOUR OWN GAS WEB APP URL AFTER DEPLOYMENT !!!
 // Deploy: script.google.com → Deploy → New deployment → Web app → Anyone
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbz9oO8-MhII4Oh7qEUG8nwS6RYw7t4aMXARP0mE839gZBx6Pd0GjrRtwGURWBE2J1mE/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyvPwokeLY2DT8mDmyPrrG-gzeKSJixH8D_wQJ5LoStzCZ1Zin2bzQSxr2vc7fIrdFL/exec';
 
 // ── State ────────────────────────────────────────────────────
 let currentPage = '';
@@ -1281,17 +1281,18 @@ async function startEditCarton(cartonIdx) {
   }
 
   // Get GAS row numbers for resubmit
+  // Packings Log stores cartonId (e.g. A001) not cartonRef (e.g. CTN-001)
   let gasRows = c.gasRows || [];
-  if (gasRows.length === 0 && GAS_URL && c.cartonRef) {
+  if (gasRows.length === 0 && GAS_URL && c.cartonId) {
     try {
       const res = await gasGet({ action: 'records' });
       if (res && res.records) {
         gasRows = res.records
-          .filter(r => r.cartonRef === c.cartonRef)
+          .filter(r => (r.cartonId || '') === c.cartonId)
           .map(r => r.row)
           .filter(r => r);
       }
-    } catch(e) { console.warn('Could not find GAS rows for', c.cartonRef); }
+    } catch(e) { console.warn('Could not find GAS rows for cartonId', c.cartonId); }
   }
 
   pendingEditRow = { cartonIdx, cartonRef: c.cartonRef, row: c.row, gasRows };
