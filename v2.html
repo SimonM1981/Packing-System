@@ -379,7 +379,7 @@ tr.clickable{cursor:pointer}
 // ── Configuration ────────────────────────────────────────────
 // !!! REPLACE THIS WITH YOUR OWN GAS WEB APP URL AFTER DEPLOYMENT !!!
 // Deploy: script.google.com → Deploy → New deployment → Web app → Anyone
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwtORmQudcg7-QmA314YhveTJPmbVo3GQFDoqbOIV4R-ky3iTjngPSpIo89fubpBTqF/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxNEw4z0SipgmeV-YQTKO4m-0ytZSB_A6KDxCYzq2qsZd3BrK-ByK0MtoFh0tN2HlOM/exec';
 
 // ── State ────────────────────────────────────────────────────
 let currentPage = '';
@@ -1113,7 +1113,7 @@ function statusBadgeClass(s) {
 }
 
 // ── Edit Carton ──────────────────────────────────────────────
-function startEditCarton(cartonIdx) {
+async function startEditCarton(cartonIdx) {
   loadLists();
   const list = LISTS[currentListId];
   const c = list.cartons[cartonIdx];
@@ -1140,7 +1140,31 @@ function startEditCarton(cartonIdx) {
       photos: { bag: c.imgBagUrl||null, inner: c.imgInnerUrl||null, outer: c.imgCartonUrl||null }
     });
   }
-  pendingEditRow = { cartonIdx, row: c.row };
+
+  // Get GAS row numbers for resubmit
+  let rows = c.gasRows || [];
+  // Fallback: search GAS by cartonRef for cartons created before gasRows tracking
+  if (rows.length === 0 && GAS_URL && c.cartonRef) {
+    try {
+      const res = await gasGet({ action: 'records' });
+      if (res && res.records) {
+        const matches = res.records
+          .filter(r => r.cartonRef === c.cartonRef)
+          .map(r => r.row)
+          .filter(r => r);
+        if (matches.length > 0) {
+          rows = matches;
+          // Save found rows back to local storage
+          c.gasRows = rows;
+          list.cartons[cartonIdx] = c;
+          LISTS[currentListId] = list;
+          saveLists();
+        }
+      }
+    } catch(e) { console.warn('Could not find GAS rows for', c.cartonRef); }
+  }
+
+  pendingEditRow = { cartonIdx, rows };
   showEntryForm(true);
 }
 
@@ -1736,32 +1760,41 @@ async function submitEntry(isEdit) {
     imgBagUrl, imgInnerUrl, imgCartonUrl,
     status: 'pending', rejectionReason: null, checkedBy: null,
     createdAt: now, row: null,
+    gasRows, // Array of GAS row numbers for resubmit
   };
 
   // Submit to GAS
+  let gasRows = [];
   if (GAS_URL) {
     try {
-      if (isEdit && pendingEditRow?.row) {
-        // RESUBMIT: Update the SAME row in the Sheet (do NOT create new row)
-        const rp = legacyPart; // first part's data for the row
-        await gasPost({ action:'resubmit', row: pendingEditRow.row,
-          cartonId, cartonRef,
-          customer: list.customer, packedBy: list.createdBy, checkerBy: '',
-          partNo: rp.partNo||'', pi: rp.pi||'', qty: rp.qty||1,
-          bag: rp.bag||'', inner: rp.inner||'', outer: rp.outer||'',
-          bagMatch: rp.bagMatch, innerMatch: rp.innerMatch, outerMatch: rp.outerMatch,
-          imgBagUrl, imgInnerUrl, imgCartonUrl,
-        });
+      if (isEdit && pendingEditRow?.rows && pendingEditRow.rows.length > 0) {
+        // RESUBMIT: Update EACH stored row with its corresponding part's data
+        // This preserves row numbers so the checker sees updated data in the same rows
+        for (let i = 0; i < pendingEditRow.rows.length; i++) {
+          const rowNum = pendingEditRow.rows[i];
+          const rp = parts[i] || parts[0]; // use matching part or fallback to first
+          await gasPost({ action:'resubmit', row: rowNum,
+            cartonId, cartonRef,
+            customer: list.customer, packedBy: list.createdBy, checkerBy: '',
+            partNo: rp.partNo||'', pi: rp.pi||'', qty: rp.qty||1,
+            bag: rp.bag||'', inner: rp.inner||'', outer: rp.outer||'',
+            bagMatch: rp.bagMatch, innerMatch: rp.innerMatch, outerMatch: rp.outerMatch,
+            imgBagUrl, imgInnerUrl, imgCartonUrl,
+          });
+        }
+        gasRows = pendingEditRow.rows; // keep same row numbers
       } else {
         // NEW SUBMIT: each part as a separate row for checker review
+        // Store returned row numbers for future resubmits
         for (const part of parts) {
-          await gasPost({ action:'submit',
+          const res = await gasPost({ action:'submit',
             cartonId, cartonRef, partNo: part.partNo, pi: part.pi, qty: part.qty,
             bag: part.bag, inner: part.inner, outer: part.outer,
             bagMatch: part.bagMatch, innerMatch: part.innerMatch, outerMatch: part.outerMatch,
             imgBagUrl, imgInnerUrl, imgCartonUrl,
             customer: list.customer, packedBy: list.createdBy, checkerBy: '', packedDate: '',
           });
+          if (res && res.row) gasRows.push(res.row);
         }
       }
     } catch(e) { console.warn('GAS submit warning:', e); }
