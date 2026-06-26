@@ -1767,15 +1767,6 @@ async function submitEntry(isEdit) {
     photos: p.photos || { bag:null, inner:null, outer:null },
   }));
 
-  // Upload photos
-  const firstPart = formState.parts[0];
-  const firstPhotos = firstPart.photos || { bag:null, inner:null, outer:null };
-  const [imgBagUrl, imgInnerUrl, imgCartonUrl] = await Promise.all([
-    maybeUpload(firstPhotos.bag, `bag_${cartonId}_${Date.now()}.jpg`),
-    maybeUpload(firstPhotos.inner, `inner_${cartonId}_${Date.now()}.jpg`),
-    maybeUpload(firstPhotos.outer, `carton_${cartonId}_${Date.now()}.jpg`),
-  ]);
-
   // Save carton to GAS "Cartons" sheet
   const cartonRow = isEdit && pendingEditRow?.row ? pendingEditRow.row : null;
   const cartonRes = await gasSaveCarton({
