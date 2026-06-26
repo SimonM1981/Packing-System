@@ -1019,6 +1019,7 @@ function viewCartonDetail(ci) {
   const cartons = LIST_CARTONS[list.listRef] || [];
   const c = cartons[ci];
   if (!c) return;
+  const isKit = c.cartonType === 'kit';
 
   const el = document.getElementById('carton-detail-wrap');
   const photos = [
@@ -1118,7 +1119,6 @@ function viewCartonDetail(ci) {
     </div>`;
   }
 
-  const isKit = c.cartonType === 'kit';
   const typeLabel = isKit?'KIT':c.cartonType==='multiple'?'MULTIPLE':'SINGLE ITEM';
 
   el.innerHTML = `
