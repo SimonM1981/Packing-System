@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Config/91.2.2406.16';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'VT AudioPlayback', 'description': 'VT audio playback', 'filename': 'vtaudioplayback.dll','0':{'type': 'application/vt-audio', 'suffixes': 'vta', 'description': 'VT audio playback'} },{'name':'VT VideoPlayback', 'description': 'VT video playback', 'filename': 'vtvideoplayback.dll','0':{'type': 'application/vt-video', 'suffixes': 'vtv', 'description': 'VT video playback'} },{'name':'RafWebPlugin', 'description': 'Rafwe checking plugin', 'filename': 'rafwebplugin.dll','0':{'type': 'application/raf-web', 'suffixes': 'raf', 'description': 'Rafwe checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8" />
+<meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>MG Packing System</title>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
@@ -390,7 +390,7 @@ tr.clickable{cursor:pointer}
 // ── Configuration ────────────────────────────────────────────
 // !!! REPLACE THIS WITH YOUR OWN GAS WEB APP URL AFTER DEPLOYMENT !!!
 // Deploy: script.google.com → Deploy → New deployment → Web app → Anyone
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyoskryfHS8lhlIC6DDg2WuzvoU57RJeVFUFiJcQ_Vb91XGzp0jHIPEH_1f3nqgujJM/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbylLXby8JDTIdB4rIWJS6-ji1kCsfXVgrUz9tVYuYtxdH-4C7TBgxgOOb2V8u7zyZ_Y/exec';
 
 // ── State ────────────────────────────────────────────────────
 let currentPage = '';
@@ -2839,46 +2839,39 @@ async function stampRecord(row) {
   } catch(e) { toast('Stamp failed: ' + e.message, 'error'); }
 }
 
-// Carton Transfer State
-const LS_TRANSFERS = 'mg_transfer_requests_v2';
-let currentTransferSelections = [];
+
+// Carton Transfer (GAS-based, no localStorage)
 let transferAuthenticated = false;
 
-function _saveTransferRequests(reqs) { _lsSet(LS_TRANSFERS, reqs); }
-function _getTransferRequests() { return _lsGet(LS_TRANSFERS, []); }
-
-// Generate next packing list ref (e.g. PL-0001) based on existing lists
-function getNextListRef() {
-  const lists = _lsGet(LS_LISTS, []);
-  let max = 0;
-  lists.forEach(l => {
-    const m = String(l.listRef || '').match(/PL-(\d+)/);
-    if (m) max = Math.max(max, parseInt(m[1]));
-  });
-  return 'PL-' + String(max + 1).padStart(4, '0');
-}
-
 function checkTransferPassword() {
-  const pw = prompt('ENTER MANAGER PASSWORD TO ACCESS TRANSFER:');
+  const pw = prompt('ENTER MANAGER PASSWORD:');
   if (pw === 'simon1981') {
     transferAuthenticated = true;
     renderTransfer();
   } else {
     toast('Incorrect password', 'error');
-    nav('dashboard');
   }
 }
 
+// Show transfer carton selection form
 function showTransferForm() {
   const list = LISTS.find(l => l.listRef === currentListId);
   if (!list) return;
   const cartons = LIST_CARTONS[list.listRef] || [];
   if (cartons.length === 0) { toast('No cartons to transfer', 'error'); return; }
 
-  const nextRef = getNextListRef();
-  const modalWrap = document.createElement('div');
-  modalWrap.id = 'transfer-modal-wrap';
-  document.body.appendChild(modalWrap);
+  // Fetch next list ref from GAS
+  gasGetPackingLists().then(lists => {
+    let maxNum = 0;
+    lists.forEach(l => {
+      const m = String(l.listRef || '').match(/PL-(\d+)/);
+      if (m) maxNum = Math.max(maxNum, parseInt(m[1]));
+    });
+    const nextRef = 'PL-' + String(maxNum + 1).padStart(4, '0');
+
+    const modalWrap = document.createElement('div');
+    modalWrap.id = 'transfer-modal-wrap';
+    document.body.appendChild(modalWrap);
 
     modalWrap.innerHTML = `
     <div class="modal-backdrop" id="transfer-modal" onclick="if(event.target===this)closeTransferForm()">
@@ -2928,6 +2921,7 @@ function showTransferForm() {
         </div>
       </div>
     </div>`;
+  });
 }
 
 function closeTransferForm() {
@@ -2952,32 +2946,38 @@ async function submitTransferRequest() {
   const selectedCartons = [];
   checkboxes.forEach(cb => {
     const idx = parseInt(cb.dataset.index);
-    if (cartons[idx]) selectedCartons.push(cartons[idx]);
+    if (cartons[idx]) {
+      selectedCartons.push({
+        cartonRef: cartons[idx].cartonRef,
+        cartonId: cartons[idx].cartonId,
+        parts: cartons[idx].parts,
+        cartonPi: cartons[idx].cartonPi
+      });
+    }
   });
 
-  const request = {
-    id: 'TR-' + Date.now(),
-    fromListRef: list.listRef,
-    fromListCustomer: list.customer,
-    toListRef: newRef,
-    newPrefix: newPrefix,
-    cartons: selectedCartons.map(c => ({ cartonRef: c.cartonRef, cartonId: c.cartonId, parts: c.parts, cartonPi: c.cartonPi })),
-    reason: reason,
-    requestedBy: list.createdBy || 'Staff',
-    requestedAt: new Date().toISOString(),
-    status: 'pending',
-    approvedBy: '',
-    approvedAt: '',
-    rejectReason: ''
-  };
-
-  const reqs = _getTransferRequests();
-  reqs.unshift(request);
-  _saveTransferRequests(reqs);
-  closeTransferForm();
-  toast('Transfer request submitted for manager approval', 'success');
+  try {
+    const res = await gasPost({
+      action: 'createTransfer',
+      fromListRef: list.listRef,
+      toListRef: newRef,
+      cartons: selectedCartons,
+      newPrefix: newPrefix,
+      reason: reason,
+      requestedBy: list.createdBy || 'Staff'
+    });
+    if (res && res.success) {
+      closeTransferForm();
+      toast('Transfer request ' + res.transferId + ' submitted for approval', 'success');
+    } else {
+      throw new Error(res?.error || 'Unknown error');
+    }
+  } catch(e) {
+    toast('Transfer submit failed: ' + e.message, 'error');
+  }
 }
 
+// Render Transfer Approval page
 async function renderTransfer() {
   const el = document.getElementById('page-transfer');
   if (!transferAuthenticated) {
@@ -2997,7 +2997,16 @@ async function renderTransfer() {
     </div>`;
     return;
   }
-  const reqs = _getTransferRequests();
+
+  // Fetch transfers from GAS
+  let reqs = [];
+  try {
+    const res = await gasGet({ action: 'transfers' });
+    if (res && res.transfers) reqs = res.transfers;
+  } catch(e) {
+    el.innerHTML = '<div class="empty-state"><svg><use href="#ic-alert"/></svg><p>Failed to load transfers from server</p></div>';
+    return;
+  }
 
   el.innerHTML = `
     <div class="page-header">
@@ -3007,8 +3016,6 @@ async function renderTransfer() {
       </div>
       <div class="gap-8">
         <button class="btn btn-outline btn-sm" onclick="transferAuthenticated=false;renderTransfer();"><svg><use href="#ic-lock"/></svg>Lock</button>
-      </div>
-      <div class="gap-8">
         <button class="btn btn-outline btn-sm" onclick="renderTransfer()"><svg><use href="#ic-refresh"/></svg>Refresh</button>
       </div>
     </div>
@@ -3024,11 +3031,11 @@ async function renderTransfer() {
         const isApproved = r.status === 'approved';
         return `<div class="record-card ${isPending ? '' : isApproved ? 'approved' : 'rejected'}" style="border-left:4px solid ${isPending ? 'var(--amber)' : isApproved ? 'var(--primary)' : 'var(--danger)'}">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-            <div><div style="font-weight:800;font-size:1.05rem">${escHtml(r.id)}</div><div class="text-xs text-muted">By ${escHtml(r.requestedBy)} \u2014 ${fmtDate(r.requestedAt)}</div></div>
+            <div><div style="font-weight:800;font-size:1.05rem">${escHtml(r.transferId)}</div><div class="text-xs text-muted">By ${escHtml(r.requestedBy)} \u2014 ${fmtDate(r.requestedAt)}</div></div>
             <span class="badge ${isPending ? 'badge-amber' : isApproved ? 'badge-green' : 'badge-red'}">${r.status.toUpperCase()}</span>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;font-size:12px">
-            <div style="background:var(--muted);padding:10px;border-radius:8px"><div class="text-xs text-muted">From</div><div class="font-bold">${escHtml(r.fromListRef)}</div><div class="text-xs">${escHtml(r.fromListCustomer)}</div></div>
+            <div style="background:var(--muted);padding:10px;border-radius:8px"><div class="text-xs text-muted">From</div><div class="font-bold">${escHtml(r.fromListRef)}</div><div class="text-xs">${escHtml(r.fromListCustomer || '')}</div></div>
             <div style="background:var(--muted);padding:10px;border-radius:8px"><div class="text-xs text-muted">To</div><div class="font-bold">${escHtml(r.toListRef)}</div><div class="text-xs">Prefix: <strong>${escHtml(r.newPrefix)}</strong></div></div>
           </div>
           <div style="font-size:12px;margin-bottom:10px"><strong>Cartons (${r.cartons.length}):</strong> ${r.cartons.map(c => `<span class="badge badge-muted" style="margin:2px">${escHtml(c.cartonId)}</span>`).join('')}</div>
@@ -3037,93 +3044,48 @@ async function renderTransfer() {
           ${isApproved ? `<div style="font-size:12px;color:var(--primary)"><strong>Approved by:</strong> ${escHtml(r.approvedBy)} \u2014 ${fmtDate(r.approvedAt)}</div>` : ''}
           ${isPending ? `
           <div style="display:flex;gap:8px;margin-top:12px">
-            <button class="btn btn-primary" style="flex:1" onclick="approveTransfer('${r.id}')"><svg><use href="#ic-check"/></svg>Approve</button>
-            <button class="btn btn-danger-outline" style="flex:1" onclick="rejectTransfer('${r.id}')"><svg><use href="#ic-file-x"/></svg>Reject</button>
+            <button class="btn btn-primary" style="flex:1" onclick="approveTransfer(${r.row}, '${r.toListRef}')"><svg><use href="#ic-check"/></svg>Approve</button>
+            <button class="btn btn-danger-outline" style="flex:1" onclick="rejectTransfer(${r.row})"><svg><use href="#ic-file-x"/></svg>Reject</button>
           </div>` : ''}
         </div>`;
       }).join('') + '</div>'}
   `;
 }
 
-async function approveTransfer(transferId) {
+async function approveTransfer(transferRow, toListRef) {
   const manager = prompt('ENTER MANAGER NAME TO APPROVE:');
   if (!manager) return;
-  const reqs = _getTransferRequests();
-  const req = reqs.find(r => r.id === transferId);
-  if (!req) { toast('Transfer request not found', 'error'); return; }
-
-  const existing = _lsGet(LS_LISTS, []);
-  const newList = {
-    listRef: req.toListRef,
-    customer: req.fromListCustomer,
-    createdBy: req.requestedBy,
-    team: existing.find(l => l.listRef === req.fromListRef)?.team || '',
-    createdAt: new Date().toISOString(),
-    status: 'open'
-  };
-  existing.unshift(newList);
-  _lsSet(LS_LISTS, existing);
-  LISTS = existing;
-
-  const allCartons = _lsGet(LS_CARTONS, {});
-  if (!allCartons[req.toListRef]) allCartons[req.toListRef] = [];
-
-  const oldCartons = allCartons[req.fromListRef] || [];
-  req.cartons.forEach((c, i) => {
-    const newId = req.newPrefix + String(i + 1).padStart(Math.max(String(req.cartons.length).length, 3), '0');
-    const oldCarton = oldCartons.find(oc => oc.cartonRef === c.cartonRef || oc.cartonId === c.cartonId);
-    if (oldCarton) {
-      allCartons[req.toListRef].push({
-        ...oldCarton,
-        cartonId: newId,
-        cartonRef: 'CTN-' + Date.now() + '-' + i,
-        listRef: req.toListRef,
-        row: Date.now() + i,
-        createdAt: new Date().toISOString(),
-        status: 'pending'
-      });
+  try {
+    const res = await gasPost({ action: 'approveTransfer', transferRow: transferRow, manager: manager.toUpperCase() });
+    if (res && res.success) {
+      toast('Transfer approved. New list: ' + (res.toListRef || toListRef), 'success');
+      renderTransfer();
+    } else {
+      throw new Error(res?.error || 'Unknown error');
     }
-  });
-
-  const transferredRefs = req.cartons.map(c => c.cartonRef);
-  const transferredIds = req.cartons.map(c => c.cartonId);
-  allCartons[req.fromListRef] = (allCartons[req.fromListRef] || []).filter(
-    c => !transferredRefs.includes(c.cartonRef) && !transferredIds.includes(c.cartonId)
-  );
-  _lsSet(LS_CARTONS, allCartons);
-
-  // CRITICAL: Update memory cache so nav back to packing list shows correct data
-  LIST_CARTONS[req.fromListRef] = allCartons[req.fromListRef];
-  LIST_CARTONS[req.toListRef] = allCartons[req.toListRef];
-
-  req.status = 'approved';
-  req.approvedBy = manager.toUpperCase();
-  req.approvedAt = new Date().toISOString();
-  _saveTransferRequests(reqs);
-
-  toast('Transfer approved. New list: ' + req.toListRef, 'success');
-  renderTransfer();
+  } catch(e) {
+    toast('Approve failed: ' + e.message, 'error');
+  }
 }
 
-async function rejectTransfer(transferId) {
+async function rejectTransfer(transferRow) {
   const manager = prompt('ENTER MANAGER NAME TO REJECT:');
   if (!manager) return;
   const reason = prompt('ENTER REJECTION REASON:');
   if (!reason) return;
-
-  const reqs = _getTransferRequests();
-  const req = reqs.find(r => r.id === transferId);
-  if (!req) { toast('Transfer request not found', 'error'); return; }
-
-  req.status = 'rejected';
-  req.approvedBy = manager.toUpperCase();
-  req.approvedAt = new Date().toISOString();
-  req.rejectReason = reason.toUpperCase();
-  _saveTransferRequests(reqs);
-
-  toast('Transfer rejected', 'error');
-  renderTransfer();
+  try {
+    const res = await gasPost({ action: 'rejectTransfer', transferRow: transferRow, manager: manager.toUpperCase(), reason: reason.toUpperCase() });
+    if (res && res.success) {
+      toast('Transfer rejected', 'error');
+      renderTransfer();
+    } else {
+      throw new Error(res?.error || 'Unknown error');
+    }
+  } catch(e) {
+    toast('Reject failed: ' + e.message, 'error');
+  }
 }
+
 
 
 // ═══════════════════════════════════════════════════════════════
