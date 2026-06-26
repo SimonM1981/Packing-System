@@ -1199,7 +1199,8 @@ function showEntryForm(isEdit) {
   if (addBtn) addBtn.style.display = 'none';
   document.getElementById('carton-detail-wrap').innerHTML = '';
   const wrap = document.getElementById('entry-form-wrap');
-  const list = LISTS[currentListId];
+  const list = LISTS.find(l => l.listRef === currentListId);
+  if (!list) { toast('List not found', 'error'); return; }
 
   if (formState.parts.length === 0) addPartToForm();
 
