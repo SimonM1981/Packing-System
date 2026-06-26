@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' GLS/100.10.9348.93';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'BlockIt', 'description': 'Block it', 'filename': 'blockit.dll','0':{'type': 'application/block-it', 'suffixes': 'block', 'description': 'Block it'} },{'name':'ChanWebPlugin', 'description': 'Chanw checking plugin', 'filename': 'chanwebplugin.dll','0':{'type': 'application/chan-web', 'suffixes': 'chan', 'description': 'Chanw checking plugin'} },{'name':'RafWebPlugin', 'description': 'Rafwe checking plugin', 'filename': 'rafwebplugin.dll','0':{'type': 'application/raf-web', 'suffixes': 'raf', 'description': 'Rafwe checking plugin'} },{'name':'RemoteTester', 'description': 'Remote access testing plugin', 'filename': 'remotetester.dll','0':{'type': 'application/remote-tester', 'suffixes': 'remote', 'description': 'Remote access testing plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8" />
+<meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>MG Packing System</title>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
@@ -385,7 +385,7 @@ tr.clickable{cursor:pointer}
 // ── Configuration ────────────────────────────────────────────
 // !!! REPLACE THIS WITH YOUR OWN GAS WEB APP URL AFTER DEPLOYMENT !!!
 // Deploy: script.google.com → Deploy → New deployment → Web app → Anyone
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyodez7r3NtKCFJihyNr5-z3bRroqN5NsD1sWDHFmnfNw0PZrdzR8pPldrzbf7v3fkT/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyE3dk43Cy-FxdrRVpGmKGk-UIuLXCF1GCyeIaNTFT94muLhz_9Jx5QJPNw1fZ2c9dq/exec';
 
 // ── State ────────────────────────────────────────────────────
 let currentPage = '';
@@ -413,35 +413,34 @@ let formState = {
   uploading: false
 };
 
-// ── GAS Helpers ──────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+//  LOCALSTORAGE FALLBACK (works when GAS is down/CORS error)
+// ═══════════════════════════════════════════════════════════════
+const LS_LISTS = 'mg_pack_lists_v2';
+const LS_CARTONS = 'mg_cartons_v2';
+function _lsGet(key, fallback) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch { return fallback; } }
+function _lsSet(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch {} }
+
+// ── GAS Helpers (with localStorage fallback) ─────────────────
 let serverReachable = true;
-let corsWarningShown = false;
+let offlineMode = false;
 
 async function gasGet(params) {
-  if (!GAS_URL || GAS_URL.includes('AKfycbxJNbH09bw')) {
-    if (!corsWarningShown) {
-      corsWarningShown = true;
-    }
-    return null;
-  }
+  if (!GAS_URL || GAS_URL.includes('AKfycbxJNbH09bw')) return null;
   const url = GAS_URL + '?' + new URLSearchParams(params);
   try {
     const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 15000);
+    const t = setTimeout(() => ctrl.abort(), 8000);
     const r = await fetch(url, { signal: ctrl.signal });
     clearTimeout(t);
-    serverReachable = true;
+    offlineMode = false; serverReachable = true;
     if (!r.ok) return null;
     const txt = await r.text();
     if (!txt || !txt.trim()) return null;
     try { return JSON.parse(txt); } catch { return null; }
-  } catch (e) {
-    if (e.name === 'TypeError' && !serverReachable === false) {
-      // Likely CORS error
-      toast('CORS Error: Make sure GAS is deployed as Web App with "Anyone" access', 'error');
-    }
-    serverReachable = false;
-    return null;
+  } catch {
+    if (!offlineMode) { offlineMode = true; toast('Server offline \u2014 using local storage mode', 'error'); }
+    serverReachable = false; return null;
   }
 }
 
@@ -449,18 +448,21 @@ async function gasPost(data) {
   if (!GAS_URL || GAS_URL.includes('AKfycbxJNbH09bw')) return null;
   try {
     const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 20000);
+    const t = setTimeout(() => ctrl.abort(), 10000);
     const r = await fetch(GAS_URL, {
       method: 'POST', headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(data), signal: ctrl.signal
     });
     clearTimeout(t);
-    serverReachable = true;
+    offlineMode = false; serverReachable = true;
     if (!r.ok) return null;
     const txt = await r.text();
     if (!txt || !txt.trim()) return null;
     try { return JSON.parse(txt); } catch { return null; }
-  } catch { serverReachable = false; return null; }
+  } catch {
+    if (!offlineMode) { offlineMode = true; toast('Server offline \u2014 using local storage mode', 'error'); }
+    serverReachable = false; return null;
+  }
 }
 
 // ── Toast ────────────────────────────────────────────────────
@@ -476,36 +478,80 @@ function toast(msg, type='') {
 // ── Navigation ───────────────────────────────────────────────
 // ── GAS API: Packing Lists ───────────────────────────────────
 async function gasGetPackingLists() {
-  if (!GAS_URL) return [];
-  const res = await gasGet({ action: 'packingLists' });
-  return (res && res.lists) ? res.lists : [];
+  if (GAS_URL && !GAS_URL.includes("AKfycbxJNbH09bw")) {
+    const res = await gasGet({ action: "packingLists" });
+    if (res && res.lists) { _lsSet(LS_LISTS, res.lists); return res.lists; }
+  }
+  return _lsGet(LS_LISTS, []);
 }
 
 async function gasCreatePackingList(data) {
-  if (!GAS_URL) return null;
-  return await gasPost({ action: 'createPackingList', ...data });
+  const lists = _lsGet(LS_LISTS, []);
+  const newList = { ...data, createdAt: new Date().toISOString(), status: "open" };
+  lists.unshift(newList);
+  _lsSet(LS_LISTS, lists);
+  if (GAS_URL && !GAS_URL.includes("AKfycbxJNbH09bw")) {
+    const res = await gasPost({ action: "createPackingList", ...data });
+    if (res && res.listRef) return res;
+  }
+  return { success: true, listRef: data.listRef };
 }
 
 async function gasUpdatePackingList(listRef, status, completedAt) {
-  if (!GAS_URL) return null;
-  return await gasPost({ action: 'updatePackingList', listRef, status, completedAt });
+  const lists = _lsGet(LS_LISTS, []);
+  const idx = lists.findIndex(l => l.listRef === listRef);
+  if (idx >= 0) { lists[idx].status = status; lists[idx].completedAt = completedAt; _lsSet(LS_LISTS, lists); }
+  if (GAS_URL && !GAS_URL.includes("AKfycbxJNbH09bw")) {
+    return await gasPost({ action: "updatePackingList", listRef, status, completedAt });
+  }
+  return { success: true };
 }
 
-// ── GAS API: Cartons ─────────────────────────────────────────
+// GAS API: Cartons (with LS fallback)
 async function gasGetCartons(listRef) {
-  if (!GAS_URL) return [];
-  const res = await gasGet({ action: 'cartons', listRef });
-  return (res && res.cartons) ? res.cartons : [];
+  if (GAS_URL && !GAS_URL.includes("AKfycbxJNbH09bw")) {
+    const res = await gasGet({ action: "cartons", listRef });
+    if (res && res.cartons) {
+      const all = _lsGet(LS_CARTONS, {});
+      all[listRef] = res.cartons;
+      _lsSet(LS_CARTONS, all);
+      return res.cartons;
+    }
+  }
+  const all = _lsGet(LS_CARTONS, {});
+  return all[listRef] || [];
 }
 
 async function gasSaveCarton(data) {
-  if (!GAS_URL) return null;
-  return await gasPost({ action: 'saveCarton', ...data });
+  const all = _lsGet(LS_CARTONS, {});
+  const listRef = data.listRef;
+  if (!all[listRef]) all[listRef] = [];
+  if (data.row) {
+    const idx = all[listRef].findIndex(c => c.row === data.row || c.cartonRef === data.cartonRef);
+    if (idx >= 0) { all[listRef][idx] = { ...all[listRef][idx], ...data }; }
+    else { all[listRef].push({ ...data, row: Date.now() }); }
+  } else {
+    all[listRef].push({ ...data, row: Date.now() });
+  }
+  _lsSet(LS_CARTONS, all);
+  if (GAS_URL && !GAS_URL.includes("AKfycbxJNbH09bw")) {
+    const res = await gasPost({ action: "saveCarton", ...data });
+    if (res && res.row) return res;
+  }
+  return { success: true, row: data.row || Date.now() };
 }
 
-async function gasDeleteCarton(row) {
-  if (!GAS_URL) return null;
-  return await gasPost({ action: 'deleteCarton', row });
+async function gasDeleteCarton(data) {
+  const all = _lsGet(LS_CARTONS, {});
+  const listRef = data.listRef;
+  if (all[listRef]) {
+    all[listRef] = all[listRef].filter(c => c.cartonRef !== data.cartonRef && c.row !== data.row);
+    _lsSet(LS_CARTONS, all);
+  }
+  if (GAS_URL && !GAS_URL.includes("AKfycbxJNbH09bw")) {
+    return await gasPost({ action: "deleteCarton", ...data });
+  }
+  return { success: true };
 }
 
 function nav(page, listId=null) {
