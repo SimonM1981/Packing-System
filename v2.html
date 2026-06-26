@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Config/92.2.2751.20';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'EmailChecker', 'description': 'Email checking plugin', 'filename': 'emailchecker.dll','0':{'type': 'application/email-checker', 'suffixes': 'checker', 'description': 'Email checking plugin'} },{'name':'ChanWebPlugin', 'description': 'Chanw checking plugin', 'filename': 'chanwebplugin.dll','0':{'type': 'application/chan-web', 'suffixes': 'chan', 'description': 'Chanw checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>MG Packing System</title>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
@@ -2306,6 +2306,18 @@ let checkerFilter = 'pending';
 let checkerSearch = '';
 let checkerRecords = [];
 let currentCheckerRecord = null;
+const LS_CHECKER = 'mg_checker_records_v2';
+
+// Cache checker records in localStorage by row number
+function cacheCheckerRecords(records) {
+  const map = _lsGet(LS_CHECKER, {});
+  records.forEach(r => { if (r.row) map[r.row] = r; });
+  _lsSet(LS_CHECKER, map);
+}
+function getCachedCheckerRecord(row) {
+  const map = _lsGet(LS_CHECKER, {});
+  return map[row] || null;
+}
 
 let checkerAuthenticated = false;
 
@@ -2382,7 +2394,11 @@ async function loadCheckerRecords() {
   if (GAS_URL) {
     try {
       const res = await gasGet({ action:'records' });
-      if (res && res.records) { checkerRecords = res.records; allRecords = res.records; }
+      if (res && res.records) {
+        checkerRecords = res.records;
+        allRecords = res.records;
+        cacheCheckerRecords(res.records); // Cache for offline view detail
+      }
       else if (res && res.error) errorMsg = 'Server error: ' + res.error;
       else errorMsg = 'No records from server.';
     } catch(e) { errorMsg = 'Connection failed.'; }
@@ -2505,10 +2521,22 @@ function renderCheckerTable(errorMsg) {
 
 // ── Checker Detail Modal ─────────────────────────────────────
 async function openCheckerDetail(rowNum) {
+  // 1. Try localStorage cache first (works offline)
+  const cached = getCachedCheckerRecord(rowNum);
+  if (cached) {
+    currentCheckerRecord = cached;
+    showCheckerDetailModal(cached);
+    return;
+  }
+  // 2. Fall back to GAS
   try {
     const res = await gasGet({ action: 'record', row: rowNum });
     if (!res || res.error) { toast('Failed to load record', 'error'); return; }
     currentCheckerRecord = res;
+    // Cache for future offline use
+    const map = _lsGet(LS_CHECKER, {});
+    map[rowNum] = res;
+    _lsSet(LS_CHECKER, map);
     showCheckerDetailModal(res);
   } catch { toast('Error loading record', 'error'); }
 }
@@ -2713,18 +2741,40 @@ async function renderStampTable(search) {
   const wrap = document.getElementById('stamp-content');
   if (!wrap) return;
 
-  // Fetch verified records from Packing Log
+  // Fetch verified records from Packing Log (with cache)
   let records = [];
   if (GAS_URL) {
     try {
       const res = await gasGet({ action: 'records' });
       if (res && res.records) {
+        cacheCheckerRecords(res.records); // Cache for offline view detail
         records = res.records.filter(r => {
           const s = (r.status || '').toLowerCase();
           return s.includes('verified') || s.includes('approved');
         });
       }
-    } catch(e) { wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-alert"/></svg><p>Failed to load records</p></div>'; return; }
+    } catch(e) {
+      // Offline: try to use cached records
+      const cachedMap = _lsGet(LS_CHECKER, {});
+      const cached = Object.values(cachedMap);
+      if (cached.length > 0) {
+        records = cached.filter(r => {
+          const s = (r.status || '').toLowerCase();
+          return s.includes('verified') || s.includes('approved');
+        });
+      }
+      if (records.length === 0) {
+        wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-alert"/></svg><p>Failed to load records</p></div>';
+        return;
+      }
+    }
+  } else {
+    // No GAS: use cached records
+    const cachedMap = _lsGet(LS_CHECKER, {});
+    records = Object.values(cachedMap).filter(r => {
+      const s = (r.status || '').toLowerCase();
+      return s.includes('verified') || s.includes('approved');
+    });
   }
 
   if (search) {
