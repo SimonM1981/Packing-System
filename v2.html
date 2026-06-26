@@ -385,7 +385,7 @@ tr.clickable{cursor:pointer}
 // ── Configuration ────────────────────────────────────────────
 // !!! REPLACE THIS WITH YOUR OWN GAS WEB APP URL AFTER DEPLOYMENT !!!
 // Deploy: script.google.com → Deploy → New deployment → Web app → Anyone
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxuxgpG7r9ESXfRHJ9hhrh9HrzZoFSWqFnNxUv1WO7duCt3MIagqLHQZz4iH5tzF5GG/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbz_QrbesZOeQeBqOdn5csPkPATmiO1-F_J_YtMUY1AOmnAAT4889E4C9GZtsc4ug_9b/exec';
 
 // ── State ────────────────────────────────────────────────────
 let currentPage = '';
@@ -879,31 +879,33 @@ function detectMissingCartons(cartons) {
   // Extract prefix and number from carton IDs like "A001", "CTN-05", "BOX12"
   const parsed = cartons.map(c => {
     const id = (c.cartonId || '').trim().toUpperCase();
-    // Match pattern: optional prefix letters, then numbers, optional suffix
+    // Match pattern: optional prefix letters/hyphens, then numbers, optional suffix
     const m = id.match(/^([A-Z]*-?)(\d+)(.*)$/);
     if (!m) return null;
-    return { id, prefix: m[1] || '', num: parseInt(m[2], 10), suffix: m[3] || '' };
+    return { id, prefix: m[1] || '', num: parseInt(m[2], 10), suffix: m[3] || '', numLen: m[2].length };
   }).filter(Boolean);
 
   if (parsed.length < 2) return [];
 
-  // Group by prefix+suffix pattern
+  // Group by prefix+suffix pattern, track max digit length for padding
   const groups = {};
+  const padLengths = {};
   parsed.forEach(p => {
     const key = p.prefix + '|' + p.suffix;
-    if (!groups[key]) groups[key] = [];
+    if (!groups[key]) { groups[key] = []; padLengths[key] = 0; }
     groups[key].push(p.num);
+    padLengths[key] = Math.max(padLengths[key], p.numLen);
   });
 
   const missing = [];
   for (const key in groups) {
     const nums = groups[key].sort((a, b) => a - b);
     const [prefix, suffix] = key.split('|');
+    const padLen = padLengths[key];
     for (let i = 0; i < nums.length - 1; i++) {
       const gapStart = nums[i];
       const gapEnd = nums[i + 1];
       for (let n = gapStart + 1; n < gapEnd; n++) {
-        const padLen = String(gapEnd).length;
         const numStr = String(n).padStart(padLen, '0');
         missing.push(prefix + numStr + suffix);
       }
