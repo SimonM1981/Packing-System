@@ -378,7 +378,7 @@ tr.clickable{cursor:pointer}
 // ── Configuration ────────────────────────────────────────────
 // !!! REPLACE THIS WITH YOUR OWN GAS WEB APP URL AFTER DEPLOYMENT !!!
 // Deploy: script.google.com → Deploy → New deployment → Web app → Anyone
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwV5VlxnlKSnybD_lH19ZCua0KPX0EFxjLrTKMDaW59ZiuBvWQq9XFM4532TNGu0UI/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbz9oO8-MhII4Oh7qEUG8nwS6RYw7t4aMXARP0mE839gZBx6Pd0GjrRtwGURWBE2J1mE/exec';
 
 // ── State ────────────────────────────────────────────────────
 let currentPage = '';
@@ -843,15 +843,53 @@ async function syncRejectionStatus() {
   } catch (e) { /* silent fail */ }
 }
 
+// Helper: fetch Packing Log records and build a status map by cartonId
+async function getPackingLogStatusMap() {
+  const statusMap = new Map(); // cartonId -> {status, remarks, checker}
+  if (!GAS_URL) return statusMap;
+  try {
+    const res = await gasGet({ action: 'records' });
+    if (!res || !res.records) return statusMap;
+    for (const rec of res.records) {
+      const cid = rec.cartonId || '';
+      if (!cid) continue;
+      const s = (rec.status || '').toLowerCase();
+      const existing = statusMap.get(cid);
+      // Rejected takes highest priority, then verified, then pending
+      const severity = s2 => s2.includes('rejected') ? 3 : s2.includes('verified') || s2.includes('approved') ? 2 : 1;
+      if (!existing || severity(s) > severity(existing.status)) {
+        statusMap.set(cid, { status: rec.status || '', remarks: rec.remarks || '', checker: rec.checker || '' });
+      }
+    }
+  } catch (e) { /* silent fail */ }
+  return statusMap;
+}
+
 async function renderListDetail() {
   // Find list by listRef (currentListId is now a string like "PL-0001")
   const list = LISTS.find(l => l.listRef === currentListId);
   if (!list) { nav('packing-lists'); return; }
 
-  // Fetch cartons from GAS "Cartons" sheet
-  const cartons = await gasGetCartons(list.listRef);
+  // Fetch cartons from GAS "Cartons" sheet AND Packing Log status
+  const [cartons, plStatusMap] = await Promise.all([
+    gasGetCartons(list.listRef),
+    getPackingLogStatusMap()
+  ]);
   LIST_CARTONS[list.listRef] = cartons;
-  const rejected = cartons.filter(c => c.status === 'rejected');
+
+  // Overlay Packing Log status onto cartons
+  cartons.forEach(c => {
+    const pl = plStatusMap.get(c.cartonId || '');
+    if (pl) {
+      c._plStatus = pl.status;
+      c._plRemarks = pl.remarks;
+      c._plChecker = pl.checker;
+    }
+  });
+
+  const rejected = cartons.filter(c =>
+    c.status === 'rejected' || (c._plStatus || '').toLowerCase().includes('rejected')
+  );
   const totalParts = cartons.reduce((s,c) => s + (c.parts||[]).length, 0);
   const el = document.getElementById('page-list-detail');
 
@@ -925,14 +963,25 @@ async function renderListDetail() {
             const firstPart = (c.parts||[])[0] || {};
             const partCount = (c.parts||[]).length;
             const isKit = c.cartonType === 'kit';
-            const isRejected = c.status === 'rejected';
+            // Use Packing Log status if available, fall back to Cartons sheet status
+            const plStatus = (c._plStatus || '').toLowerCase();
+            const isRejected = c.status === 'rejected' || plStatus.includes('rejected');
+            const isVerified = plStatus.includes('verified') || plStatus.includes('approved');
             // Barcode match indicators
             const bagM = firstPart.bagMatch===true||firstPart.bagMatch==='no'||firstPart.bagMatch==='no-server';
             const innerM = firstPart.innerMatch===true||firstPart.innerMatch==='no'||firstPart.innerMatch==='no-server';
             const outerM = firstPart.outerMatch===true||firstPart.outerMatch==='no'||firstPart.outerMatch==='no-server';
-            const piVal = isKit ? (c.cartonPi||'\u2014') : (firstPart.pi||'\u2014');
-            const qtyVal = isKit ? (c.cartonQty||'\u2014') : (firstPart.qty||'\u2014');
+            // PI: kit uses cartonPi with fallback to first part's pi
+            const piVal = isKit ? (c.cartonPi || firstPart.pi || '\u2014') : (firstPart.pi || '\u2014');
+            const qtyVal = isKit ? (c.cartonQty || '\u2014') : (firstPart.qty || '\u2014');
             const partNoVal = firstPart.partNo || c.partNo || '\u2014';
+            // Status badge
+            let statusBadge = `<span class="badge badge-amber">PENDING</span>`;
+            if (isRejected) statusBadge = `<span class="badge badge-red">REJECTED</span>`;
+            else if (isVerified) statusBadge = `<span class="badge badge-green">VERIFIED</span>`;
+            const statusSub = isRejected
+              ? `<div class="text-xs text-danger mt-4" style="font-style:italic;max-width:120px">${escHtml(c._plRemarks || c.rejectionReason || 'No reason')}</div>`
+              : isVerified && c._plChecker ? `<div class="text-xs text-primary mt-4">By: ${escHtml(c._plChecker)}</div>` : '';
             return `
             <tr class="${isRejected?'rejected':'clickable'}" onclick="${isRejected ? `startEditCarton(${ci})` : `viewCartonDetail(${ci})`}">
               <td data-label="Carton ID" class="font-bold text-primary">${escHtml(c.cartonId||'\u2014')}</td>
@@ -945,9 +994,7 @@ async function renderListDetail() {
               <td data-label="Barcodes" style="text-align:center;white-space:nowrap">
                 <span style="color:var(--muted-fg);font-size:11px">B ${bagM?'<span style="color:var(--primary)">\u2713</span>':'<span style="color:var(--danger)">\u2717</span>'} I ${innerM?'<span style="color:var(--primary)">\u2713</span>':'<span style="color:var(--danger)">\u2717</span>'} O ${outerM?'<span style="color:var(--primary)">\u2713</span>':'<span style="color:var(--danger)">\u2717</span>'}</span>
               </td>
-              <td data-label="Status">${isRejected
-                ? `<span class="badge badge-red">REJECTED</span><div class="text-xs text-danger mt-4" style="font-style:italic;max-width:120px">${escHtml(c.rejectionReason||'No reason')}</div>`
-                : `<span class="badge badge-amber">PENDING</span>`}</td>
+              <td data-label="Status">${statusBadge}${statusSub}</td>
               <td data-label="Date" class="text-xs text-muted">${fmtDate(c.createdAt)}</td>
               <td data-label="Action">${isRejected
                 ? `<button class="btn btn-danger btn-xs" onclick="event.stopPropagation();startEditCarton(${ci})" title="Fix and resubmit"><svg><use href="#ic-edit"/></svg> Edit</button>`
@@ -1141,19 +1188,26 @@ function viewCartonDetail(ci) {
           </div>` : ''}
           ${partsHtml}
           ${photoHtml}
-          ${c.rejectionReason || c.status==='rejected' ? `
+          ${(c._plStatus || '').toLowerCase().includes('rejected') || c.status==='rejected' ? `
           <div class="alert alert-danger" style="margin-top:14px">
             <svg><use href="#ic-alert"/></svg>
             <div>
               <strong style="font-size:13px;text-transform:uppercase;letter-spacing:.06em">\u274C REJECTED BY CHECKER</strong>
-              ${c.checkedBy ? `<div class="text-xs text-muted mt-4">Checked by: ${escHtml(c.checkedBy)}</div>` : ''}
-              <div class="text-sm" style="margin-top:6px;font-style:italic">${escHtml(c.rejectionReason||'No reason given')}</div>
+              ${c._plChecker || c.checkedBy ? `<div class="text-xs text-muted mt-4">Checked by: ${escHtml(c._plChecker || c.checkedBy)}</div>` : ''}
+              <div class="text-sm" style="margin-top:6px;font-style:italic">${escHtml(c._plRemarks || c.rejectionReason || 'No reason given')}</div>
+            </div>
+          </div>` : (c._plStatus || '').toLowerCase().includes('verified') ? `
+          <div class="alert alert-success" style="margin-top:14px">
+            <svg><use href="#ic-check"/></svg>
+            <div>
+              <strong style="font-size:13px;text-transform:uppercase;letter-spacing:.06em">\u2705 VERIFIED BY CHECKER</strong>
+              ${c._plChecker ? `<div class="text-xs text-muted mt-4">Verified by: ${escHtml(c._plChecker)}</div>` : ''}
             </div>
           </div>` : ''}
         </div>
         <div class="modal-footer">
-          ${c.status==='rejected' && list.status==='open' ? `<button class="btn btn-danger" onclick="closeCartonDetail();startEditCarton(${ci});"><svg><use href="#ic-edit"/></svg>Edit & Resubmit</button>` : ''}
-          <button class="btn btn-outline ${c.status==='rejected'?'':'btn-full'}" onclick="closeCartonDetail()">Close</button>
+          ${((c._plStatus || '').toLowerCase().includes('rejected') || c.status==='rejected') && list.status==='open' ? `<button class="btn btn-danger" onclick="closeCartonDetail();startEditCarton(${ci});"><svg><use href="#ic-edit"/></svg>Edit & Resubmit</button>` : ''}
+          <button class="btn btn-outline ${((c._plStatus || '').toLowerCase().includes('rejected') || c.status==='rejected')?'':'btn-full'}" onclick="closeCartonDetail()">Close</button>
         </div>
       </div>
     </div>`;
@@ -2652,15 +2706,31 @@ async function renderRejects() {
     </div>
     <div id="reject-content"><div class="pulse text-muted text-sm">Loading...</div></div>`;
 
-  // Fetch all rejected cartons from all lists via GAS
-  const lists = await gasGetPackingLists();
+  // Fetch rejected entries from Packing Log directly
   let rejected = [];
+  if (GAS_URL) {
+    try {
+      const res = await gasGet({ action: 'records' });
+      if (res && res.records) {
+        rejected = res.records.filter(r =>
+          (r.status || '').toLowerCase().includes('rejected')
+        );
+      }
+    } catch (e) { console.warn('Failed to fetch Packing Log for rejects', e); }
+  }
 
+  // Build cartonId -> listRef map by scanning all cartons
+  const lists = await gasGetPackingLists();
+  const listMap = new Map();
+  const cartonToList = new Map(); // cartonId -> listRef
   for (const list of lists) {
-    const cartons = await gasGetCartons(list.listRef);
-    cartons.filter(c => c.status === 'rejected').forEach(c => {
-      rejected.push({...c, customer: list.customer, packedBy: list.createdBy, team: list.team});
-    });
+    listMap.set(list.listRef, list);
+    try {
+      const cartons = await gasGetCartons(list.listRef);
+      cartons.forEach(c => {
+        if (c.cartonId) cartonToList.set(c.cartonId, list.listRef);
+      });
+    } catch (e) { /* skip */ }
   }
 
   const el2 = document.getElementById('reject-content');
@@ -2671,22 +2741,26 @@ async function renderRejects() {
     <div class="table-wrap">
       <table class="table-responsive">
         <thead><tr>
-          <th>Ref</th><th>Customer</th><th>Carton / Part</th><th>Qty</th><th>Reason</th><th>Action</th>
+          <th>Carton ID</th><th>Customer / PI</th><th>Part No.</th><th>Qty</th><th>Reason</th><th>Checker</th><th>Action</th>
         </tr></thead>
         <tbody>
-        ${rejected.length===0 ? `<tr><td colspan="6"><div class="empty-state"><svg><use href="#ic-alert"/></svg><p>No rejected entries \u2014 great job!</p></div></td></tr>` :
-          rejected.map(r=>`<tr class="rejected">
-            <td data-label="Ref"><div class="font-bold text-danger text-sm">${r.cartonRef||r.cartonId||'\u2014'}</div><div class="text-xs text-muted">${r.listRef||'\u2014'}</div></td>
-            <td data-label="Customer"><div class="text-sm">${escHtml(r.customer||'\u2014')}</div><div class="text-xs text-muted">${escHtml(r.pi||'\u2014')}</div></td>
-            <td data-label="Carton / Part"><div class="text-xs">${escHtml(r.cartonId||'\u2014')}</div><div class="font-bold text-sm">${escHtml((r.parts||[])[0]?.partNo||'\u2014')}</div></td>
-            <td data-label="Qty" style="text-align:center;font-weight:700">${(r.parts||[])[0]?.qty||'\u2014'}</td>
-            <td data-label="Reason"><div class="text-xs text-danger" style="font-style:italic;max-width:180px">${escHtml(r.rejectionReason||'No reason')}</div></td>
-            <td data-label="Action">
-              <button class="btn btn-outline btn-xs" onclick="nav('list-detail','${r.listRef}')">
-                <svg><use href="#ic-edit"/></svg>Edit
-              </button>
-            </td>
-          </tr>`).join('')}
+        ${rejected.length===0 ? `<tr><td colspan="7"><div class="empty-state"><svg><use href="#ic-alert"/></svg><p>No rejected entries \u2014 great job!</p></div></td></tr>` :
+          rejected.map(r=>{
+            const lr = cartonToList.get(r.cartonId || '') || '';
+            return `<tr class="rejected">
+              <td data-label="Carton ID"><div class="font-bold text-danger text-sm">${escHtml(r.cartonId||'\u2014')}</div></td>
+              <td data-label="Customer"><div class="text-sm">${escHtml(r.customer||'\u2014')}</div><div class="text-xs text-muted">${escHtml(r.pi||'\u2014')}</div></td>
+              <td data-label="Part No."><div class="font-bold text-sm">${escHtml(r.partNo||'\u2014')}</div></td>
+              <td data-label="Qty" style="text-align:center;font-weight:700">${escHtml(r.qty||'\u2014')}</td>
+              <td data-label="Reason"><div class="text-xs text-danger" style="font-style:italic;max-width:180px">${escHtml(r.remarks||'No reason')}</div></td>
+              <td data-label="Checker" class="text-xs text-muted">${escHtml(r.checker||'\u2014')}</td>
+              <td data-label="Action">
+                ${lr ? `<button class="btn btn-outline btn-xs" onclick="nav('list-detail','${lr}')">
+                  <svg><use href="#ic-edit"/></svg>Edit
+                </button>` : '<span class="text-xs text-muted">-</span>'}
+              </td>
+            </tr>`;
+          }).join('')}
         </tbody>
       </table>
     </div>`;
