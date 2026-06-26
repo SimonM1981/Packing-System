@@ -1521,8 +1521,8 @@ function onPartBarcodeInput(idx, which) {
   const val = el.value.trim().toUpperCase();
   formState.parts[idx][which] = val;
   el.value = val;
-  if (!val) { setMatchBadgeOnCard(idx, which, null); updateSubmitBtn(); return; }
-  if (val === 'NO') { setMatchBadgeOnCard(idx, which, 'no'); updateSubmitBtn(); return; }
+  if (!val) { formState.parts[idx][which + 'Match'] = null; setMatchBadgeOnCard(idx, which, null); updateSubmitBtn(); return; }
+  if (val === 'NO') { formState.parts[idx][which + 'Match'] = 'no'; setMatchBadgeOnCard(idx, which, 'no'); updateSubmitBtn(); return; }
   clearTimeout(lookupDebounce[`${idx}-${which}`]);
   setMatchBadgeOnCard(idx, which, 'checking');
   lookupDebounce[`${idx}-${which}`] = setTimeout(() => doPartLookup(idx, which, val), 450);
@@ -1563,6 +1563,13 @@ async function doPartLookup(partIdx, which, barcode) {
 
 function applyPartLookupResult(partIdx, which, barcode, res) {
   const part = formState.parts[partIdx];
+  // Defensive: don't override a "NO" state that the user explicitly set
+  if (part[which] === 'NO') {
+    part[`${which}Match`] = 'no';
+    setMatchBadgeOnCard(partIdx, which, 'no');
+    updateSubmitBtn();
+    return;
+  }
   if (res && res.found) {
     // Auto-fill partNo/pi only if empty AND the barcode type matches
     if (which === 'bag' && res.matchedType === 'bag') {
