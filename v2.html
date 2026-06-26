@@ -263,7 +263,6 @@ tr.clickable{cursor:pointer}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 ::-webkit-scrollbar-thumb:hover{background:var(--muted-fg)}
 </style>
-<base target="_blank">
 </head>
 <body>
 
@@ -379,7 +378,7 @@ tr.clickable{cursor:pointer}
 // ── Configuration ────────────────────────────────────────────
 // !!! REPLACE THIS WITH YOUR OWN GAS WEB APP URL AFTER DEPLOYMENT !!!
 // Deploy: script.google.com → Deploy → New deployment → Web app → Anyone
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzw54fwElVOQIeU8mUegDgoTbv6_n7V-6hqvrr1vsyuETzgMWxlNyzDcgzqebzOAnDE/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwV5VlxnlKSnybD_lH19ZCua0KPX0EFxjLrTKMDaW59ZiuBvWQq9XFM4532TNGu0UI/exec';
 
 // ── State ────────────────────────────────────────────────────
 let currentPage = '';
@@ -1781,29 +1780,37 @@ function buildKitPhotoField(which, label) {
   return `<div class="form-group" id="kit-photo-group-${which}">
     <label class="form-label">${label}</label>
     <input type="file" id="kit-photo-input-${which}" accept="image/*" capture="environment" style="display:none" onchange="handleKitPhoto('${which}',this)" />
-    <button type="button" class="photo-btn" id="kit-photo-btn-${which}" onclick="document.getElementById('kit-photo-input-${which}').click()">
+    <label for="kit-photo-input-${which}" class="photo-btn" id="kit-photo-btn-${which}">
       <svg><use href="#ic-camera"/></svg>
       <div>
         <div class="text-sm font-bold">${label}</div>
         <div class="text-xs text-muted mt-4">Tap to capture</div>
       </div>
-    </button>
+    </label>
     <div id="kit-photo-thumb-${which}"></div>
   </div>`;
 }
 
 async function handleKitPhoto(which, input) {
-  const file = input.files[0];
-  if (!file) return;
-  const dataUri = await compressImage(file);
-  formState.cartonPhotos[which] = dataUri;
-  renderKitPhotoThumb(which, dataUri);
-  input.value = '';
+  try {
+    const file = input.files[0];
+    if (!file) { console.log('Kit photo: no file selected'); return; }
+    console.log('Kit photo: compressing', which, file.name, file.size);
+    const dataUri = await compressImage(file);
+    console.log('Kit photo: compressed', which, dataUri.substring(0, 50) + '...');
+    formState.cartonPhotos[which] = dataUri;
+    renderKitPhotoThumb(which, dataUri);
+    input.value = '';
+  } catch(err) {
+    console.error('Kit photo error:', err);
+    toast('Photo failed: ' + err.message, 'error');
+  }
 }
 
 function renderKitPhotoThumb(which, dataUri) {
   const btn = document.getElementById('kit-photo-btn-' + which);
   const thumb = document.getElementById('kit-photo-thumb-' + which);
+  console.log('renderKitPhotoThumb:', which, 'btn=', !!btn, 'thumb=', !!thumb);
   if (btn) btn.classList.add('has-photo');
   if (thumb) {
     thumb.innerHTML = `<img class="photo-thumb" src="${dataUri}" alt="Photo" onclick="openLightbox('${dataUri}')" />`;
