@@ -168,11 +168,13 @@ tr.clickable{cursor:pointer}
 /* ── Camera Scanner ─────────────────────────────────────── */
 #camera-video{width:100%;display:block;background:#000;max-height:320px;object-fit:cover}
 .scan-frame{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
-.scan-frame-inner{border:3px solid rgba(91,124,245,.8);border-radius:16px;width:70vw;height:35vw;max-width:400px;max-height:200px;box-shadow:0 0 0 4000px rgba(0,0,0,.45);position:relative}
-.scan-frame-inner::before,.scan-frame-inner::after{content:'';position:absolute;width:30px;height:3px;background:rgba(91,124,245,.9)}
-.scan-frame-inner::before{top:-1px;left:20px}
-.scan-frame-inner::after{bottom:-1px;right:20px}
-.camera-hint{position:absolute;bottom:60px;left:0;right:0;text-align:center;font-size:13px;color:rgba(255,255,255,.7);letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+.scan-frame-inner{border:3px solid rgba(91,124,245,.85);border-radius:14px;width:360px;height:260px;box-shadow:0 0 0 4000px rgba(0,0,0,.5);position:relative}
+.scan-frame-inner::before,.scan-frame-inner::after{content:'';position:absolute;width:40px;height:4px;background:rgba(91,124,245,.95)}
+.scan-frame-inner::before{top:-2px;left:24px}
+.scan-frame-inner::after{bottom:-2px;right:24px}
+.scan-line{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,rgba(91,124,245,.8),transparent);animation:scanMove 2.5s linear infinite;border-radius:2px}
+@keyframes scanMove{0%{top:0}50%{top:100%}100%{top:0}}
+.camera-hint{position:absolute;bottom:24px;left:0;right:0;text-align:center;font-size:14px;color:rgba(255,255,255,.75);letter-spacing:.12em;text-transform:uppercase;font-weight:700}
 
 /* ── Photo Upload ───────────────────────────────────────── */
 .photo-btn{width:100%;display:flex;align-items:center;gap:12px;padding:16px;border-radius:var(--radius-sm);border:1.5px dashed var(--border);background:var(--muted);color:var(--muted-fg);cursor:pointer;transition:all .15s;text-align:left;touch-action:manipulation;min-height:56px}
@@ -365,12 +367,14 @@ tr.clickable{cursor:pointer}
     </div>
     <div style="flex:1;position:relative;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden">
       <div id="camera-video" style="width:100%;height:100%;background:#000"></div>
-      <div class="scan-frame"><div class="scan-frame-inner"></div></div>
-      <div class="camera-hint">Point camera at barcode</div>
+      <div class="scan-frame"><div class="scan-frame-inner"><div class="scan-line"></div></div></div>
+      <div class="camera-hint">Align barcode inside the frame</div>
     </div>
-    <div style="padding:14px 16px;border-top:1px solid var(--border)">
-      <div id="camera-error" class="hidden" style="color:var(--danger);font-size:12px;margin-bottom:10px;font-weight:600"></div>
-      <button class="btn btn-outline btn-full" onclick="closeCamera()"><svg><use href="#ic-x"/></svg>Close Scanner</button>
+    <div style="padding:16px 20px;background:rgba(0,0,0,.85);flex-shrink:0">
+      <div id="camera-error" class="hidden" style="color:var(--danger);font-size:13px;margin-bottom:10px;font-weight:600;text-align:center"></div>
+      <button class="btn btn-outline btn-full" onclick="closeCamera()" style="min-height:48px;font-size:15px">
+        <svg style="width:16px;height:16px"><use href="#ic-x"/></svg>Close Scanner
+      </button>
     </div>
   </div>
 </div>
@@ -646,13 +650,8 @@ async function openCamera(label, cb) {
     const cameraId = back ? { deviceId: back.id } : { facingMode: 'environment' };
     await cameraReader.start(cameraId,
       {
-        fps: 15,
-        qrbox: function(viewfinderWidth, viewfinderHeight) {
-          // Make scanning box 75% of the smaller dimension
-          var minDim = Math.min(viewfinderWidth, viewfinderHeight);
-          var boxSize = Math.floor(minDim * 0.75);
-          return { width: boxSize, height: boxSize };
-        },
+        fps: 20,
+        qrbox: { width: 360, height: 260 },
         videoConstraints: {
           facingMode: 'environment',
           width: { ideal: 1920 },
