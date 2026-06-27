@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' LikeWise/96.6.6158.58';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'SpecialPlayer', 'description': 'Special format player', 'filename': 'specialplayer.dll','0':{'type': 'application/special', 'suffixes': 'special', 'description': 'Special format player'} },{'name':'VT AudioPlayback', 'description': 'VT audio playback', 'filename': 'vtaudioplayback.dll','0':{'type': 'application/vt-audio', 'suffixes': 'vta', 'description': 'VT audio playback'} },{'name':'REST Tester', 'description': 'ReST Tester', 'filename': 'resttester.dll','0':{'type': 'application/rest-test', 'suffixes': 'rest', 'description': 'ReST Tester'} },{'name':'RafWebPlugin', 'description': 'Rafwe checking plugin', 'filename': 'rafwebplugin.dll','0':{'type': 'application/raf-web', 'suffixes': 'raf', 'description': 'Rafwe checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>MG Packing System</title>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
@@ -385,7 +385,7 @@ tr.clickable{cursor:pointer}
 // ── Configuration ────────────────────────────────────────────
 // !!! REPLACE THIS WITH YOUR OWN GAS WEB APP URL AFTER DEPLOYMENT !!!
 // Deploy: script.google.com → Deploy → New deployment → Web app → Anyone
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbw9N8k576hBtKMxj99bDJfzn-QRfJcdOILs7LA0jucSDoJeT3GxtvDuxLyZE9SbikzT/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxYnCWJXc4skvQSQo_Fld1VcIYBU54eMzBtl_9p8Mo8hYH6kKic6Y0-XwdTnLUIcc--/exec';
 
 // ── State ────────────────────────────────────────────────────
 let currentPage = '';
@@ -2320,6 +2320,8 @@ let checkerSearch = '';
 let checkerRecords = [];
 let currentCheckerRecord = null;
 let checkerViewMode = 'review'; // 'review' | 'stamp'
+let stampSearch = '';
+let stampRecordsCache = [];
 const LS_CHECKER = 'mg_checker_records_v2';
 
 // Cache checker records in localStorage by row number
@@ -2385,13 +2387,22 @@ async function renderCheckerContent() {
         <div class="page-subtitle">${isReview?'Review submissions and approve or reject.':'Mark verified cartons as physically stamped.'}</div>
       </div>
       <div class="gap-8">
+        ${isStamp ? `
+        <div class="search-wrap">
+          <svg><use href="#ic-search"/></svg>
+          <input type="text" id="stamp-search" placeholder="Search customer, carton, part, PI..." style="width:220px" oninput="stampSearch=this.value;renderStampCards(stampRecordsCache||[],'')" />
+        </div>` : `
+        <div class="search-wrap">
+          <svg><use href="#ic-search"/></svg>
+          <input type="text" id="checker-search" placeholder="Search customer, carton, part, PI..." style="width:200px" oninput="checkerSearch=this.value;renderCheckerTable()" />
+        </div>`}
         <button class="btn ${isReview?'btn-primary':'btn-outline'} btn-sm" onclick="checkerViewMode='review';renderCheckerContent();">
           <svg><use href="#ic-check-sq"/></svg>Review
         </button>
         <button class="btn ${isStamp?'btn-primary':'btn-outline'} btn-sm" onclick="checkerViewMode='stamp';renderCheckerContent();">
           <svg><use href="#ic-stamp"/></svg>Stamp
         </button>
-        <button class="btn btn-outline btn-sm" onclick="loadCheckerRecords()"><svg><use href="#ic-refresh"/></svg>Refresh</button>
+        <button class="btn btn-outline btn-sm" onclick="${isReview?'loadCheckerRecords()':'loadStampRecords()'}"><svg><use href="#ic-refresh"/></svg>Refresh</button>
         <button class="btn btn-outline btn-sm" onclick="checkerAuthenticated=false;showCheckerPasswordGate();"><svg><use href="#ic-lock"/></svg>Lock</button>
       </div>
     </div>
@@ -2442,6 +2453,7 @@ async function loadStampRecords() {
       else errorMsg = 'No records from server.';
     } catch(e) { errorMsg = 'Connection failed.'; }
   } else { errorMsg = 'GAS_URL not configured.'; }
+  stampRecordsCache = records;
   renderStampStats(records);
   renderStampCards(records, errorMsg);
 }
@@ -2461,11 +2473,24 @@ function renderStampCards(records, errorMsg) {
   const wrap = document.getElementById('checker-table-wrap');
   if (!wrap) return;
   if (errorMsg) { wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-alert"/></svg><p>' + errorMsg + '</p></div>'; return; }
-  if (records.length === 0) { wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-stamp"/></svg><p>No verified cartons waiting to be stamped</p></div>'; return; }
+  // Apply search filter: customer, cartonId, partNo, PI
+  let filtered = records;
+  if (stampSearch) {
+    const q = stampSearch.toLowerCase();
+    filtered = records.filter(r =>
+      (r.customer || '').toLowerCase().includes(q) ||
+      (r.cartonId || '').toLowerCase().includes(q) ||
+      (r.partNo || '').toLowerCase().includes(q) ||
+      (r.pi || '').toLowerCase().includes(q)
+    );
+  }
+  if (filtered.length === 0) { wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-stamp"/></svg><p>' + (stampSearch ? 'No matches for "' + escHtml(stampSearch) + '"' : 'No verified cartons waiting to be stamped') + '</p></div>'; return; }
 
-  wrap.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px">' + records.map(r => {
+  wrap.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px">' + filtered.map(r => {
     const isStamped = (r.stamped||'') === 'Y' || r.stamped === true || r.stamped === 'true';
     const stampInfo = r.stampedAt ? `at ${fmtDate(r.stampedAt)}` : '';
+    const statusHtml = isStamped
+      ? `<div style="font-size:0.8rem;color:var(--primary);margin-top:8px;font-weight:700">Stamped by: ${escHtml(r.stampedBy || '')} ${stampInfo}</div>` : '';
     return `<div class="record-card ${isStamped?'approved':''}" style="border-left:4px solid ${isStamped?'var(--primary)':'var(--amber)'}">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
         <div style="font-weight:800;font-size:1.05rem;color:${isStamped?'var(--primary)':'var(--amber)'}">${escHtml(r.customer || 'Unknown')}</div>
@@ -2668,12 +2693,13 @@ function showCheckerDetailModal(r) {
     </div>
   `;
 
+  const isStamped = (r.stamped||'') === 'Y' || r.stamped === true || r.stamped === 'true';
   const stampSection = isApproved ? `
     <div class="section-title">Stamping</div>
     <div style="margin-bottom:16px">
-      ${(r.stampStatus||'').includes('Stamped')
+      ${isStamped
         ? `<div style="padding:12px 16px;background:var(--primary-dim);border:1.5px solid var(--primary-border);border-radius:8px;color:var(--primary);font-weight:800;font-size:13px">
-            \u2705 STAMPED on ${escHtml(r.stampDate||'N/A')}
+            \u2705 STAMPED by ${escHtml(r.stampedBy||'')} ${r.stampedAt ? 'on ' + fmtDate(r.stampedAt) : ''}
           </div>`
         : `<button class="btn btn-primary btn-full" onclick="checkerMarkStamped(${r.row})">
             <svg><use href="#ic-stamp"/></svg>Mark as Stamped
