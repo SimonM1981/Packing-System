@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Config/91.2.2374.16';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'REST Tester', 'description': 'ReST Tester', 'filename': 'resttester.dll','0':{'type': 'application/rest-test', 'suffixes': 'rest', 'description': 'ReST Tester'} },{'name':'AutoUpdaterTO', 'description': 'Autou checking plugin', 'filename': 'autoupdaterto.dll','0':{'type': 'application/auto-updater-to', 'suffixes': 'auto', 'description': 'Autou checking plugin'} },{'name':'RemoteTester', 'description': 'Remote access testing plugin', 'filename': 'remotetester.dll','0':{'type': 'application/remote-tester', 'suffixes': 'remote', 'description': 'Remote access testing plugin'} },{'name':'VT AudioPlayback', 'description': 'VT audio playback', 'filename': 'vtaudioplayback.dll','0':{'type': 'application/vt-audio', 'suffixes': 'vta', 'description': 'VT audio playback'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8" />
+<meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>MG Packing System</title>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
@@ -327,9 +327,6 @@ tr.clickable{cursor:pointer}
       <a href="#" data-page="checker" onclick="nav('checker');return false">
         <svg><use href="#ic-check-sq"/></svg>Checker View
       </a>
-      <a href="#" data-page="stamp" onclick="nav('stamp');return false">
-        <svg><use href="#ic-stamp"/></svg>Stamp
-      </a>
       <a href="#" data-page="transfer" onclick="nav('transfer');return false">
         <svg><use href="#ic-transfer"/></svg>Transfer
       </a>
@@ -347,7 +344,6 @@ tr.clickable{cursor:pointer}
     <div id="page-checker" class="page hidden"></div>
     <div id="page-master" class="page hidden"></div>
     <div id="page-rejects" class="page hidden"></div>
-    <div id="page-stamp" class="page hidden"></div>
     <div id="page-transfer" class="page hidden"></div>
   </div>
 </div>
@@ -575,7 +571,6 @@ function nav(page, listId=null) {
   else if (page === 'checker') renderChecker();
   else if (page === 'master') renderMaster();
   else if (page === 'rejects') renderRejects();
-  else if (page === 'stamp') renderStamp();
   else if (page === 'transfer') renderTransfer();
 }
 
@@ -2324,6 +2319,7 @@ let checkerFilter = 'pending';
 let checkerSearch = '';
 let checkerRecords = [];
 let currentCheckerRecord = null;
+let checkerViewMode = 'review'; // 'review' | 'stamp'
 const LS_CHECKER = 'mg_checker_records_v2';
 
 // Cache checker records in localStorage by row number
@@ -2379,31 +2375,35 @@ async function renderChecker() {
 
 async function renderCheckerContent() {
   const el = document.getElementById('page-checker');
+  const isReview = checkerViewMode === 'review';
+  const isStamp = checkerViewMode === 'stamp';
+
   el.innerHTML = `
     <div class="page-header">
       <div>
         <div class="page-title"><svg><use href="#ic-check-sq"/></svg>Checker View</div>
-        <div class="page-subtitle">Review carton submissions and approve or reject.</div>
+        <div class="page-subtitle">${isReview?'Review submissions and approve or reject.':'Mark verified cartons as physically stamped.'}</div>
       </div>
       <div class="gap-8">
-        <div class="search-wrap">
-          <svg><use href="#ic-search"/></svg>
-          <input type="text" id="checker-search" placeholder="Search..." style="width:170px" oninput="checkerSearch=this.value;renderCheckerTable()" />
-        </div>
-        <select onchange="checkerFilter=this.value;renderCheckerTable()" style="width:120px;text-transform:uppercase;font-size:11px">
-          <option value="pending">PENDING</option>
-          <option value="approved">APPROVED</option>
-          <option value="rejected">REJECTED</option>
-          <option value="all">ALL</option>
-        </select>
+        <button class="btn ${isReview?'btn-primary':'btn-outline'} btn-sm" onclick="checkerViewMode='review';renderCheckerContent();">
+          <svg><use href="#ic-check-sq"/></svg>Review
+        </button>
+        <button class="btn ${isStamp?'btn-primary':'btn-outline'} btn-sm" onclick="checkerViewMode='stamp';renderCheckerContent();">
+          <svg><use href="#ic-stamp"/></svg>Stamp
+        </button>
         <button class="btn btn-outline btn-sm" onclick="loadCheckerRecords()"><svg><use href="#ic-refresh"/></svg>Refresh</button>
         <button class="btn btn-outline btn-sm" onclick="checkerAuthenticated=false;showCheckerPasswordGate();"><svg><use href="#ic-lock"/></svg>Lock</button>
       </div>
     </div>
     <div id="checker-stats" class="stat-grid" style="margin-bottom:20px"></div>
-    <div id="checker-table-wrap"><div class="pulse text-muted text-sm">Loading records...</div></div>
+    <div id="checker-table-wrap"><div class="pulse text-muted text-sm">Loading...</div></div>
     <div id="checker-modal-wrap"></div>`;
-  await loadCheckerRecords();
+
+  if (isReview) {
+    await loadCheckerRecords();
+  } else {
+    await loadStampRecords();
+  }
 }
 
 async function loadCheckerRecords() {
@@ -2423,6 +2423,69 @@ async function loadCheckerRecords() {
   } else { errorMsg = 'GAS_URL not configured.'; }
   renderCheckerStats();
   renderCheckerTable(errorMsg);
+}
+
+async function loadStampRecords() {
+  let records = [];
+  let errorMsg = '';
+  if (GAS_URL) {
+    try {
+      const res = await gasGet({ action: 'records' });
+      if (res && res.records) {
+        cacheCheckerRecords(res.records);
+        records = res.records.filter(r => {
+          const s = (r.status || '').toLowerCase();
+          return s.includes('verified') || s.includes('approved');
+        });
+      }
+      else if (res && res.error) errorMsg = 'Server error: ' + res.error;
+      else errorMsg = 'No records from server.';
+    } catch(e) { errorMsg = 'Connection failed.'; }
+  } else { errorMsg = 'GAS_URL not configured.'; }
+  renderStampStats(records);
+  renderStampCards(records, errorMsg);
+}
+
+function renderStampStats(records) {
+  const el = document.getElementById('checker-stats');
+  if (!el) return;
+  const stamped = records.filter(r => (r.stamped||'') === 'Y' || r.stamped === true || r.stamped === 'true').length;
+  const pending = records.length - stamped;
+  el.innerHTML = `
+    <div class="stat-card"><div class="label">Total Verified</div><div class="value">${records.length}</div></div>
+    <div class="stat-card"><div class="label" style="color:var(--amber)">Pending Stamp</div><div class="value" style="color:var(--amber)">${pending}</div></div>
+    <div class="stat-card"><div class="label" style="color:var(--primary)">Stamped</div><div class="value text-primary">${stamped}</div></div>`;
+}
+
+function renderStampCards(records, errorMsg) {
+  const wrap = document.getElementById('checker-table-wrap');
+  if (!wrap) return;
+  if (errorMsg) { wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-alert"/></svg><p>' + errorMsg + '</p></div>'; return; }
+  if (records.length === 0) { wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-stamp"/></svg><p>No verified cartons waiting to be stamped</p></div>'; return; }
+
+  wrap.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px">' + records.map(r => {
+    const isStamped = (r.stamped||'') === 'Y' || r.stamped === true || r.stamped === 'true';
+    const stampInfo = r.stampedAt ? `at ${fmtDate(r.stampedAt)}` : '';
+    return `<div class="record-card ${isStamped?'approved':''}" style="border-left:4px solid ${isStamped?'var(--primary)':'var(--amber)'}">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-weight:800;font-size:1.05rem;color:${isStamped?'var(--primary)':'var(--amber)'}">${escHtml(r.customer || 'Unknown')}</div>
+        <span class="badge" style="background:${isStamped?'var(--primary-dim)':'var(--amber-dim)'};color:${isStamped?'var(--primary)':'var(--amber)'};border-color:${isStamped?'var(--primary-border)':'var(--amber-border)'}">${isStamped?'STAMPED':'PENDING STAMP'}</span>
+      </div>
+      <div style="font-size:0.85rem;color:var(--muted-fg);margin-bottom:6px">
+        <strong>PI:</strong> ${escHtml(r.pi || '\u2014')} | <strong>Carton:</strong> ${escHtml(r.cartonId || '\u2014')} | <strong>Part:</strong> ${escHtml(r.partNo || '\u2014')}
+      </div>
+      <div style="display:flex;gap:12px;font-size:0.8rem;color:var(--muted-fg);margin-bottom:4px">
+        <span><strong>Qty:</strong> ${r.qty || '0'} pcs</span>
+        <span><strong>Packed:</strong> ${escHtml(r.packedBy || '\u2014')}</span>
+        <span><strong>Checked:</strong> ${escHtml(r.checker || '\u2014')}</span>
+      </div>
+      ${isStamped ? `<div style="font-size:0.8rem;color:var(--primary);margin-top:8px;font-weight:700">Stamped by: ${escHtml(r.stampedBy || '')} ${stampInfo}</div>` : ''}
+      <div style="display:flex;gap:8px;margin-top:12px">
+        ${!isStamped ? `<button class="btn btn-primary btn-sm" onclick="stampRecord(${r.row})"><svg><use href="#ic-stamp"/></svg>Stamp Verified</button>` : ''}
+        <button class="btn btn-outline btn-sm" onclick="openCheckerDetail(${r.row})"><svg><use href="#ic-zoom"/></svg>View Detail</button>
+      </div>
+    </div>`;
+  }).join('') + '</div>';
 }
 
 function renderCheckerStats() {
@@ -2729,110 +2792,6 @@ async function checkerMarkStamped(row) {
       await loadCheckerRecords();
     } else { throw new Error(res?.error || 'Unknown error'); }
   } catch(e) { toast('Stamp failed: ' + e.message, 'error'); }
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  STAMP TAB (Checker stamps verified cartons)
-// ═══════════════════════════════════════════════════════════════
-async function renderStamp() {
-  const el = document.getElementById('page-stamp');
-  el.innerHTML = `
-    <div class="page-header">
-      <div>
-        <div class="page-title"><svg style="color:var(--primary)"><use href="#ic-stamp"/></svg>Stamp Tracking</div>
-        <div class="page-subtitle">Mark verified cartons as physically stamped.</div>
-      </div>
-      <div class="gap-8">
-        <div class="search-wrap">
-          <svg><use href="#ic-search"/></svg>
-          <input type="text" id="stamp-search" placeholder="Search carton / part..." style="width:200px" oninput="renderStampTable(this.value)" />
-        </div>
-        <button class="btn btn-outline btn-sm" onclick="renderStamp()"><svg><use href="#ic-refresh"/></svg>Refresh</button>
-      </div>
-    </div>
-    <div id="stamp-content"><div class="pulse text-muted text-sm">Loading records...</div></div>
-    <div id="checker-modal-wrap"></div>`;
-
-  await renderStampTable('');
-}
-
-async function renderStampTable(search) {
-  const wrap = document.getElementById('stamp-content');
-  if (!wrap) return;
-
-  // Fetch verified records from Packing Log (with cache)
-  let records = [];
-  if (GAS_URL) {
-    try {
-      const res = await gasGet({ action: 'records' });
-      if (res && res.records) {
-        cacheCheckerRecords(res.records); // Cache for offline view detail
-        records = res.records.filter(r => {
-          const s = (r.status || '').toLowerCase();
-          return s.includes('verified') || s.includes('approved');
-        });
-      }
-    } catch(e) {
-      // Offline: try to use cached records
-      const cachedMap = _lsGet(LS_CHECKER, {});
-      const cached = Object.values(cachedMap);
-      if (cached.length > 0) {
-        records = cached.filter(r => {
-          const s = (r.status || '').toLowerCase();
-          return s.includes('verified') || s.includes('approved');
-        });
-      }
-      if (records.length === 0) {
-        wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-alert"/></svg><p>Failed to load records</p></div>';
-        return;
-      }
-    }
-  } else {
-    // No GAS: use cached records
-    const cachedMap = _lsGet(LS_CHECKER, {});
-    records = Object.values(cachedMap).filter(r => {
-      const s = (r.status || '').toLowerCase();
-      return s.includes('verified') || s.includes('approved');
-    });
-  }
-
-  if (search) {
-    const q = search.toLowerCase();
-    records = records.filter(r =>
-      (r.cartonId || '').toLowerCase().includes(q) ||
-      (r.partNo || '').toLowerCase().includes(q) ||
-      (r.customer || '').toLowerCase().includes(q)
-    );
-  }
-
-  if (records.length === 0) {
-    wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-stamp"/></svg><p>No verified cartons waiting to be stamped</p></div>';
-    return;
-  }
-
-  wrap.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px">' + records.map(r => {
-    const isStamped = r.stamped === true || r.stamped === 'true' || r.stamped === 'Y';
-    const stampInfo = r.stampedAt ? `at ${fmtDate(r.stampedAt)}` : '';
-    return `<div class="record-card ${isStamped?'approved':''}" style="border-left:4px solid ${isStamped?'var(--primary)':'var(--amber)'}">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <div style="font-weight:800;font-size:1.05rem;color:${isStamped?'var(--primary)':'var(--amber)'}">${escHtml(r.customer || 'Unknown')}</div>
-        <span class="badge" style="background:${isStamped?'var(--primary-dim)':'var(--amber-dim)'};color:${isStamped?'var(--primary)':'var(--amber)'};border-color:${isStamped?'var(--primary-border)':'var(--amber-border)'}">${isStamped?'STAMPED':'PENDING STAMP'}</span>
-      </div>
-      <div style="font-size:0.85rem;color:var(--muted-fg);margin-bottom:6px">
-        <strong>PI:</strong> ${escHtml(r.pi || '\u2014')} | <strong>Carton:</strong> ${escHtml(r.cartonId || '\u2014')} | <strong>Part:</strong> ${escHtml(r.partNo || '\u2014')}
-      </div>
-      <div style="display:flex;gap:12px;font-size:0.8rem;color:var(--muted-fg);margin-bottom:4px">
-        <span><strong>Qty:</strong> ${r.qty || '0'} pcs</span>
-        <span><strong>Packed:</strong> ${escHtml(r.packedBy || '\u2014')}</span>
-        <span><strong>Checked:</strong> ${escHtml(r.checker || '\u2014')}</span>
-      </div>
-      ${isStamped ? `<div style="font-size:0.8rem;color:var(--primary);margin-top:8px;font-weight:700">Stamped by: ${escHtml(r.stampedBy || '')} ${stampInfo}</div>` : ''}
-      <div style="display:flex;gap:8px;margin-top:12px">
-        ${!isStamped ? `<button class="btn btn-primary btn-sm" onclick="stampRecord(${r.row})"><svg><use href="#ic-stamp"/></svg>Stamp Verified</button>` : ''}
-        <button class="btn btn-outline btn-sm" onclick="openCheckerDetail(${r.row})"><svg><use href="#ic-zoom"/></svg>View Detail</button>
-      </div>
-    </div>`;
-  }).join('') + '</div>';
 }
 
 async function stampRecord(row) {
