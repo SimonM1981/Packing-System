@@ -1589,30 +1589,42 @@ function renderPartCards() {
         <span class="part-number">${isSingle ? 'Item' : isKit ? 'Kit Item' : 'Part'} ${idx + 1}</span>
         ${formState.parts.length > 1 ? `<button class="part-remove" onclick="removePartFromForm(${idx})"><svg style="width:12px;height:12px;vertical-align:middle;margin-right:2px"><use href="#ic-trash"/></svg>Remove</button>` : ''}
       </div>
-      <div class="${isKit ? 'grid-1' : 'grid-4'}" style="margin-bottom:12px">
+      <!-- Part No + PI No on same row, Qty below -->
+      ${!isKit ? `
+      <div class="grid-2" style="margin-bottom:12px">
         <div class="form-group">
           <label class="form-label">Part No <span class="req">*</span></label>
           <div class="input-wrap">
             <input type="text" id="f-partNo-${idx}" placeholder="Scan or type..." value="${escHtml(part.partNo)}"
               oninput="onPartFieldChange(${idx},'partNo')" />
-            <button type="button" class="btn-icon" onclick="openCamera('Part ${idx+1} No',v=>{document.getElementById('f-partNo-${idx}').value=v;onPartFieldChange(${idx},'partNo');})"><svg style="width:14px;height:14px"><use href="#ic-camera"/></svg></button>
+            <button type="button" class="btn-icon" onclick="openCamera('Part ${idx+1} No',v=>{document.getElementById('f-partNo-${idx}').value=v;onPartFieldChange(${idx},'partNo');})"><svg style="width:16px;height:16px"><use href="#ic-camera"/></svg></button>
           </div>
         </div>
-        ${!isKit ? `
         <div class="form-group">
           <label class="form-label">PI No</label>
           <div class="input-wrap">
             <input type="text" id="f-pi-${idx}" placeholder="123456/26..." value="${escHtml(part.pi)}"
               oninput="onPartFieldChange(${idx},'pi')" />
-            <button type="button" class="btn-icon" onclick="openCamera('PI No',v=>{document.getElementById('f-pi-${idx}').value=v;onPartFieldChange(${idx},'pi');})"><svg style="width:14px;height:14px"><use href="#ic-camera"/></svg></button>
+            <button type="button" class="btn-icon" onclick="openCamera('PI No',v=>{document.getElementById('f-pi-${idx}').value=v;onPartFieldChange(${idx},'pi');})"><svg style="width:16px;height:16px"><use href="#ic-camera"/></svg></button>
           </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Qty <span class="req">*</span></label>
-          <input type="number" id="f-qty-${idx}" min="1" value="${part.qty}" oninput="onPartFieldChange(${idx},'qty')" />
-        </div>
-        ` : ''}
       </div>
+      ${!isKit ? `
+      <div class="form-group" style="margin-bottom:12px;max-width:120px">
+        <label class="form-label">Qty <span class="req">*</span></label>
+        <input type="number" id="f-qty-${idx}" min="1" value="${part.qty}" oninput="onPartFieldChange(${idx},'qty')" />
+      </div>
+      ` : ''}
+      ` : `
+      <div class="form-group" style="margin-bottom:12px;max-width:none">
+        <label class="form-label">Part No <span class="req">*</span></label>
+        <div class="input-wrap">
+          <input type="text" id="f-partNo-${idx}" placeholder="Scan or type..." value="${escHtml(part.partNo)}"
+            oninput="onPartFieldChange(${idx},'partNo')" />
+          <button type="button" class="btn-icon" onclick="openCamera('Part ${idx+1} No',v=>{document.getElementById('f-partNo-${idx}').value=v;onPartFieldChange(${idx},'partNo');})"><svg style="width:16px;height:16px"><use href="#ic-camera"/></svg></button>
+        </div>
+      </div>
+      `}
       ${isKit ? `
       <!-- Kit mode: only bag barcode per part -->
       <div class="grid-1" style="max-width:none">
