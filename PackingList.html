@@ -827,43 +827,6 @@ function removePartFromForm(idx) {
 //  LIST DETAIL
 // ═══════════════════════════════════════════════════════════════
 // Sync rejection status from GAS Packing Log to Cartons sheet
-async function syncRejectionStatus() {
-  if (!GAS_URL || !currentListId) return;
-  try {
-    // Get rejected records from Packing Log
-    const res = await gasGet({ action: 'records' });
-    if (!res || !res.records) return;
-
-    // Get current cartons from Cartons sheet
-    const cartons = await gasGetCartons(currentListId);
-    let changed = false;
-
-    for (const gasRec of res.records) {
-      if (!(gasRec.status||'').toLowerCase().includes('rejected')) continue;
-      // Find matching carton by cartonId (Packing Log stores cartonId, not cartonRef)
-      const carton = cartons.find(c => c.cartonId === gasRec.cartonId);
-      if (carton && carton.status !== 'rejected') {
-        // Update the Cartons sheet row
-        await gasPost({ action: 'saveCarton',
-          row: carton.row, listRef: currentListId,
-          cartonRef: carton.cartonRef, cartonId: carton.cartonId,
-          cartonType: carton.cartonType, cartonPI: carton.cartonPI, cartonQty: carton.cartonQty,
-          parts: carton.parts,
-          imgBagUrl: carton.imgBagUrl, imgInnerUrl: carton.imgInnerUrl, imgCartonUrl: carton.imgCartonUrl,
-          createdAt: carton.createdAt, status: 'rejected',
-          rejectionReason: gasRec.remarks || 'Rejected by checker',
-          checkedBy: gasRec.checker || ''
-        });
-        changed = true;
-      }
-    }
-    if (changed) {
-      // Refresh cartons cache
-      LIST_CARTONS[currentListId] = await gasGetCartons(currentListId);
-    }
-  } catch (e) { /* silent fail */ }
-}
-
 // Helper: fetch Packing Log records and build a status map by cartonId
 async function getPackingLogStatusMap() {
   const statusMap = new Map(); // cartonId -> {status, remarks, checker}
@@ -935,9 +898,6 @@ async function renderListDetail() {
   const list = LISTS.find(l => l.listRef === currentListId);
   if (!list) { nav('packing-lists'); return; }
 
-  // Sync any rejected statuses from Packing Log to Cartons sheet
-  await syncRejectionStatus();
-
   // Fetch cartons from GAS "Cartons" sheet AND Packing Log status
   const [cartons, plStatusMap] = await Promise.all([
     gasGetCartons(list.listRef),
@@ -945,7 +905,7 @@ async function renderListDetail() {
   ]);
   LIST_CARTONS[list.listRef] = cartons;
 
-  // Overlay Packing Log status onto cartons
+  // Overlay Packing Log status onto cartons (Packing Log is source of truth for checker decisions)
   cartons.forEach(c => {
     const pl = plStatusMap.get(c.cartonId || '');
     if (pl) {
@@ -955,8 +915,9 @@ async function renderListDetail() {
     }
   });
 
+  // Use Packing Log status as primary source for rejection detection
   const rejected = cartons.filter(c =>
-    c.status === 'rejected' || (c._plStatus || '').toLowerCase().includes('rejected')
+    (c._plStatus || '').toLowerCase().includes('rejected') || c.status === 'rejected'
   );
   const totalParts = cartons.reduce((s,c) => s + (c.parts||[]).length, 0);
   const missingCartons = detectMissingCartons(cartons);
