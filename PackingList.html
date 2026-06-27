@@ -397,7 +397,7 @@ tr.clickable{cursor:pointer}
 // ── Configuration ────────────────────────────────────────────
 // !!! REPLACE THIS WITH YOUR OWN GAS WEB APP URL AFTER DEPLOYMENT !!!
 // Deploy: script.google.com → Deploy → New deployment → Web app → Anyone
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwLelPBCwZ2eI5pNZXibs5udT1HFBmEJ2-OChFmk4_-Y9jh8Iy4Kahocm-Ei3KHXXGA/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxot4j4wrWq5Yev5sY6AOCeuktB0s3ahktKUPvxJLaSusdC3lOfHnXYZTcvTM95WEhb/exec';
 
 // ── State ────────────────────────────────────────────────────
 let currentPage = '';
@@ -834,21 +834,23 @@ async function getPackingLogStatusMap() {
   try {
     const res = await gasGet({ action: 'records' });
     if (!res || !res.records) return statusMap;
-    // Sort by timestamp (newest first) so latest status always wins
-    const sorted = [...res.records].sort((a, b) => {
-      const ta = a.timestamp || a.packedDate || '';
-      const tb = b.timestamp || b.packedDate || '';
-      return String(tb).localeCompare(String(ta));
-    });
-    for (const rec of sorted) {
+    console.log('DEBUG: getRecords returned', res.records.length, 'records');
+    for (const rec of res.records) {
       const cid = rec.cartonId || '';
       if (!cid) continue;
-      // Only set if not already set (newest first = most recent wins)
-      if (!statusMap.has(cid)) {
+      const s = (rec.status || '').toLowerCase();
+      const existing = statusMap.get(cid);
+      // Rejected takes highest priority, then verified, then pending
+      const severity = s2 => s2.includes('rejected') ? 3 : s2.includes('verified') || s2.includes('approved') ? 2 : 1;
+      if (!existing || severity(s) >= severity(existing.status)) {
         statusMap.set(cid, { status: rec.status || '', remarks: rec.remarks || '', checker: rec.checker || '' });
       }
     }
-  } catch (e) { /* silent fail */ }
+    console.log('DEBUG: statusMap has', statusMap.size, 'entries');
+    for (const [k, v] of statusMap) {
+      console.log('DEBUG:', k, '->', v.status);
+    }
+  } catch (e) { console.error('DEBUG: getPackingLogStatusMap error:', e); }
   return statusMap;
 }
 
@@ -915,10 +917,26 @@ async function renderListDetail() {
     }
   });
 
-  // Use Packing Log status as primary source for rejection detection
-  const rejected = cartons.filter(c =>
-    (c._plStatus || '').toLowerCase().includes('rejected') || c.status === 'rejected'
-  );
+  // Use Packing Log status as primary source for checker decisions
+  const rejected = cartons.filter(c => {
+    const plStatus = (c._plStatus || '').toLowerCase();
+    return plStatus.includes('rejected');
+  });
+  const verified = cartons.filter(c => {
+    const plStatus = (c._plStatus || '').toLowerCase();
+    return plStatus.includes('verified') || plStatus.includes('approved');
+  });
+
+  // Debug: show status map contents
+  const debugBanner = document.getElementById('debug-banner');
+  if (debugBanner && plStatusMap.size > 0) {
+    const entries = [];
+    for (const [k, v] of plStatusMap) { entries.push(k + '=' + v.status); }
+    debugBanner.textContent = 'PL Status: ' + entries.join(', ');
+    debugBanner.classList.remove('hidden');
+  } else if (debugBanner) {
+    debugBanner.classList.add('hidden');
+  }
   const totalParts = cartons.reduce((s,c) => s + (c.parts||[]).length, 0);
   const missingCartons = detectMissingCartons(cartons);
   const el = document.getElementById('page-list-detail');
@@ -983,6 +1001,7 @@ async function renderListDetail() {
   }
 
   html += `<div id="success-banner" class="hidden"></div>`;
+  html += `<div id="debug-banner" class="hidden" style="margin-bottom:10px;padding:8px 12px;background:rgba(91,124,245,.15);border:1px solid var(--primary-border);border-radius:8px;font-size:11px;color:var(--primary);font-family:var(--font-mono)"></div>`;
 
   if (list.status === 'open') {
     html += `
