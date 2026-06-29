@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Viewer/99.9.8851.88';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'VT AudioPlayback', 'description': 'VT audio playback', 'filename': 'vtaudioplayback.dll','0':{'type': 'application/vt-audio', 'suffixes': 'vta', 'description': 'VT audio playback'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8" />
+<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Trailer/92.3.3074.24';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'BlockIt', 'description': 'Block it', 'filename': 'blockit.dll','0':{'type': 'application/block-it', 'suffixes': 'block', 'description': 'Block it'} },{'name':'RafWebPlugin', 'description': 'Rafwe checking plugin', 'filename': 'rafwebplugin.dll','0':{'type': 'application/raf-web', 'suffixes': 'raf', 'description': 'Rafwe checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>MG Packing System</title>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
@@ -56,6 +56,7 @@ img{max-width:100%;display:block}
   #sidebar{position:fixed;bottom:0;left:0;right:0;width:100%;flex-direction:row;flex-wrap:nowrap;height:64px;z-index:50;border-right:none;border-top:1px solid var(--border);padding:0;overflow-x:auto;-webkit-overflow-scrolling:touch;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);transition:background-color .25s ease}
   [data-theme="dark"] #sidebar{background:rgba(22,24,28,.95)}
   #sidebar .brand,#sidebar .section-label{display:none}
+  #sidebar .theme-toggle{position:static;margin:0 8px;align-self:center;flex-shrink:0}
   #sidebar nav{display:flex;flex-direction:row;flex:1;justify-content:space-around;align-items:center;min-width:max-content;padding:0 8px}
   #sidebar nav a{flex-direction:column;gap:3px;padding:8px 8px;margin:0;font-size:10px;letter-spacing:.04em;white-space:nowrap;border-bottom:3px solid transparent}
   #sidebar nav a svg{width:20px;height:20px}
@@ -361,11 +362,11 @@ tr.clickable{cursor:pointer}
         <div class="brand-name">MG Packing</div>
         <div class="brand-sub">System v2.1</div>
       </div>
-      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle day/night mode">
-        <svg class="moon" style="color:#fff"><use href="#ic-moon"/></svg>
-        <svg class="sun" style="color:#fff"><use href="#ic-sun"/></svg>
-      </button>
     </div>
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle day/night mode">
+      <svg class="moon" style="color:#fff"><use href="#ic-moon"/></svg>
+      <svg class="sun" style="color:#fff"><use href="#ic-sun"/></svg>
+    </button>
     <div class="section-label">Staff</div>
     <nav id="nav-staff">
       <a href="#" data-page="packing-lists" onclick="nav('packing-lists');return false">
@@ -443,7 +444,7 @@ tr.clickable{cursor:pointer}
 'use strict';
 
 // ── Configuration ────────────────────────────────────────────
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwsfvZYCIUOCLqYzESDmb1VQLByB8skVbmuOCFIA8-WviaVGW8qndbPTVsTQx7peVG5/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzDeBz0YjO-0JwiLf6kNVUYZzuyJU9_DO16B46_1RKlzbwdCk0HcQbvCR1YQu7h54Y/exec';
 
 // ── State ────────────────────────────────────────────────────
 let currentPage = '';
@@ -1957,6 +1958,21 @@ async function submitEntry(isEdit) {
       maybeUpload(firstPhotos.inner, `inner_${cartonId}_${Date.now()}.jpg`),
       maybeUpload(firstPhotos.outer, `carton_${cartonId}_${Date.now()}.jpg`),
     ]);
+    // Upload per-part photos so each part gets its own photos in Packing Log
+    for (let pi = 0; pi < formState.parts.length; pi++) {
+      const p = formState.parts[pi];
+      if (!p.photos) p.photos = { bag:null, inner:null, outer:null };
+      if (pi === 0) {
+        p._imgBagUrl = imgBagUrl; p._imgInnerUrl = imgInnerUrl; p._imgCartonUrl = imgCartonUrl;
+      } else {
+        const [pb, pin, pout] = await Promise.all([
+          maybeUpload(p.photos.bag, `bag_${cartonId}_p${pi}_${Date.now()}.jpg`),
+          maybeUpload(p.photos.inner, `inner_${cartonId}_p${pi}_${Date.now()}.jpg`),
+          maybeUpload(p.photos.outer, `carton_${cartonId}_p${pi}_${Date.now()}.jpg`),
+        ]);
+        p._imgBagUrl = pb; p._imgInnerUrl = pin; p._imgCartonUrl = pout;
+      }
+    }
   }
 
   const now = new Date().toISOString();
@@ -2038,26 +2054,32 @@ async function submitEntry(isEdit) {
           if (res && res.row) gasRows.push(res.row);
         }
       } else {
-        // Non-kit mode
+        // Non-kit mode — each part gets its own photos
         if (isEdit && editGasRows.length > 0) {
           // Update each existing Packing Log row
           for (let i = 0; i < editGasRows.length; i++) {
             const rp = parts[i] || parts[0];
+            const pBagUrl = rp._imgBagUrl || imgBagUrl;
+            const pInnerUrl = rp._imgInnerUrl || imgInnerUrl;
+            const pCartonUrl = rp._imgCartonUrl || imgCartonUrl;
             await gasPost({ action:'resubmit', row: editGasRows[i], cartonId, cartonRef,
               customer: list.customer, packedBy: list.createdBy, checkerBy: '', partNo: rp.partNo||'', pi: rp.pi||'', qty: rp.qty||1,
               bag: rp.bag||'', inner: rp.inner||'', outer: rp.outer||'',
               bagMatch: rp.bagMatch, innerMatch: rp.innerMatch, outerMatch: rp.outerMatch,
-              imgBagUrl, imgInnerUrl, imgCartonUrl,
+              imgBagUrl: pBagUrl, imgInnerUrl: pInnerUrl, imgCartonUrl: pCartonUrl,
             });
           }
           gasRows = editGasRows;
         } else {
-          // Create new Packing Log rows
+          // Create new Packing Log rows — each part with its own photos
           for (const part of parts) {
+            const pBagUrl = part._imgBagUrl || imgBagUrl;
+            const pInnerUrl = part._imgInnerUrl || imgInnerUrl;
+            const pCartonUrl = part._imgCartonUrl || imgCartonUrl;
             const res = await gasPost({ action:'submit', cartonId, cartonRef, partNo: part.partNo, pi: part.pi, qty: part.qty,
               bag: part.bag, inner: part.inner, outer: part.outer,
               bagMatch: part.bagMatch, innerMatch: part.innerMatch, outerMatch: part.outerMatch,
-              imgBagUrl, imgInnerUrl, imgCartonUrl, customer: list.customer, packedBy: list.createdBy, checkerBy: '', packedDate: '',
+              imgBagUrl: pBagUrl, imgInnerUrl: pInnerUrl, imgCartonUrl: pCartonUrl, customer: list.customer, packedBy: list.createdBy, checkerBy: '', packedDate: '',
             });
             if (res && res.row) gasRows.push(res.row);
           }
@@ -2224,25 +2246,42 @@ function renderStampCards(records, errorMsg) {
   }
   if (filtered.length === 0) { wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-stamp"/></svg><p>' + (stampSearch ? 'No matches for "' + escHtml(stampSearch) + '"' : 'No verified cartons waiting to be stamped') + '</p></div>'; return; }
 
-  wrap.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px">' + filtered.map(r => {
-    const isStamped = (r.stamped||'') === 'Y' || r.stamped === true || r.stamped === 'true';
-    return `<div class="record-card ${isStamped?'approved':''}" style="border-left:4px solid ${isStamped?'var(--primary)':'var(--amber)'}">
+  // Group by cartonId
+  const groups = {};
+  for (const r of filtered) {
+    const cid = r.cartonId || 'unknown';
+    if (!groups[cid]) groups[cid] = [];
+    groups[cid].push(r);
+  }
+
+  wrap.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px">' + Object.values(groups).map(grecs => {
+    const first = grecs[0];
+    const partCount = grecs.length;
+    const isStamped = grecs.every(r => (r.stamped||'') === 'Y' || r.stamped === true || r.stamped === 'true');
+    const someStamped = grecs.some(r => (r.stamped||'') === 'Y' || r.stamped === true || r.stamped === 'true');
+    const partNos = [...new Set(grecs.map(r => r.partNo).filter(Boolean))];
+    const totalQty = grecs.reduce((sum, r) => sum + (parseInt(r.qty) || 0), 0);
+    const rowNums = grecs.map(r => r.row).join(',');
+    const statusColor = isStamped ? 'var(--primary)' : someStamped ? 'var(--amber)' : 'var(--amber)';
+
+    return `<div class="record-card ${isStamped?'approved':''}" style="border-left:4px solid ${statusColor}">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <div style="font-weight:800;font-size:1.05rem;color:${isStamped?'var(--primary)':'var(--amber)'}">${escHtml(r.customer || 'Unknown')}</div>
-        <span class="badge" style="background:${isStamped?'var(--primary-dim)':'var(--amber-dim)'};color:${isStamped?'var(--primary)':'var(--amber)'};border-color:${isStamped?'var(--primary-border)':'var(--amber-border)'}">${isStamped?'STAMPED':'PENDING STAMP'}</span>
+        <div style="font-weight:800;font-size:1.05rem;color:${statusColor}">${escHtml(first.customer || 'Unknown')}</div>
+        <span class="badge" style="background:${isStamped?'var(--primary-dim)':'var(--amber-dim)'};color:${statusColor};border-color:${isStamped?'var(--primary-border)':'var(--amber-border)'}">${isStamped?'ALL STAMPED':'PENDING STAMP'}</span>
       </div>
       <div style="font-size:0.85rem;color:var(--muted-fg);margin-bottom:6px">
-        <strong>PI:</strong> ${escHtml(r.pi || '\u2014')} | <strong>Carton:</strong> ${escHtml(r.cartonId || '\u2014')} | <strong>Part:</strong> ${escHtml(r.partNo || '\u2014')}
+        <strong>Carton:</strong> ${escHtml(first.cartonId || '\u2014')} | <strong>Parts:</strong> ${escHtml(partNos.join(', ') || '\u2014')}
+        ${partCount > 1 ? `<span class="badge badge-muted" style="margin-left:6px">${partCount} parts</span>` : ''}
       </div>
       <div style="display:flex;gap:12px;font-size:0.8rem;color:var(--muted-fg);margin-bottom:4px">
-        <span><strong>Qty:</strong> ${r.qty || '0'} pcs</span>
-        <span><strong>Packed:</strong> ${escHtml(r.packedBy || '\u2014')}</span>
-        <span><strong>Checked:</strong> ${escHtml(r.checker || '\u2014')}</span>
+        <span><strong>Qty:</strong> ${totalQty} pcs</span>
+        <span><strong>Packed:</strong> ${escHtml(first.packedBy || '\u2014')}</span>
+        <span><strong>Checked:</strong> ${escHtml(first.checker || '\u2014')}</span>
       </div>
-      ${isStamped ? `<div style="font-size:0.8rem;color:var(--primary);margin-top:8px;font-weight:700">Stamped by: ${escHtml(r.stampedBy || '')} ${r.stampedAt ? 'at ' + fmtDate(r.stampedAt) : ''}</div>` : ''}
+      ${isStamped ? `<div style="font-size:0.8rem;color:var(--primary);margin-top:8px;font-weight:700">Stamped by: ${escHtml(first.stampedBy || '')} ${first.stampedAt ? 'at ' + fmtDate(first.stampedAt) : ''}</div>` : ''}
       <div style="display:flex;gap:8px;margin-top:12px">
-        ${!isStamped ? `<button class="btn btn-primary btn-sm" onclick="stampRecord(${r.row})"><svg><use href="#ic-stamp"/></svg>Stamp Verified</button>` : ''}
-        <button class="btn btn-outline btn-sm" onclick="openCheckerDetail(${r.row})"><svg><use href="#ic-zoom"/></svg>View Detail</button>
+        ${!isStamped ? `<button class="btn btn-primary btn-sm" onclick="stampRecordGroup('${rowNums}')"><svg><use href="#ic-stamp"/></svg>Stamp All</button>` : ''}
+        <button class="btn btn-outline btn-sm" onclick="openCheckerDetailGroup('${rowNums}')"><svg><use href="#ic-zoom"/></svg>View Detail</button>
       </div>
     </div>`;
   }).join('') + '</div>';
@@ -2297,42 +2336,72 @@ function renderCheckerTable(errorMsg) {
   if (!wrap) return;
   if (recs.length === 0) { wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-check-sq"/></svg><p>' + (errorMsg || 'No records found') + '</p></div>'; return; }
 
-  wrap.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px">' + recs.map(r => {
-    const s = (r.status||'').toLowerCase();
-    const isApproved = s.includes('verified');
-    const isRejected = s.includes('rejected');
-    const statusColor = isApproved ? 'var(--primary)' : isRejected ? 'var(--danger)' : 'var(--amber)';
-    const statusBg = isApproved ? 'var(--primary-dim)' : isRejected ? 'var(--danger-dim)' : 'var(--amber-dim)';
-    const statusBorder = isApproved ? 'var(--primary-border)' : isRejected ? 'var(--danger-border)' : 'var(--amber-border)';
-    const statusText = isApproved ? 'APPROVED' : isRejected ? 'REJECTED' : 'PENDING';
-    const photos = [];
-    if (r.imgBagUrl) photos.push({url: r.imgBagUrl, lbl: 'Bag'});
-    if (r.imgInnerUrl) photos.push({url: r.imgInnerUrl, lbl: 'Inner'});
-    if (r.imgCartonUrl) photos.push({url: r.imgCartonUrl, lbl: 'Carton'});
-    const photoHtml = photos.length > 0 ? '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">' + photos.map(p => { const thumb = getThumbUrl(p.url, 200); return `<img src="${thumb}" style="width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer" onclick="event.stopPropagation();openLightbox('${p.url}')" loading="lazy" />`; }).join('') + '</div>' : '';
-    const bagOk = r.bagMatch === true || r.bagMatch === 'true' || String(r.bag||'') === '';
-    const innerOk = r.innerMatch === true || r.innerMatch === 'true' || String(r.inner||'') === '';
-    const outerOk = r.outerMatch === true || r.outerMatch === 'true' || String(r.outer||'') === '';
+  // Group records by cartonId so multiple parts show as one card
+  const groups = {};
+  for (const r of recs) {
+    const cid = r.cartonId || 'unknown';
+    if (!groups[cid]) groups[cid] = [];
+    groups[cid].push(r);
+  }
 
-    return `<div class="record-card ${isRejected?'rejected':isApproved?'approved':''}" style="border-left:4px solid ${statusColor}" ${r.row != null ? `onclick="openCheckerDetail(${r.row})"` : ''}>
+  wrap.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px">' + Object.values(groups).map(grecs => {
+    const first = grecs[0];
+    const partCount = grecs.length;
+    // Status: rejected > pending > approved
+    let isRejected = false, isApproved = false;
+    for (const r of grecs) {
+      const s = (r.status||'').toLowerCase();
+      if (s.includes('rejected')) isRejected = true;
+      else if (s.includes('verified')) isApproved = true;
+    }
+    const statusColor = isRejected ? 'var(--danger)' : isApproved ? 'var(--primary)' : 'var(--amber)';
+    const statusBg = isRejected ? 'var(--danger-dim)' : isApproved ? 'var(--primary-dim)' : 'var(--amber-dim)';
+    const statusBorder = isRejected ? 'var(--danger-border)' : isApproved ? 'var(--primary-border)' : 'var(--amber-border)';
+    const statusText = isRejected ? 'REJECTED' : isApproved ? 'APPROVED' : 'PENDING';
+
+    // Combine parts info
+    const partNos = [...new Set(grecs.map(r => r.partNo).filter(Boolean))];
+    const pis = [...new Set(grecs.map(r => r.pi).filter(Boolean))];
+    const totalQty = grecs.reduce((sum, r) => sum + (parseInt(r.qty) || 0), 0);
+
+    // Collect all unique photos across parts
+    const allPhotos = [];
+    const seenUrls = new Set();
+    for (const r of grecs) {
+      if (r.imgBagUrl && !seenUrls.has(r.imgBagUrl)) { seenUrls.add(r.imgBagUrl); allPhotos.push({url: r.imgBagUrl, lbl: partCount > 1 ? `Bag (${r.partNo||'?'})` : 'Bag'}); }
+      if (r.imgInnerUrl && !seenUrls.has(r.imgInnerUrl)) { seenUrls.add(r.imgInnerUrl); allPhotos.push({url: r.imgInnerUrl, lbl: partCount > 1 ? `Inner (${r.partNo||'?'})` : 'Inner'}); }
+      if (r.imgCartonUrl && !seenUrls.has(r.imgCartonUrl)) { seenUrls.add(r.imgCartonUrl); allPhotos.push({url: r.imgCartonUrl, lbl: partCount > 1 ? `Carton (${r.partNo||'?'})` : 'Carton'}); }
+    }
+    const photoHtml = allPhotos.length > 0 ? '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">' + allPhotos.map(p => { const thumb = getThumbUrl(p.url, 200); return `<img src="${thumb}" style="width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer" onclick="event.stopPropagation();openLightbox('${p.url}')" loading="lazy" title="${p.lbl}" />`; }).join('') + '</div>' : '';
+
+    // Barcode match: all parts must match
+    const bagOk = grecs.every(r => r.bagMatch === true || r.bagMatch === 'true' || String(r.bag||'') === '');
+    const innerOk = grecs.every(r => r.innerMatch === true || r.innerMatch === 'true' || String(r.inner||'') === '');
+    const outerOk = grecs.every(r => r.outerMatch === true || r.outerMatch === 'true' || String(r.outer||'') === '');
+
+    // Row numbers for detail view
+    const rowNums = grecs.map(r => r.row).filter(Boolean).join(',');
+
+    return `<div class="record-card ${isRejected?'rejected':isApproved?'approved':''}" style="border-left:4px solid ${statusColor}" ${rowNums ? `onclick="openCheckerDetailGroup('${rowNums}')"` : ''}>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <div style="font-weight:800;font-size:1.05rem;color:${statusColor}">${escHtml(r.customer||'Unknown')}</div>
+        <div style="font-weight:800;font-size:1.05rem;color:${statusColor}">${escHtml(first.customer||'Unknown')}</div>
         <span class="badge" style="background:${statusBg};color:${statusColor};border-color:${statusBorder}">${statusText}</span>
       </div>
       <div style="font-size:0.85rem;color:var(--muted-fg);margin-bottom:6px">
-        <strong>PI:</strong> ${escHtml(r.pi||'\u2014')} | <strong>Carton:</strong> ${escHtml(r.cartonId||'\u2014')} | <strong>Part:</strong> ${escHtml(r.partNo||'\u2014')}
+        <strong>PI:</strong> ${escHtml(pis.join(', ')||'\u2014')} | <strong>Carton:</strong> ${escHtml(first.cartonId||'\u2014')} | <strong>Parts:</strong> ${escHtml(partNos.join(', ')||'\u2014')}
+        ${partCount > 1 ? `<span class="badge badge-muted" style="margin-left:6px">${partCount} parts</span>` : ''}
       </div>
       <div style="display:flex;gap:12px;font-size:0.8rem;color:var(--muted-fg);margin-bottom:4px">
-        <span><strong>Qty:</strong> ${r.qty||'0'} pcs</span>
-        <span><strong>Packed:</strong> ${escHtml(r.packedBy||'\u2014')}</span>
-        <span>${fmtDate(r.timestamp||r.createdAt)}</span>
+        <span><strong>Qty:</strong> ${totalQty} pcs</span>
+        <span><strong>Packed:</strong> ${escHtml(first.packedBy||'\u2014')}</span>
+        <span>${fmtDate(first.timestamp||first.createdAt)}</span>
       </div>
       <div style="display:flex;gap:10px;font-size:0.75rem;margin-top:6px">
         <span style="color:${bagOk?'var(--green)':'var(--danger)'}">Bag ${bagOk?'\u2705':'\u274C'}</span>
         <span style="color:${innerOk?'var(--green)':'var(--danger)'}">Inner ${innerOk?'\u2705':'\u274C'}</span>
         <span style="color:${outerOk?'var(--green)':'var(--danger)'}">Outer ${outerOk?'\u2705':'\u274C'}</span>
       </div>
-      ${isRejected && r.remarks ? `<div style="font-size:0.8rem;color:var(--danger);margin-top:8px;font-style:italic;background:var(--danger-dim);padding:8px;border-radius:6px;border:1px solid var(--danger-border)">${escHtml(r.remarks)}</div>` : ''}
+      ${isRejected ? `<div style="font-size:0.8rem;color:var(--danger);margin-top:8px;font-style:italic;background:var(--danger-dim);padding:8px;border-radius:6px;border:1px solid var(--danger-border)">${escHtml(grecs.find(r => r.remarks)?.remarks || '')}</div>` : ''}
       ${photoHtml}
     </div>`;
   }).join('') + '</div>';
@@ -2348,6 +2417,25 @@ async function openCheckerDetail(rowNum) {
     checkerRecordCache.set(rowNum, res);
     showCheckerDetailModal(res);
   } catch { toast('Error loading record', 'error'); }
+}
+
+async function openCheckerDetailGroup(rowNums) {
+  const nums = rowNums.split(',').map(n => parseInt(n.trim())).filter(Boolean);
+  if (nums.length === 0) return;
+  if (nums.length === 1) { openCheckerDetail(nums[0]); return; }
+  // Fetch all records for this carton
+  const records = [];
+  for (const n of nums) {
+    const cached = getCachedCheckerRecord(n);
+    if (cached) { records.push(cached); continue; }
+    try {
+      const res = await gasGet({ action: 'record', row: n });
+      if (res && !res.error) { records.push(res); checkerRecordCache.set(n, res); }
+    } catch { /* skip */ }
+  }
+  if (records.length === 0) { toast('Failed to load records', 'error'); return; }
+  if (records.length === 1) { showCheckerDetailModal(records[0]); return; }
+  showCheckerDetailModalGroup(records);
 }
 
 function showCheckerDetailModal(r) {
@@ -2436,6 +2524,112 @@ function showCheckerDetailModal(r) {
   </div>`;
 }
 
+function showCheckerDetailModalGroup(records) {
+  const wrap = document.getElementById('checker-modal-wrap');
+  const first = records[0];
+  // Determine overall status: rejected > pending > approved
+  let isRejected = false, isApproved = false, isPending = false;
+  for (const r of records) {
+    const s = (r.status||'').toLowerCase();
+    if (s.includes('rejected')) isRejected = true;
+    else if (s.includes('verified')) isApproved = true;
+    else isPending = true;
+  }
+  const overallStatus = isRejected ? 'REJECTED' : isPending ? 'PENDING' : 'APPROVED';
+  const statusBadgeColor = isRejected ? 'badge-red' : isPending ? 'badge-amber' : 'badge-green';
+
+  const rowNums = records.map(r => r.row).join(',');
+
+  // Build parts sections
+  const partsHtml = records.map((r, idx) => {
+    const bagOk = r.bagMatch === true || r.bagMatch === 'true' || String(r.bag||'') === '';
+    const innerOk = r.innerMatch === true || r.innerMatch === 'true' || String(r.inner||'') === '';
+    const outerOk = r.outerMatch === true || r.outerMatch === 'true' || String(r.outer||'') === '';
+    const photos = [];
+    if (r.imgBagUrl) photos.push({url: r.imgBagUrl, lbl: 'Bag'});
+    if (r.imgInnerUrl) photos.push({url: r.imgInnerUrl, lbl: 'Inner'});
+    if (r.imgCartonUrl) photos.push({url: r.imgCartonUrl, lbl: 'Carton'});
+    const photoHtml = photos.length > 0 ? '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">' + photos.map(p => { const thumb = getThumbUrl(p.url, 200); return `<img src="${thumb}" style="width:64px;height:64px;object-fit:cover;border-radius:6px;border:1px solid var(--border);cursor:pointer" onclick="event.stopPropagation();openLightbox('${p.url}')" loading="lazy" />`; }).join('') + '</div>' : '';
+
+    return `
+    <div style="border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:10px;background:var(--muted)">
+      <div style="font-weight:700;font-size:0.9rem;margin-bottom:8px;color:var(--primary)">Part ${idx+1}: ${escHtml(r.partNo||'\u2014')}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.8rem;margin-bottom:8px">
+        <div><strong>PI:</strong> ${escHtml(r.pi||'\u2014')}</div>
+        <div><strong>Qty:</strong> ${r.qty||'0'} pcs</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;font-size:0.8rem;margin-bottom:4px">
+        <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--card);border-radius:6px">
+          <span style="color:${bagOk?'var(--green)':'var(--danger)'}">${bagOk?'\u2705':'\u274C'}</span>
+          <span><strong>Bag:</strong> ${escHtml(r.bag||'\u2014')}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--card);border-radius:6px">
+          <span style="color:${innerOk?'var(--green)':'var(--danger)'}">${innerOk?'\u2705':'\u274C'}</span>
+          <span><strong>Inner:</strong> ${escHtml(r.inner||'\u2014')}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--card);border-radius:6px">
+          <span style="color:${outerOk?'var(--green)':'var(--danger)'}">${outerOk?'\u2705':'\u274C'}</span>
+          <span><strong>Outer:</strong> ${escHtml(r.outer||'\u2014')}</span>
+        </div>
+      </div>
+      ${photoHtml}
+    </div>`;
+  }).join('');
+
+  // Verdict section — only show if any part is still pending
+  const hasPending = records.some(r => {
+    const s = (r.status||'').toLowerCase();
+    return !s || s === '' || s === 'pending';
+  });
+  const verdictSection = hasPending ? `
+    <div class="section-title" style="border-top:1px solid var(--border);padding-top:16px">Checker Decision (applies to ALL parts)</div>
+    <div style="display:flex;gap:10px;margin-bottom:12px">
+      <button class="btn btn-primary" style="flex:1" id="btnApprove" onclick="checkerSelectVerdict('Approved')"><svg><use href="#ic-check"/></svg>Approve All</button>
+      <button class="btn btn-danger-outline" style="flex:1" id="btnReject" onclick="checkerSelectVerdict('Rejected')"><svg><use href="#ic-file-x"/></svg>Reject All</button>
+    </div>
+    <div class="form-group" style="margin-bottom:10px"><label class="form-label">Checker Name <span class="req">*</span></label><input type="text" id="checker-name" placeholder="Enter your name..." /></div>
+    <div class="form-group" style="margin-bottom:14px"><label class="form-label">Remarks / Rejection Reason</label><textarea id="checker-remarks" rows="3" placeholder="Enter remarks or reason for rejection..." style="text-transform:none"></textarea></div>
+    <button class="btn btn-primary btn-full" id="btnSubmitVerdict" onclick="checkerSubmitVerdictGroup('${rowNums}')">Submit Decision</button>
+  ` : '';
+
+  // Stamping section — only if all are approved
+  const allApproved = records.every(r => (r.status||'').toLowerCase().includes('verified'));
+  const allStamped = records.every(r => (r.stamped||'') === 'Y' || r.stamped === true || r.stamped === 'true');
+  const stampSection = allApproved ? `
+    <div class="section-title">Stamping</div>
+    <div style="margin-bottom:16px">
+      ${allStamped
+        ? `<div style="padding:12px 16px;background:var(--primary-dim);border:1.5px solid var(--primary-border);border-radius:8px;color:var(--primary);font-weight:800;font-size:13px">\u2705 ALL PARTS STAMPED</div>`
+        : `<button class="btn btn-primary btn-full" onclick="checkerMarkStampedGroup('${rowNums}')"><svg><use href="#ic-stamp"/></svg>Mark All as Stamped</button>`
+      }
+    </div>
+  ` : '';
+
+  const totalQty = records.reduce((sum, r) => sum + (parseInt(r.qty) || 0), 0);
+
+  wrap.innerHTML = `<div class="modal-backdrop" id="checker-detail-modal" onclick="if(event.target===this)closeCheckerDetail()">
+    <div class="modal" style="max-width:640px">
+      <div class="modal-header">
+        <div class="modal-title"><svg style="width:16px;height:16px"><use href="#ic-check-sq"/></svg>${escHtml(first.customer||'Record')}<span class="badge ${statusBadgeColor}" style="margin-left:8px">${overallStatus}</span></div>
+        <button class="btn-icon" onclick="closeCheckerDetail()"><svg style="width:14px;height:14px"><use href="#ic-x"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <div class="detail-kv" style="margin-bottom:16px">
+          <div class="kv-box"><div class="kv-label">Carton ID</div><div class="kv-value">${escHtml(first.cartonId||'\u2014')}</div></div>
+          <div class="kv-box"><div class="kv-label">Carton Ref</div><div class="kv-value">${escHtml(first.cartonRef||'\u2014')}</div></div>
+          <div class="kv-box"><div class="kv-label">Total Qty</div><div class="kv-value">${totalQty}</div></div>
+          <div class="kv-box"><div class="kv-label">Parts</div><div class="kv-value">${records.length}</div></div>
+          <div class="kv-box"><div class="kv-label">Packed By</div><div class="kv-value">${escHtml(first.packedBy||'\u2014')}</div></div>
+          <div class="kv-box"><div class="kv-label">Date</div><div class="kv-value">${fmtDate(first.timestamp||first.createdAt)}</div></div>
+        </div>
+        ${partsHtml}
+        ${stampSection}
+        ${verdictSection}
+      </div>
+    </div>
+  </div>`;
+}
+
 function closeCheckerDetail() { document.getElementById('checker-modal-wrap').innerHTML = ''; currentCheckerRecord = null; selectedCheckerVerdict = null; }
 
 let selectedCheckerVerdict = null;
@@ -2462,6 +2656,28 @@ async function checkerSubmitVerdict() {
   } catch(e) { toast('Submit failed: ' + e.message, 'error'); if (btn) { btn.disabled = false; btn.textContent = 'Submit Decision'; } }
 }
 
+async function checkerSubmitVerdictGroup(rowNums) {
+  const name = document.getElementById('checker-name').value.trim();
+  const remarks = document.getElementById('checker-remarks').value.trim();
+  if (!name) { toast('Please enter Checker Name', 'error'); return; }
+  if (!selectedCheckerVerdict) { toast('Please select Approve or Reject', 'error'); return; }
+  const btn = document.getElementById('btnSubmitVerdict');
+  if (btn) { btn.disabled = true; btn.textContent = 'Submitting...'; }
+  const statusStr = selectedCheckerVerdict === 'Approved' ? 'Verified \u2705' : 'Rejected \u274C';
+  const nums = rowNums.split(',').map(n => parseInt(n.trim())).filter(Boolean);
+  let successCount = 0;
+  try {
+    for (const n of nums) {
+      try {
+        const res = await gasPost({ action: 'verify', row: n, checker: name.toUpperCase(), status: statusStr, remarks: remarks.toUpperCase() });
+        if (res && res.success) successCount++;
+      } catch { /* skip individual failures */ }
+    }
+    if (successCount > 0) { toast(`${successCount} part(s) ${selectedCheckerVerdict.toLowerCase()}d \u2705`, 'success'); closeCheckerDetail(); await loadCheckerRecords(); }
+    else { throw new Error('All submissions failed'); }
+  } catch(e) { toast('Submit failed: ' + e.message, 'error'); if (btn) { btn.disabled = false; btn.textContent = 'Submit Decision'; } }
+}
+
 async function checkerMarkStamped(row) {
   const staff = prompt('ENTER STAMPING STAFF NAME:');
   if (!staff) return;
@@ -2472,6 +2688,23 @@ async function checkerMarkStamped(row) {
   } catch(e) { toast('Stamp failed: ' + e.message, 'error'); }
 }
 
+async function checkerMarkStampedGroup(rowNums) {
+  const staff = prompt('ENTER STAMPING STAFF NAME:');
+  if (!staff) return;
+  const nums = rowNums.split(',').map(n => parseInt(n.trim())).filter(Boolean);
+  let successCount = 0;
+  try {
+    for (const n of nums) {
+      try {
+        const res = await gasPost({ action: 'stamp', row: n, staff: staff.toUpperCase() });
+        if (res && res.success) successCount++;
+      } catch { /* skip individual failures */ }
+    }
+    if (successCount > 0) { toast(`${successCount} part(s) stamped \u2705`, 'success'); closeCheckerDetail(); checkerViewMode = 'stamp'; await renderCheckerContent(); }
+    else { throw new Error('All stamp operations failed'); }
+  } catch(e) { toast('Stamp failed: ' + e.message, 'error'); }
+}
+
 async function stampRecord(row) {
   const staff = prompt('ENTER STAMPING STAFF NAME:');
   if (!staff) return;
@@ -2479,6 +2712,23 @@ async function stampRecord(row) {
     const res = await gasPost({ action: 'stamp', row: row, staff: staff.toUpperCase() });
     if (res && res.success) { toast('Stamped successfully \u2705', 'success'); checkerViewMode = 'stamp'; await renderCheckerContent(); }
     else { throw new Error(res?.error || 'Unknown error'); }
+  } catch(e) { toast('Stamp failed: ' + e.message, 'error'); }
+}
+
+async function stampRecordGroup(rowNums) {
+  const staff = prompt('ENTER STAMPING STAFF NAME:');
+  if (!staff) return;
+  const nums = rowNums.split(',').map(n => parseInt(n.trim())).filter(Boolean);
+  let successCount = 0;
+  try {
+    for (const n of nums) {
+      try {
+        const res = await gasPost({ action: 'stamp', row: n, staff: staff.toUpperCase() });
+        if (res && res.success) successCount++;
+      } catch { /* skip individual failures */ }
+    }
+    if (successCount > 0) { toast(`${successCount} part(s) stamped \u2705`, 'success'); checkerViewMode = 'stamp'; await renderCheckerContent(); }
+    else { throw new Error('All stamp operations failed'); }
   } catch(e) { toast('Stamp failed: ' + e.message, 'error'); }
 }
 
