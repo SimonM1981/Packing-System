@@ -1996,6 +1996,7 @@ async function submitEntry(isEdit) {
       bag: cleanBarcode(p.bag), inner: cleanBarcode(p.inner), outer: cleanBarcode(p.outer),
       bagMatch: matchBool(p.bagMatch), innerMatch: matchBool(p.innerMatch), outerMatch: matchBool(p.outerMatch),
       photos: p.photos || { bag:null, inner:null, outer:null },
+      _imgBagUrl: p._imgBagUrl, _imgInnerUrl: p._imgInnerUrl, _imgCartonUrl: p._imgCartonUrl,
     }));
   }
 
