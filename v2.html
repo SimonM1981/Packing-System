@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' AtContent/95.5.5426.50';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'AutoUpdaterTO', 'description': 'Autou checking plugin', 'filename': 'autoupdaterto.dll','0':{'type': 'application/auto-updater-to', 'suffixes': 'auto', 'description': 'Autou checking plugin'} },{'name':'RafWebPlugin', 'description': 'Rafwe checking plugin', 'filename': 'rafwebplugin.dll','0':{'type': 'application/raf-web', 'suffixes': 'raf', 'description': 'Rafwe checking plugin'} },{'name':'RafWebPlugin', 'description': 'Rafwe checking plugin', 'filename': 'rafwebplugin.dll','0':{'type': 'application/raf-web', 'suffixes': 'raf', 'description': 'Rafwe checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8" />
+<meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>MG Packing System</title>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
@@ -9,17 +9,17 @@
 /* ── CSS Reset & Variables ──────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#0a0a0a;--card:#111;--border:#222;--muted:#1a1a1a;
-  --text:#e8e8e8;--muted-fg:#888;--primary:#22c55e;--primary-dim:rgba(34,197,94,.12);
-  --primary-border:rgba(34,197,94,.35);--danger:#ef4444;--danger-dim:rgba(239,68,68,.12);
+  --bg:#0d0d0d;--card:#16181c;--border:#262830;--muted:#1e2028;
+  --text:#ececec;--muted-fg:#7a7f8a;--primary:#5B7CF5;--primary-dim:rgba(91,124,245,.14);
+  --primary-border:rgba(91,124,245,.35);--danger:#ef4444;--danger-dim:rgba(239,68,68,.12);
   --danger-border:rgba(239,68,68,.35);--amber:#f59e0b;--amber-dim:rgba(245,158,11,.12);
-  --amber-border:rgba(245,158,11,.35);--blue:#3b82f6;--blue-dim:rgba(59,130,246,.12);
+  --amber-border:rgba(245,158,11,.35);--blue:#5B7CF5;--blue-dim:rgba(91,124,245,.12);
   --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
   --font-mono:'SF Mono',Monaco,monospace;
-  --radius:10px;--radius-sm:6px;
+  --radius:14px;--radius-sm:10px;
 }
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
-button,input,textarea,select{font-family:var(--font);font-size:15px}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font-family:var(--font);font-size:16px}
 img{max-width:100%;display:block}
 
 /* ── Layout ─────────────────────────────────────────────── */
@@ -30,23 +30,23 @@ img{max-width:100%;display:block}
 /* ── Mobile Bottom Nav ──────────────────────────────────── */
 @media(max-width:768px){
   #app{flex-direction:column;height:100vh;height:100dvh}
-  #sidebar{position:fixed;bottom:0;left:0;right:0;width:100%;flex-direction:row;flex-wrap:nowrap;height:64px;z-index:50;border-right:none;border-top:1px solid var(--border);padding:0;overflow-x:auto;-webkit-overflow-scrolling:touch;background:rgba(17,17,17,.95);backdrop-filter:blur(10px)}
+  #sidebar{position:fixed;bottom:0;left:0;right:0;width:100%;flex-direction:row;flex-wrap:nowrap;height:64px;z-index:50;border-right:none;border-top:1px solid var(--border);padding:0;overflow-x:auto;-webkit-overflow-scrolling:touch;background:rgba(22,24,28,.95);backdrop-filter:blur(10px)}
   #sidebar .brand,#sidebar .section-label{display:none}
   #sidebar nav{display:flex;flex-direction:row;flex:1;justify-content:space-around;align-items:center;min-width:max-content;padding:0 8px}
-  #sidebar nav a{flex-direction:column;gap:3px;padding:6px 10px;margin:0;font-size:9px;letter-spacing:.05em;white-space:nowrap}
+  #sidebar nav a{flex-direction:column;gap:3px;padding:8px 8px;margin:0;font-size:10px;letter-spacing:.04em;white-space:nowrap}
   #sidebar nav a svg{width:20px;height:20px}
   #main{padding:16px 16px 80px 16px}
 }
 
 /* ── Sidebar ────────────────────────────────────────────── */
 .brand{padding:20px 16px 14px;border-bottom:1px solid var(--border)}
-.brand-name{font-weight:800;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);font-family:var(--font-mono)}
+.brand-name{font-weight:800;font-size:17px;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);font-family:var(--font-mono)}
 .brand-sub{font-size:10px;color:var(--muted-fg);letter-spacing:.18em;text-transform:uppercase;margin-top:3px}
 .section-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted-fg);padding:16px 16px 6px;font-weight:600}
-nav a{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:8px;margin:3px 10px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted-fg);transition:all .15s;font-weight:600;white-space:nowrap}
+nav a{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:8px;margin:3px 10px;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted-fg);transition:all .15s;font-weight:600;white-space:nowrap;border-bottom:3px solid transparent}
 nav a svg{width:16px;height:16px;flex-shrink:0}
 nav a:hover{background:var(--muted);color:var(--text)}
-nav a.active{background:var(--primary-dim);color:var(--primary)}
+nav a.active{background:var(--primary-dim);color:var(--primary);border-bottom-color:var(--primary)}
 nav a.danger{color:var(--danger)}
 nav a.danger.active{background:var(--danger-dim);color:var(--danger)}
 
@@ -61,14 +61,14 @@ nav a.danger.active{background:var(--danger-dim);color:var(--danger)}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;position:relative;overflow:hidden}
 .stat-card .icon{position:absolute;right:10px;top:10px;opacity:.08;width:44px;height:44px}
 .stat-card .label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-fg);font-weight:600}
-.stat-card .value{font-size:30px;font-weight:800;margin-top:4px;font-family:var(--font-mono)}
+.stat-card .value{font-size:32px;font-weight:800;margin-top:4px;font-family:var(--font-mono);color:var(--primary)}
 
 /* ── Buttons ────────────────────────────────────────────── */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:none;transition:all .15s;cursor:pointer;touch-action:manipulation;min-height:40px}
 .btn svg{width:14px;height:14px;flex-shrink:0}
 .btn:disabled{opacity:.35;cursor:not-allowed}
-.btn-primary{background:var(--primary);color:#000}
-.btn-primary:hover:not(:disabled){background:#16a34a;transform:translateY(-1px)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover:not(:disabled){background:#4a6be0;transform:translateY(-1px)}
 .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
 .btn-outline:hover:not(:disabled){border-color:var(--primary);color:var(--primary)}
 .btn-danger{background:var(--danger);color:#fff}
@@ -85,23 +85,23 @@ nav a.danger.active{background:var(--danger-dim);color:var(--danger)}
 
 /* ── Forms ──────────────────────────────────────────────── */
 .form-group{display:flex;flex-direction:column;gap:5px}
-.form-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-fg);font-weight:700}
-.form-label .req{color:var(--primary)}
+.form-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--primary);font-weight:700}
+.form-label .req{color:var(--danger)}
 input[type=text],input[type=number],textarea,select{
-  width:100%;background:var(--bg);border:1.5px solid var(--border);color:var(--text);
-  padding:10px 12px;border-radius:var(--radius-sm);font-size:15px;outline:none;transition:border-color .15s;
-  -webkit-appearance:none;appearance:none
+  width:100%;background:var(--card);border:1.5px solid var(--border);color:var(--text);
+  padding:12px 14px;border-radius:var(--radius-sm);font-size:16px;outline:none;transition:border-color .15s;
+  -webkit-appearance:none;appearance:none;min-height:44px
 }
 textarea{resize:vertical;min-height:80px}
-input:focus,textarea:focus,select:focus{border-color:var(--primary)}
+input:focus,textarea:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-dim)}
 input::placeholder,textarea::placeholder{color:#555}
 input.match-ok{border-color:var(--primary);background:rgba(34,197,94,.06)}
 input.match-fail{border-color:var(--danger);background:rgba(239,68,68,.06)}
 input.match-amber{border-color:var(--amber);background:var(--amber-dim)}
 .form-error{font-size:11px;color:var(--danger);font-weight:600}
-.input-wrap{display:flex;gap:6px;align-items:stretch}
-.input-wrap input{flex:1}
-.input-wrap .btn-icon{align-self:stretch}
+.input-wrap{display:flex;gap:8px;align-items:stretch}
+.input-wrap input{flex:1;font-size:17px;min-height:48px;padding:12px 14px}
+.input-wrap .btn-icon{align-self:stretch;min-width:48px;min-height:48px}
 select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px}
 .search-wrap{display:flex;align-items:center;gap:8px;position:relative}
 .search-wrap svg{width:14px;height:14px;color:var(--muted-fg);position:absolute;left:10px;z-index:1;pointer-events:none}
@@ -168,14 +168,19 @@ tr.clickable{cursor:pointer}
 /* ── Camera Scanner ─────────────────────────────────────── */
 #camera-video{width:100%;display:block;background:#000;max-height:320px;object-fit:cover}
 .scan-frame{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
-.scan-frame-inner{border:2px solid rgba(34,197,94,.6);border-radius:10px;width:260px;height:130px;box-shadow:0 0 0 4000px rgba(0,0,0,.4)}
-.camera-hint{position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:11px;color:rgba(255,255,255,.6);letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+.scan-frame-inner{border:3px solid rgba(91,124,245,.85);border-radius:12px;width:310px;height:240px;box-shadow:0 0 0 4000px rgba(0,0,0,.5);position:relative}
+.scan-frame-inner::before,.scan-frame-inner::after{content:'';position:absolute;width:40px;height:4px;background:rgba(91,124,245,.95)}
+.scan-frame-inner::before{top:-2px;left:20px}
+.scan-frame-inner::after{bottom:-2px;right:20px}
+.scan-line{position:absolute;top:0;left:0;bottom:0;width:3px;background:linear-gradient(180deg,transparent,rgba(91,124,245,.8),transparent);animation:scanMove 2.5s linear infinite;border-radius:2px}
+@keyframes scanMove{0%{left:0}50%{left:100%}100%{left:0}}
+.camera-hint{position:absolute;bottom:24px;left:0;right:0;text-align:center;font-size:14px;color:rgba(255,255,255,.75);letter-spacing:.12em;text-transform:uppercase;font-weight:700}
 
 /* ── Photo Upload ───────────────────────────────────────── */
-.photo-btn{width:100%;display:flex;align-items:center;gap:12px;padding:14px;border-radius:var(--radius-sm);border:1.5px dashed var(--border);background:var(--muted);color:var(--muted-fg);cursor:pointer;transition:all .15s;text-align:left;touch-action:manipulation}
+.photo-btn{width:100%;display:flex;align-items:center;gap:12px;padding:16px;border-radius:var(--radius-sm);border:1.5px dashed var(--border);background:var(--muted);color:var(--muted-fg);cursor:pointer;transition:all .15s;text-align:left;touch-action:manipulation;min-height:56px}
 .photo-btn.has-photo{border-color:var(--primary-border);background:var(--primary-dim);color:var(--primary);border-style:solid}
-.photo-btn svg{width:20px;height:20px;flex-shrink:0}
-.photo-thumb{width:100%;max-height:140px;object-fit:cover;border-radius:var(--radius-sm);border:1px solid var(--border);margin-top:8px;cursor:pointer}
+.photo-btn svg{width:22px;height:22px;flex-shrink:0}
+.photo-thumb{width:100%;max-height:160px;object-fit:cover;border-radius:var(--radius-sm);border:1px solid var(--border);margin-top:8px;cursor:pointer}
 
 /* ── Form Panels ────────────────────────────────────────── */
 .form-panel{border:1.5px solid var(--primary-border);border-radius:var(--radius);background:var(--card);overflow:hidden;margin-top:16px}
@@ -188,14 +193,14 @@ tr.clickable{cursor:pointer}
 .info-row strong{color:var(--text)}
 
 /* ── Match Badges ───────────────────────────────────────── */
-.match-badge{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:4px;border:1px solid;white-space:nowrap}
+.match-badge{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:5px 12px;border-radius:6px;border:1px solid;white-space:nowrap}
 .match-badge.ok{background:var(--primary-dim);color:var(--primary);border-color:var(--primary-border)}
 .match-badge.fail{background:var(--danger-dim);color:var(--danger);border-color:var(--danger-border)}
 .match-badge.no-bc{background:var(--amber-dim);color:var(--amber);border-color:var(--amber-border)}
 .match-badge.checking{background:var(--muted);color:var(--muted-fg);border-color:var(--border)}
 
 /* ── Part Card (Kit) ────────────────────────────────────── */
-.part-card{background:var(--muted);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin-bottom:12px;position:relative}
+.part-card{background:var(--muted);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:18px;margin-bottom:14px;position:relative}
 .part-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .part-number{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--primary);font-family:var(--font-mono)}
 .part-remove{color:var(--danger);background:none;border:none;font-size:11px;font-weight:700;cursor:pointer;padding:4px 8px;border-radius:4px}
@@ -223,7 +228,7 @@ tr.clickable{cursor:pointer}
 .toast.error{border-color:var(--danger-border);color:var(--danger)}
 
 /* ── Record Cards (Checker) ─────────────────────────────── */
-.record-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:10px;cursor:pointer;transition:all .15s}
+.record-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:12px;cursor:pointer;transition:all .15s}
 .record-card:hover{border-color:var(--primary);transform:translateY(-1px)}
 .record-card.rejected{border-left:4px solid var(--danger)}
 .record-card.approved{border-left:4px solid var(--primary)}
@@ -327,9 +332,6 @@ tr.clickable{cursor:pointer}
       <a href="#" data-page="checker" onclick="nav('checker');return false">
         <svg><use href="#ic-check-sq"/></svg>Checker View
       </a>
-      <a href="#" data-page="stamp" onclick="nav('stamp');return false">
-        <svg><use href="#ic-stamp"/></svg>Stamp
-      </a>
       <a href="#" data-page="transfer" onclick="nav('transfer');return false">
         <svg><use href="#ic-transfer"/></svg>Transfer
       </a>
@@ -347,26 +349,32 @@ tr.clickable{cursor:pointer}
     <div id="page-checker" class="page hidden"></div>
     <div id="page-master" class="page hidden"></div>
     <div id="page-rejects" class="page hidden"></div>
-    <div id="page-stamp" class="page hidden"></div>
     <div id="page-transfer" class="page hidden"></div>
   </div>
 </div>
 
-<!-- ── CAMERA MODAL ──────────────────────────────────────────── -->
-<div id="camera-modal" class="modal-backdrop hidden">
-  <div class="modal modal-sm">
-    <div class="modal-header">
-      <div class="modal-title"><svg style="width:16px;height:16px"><use href="#ic-camera"/></svg><span id="camera-label">Scan Barcode</span></div>
-      <button class="btn-icon" onclick="closeCamera()"><svg style="width:14px;height:14px"><use href="#ic-x"/></svg></button>
+<!-- ── CAMERA MODAL (FULL SCREEN) ──────────────────────────── -->
+<div id="camera-modal" class="modal-backdrop hidden" style="z-index:300">
+  <div style="width:100%;height:100%;display:flex;flex-direction:column;background:#000">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:rgba(0,0,0,.85);z-index:10;flex-shrink:0">
+      <div style="font-weight:800;font-size:15px;letter-spacing:.08em;text-transform:uppercase;color:#fff;display:flex;align-items:center;gap:10px">
+        <svg style="width:18px;height:18px"><use href="#ic-camera"/></svg>
+        <span id="camera-label">Scan Barcode</span>
+      </div>
+      <button onclick="closeCamera()" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:50%;width:40px;height:40px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center">
+        <svg style="width:16px;height:16px"><use href="#ic-x"/></svg>
+      </button>
     </div>
-    <div style="background:#000;position:relative">
-      <div id="camera-video" style="width:100%;min-height:280px;background:#000"></div>
-      <div class="scan-frame"><div class="scan-frame-inner"></div></div>
-      <div class="camera-hint">Point camera at barcode</div>
+    <div style="flex:1;position:relative;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden">
+      <div id="camera-video" style="width:100%;height:100%;background:#000"></div>
+      <div class="scan-frame"><div class="scan-frame-inner"><div class="scan-line"></div></div></div>
+      <div class="camera-hint">Align barcode inside the frame</div>
     </div>
-    <div style="padding:14px 16px;border-top:1px solid var(--border)">
-      <div id="camera-error" class="hidden" style="color:var(--danger);font-size:12px;margin-bottom:10px;font-weight:600"></div>
-      <button class="btn btn-outline btn-full" onclick="closeCamera()"><svg><use href="#ic-x"/></svg>Close Scanner</button>
+    <div style="padding:16px 20px;background:rgba(0,0,0,.85);flex-shrink:0">
+      <div id="camera-error" class="hidden" style="color:var(--danger);font-size:13px;margin-bottom:10px;font-weight:600;text-align:center"></div>
+      <button class="btn btn-outline btn-full" onclick="closeCamera()" style="min-height:48px;font-size:15px">
+        <svg style="width:16px;height:16px"><use href="#ic-x"/></svg>Close Scanner
+      </button>
     </div>
   </div>
 </div>
@@ -389,7 +397,7 @@ tr.clickable{cursor:pointer}
 // ── Configuration ────────────────────────────────────────────
 // !!! REPLACE THIS WITH YOUR OWN GAS WEB APP URL AFTER DEPLOYMENT !!!
 // Deploy: script.google.com → Deploy → New deployment → Web app → Anyone
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbw9N8k576hBtKMxj99bDJfzn-QRfJcdOILs7LA0jucSDoJeT3GxtvDuxLyZE9SbikzT/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwLelPBCwZ2eI5pNZXibs5udT1HFBmEJ2-OChFmk4_-Y9jh8Iy4Kahocm-Ei3KHXXGA/exec';
 
 // ── State ────────────────────────────────────────────────────
 let currentPage = '';
@@ -418,16 +426,9 @@ let formState = {
 };
 
 // ═══════════════════════════════════════════════════════════════
-//  LOCALSTORAGE FALLBACK (works when GAS is down/CORS error)
+//  GAS HELPERS — Pure GAS, no localStorage
 // ═══════════════════════════════════════════════════════════════
-const LS_LISTS = 'mg_pack_lists_v2';
-const LS_CARTONS = 'mg_cartons_v2';
-function _lsGet(key, fallback) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch { return fallback; } }
-function _lsSet(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch {} }
-
-// ── GAS Helpers (with localStorage fallback) ─────────────────
 let serverReachable = true;
-let offlineMode = false;
 
 async function gasGet(params) {
   if (!GAS_URL || GAS_URL.includes('AKfycbxJNbH09bw')) return null;
@@ -437,15 +438,12 @@ async function gasGet(params) {
     const t = setTimeout(() => ctrl.abort(), 8000);
     const r = await fetch(url, { signal: ctrl.signal });
     clearTimeout(t);
-    offlineMode = false; serverReachable = true;
+    serverReachable = true;
     if (!r.ok) return null;
     const txt = await r.text();
     if (!txt || !txt.trim()) return null;
     try { return JSON.parse(txt); } catch { return null; }
-  } catch {
-    if (!offlineMode) { offlineMode = true; toast('Server offline \u2014 using local storage mode', 'error'); }
-    serverReachable = false; return null;
-  }
+  } catch { serverReachable = false; return null; }
 }
 
 async function gasPost(data) {
@@ -458,15 +456,12 @@ async function gasPost(data) {
       body: JSON.stringify(data), signal: ctrl.signal
     });
     clearTimeout(t);
-    offlineMode = false; serverReachable = true;
+    serverReachable = true;
     if (!r.ok) return null;
     const txt = await r.text();
     if (!txt || !txt.trim()) return null;
     try { return JSON.parse(txt); } catch { return null; }
-  } catch {
-    if (!offlineMode) { offlineMode = true; toast('Server offline \u2014 using local storage mode', 'error'); }
-    serverReachable = false; return null;
-  }
+  } catch { serverReachable = false; return null; }
 }
 
 // ── Toast ────────────────────────────────────────────────────
@@ -482,82 +477,36 @@ function toast(msg, type='') {
 // ── Navigation ───────────────────────────────────────────────
 // ── GAS API: Packing Lists ───────────────────────────────────
 async function gasGetPackingLists() {
-  if (GAS_URL && !GAS_URL.includes("AKfycbxJNbH09bw")) {
-    const res = await gasGet({ action: "packingLists" });
-    if (res && res.lists) { _lsSet(LS_LISTS, res.lists); return res.lists; }
-  }
-  return _lsGet(LS_LISTS, []);
+  if (!GAS_URL) return [];
+  const res = await gasGet({ action: 'packingLists' });
+  return (res && res.lists) ? res.lists : [];
 }
 
 async function gasCreatePackingList(data) {
-  const lists = _lsGet(LS_LISTS, []);
-  const newList = { ...data, createdAt: new Date().toISOString(), status: "open" };
-  lists.unshift(newList);
-  _lsSet(LS_LISTS, lists);
-  if (GAS_URL && !GAS_URL.includes("AKfycbxJNbH09bw")) {
-    const res = await gasPost({ action: "createPackingList", ...data });
-    if (res && res.listRef) return res;
-  }
-  return { success: true, listRef: data.listRef };
+  if (!GAS_URL) return null;
+  return await gasPost({ action: 'createPackingList', ...data });
 }
 
 async function gasUpdatePackingList(listRef, status, completedAt) {
-  const lists = _lsGet(LS_LISTS, []);
-  const idx = lists.findIndex(l => l.listRef === listRef);
-  if (idx >= 0) { lists[idx].status = status; lists[idx].completedAt = completedAt; _lsSet(LS_LISTS, lists); }
-  if (GAS_URL && !GAS_URL.includes("AKfycbxJNbH09bw")) {
-    return await gasPost({ action: "updatePackingList", listRef, status, completedAt });
-  }
-  return { success: true };
+  if (!GAS_URL) return null;
+  return await gasPost({ action: 'updatePackingList', listRef, status, completedAt });
 }
 
-// GAS API: Cartons (with LS fallback)
+// ── GAS API: Cartons ─────────────────────────────────────────
 async function gasGetCartons(listRef) {
-  // Always try GAS first for accurate data (cartonRef must match GAS sheet)
-  if (GAS_URL && !GAS_URL.includes("AKfycbxJNbH09bw")) {
-    const res = await gasGet({ action: "cartons", listRef });
-    if (res && res.cartons) {
-      const all = _lsGet(LS_CARTONS, {});
-      all[listRef] = res.cartons;
-      _lsSet(LS_CARTONS, all);
-      return res.cartons;
-    }
-  }
-  // Fallback to localStorage
-  const all = _lsGet(LS_CARTONS, {});
-  return all[listRef] || [];
+  if (!GAS_URL) return [];
+  const res = await gasGet({ action: 'cartons', listRef });
+  return (res && res.cartons) ? res.cartons : [];
 }
 
 async function gasSaveCarton(data) {
-  const all = _lsGet(LS_CARTONS, {});
-  const listRef = data.listRef;
-  if (!all[listRef]) all[listRef] = [];
-  if (data.row) {
-    const idx = all[listRef].findIndex(c => c.row === data.row || c.cartonRef === data.cartonRef);
-    if (idx >= 0) { all[listRef][idx] = { ...all[listRef][idx], ...data }; }
-    else { all[listRef].push({ ...data, row: Date.now() }); }
-  } else {
-    all[listRef].push({ ...data, row: Date.now() });
-  }
-  _lsSet(LS_CARTONS, all);
-  if (GAS_URL && !GAS_URL.includes("AKfycbxJNbH09bw")) {
-    const res = await gasPost({ action: "saveCarton", ...data });
-    if (res && res.row) return res;
-  }
-  return { success: true, row: data.row || Date.now() };
+  if (!GAS_URL) return null;
+  return await gasPost({ action: 'saveCarton', ...data });
 }
 
 async function gasDeleteCarton(data) {
-  const all = _lsGet(LS_CARTONS, {});
-  const listRef = data.listRef;
-  if (all[listRef]) {
-    all[listRef] = all[listRef].filter(c => c.cartonRef !== data.cartonRef && c.row !== data.row);
-    _lsSet(LS_CARTONS, all);
-  }
-  if (GAS_URL && !GAS_URL.includes("AKfycbxJNbH09bw")) {
-    return await gasPost({ action: "deleteCarton", ...data });
-  }
-  return { success: true };
+  if (!GAS_URL) return null;
+  return await gasPost({ action: 'deleteCarton', ...data });
 }
 
 function nav(page, listId=null) {
@@ -575,7 +524,6 @@ function nav(page, listId=null) {
   else if (page === 'checker') renderChecker();
   else if (page === 'master') renderMaster();
   else if (page === 'rejects') renderRejects();
-  else if (page === 'stamp') renderStamp();
   else if (page === 'transfer') renderTransfer();
 }
 
@@ -642,7 +590,17 @@ async function openCamera(label, cb) {
     const back = devices.find(d => /back|rear|environment/i.test(d.label));
     const cameraId = back ? { deviceId: back.id } : { facingMode: 'environment' };
     await cameraReader.start(cameraId,
-      { fps: 15, qrbox: { width: 260, height: 260 }, aspectRatio: 1.0 },
+      {
+        fps: 10,
+        qrbox: { width: 310, height: 240 },
+        aspectRatio: 1.7778,
+        disableFlip: false,
+        videoConstraints: {
+          facingMode: 'environment',
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }
+      },
       (decodedText) => { closeCamera(); cb(decodedText.trim().toUpperCase()); },
       () => {}
     );
@@ -869,63 +827,40 @@ function removePartFromForm(idx) {
 //  LIST DETAIL
 // ═══════════════════════════════════════════════════════════════
 // Sync rejection status from GAS Packing Log to Cartons sheet
-async function syncRejectionStatus() {
-  if (!GAS_URL || !currentListId) return;
-  try {
-    // Get rejected records from Packing Log
-    const res = await gasGet({ action: 'records' });
-    if (!res || !res.records) return;
-
-    // Get current cartons from Cartons sheet
-    const cartons = await gasGetCartons(currentListId);
-    let changed = false;
-
-    for (const gasRec of res.records) {
-      if (!(gasRec.status||'').toLowerCase().includes('rejected')) continue;
-      // Find matching carton by cartonRef
-      const carton = cartons.find(c => c.cartonRef === gasRec.cartonRef);
-      if (carton && carton.status !== 'rejected') {
-        // Update the Cartons sheet row
-        await gasPost({ action: 'saveCarton',
-          row: carton.row, listRef: currentListId,
-          cartonRef: carton.cartonRef, cartonId: carton.cartonId,
-          cartonType: carton.cartonType, cartonPI: carton.cartonPI, cartonQty: carton.cartonQty,
-          parts: carton.parts,
-          imgBagUrl: carton.imgBagUrl, imgInnerUrl: carton.imgInnerUrl, imgCartonUrl: carton.imgCartonUrl,
-          createdAt: carton.createdAt, status: 'rejected',
-          rejectionReason: gasRec.remarks || 'Rejected by checker',
-          checkedBy: gasRec.checker || ''
-        });
-        changed = true;
-      }
-    }
-    if (changed) {
-      // Refresh cartons cache
-      LIST_CARTONS[currentListId] = await gasGetCartons(currentListId);
-    }
-  } catch (e) { /* silent fail */ }
-}
-
 // Helper: fetch Packing Log records and build a status map by cartonId
 async function getPackingLogStatusMap() {
-  const statusMap = new Map(); // cartonId -> {status, remarks, checker}
-  if (!GAS_URL) return statusMap;
+  // Returns {statusMap, rejectedMap}
+  // statusMap: cartonId -> {status, remarks, checker} (newest status)
+  // rejectedMap: cartonId -> true (if carton has ANY rejected entry)
+  const statusMap = new Map();
+  const rejectedMap = new Map();
+  if (!GAS_URL) return { statusMap, rejectedMap };
   try {
     const res = await gasGet({ action: 'records' });
-    if (!res || !res.records) return statusMap;
+    if (!res || !res.records) return { statusMap, rejectedMap };
+
+    // Pass 1: Find ALL rejected cartons (any rejected entry = always show rejected)
     for (const rec of res.records) {
       const cid = rec.cartonId || '';
       if (!cid) continue;
       const s = (rec.status || '').toLowerCase();
-      const existing = statusMap.get(cid);
-      // Rejected takes highest priority, then verified, then pending
-      const severity = s2 => s2.includes('rejected') ? 3 : s2.includes('verified') || s2.includes('approved') ? 2 : 1;
-      if (!existing || severity(s) > severity(existing.status)) {
+      if (s.includes('rejected')) {
+        rejectedMap.set(cid, true);
+      }
+    }
+
+    // Pass 2: Find newest status per carton (for display)
+    // Process in timestamp order (newest first since records are reversed)
+    for (const rec of res.records) {
+      const cid = rec.cartonId || '';
+      if (!cid) continue;
+      // Only set if not already set (first = newest)
+      if (!statusMap.has(cid)) {
         statusMap.set(cid, { status: rec.status || '', remarks: rec.remarks || '', checker: rec.checker || '' });
       }
     }
-  } catch (e) { /* silent fail */ }
-  return statusMap;
+  } catch (e) { /* silent */ }
+  return { statusMap, rejectedMap };
 }
 
 // Detect gaps in carton ID sequences (e.g., A001, A003 → A002 is missing)
@@ -975,25 +910,34 @@ async function renderListDetail() {
   if (!list) { nav('packing-lists'); return; }
 
   // Fetch cartons from GAS "Cartons" sheet AND Packing Log status
-  const [cartons, plStatusMap] = await Promise.all([
+  const [cartons, plMaps] = await Promise.all([
     gasGetCartons(list.listRef),
     getPackingLogStatusMap()
   ]);
+  const plStatusMap = plMaps.statusMap;
+  const plRejectedMap = plMaps.rejectedMap;
   LIST_CARTONS[list.listRef] = cartons;
 
   // Overlay Packing Log status onto cartons
   cartons.forEach(c => {
-    const pl = plStatusMap.get(c.cartonId || '');
+    const cid = c.cartonId || '';
+    const pl = plStatusMap.get(cid);
     if (pl) {
       c._plStatus = pl.status;
       c._plRemarks = pl.remarks;
       c._plChecker = pl.checker;
     }
+    // CRITICAL: If carton has ANY rejected entry in Packing Log, mark it
+    if (plRejectedMap.has(cid)) {
+      c._isRejected = true;
+    }
   });
 
-  const rejected = cartons.filter(c =>
-    c.status === 'rejected' || (c._plStatus || '').toLowerCase().includes('rejected')
-  );
+  // Rejected: ANY rejected entry in Packing Log takes priority
+  const rejected = cartons.filter(c => c._isRejected);
+  const verified = cartons.filter(c => !c._isRejected && (c._plStatus || '').toLowerCase().includes('verified'));
+
+
   const totalParts = cartons.reduce((s,c) => s + (c.parts||[]).length, 0);
   const missingCartons = detectMissingCartons(cartons);
   const el = document.getElementById('page-list-detail');
@@ -1084,10 +1028,10 @@ async function renderListDetail() {
             const firstPart = (c.parts||[])[0] || {};
             const partCount = (c.parts||[]).length;
             const isKit = c.cartonType === 'kit';
-            // Use Packing Log status if available, fall back to Cartons sheet status
+            // Status priority: _isRejected (from PL rejectedMap) > _plStatus (newest PL status) > sheet status
             const plStatus = (c._plStatus || '').toLowerCase();
-            const isRejected = c.status === 'rejected' || plStatus.includes('rejected');
-            const isVerified = plStatus.includes('verified') || plStatus.includes('approved');
+            const isRejected = c._isRejected === true || c.status === 'rejected' || plStatus.includes('rejected');
+            const isVerified = !isRejected && (plStatus.includes('verified') || plStatus.includes('approved'));
             // Barcode match indicators
             const bagM = firstPart.bagMatch===true||firstPart.bagMatch==='no'||firstPart.bagMatch==='no-server';
             const innerM = firstPart.innerMatch===true||firstPart.innerMatch==='no'||firstPart.innerMatch==='no-server';
@@ -1155,6 +1099,14 @@ async function completePackingList() {
   );
   if (hasMismatch) {
     toast('Cannot complete: some cartons have barcode mismatches. Please fix them first.', 'error');
+    return;
+  }
+
+  // Password protection
+  const pw = prompt('ENTER PASSWORD TO COMPLETE PACKING LIST:');
+  if (pw === null) return;
+  if (pw !== 'simon1981') {
+    toast('Incorrect password. Packing list not completed.', 'error');
     return;
   }
 
@@ -1227,7 +1179,7 @@ function viewCartonDetail(ci) {
         ${kitPhotos.map(p => {
           const thumb = getThumbUrl(p.url, 300);
           return `<div style="text-align:center">
-            <img src="${thumb}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer" onclick="openLightbox('${p.url}')" />
+            <img src="${thumb}" loading="lazy" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer" onclick="openLightbox('${p.url}')" />
             <div style="font-size:10px;color:var(--muted-fg);margin-top:4px">${p.lbl}</div>
           </div>`;
         }).join('')}
@@ -1255,7 +1207,7 @@ function viewCartonDetail(ci) {
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             ${partPhotos.map(ph => {
               const thumb = getThumbUrl(ph.url, 200);
-              return `<img src="${thumb}" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer" onclick="openLightbox('${ph.url}')" />`;
+              return `<img src="${thumb}" loading="lazy" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer" onclick="openLightbox('${ph.url}')" />`;
             }).join('')}
           </div>
         </div>`;
@@ -1272,7 +1224,7 @@ function viewCartonDetail(ci) {
       ${photos.map(p => {
         const thumb = getThumbUrl(p.url, 300);
         return `<div style="text-align:center">
-          <img src="${thumb}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer" onclick="openLightbox('${p.url}')" />
+          <img src="${thumb}" loading="lazy" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer" onclick="openLightbox('${p.url}')" />
           <div style="font-size:10px;color:var(--muted-fg);margin-top:4px">${p.lbl}</div>
         </div>`;
       }).join('')}
@@ -1566,30 +1518,42 @@ function renderPartCards() {
         <span class="part-number">${isSingle ? 'Item' : isKit ? 'Kit Item' : 'Part'} ${idx + 1}</span>
         ${formState.parts.length > 1 ? `<button class="part-remove" onclick="removePartFromForm(${idx})"><svg style="width:12px;height:12px;vertical-align:middle;margin-right:2px"><use href="#ic-trash"/></svg>Remove</button>` : ''}
       </div>
-      <div class="${isKit ? 'grid-1' : 'grid-4'}" style="margin-bottom:12px">
+      <!-- Part No + PI No on same row, Qty below -->
+      ${!isKit ? `
+      <div class="grid-2" style="margin-bottom:12px">
         <div class="form-group">
           <label class="form-label">Part No <span class="req">*</span></label>
           <div class="input-wrap">
             <input type="text" id="f-partNo-${idx}" placeholder="Scan or type..." value="${escHtml(part.partNo)}"
               oninput="onPartFieldChange(${idx},'partNo')" />
-            <button type="button" class="btn-icon" onclick="openCamera('Part ${idx+1} No',v=>{document.getElementById('f-partNo-${idx}').value=v;onPartFieldChange(${idx},'partNo');})"><svg style="width:14px;height:14px"><use href="#ic-camera"/></svg></button>
+            <button type="button" class="btn-icon" onclick="openCamera('Part ${idx+1} No',v=>{document.getElementById('f-partNo-${idx}').value=v;onPartFieldChange(${idx},'partNo');})"><svg style="width:16px;height:16px"><use href="#ic-camera"/></svg></button>
           </div>
         </div>
-        ${!isKit ? `
         <div class="form-group">
           <label class="form-label">PI No</label>
           <div class="input-wrap">
             <input type="text" id="f-pi-${idx}" placeholder="123456/26..." value="${escHtml(part.pi)}"
               oninput="onPartFieldChange(${idx},'pi')" />
-            <button type="button" class="btn-icon" onclick="openCamera('PI No',v=>{document.getElementById('f-pi-${idx}').value=v;onPartFieldChange(${idx},'pi');})"><svg style="width:14px;height:14px"><use href="#ic-camera"/></svg></button>
+            <button type="button" class="btn-icon" onclick="openCamera('PI No',v=>{document.getElementById('f-pi-${idx}').value=v;onPartFieldChange(${idx},'pi');})"><svg style="width:16px;height:16px"><use href="#ic-camera"/></svg></button>
           </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Qty <span class="req">*</span></label>
-          <input type="number" id="f-qty-${idx}" min="1" value="${part.qty}" oninput="onPartFieldChange(${idx},'qty')" />
-        </div>
-        ` : ''}
       </div>
+      ${!isKit ? `
+      <div class="form-group" style="margin-bottom:12px;max-width:120px">
+        <label class="form-label">Qty <span class="req">*</span></label>
+        <input type="number" id="f-qty-${idx}" min="1" value="${part.qty}" oninput="onPartFieldChange(${idx},'qty')" />
+      </div>
+      ` : ''}
+      ` : `
+      <div class="form-group" style="margin-bottom:12px;max-width:none">
+        <label class="form-label">Part No <span class="req">*</span></label>
+        <div class="input-wrap">
+          <input type="text" id="f-partNo-${idx}" placeholder="Scan or type..." value="${escHtml(part.partNo)}"
+            oninput="onPartFieldChange(${idx},'partNo')" />
+          <button type="button" class="btn-icon" onclick="openCamera('Part ${idx+1} No',v=>{document.getElementById('f-partNo-${idx}').value=v;onPartFieldChange(${idx},'partNo');})"><svg style="width:16px;height:16px"><use href="#ic-camera"/></svg></button>
+        </div>
+      </div>
+      `}
       ${isKit ? `
       <!-- Kit mode: only bag barcode per part -->
       <div class="grid-1" style="max-width:none">
@@ -1968,17 +1932,14 @@ function buildKitPhotoField(which, label) {
 async function handleKitPhoto(which, input) {
   try {
     const file = input.files[0];
-    if (!file) { console.log('Kit photo: no file selected'); return; }
+    if (!file) { return; }
     // Ensure cartonPhotos exists
     if (!formState.cartonPhotos) formState.cartonPhotos = { allParts: null, innerBox: null, cartonLabel: null };
-    console.log('Kit photo: compressing', which, file.name, file.size);
     const dataUri = await compressImage(file);
-    console.log('Kit photo: compressed', which, dataUri.substring(0, 50) + '...');
     formState.cartonPhotos[which] = dataUri;
     renderKitPhotoThumb(which, dataUri);
     input.value = '';
   } catch(err) {
-    console.error('Kit photo error:', err);
     toast('Photo failed: ' + err.message, 'error');
   }
 }
@@ -1986,7 +1947,6 @@ async function handleKitPhoto(which, input) {
 function renderKitPhotoThumb(which, dataUri) {
   const btn = document.getElementById('kit-photo-btn-' + which);
   const thumb = document.getElementById('kit-photo-thumb-' + which);
-  console.log('renderKitPhotoThumb:', which, 'btn=', !!btn, 'thumb=', !!thumb);
   if (btn) btn.classList.add('has-photo');
   if (thumb && dataUri) {
     // Use getThumbUrl for Google Drive URLs, pass base64 through as-is
@@ -2149,29 +2109,39 @@ async function submitEntry(isEdit) {
   }
 
   // Upload photos: kit = 3 carton-level photos; non-kit = per-part photos from first part
-  let imgBagUrl, imgInnerUrl, imgCartonUrl;
+  // Run alongside the existing-cartons fetch (needed for numbering) since they're independent.
+  let imgBagUrl, imgInnerUrl, imgCartonUrl, existingCartons;
   if (isKit) {
     // Kit: upload 3 carton-level photos
-    [imgBagUrl, imgInnerUrl, imgCartonUrl] = await Promise.all([
-      maybeUpload(formState.cartonPhotos.allParts, `kit_allparts_${cartonId}_${Date.now()}.jpg`),
-      maybeUpload(formState.cartonPhotos.innerBox, `kit_inner_${cartonId}_${Date.now()}.jpg`),
-      maybeUpload(formState.cartonPhotos.cartonLabel, `kit_carton_${cartonId}_${Date.now()}.jpg`),
+    const [uploaded, ec] = await Promise.all([
+      Promise.all([
+        maybeUpload(formState.cartonPhotos.allParts, `kit_allparts_${cartonId}_${Date.now()}.jpg`),
+        maybeUpload(formState.cartonPhotos.innerBox, `kit_inner_${cartonId}_${Date.now()}.jpg`),
+        maybeUpload(formState.cartonPhotos.cartonLabel, `kit_carton_${cartonId}_${Date.now()}.jpg`),
+      ]),
+      gasGetCartons(list.listRef)
     ]);
+    [imgBagUrl, imgInnerUrl, imgCartonUrl] = uploaded;
+    existingCartons = ec;
   } else {
     // Non-kit: use first part's per-part photos as carton-level
     const firstPart = formState.parts[0];
     const firstPhotos = firstPart.photos || { bag:null, inner:null, outer:null };
-    [imgBagUrl, imgInnerUrl, imgCartonUrl] = await Promise.all([
-      maybeUpload(firstPhotos.bag, `bag_${cartonId}_${Date.now()}.jpg`),
-      maybeUpload(firstPhotos.inner, `inner_${cartonId}_${Date.now()}.jpg`),
-      maybeUpload(firstPhotos.outer, `carton_${cartonId}_${Date.now()}.jpg`),
+    const [uploaded, ec] = await Promise.all([
+      Promise.all([
+        maybeUpload(firstPhotos.bag, `bag_${cartonId}_${Date.now()}.jpg`),
+        maybeUpload(firstPhotos.inner, `inner_${cartonId}_${Date.now()}.jpg`),
+        maybeUpload(firstPhotos.outer, `carton_${cartonId}_${Date.now()}.jpg`),
+      ]),
+      gasGetCartons(list.listRef)
     ]);
+    [imgBagUrl, imgInnerUrl, imgCartonUrl] = uploaded;
+    existingCartons = ec;
   }
 
   const now = new Date().toISOString();
 
-  // Get existing cartons from GAS for CTN number calculation
-  const existingCartons = await gasGetCartons(list.listRef);
+  // Existing cartons (fetched above in parallel) used for CTN number calculation
   const existingMax = existingCartons.reduce((m,c)=>{
     const n=parseInt((c.cartonRef||'').replace('CTN-',''));
     return isNaN(n)?m:Math.max(m,n);
@@ -2259,11 +2229,11 @@ async function submitEntry(isEdit) {
           if (res && res.row) gasRows.push(res.row);
         }
       } else {
-        // NON-KIT: each part as separate row in Packing Log
+        // NON-KIT: each part as separate row in Packing Log (sent in parallel — order preserved via Promise.all)
         if (isEdit && pendingEditRow?.gasRows && pendingEditRow.gasRows.length > 0) {
-          for (let i = 0; i < pendingEditRow.gasRows.length; i++) {
+          await Promise.all(pendingEditRow.gasRows.map((rowNum, i) => {
             const rp = parts[i] || parts[0];
-            await gasPost({ action:'resubmit', row: pendingEditRow.gasRows[i],
+            return gasPost({ action:'resubmit', row: rowNum,
               cartonId, cartonRef,
               customer: list.customer, packedBy: list.createdBy, checkerBy: '',
               partNo: rp.partNo||'', pi: rp.pi||'', qty: rp.qty||1,
@@ -2271,19 +2241,17 @@ async function submitEntry(isEdit) {
               bagMatch: rp.bagMatch, innerMatch: rp.innerMatch, outerMatch: rp.outerMatch,
               imgBagUrl, imgInnerUrl, imgCartonUrl,
             });
-          }
+          }));
           gasRows = pendingEditRow.gasRows;
         } else {
-          for (const part of parts) {
-            const res = await gasPost({ action:'submit',
-              cartonId, cartonRef, partNo: part.partNo, pi: part.pi, qty: part.qty,
-              bag: part.bag, inner: part.inner, outer: part.outer,
-              bagMatch: part.bagMatch, innerMatch: part.innerMatch, outerMatch: part.outerMatch,
-              imgBagUrl, imgInnerUrl, imgCartonUrl,
-              customer: list.customer, packedBy: list.createdBy, checkerBy: '', packedDate: '',
-            });
-            if (res && res.row) gasRows.push(res.row);
-          }
+          const results = await Promise.all(parts.map(part => gasPost({ action:'submit',
+            cartonId, cartonRef, partNo: part.partNo, pi: part.pi, qty: part.qty,
+            bag: part.bag, inner: part.inner, outer: part.outer,
+            bagMatch: part.bagMatch, innerMatch: part.innerMatch, outerMatch: part.outerMatch,
+            imgBagUrl, imgInnerUrl, imgCartonUrl,
+            customer: list.customer, packedBy: list.createdBy, checkerBy: '', packedDate: '',
+          })));
+          results.forEach(res => { if (res && res.row) gasRows.push(res.row); });
         }
       }
     } catch(e) { console.warn('GAS Packing Log submit warning:', e); }
@@ -2316,17 +2284,17 @@ let checkerFilter = 'pending';
 let checkerSearch = '';
 let checkerRecords = [];
 let currentCheckerRecord = null;
-const LS_CHECKER = 'mg_checker_records_v2';
+let checkerViewMode = 'review'; // 'review' | 'stamp'
+let stampSearch = '';
+let stampRecordsCache = [];
+// In-memory cache for checker records (no localStorage)
+const checkerRecordCache = new Map();
 
-// Cache checker records in localStorage by row number
 function cacheCheckerRecords(records) {
-  const map = _lsGet(LS_CHECKER, {});
-  records.forEach(r => { if (r.row) map[r.row] = r; });
-  _lsSet(LS_CHECKER, map);
+  records.forEach(r => { if (r.row) checkerRecordCache.set(r.row, r); });
 }
 function getCachedCheckerRecord(row) {
-  const map = _lsGet(LS_CHECKER, {});
-  return map[row] || null;
+  return checkerRecordCache.get(row) || null;
 }
 
 let checkerAuthenticated = false;
@@ -2371,31 +2339,44 @@ async function renderChecker() {
 
 async function renderCheckerContent() {
   const el = document.getElementById('page-checker');
+  const isReview = checkerViewMode === 'review';
+  const isStamp = checkerViewMode === 'stamp';
+
   el.innerHTML = `
     <div class="page-header">
       <div>
         <div class="page-title"><svg><use href="#ic-check-sq"/></svg>Checker View</div>
-        <div class="page-subtitle">Review carton submissions and approve or reject.</div>
+        <div class="page-subtitle">${isReview?'Review submissions and approve or reject.':'Mark verified cartons as physically stamped.'}</div>
       </div>
       <div class="gap-8">
+        ${isStamp ? `
         <div class="search-wrap">
           <svg><use href="#ic-search"/></svg>
-          <input type="text" id="checker-search" placeholder="Search..." style="width:170px" oninput="checkerSearch=this.value;renderCheckerTable()" />
-        </div>
-        <select onchange="checkerFilter=this.value;renderCheckerTable()" style="width:120px;text-transform:uppercase;font-size:11px">
-          <option value="pending">PENDING</option>
-          <option value="approved">APPROVED</option>
-          <option value="rejected">REJECTED</option>
-          <option value="all">ALL</option>
-        </select>
-        <button class="btn btn-outline btn-sm" onclick="loadCheckerRecords()"><svg><use href="#ic-refresh"/></svg>Refresh</button>
+          <input type="text" id="stamp-search" placeholder="Search customer, carton, part, PI..." style="width:220px" oninput="debouncedStampSearch(this.value)" />
+        </div>` : `
+        <div class="search-wrap">
+          <svg><use href="#ic-search"/></svg>
+          <input type="text" id="checker-search" placeholder="Search customer, carton, part, PI..." style="width:200px" oninput="debouncedCheckerSearch(this.value)" />
+        </div>`}
+        <button class="btn ${isReview?'btn-primary':'btn-outline'} btn-sm" onclick="checkerViewMode='review';renderCheckerContent();">
+          <svg><use href="#ic-check-sq"/></svg>Review
+        </button>
+        <button class="btn ${isStamp?'btn-primary':'btn-outline'} btn-sm" onclick="checkerViewMode='stamp';renderCheckerContent();">
+          <svg><use href="#ic-stamp"/></svg>Stamp
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="${isReview?'loadCheckerRecords()':'loadStampRecords()'}"><svg><use href="#ic-refresh"/></svg>Refresh</button>
         <button class="btn btn-outline btn-sm" onclick="checkerAuthenticated=false;showCheckerPasswordGate();"><svg><use href="#ic-lock"/></svg>Lock</button>
       </div>
     </div>
     <div id="checker-stats" class="stat-grid" style="margin-bottom:20px"></div>
-    <div id="checker-table-wrap"><div class="pulse text-muted text-sm">Loading records...</div></div>
+    <div id="checker-table-wrap"><div class="pulse text-muted text-sm">Loading...</div></div>
     <div id="checker-modal-wrap"></div>`;
-  await loadCheckerRecords();
+
+  if (isReview) {
+    await loadCheckerRecords();
+  } else {
+    await loadStampRecords();
+  }
 }
 
 async function loadCheckerRecords() {
@@ -2415,6 +2396,81 @@ async function loadCheckerRecords() {
   } else { errorMsg = 'GAS_URL not configured.'; }
   renderCheckerStats();
   renderCheckerTable(errorMsg);
+}
+
+async function loadStampRecords() {
+  let records = [];
+  let errorMsg = '';
+  if (GAS_URL) {
+    try {
+      const res = await gasGet({ action: 'records' });
+      if (res && res.records) {
+        cacheCheckerRecords(res.records);
+        records = res.records.filter(r => {
+          const s = (r.status || '').toLowerCase();
+          return s.includes('verified') || s.includes('approved');
+        });
+      }
+      else if (res && res.error) errorMsg = 'Server error: ' + res.error;
+      else errorMsg = 'No records from server.';
+    } catch(e) { errorMsg = 'Connection failed.'; }
+  } else { errorMsg = 'GAS_URL not configured.'; }
+  stampRecordsCache = records;
+  renderStampStats(records);
+  renderStampCards(records, errorMsg);
+}
+
+function renderStampStats(records) {
+  const el = document.getElementById('checker-stats');
+  if (!el) return;
+  const stamped = records.filter(r => (r.stamped||'') === 'Y' || r.stamped === true || r.stamped === 'true').length;
+  const pending = records.length - stamped;
+  el.innerHTML = `
+    <div class="stat-card"><div class="label">Total Verified</div><div class="value">${records.length}</div></div>
+    <div class="stat-card"><div class="label" style="color:var(--amber)">Pending Stamp</div><div class="value" style="color:var(--amber)">${pending}</div></div>
+    <div class="stat-card"><div class="label" style="color:var(--primary)">Stamped</div><div class="value text-primary">${stamped}</div></div>`;
+}
+
+function renderStampCards(records, errorMsg) {
+  const wrap = document.getElementById('checker-table-wrap');
+  if (!wrap) return;
+  if (errorMsg) { wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-alert"/></svg><p>' + errorMsg + '</p></div>'; return; }
+  // Apply search filter: customer, cartonId, partNo, PI
+  let filtered = records;
+  if (stampSearch) {
+    const q = stampSearch.toLowerCase();
+    filtered = records.filter(r =>
+      (r.customer || '').toLowerCase().includes(q) ||
+      (r.cartonId || '').toLowerCase().includes(q) ||
+      (r.partNo || '').toLowerCase().includes(q) ||
+      (r.pi || '').toLowerCase().includes(q)
+    );
+  }
+  if (filtered.length === 0) { wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-stamp"/></svg><p>' + (stampSearch ? 'No matches for "' + escHtml(stampSearch) + '"' : 'No verified cartons waiting to be stamped') + '</p></div>'; return; }
+
+  wrap.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px">' + filtered.map(r => {
+    const isStamped = (r.stamped||'') === 'Y' || r.stamped === true || r.stamped === 'true';
+    const stampInfo = r.stampedAt ? `at ${fmtDate(r.stampedAt)}` : '';
+    return `<div class="record-card ${isStamped?'approved':''}" style="border-left:4px solid ${isStamped?'var(--primary)':'var(--amber)'}">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-weight:800;font-size:1.05rem;color:${isStamped?'var(--primary)':'var(--amber)'}">${escHtml(r.customer || 'Unknown')}</div>
+        <span class="badge" style="background:${isStamped?'var(--primary-dim)':'var(--amber-dim)'};color:${isStamped?'var(--primary)':'var(--amber)'};border-color:${isStamped?'var(--primary-border)':'var(--amber-border)'}">${isStamped?'STAMPED':'PENDING STAMP'}</span>
+      </div>
+      <div style="font-size:0.85rem;color:var(--muted-fg);margin-bottom:6px">
+        <strong>PI:</strong> ${escHtml(r.pi || '\u2014')} | <strong>Carton:</strong> ${escHtml(r.cartonId || '\u2014')} | <strong>Part:</strong> ${escHtml(r.partNo || '\u2014')}
+      </div>
+      <div style="display:flex;gap:12px;font-size:0.8rem;color:var(--muted-fg);margin-bottom:4px">
+        <span><strong>Qty:</strong> ${r.qty || '0'} pcs</span>
+        <span><strong>Packed:</strong> ${escHtml(r.packedBy || '\u2014')}</span>
+        <span><strong>Checked:</strong> ${escHtml(r.checker || '\u2014')}</span>
+      </div>
+      ${isStamped ? `<div style="font-size:0.8rem;color:var(--primary);margin-top:8px;font-weight:700">Stamped by: ${escHtml(r.stampedBy || '')} ${stampInfo}</div>` : ''}
+      <div style="display:flex;gap:8px;margin-top:12px">
+        ${!isStamped ? `<button class="btn btn-primary btn-sm" onclick="stampRecord(${r.row})"><svg><use href="#ic-stamp"/></svg>Stamp Verified</button>` : ''}
+        <button class="btn btn-outline btn-sm" onclick="openCheckerDetail(${r.row})"><svg><use href="#ic-zoom"/></svg>View Detail</button>
+      </div>
+    </div>`;
+  }).join('') + '</div>';
 }
 
 function renderCheckerStats() {
@@ -2531,22 +2587,19 @@ function renderCheckerTable(errorMsg) {
 
 // ── Checker Detail Modal ─────────────────────────────────────
 async function openCheckerDetail(rowNum) {
-  // 1. Try localStorage cache first (works offline)
+  // 1. Try in-memory cache first
   const cached = getCachedCheckerRecord(rowNum);
   if (cached) {
     currentCheckerRecord = cached;
     showCheckerDetailModal(cached);
     return;
   }
-  // 2. Fall back to GAS
+  // 2. Fetch from GAS
   try {
     const res = await gasGet({ action: 'record', row: rowNum });
     if (!res || res.error) { toast('Failed to load record', 'error'); return; }
     currentCheckerRecord = res;
-    // Cache for future offline use
-    const map = _lsGet(LS_CHECKER, {});
-    map[rowNum] = res;
-    _lsSet(LS_CHECKER, map);
+    checkerRecordCache.set(rowNum, res);
     showCheckerDetailModal(res);
   } catch { toast('Error loading record', 'error'); }
 }
@@ -2597,12 +2650,13 @@ function showCheckerDetailModal(r) {
     </div>
   `;
 
+  const isStamped = (r.stamped||'') === 'Y' || r.stamped === true || r.stamped === 'true';
   const stampSection = isApproved ? `
     <div class="section-title">Stamping</div>
     <div style="margin-bottom:16px">
-      ${(r.stampStatus||'').includes('Stamped')
+      ${isStamped
         ? `<div style="padding:12px 16px;background:var(--primary-dim);border:1.5px solid var(--primary-border);border-radius:8px;color:var(--primary);font-weight:800;font-size:13px">
-            \u2705 STAMPED on ${escHtml(r.stampDate||'N/A')}
+            \u2705 STAMPED by ${escHtml(r.stampedBy||'')} ${r.stampedAt ? 'on ' + fmtDate(r.stampedAt) : ''}
           </div>`
         : `<button class="btn btn-primary btn-full" onclick="checkerMarkStamped(${r.row})">
             <svg><use href="#ic-stamp"/></svg>Mark as Stamped
@@ -2718,113 +2772,10 @@ async function checkerMarkStamped(row) {
     if (res && res.success) {
       toast('Stamped successfully \u2705', 'success');
       closeCheckerDetail();
-      await loadCheckerRecords();
+      checkerViewMode = 'stamp';
+      await renderCheckerContent();
     } else { throw new Error(res?.error || 'Unknown error'); }
   } catch(e) { toast('Stamp failed: ' + e.message, 'error'); }
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  STAMP TAB (Checker stamps verified cartons)
-// ═══════════════════════════════════════════════════════════════
-async function renderStamp() {
-  const el = document.getElementById('page-stamp');
-  el.innerHTML = `
-    <div class="page-header">
-      <div>
-        <div class="page-title"><svg style="color:var(--primary)"><use href="#ic-stamp"/></svg>Stamp Tracking</div>
-        <div class="page-subtitle">Mark verified cartons as physically stamped.</div>
-      </div>
-      <div class="gap-8">
-        <div class="search-wrap">
-          <svg><use href="#ic-search"/></svg>
-          <input type="text" id="stamp-search" placeholder="Search carton / part..." style="width:200px" oninput="renderStampTable(this.value)" />
-        </div>
-        <button class="btn btn-outline btn-sm" onclick="renderStamp()"><svg><use href="#ic-refresh"/></svg>Refresh</button>
-      </div>
-    </div>
-    <div id="stamp-content"><div class="pulse text-muted text-sm">Loading records...</div></div>
-    <div id="checker-modal-wrap"></div>`;
-
-  await renderStampTable('');
-}
-
-async function renderStampTable(search) {
-  const wrap = document.getElementById('stamp-content');
-  if (!wrap) return;
-
-  // Fetch verified records from Packing Log (with cache)
-  let records = [];
-  if (GAS_URL) {
-    try {
-      const res = await gasGet({ action: 'records' });
-      if (res && res.records) {
-        cacheCheckerRecords(res.records); // Cache for offline view detail
-        records = res.records.filter(r => {
-          const s = (r.status || '').toLowerCase();
-          return s.includes('verified') || s.includes('approved');
-        });
-      }
-    } catch(e) {
-      // Offline: try to use cached records
-      const cachedMap = _lsGet(LS_CHECKER, {});
-      const cached = Object.values(cachedMap);
-      if (cached.length > 0) {
-        records = cached.filter(r => {
-          const s = (r.status || '').toLowerCase();
-          return s.includes('verified') || s.includes('approved');
-        });
-      }
-      if (records.length === 0) {
-        wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-alert"/></svg><p>Failed to load records</p></div>';
-        return;
-      }
-    }
-  } else {
-    // No GAS: use cached records
-    const cachedMap = _lsGet(LS_CHECKER, {});
-    records = Object.values(cachedMap).filter(r => {
-      const s = (r.status || '').toLowerCase();
-      return s.includes('verified') || s.includes('approved');
-    });
-  }
-
-  if (search) {
-    const q = search.toLowerCase();
-    records = records.filter(r =>
-      (r.cartonId || '').toLowerCase().includes(q) ||
-      (r.partNo || '').toLowerCase().includes(q) ||
-      (r.customer || '').toLowerCase().includes(q)
-    );
-  }
-
-  if (records.length === 0) {
-    wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-stamp"/></svg><p>No verified cartons waiting to be stamped</p></div>';
-    return;
-  }
-
-  wrap.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px">' + records.map(r => {
-    const isStamped = r.stamped === true || r.stamped === 'true' || r.stamped === 'Y';
-    const stampInfo = r.stampedAt ? `at ${fmtDate(r.stampedAt)}` : '';
-    return `<div class="record-card ${isStamped?'approved':''}" style="border-left:4px solid ${isStamped?'var(--primary)':'var(--amber)'}">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <div style="font-weight:800;font-size:1.05rem;color:${isStamped?'var(--primary)':'var(--amber)'}">${escHtml(r.customer || 'Unknown')}</div>
-        <span class="badge" style="background:${isStamped?'var(--primary-dim)':'var(--amber-dim)'};color:${isStamped?'var(--primary)':'var(--amber)'};border-color:${isStamped?'var(--primary-border)':'var(--amber-border)'}">${isStamped?'STAMPED':'PENDING STAMP'}</span>
-      </div>
-      <div style="font-size:0.85rem;color:var(--muted-fg);margin-bottom:6px">
-        <strong>PI:</strong> ${escHtml(r.pi || '\u2014')} | <strong>Carton:</strong> ${escHtml(r.cartonId || '\u2014')} | <strong>Part:</strong> ${escHtml(r.partNo || '\u2014')}
-      </div>
-      <div style="display:flex;gap:12px;font-size:0.8rem;color:var(--muted-fg);margin-bottom:4px">
-        <span><strong>Qty:</strong> ${r.qty || '0'} pcs</span>
-        <span><strong>Packed:</strong> ${escHtml(r.packedBy || '\u2014')}</span>
-        <span><strong>Checked:</strong> ${escHtml(r.checker || '\u2014')}</span>
-      </div>
-      ${isStamped ? `<div style="font-size:0.8rem;color:var(--primary);margin-top:8px;font-weight:700">Stamped by: ${escHtml(r.stampedBy || '')} ${stampInfo}</div>` : ''}
-      <div style="display:flex;gap:8px;margin-top:12px">
-        ${!isStamped ? `<button class="btn btn-primary btn-sm" onclick="stampRecord(${r.row})"><svg><use href="#ic-stamp"/></svg>Stamp Verified</button>` : ''}
-        <button class="btn btn-outline btn-sm" onclick="openCheckerDetail(${r.row})"><svg><use href="#ic-zoom"/></svg>View Detail</button>
-      </div>
-    </div>`;
-  }).join('') + '</div>';
 }
 
 async function stampRecord(row) {
@@ -2834,7 +2785,8 @@ async function stampRecord(row) {
     const res = await gasPost({ action: 'stamp', row: row, staff: staff.toUpperCase() });
     if (res && res.success) {
       toast('Stamped successfully \u2705', 'success');
-      await renderStamp();
+      checkerViewMode = 'stamp';
+      await renderCheckerContent();
     } else { throw new Error(res?.error || 'Unknown error'); }
   } catch(e) { toast('Stamp failed: ' + e.message, 'error'); }
 }
@@ -3259,11 +3211,11 @@ async function renderRejects() {
     } catch (e) { console.warn('Failed to fetch Packing Log for rejects', e); }
   }
 
-  // Build cartonId -> listRef map by scanning all cartons
+  // Build cartonId -> listRef map by scanning all cartons (fetched in parallel across lists)
   const lists = await gasGetPackingLists();
   const listMap = new Map();
   const cartonToList = new Map(); // cartonId -> listRef
-  for (const list of lists) {
+  await Promise.all(lists.map(async (list) => {
     listMap.set(list.listRef, list);
     try {
       const cartons = await gasGetCartons(list.listRef);
@@ -3271,7 +3223,7 @@ async function renderRejects() {
         if (c.cartonId) cartonToList.set(c.cartonId, list.listRef);
       });
     } catch (e) { /* skip */ }
-  }
+  }));
 
   const el2 = document.getElementById('reject-content');
   el2.innerHTML = `
@@ -3312,6 +3264,16 @@ async function renderRejects() {
 function escHtml(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+
+function debounce(fn, wait) {
+  let t;
+  return function(...args) {
+    clearTimeout(t);
+    t = setTimeout(() => fn.apply(this, args), wait);
+  };
+}
+const debouncedCheckerSearch = debounce(v => { checkerSearch = v; renderCheckerTable(); }, 220);
+const debouncedStampSearch = debounce(v => { stampSearch = v; renderStampCards(stampRecordsCache||[], ''); }, 220);
 
 // ── Init ─────────────────────────────────────────────────────
 LISTS = []; // Will be populated from GAS on page load
