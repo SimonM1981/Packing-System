@@ -1026,6 +1026,21 @@ async function renderListDetail() {
     if (plRejectedMap.has(cid)) c._isRejected = true;
   });
 
+  // Sort cartons by cartonId ascending (natural sort: A001, A002, B001...)
+  cartons.sort((a, b) => {
+    const idA = (a.cartonId || '').toUpperCase();
+    const idB = (b.cartonId || '').toUpperCase();
+    // Extract prefix (letters) and number parts
+    const mA = idA.match(/^([A-Z]*)(\d+)$/);
+    const mB = idB.match(/^([A-Z]*)(\d+)$/);
+    if (mA && mB) {
+      const prefixCmp = mA[1].localeCompare(mB[1]);
+      if (prefixCmp !== 0) return prefixCmp;
+      return parseInt(mA[2], 10) - parseInt(mB[2], 10);
+    }
+    return idA.localeCompare(idB);
+  });
+
   const rejected = cartons.filter(c => c._isRejected);
   const totalParts = cartons.reduce((s,c) => s + (c.parts||[]).length, 0);
   const missingCartons = detectMissingCartons(cartons);
@@ -1105,6 +1120,7 @@ async function renderListDetail() {
   }
 
   html += `
+  html += `<div id="entry-form-wrap"></div>`;
     <div class="table-wrap" style="margin-bottom:16px">
       <table class="table-responsive">
         <thead><tr>
@@ -1164,7 +1180,6 @@ async function renderListDetail() {
     </div>`;
   }
 
-  html += `<div id="entry-form-wrap"></div>`;
   html += `<div id="carton-detail-wrap"></div>`;
 
   el.innerHTML = html;
