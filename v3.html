@@ -539,7 +539,7 @@ async function gasGet(params, opts = {}) {
   const url = GAS_URL + '?' + new URLSearchParams(params);
   try {
     const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 8000);
+    const t = setTimeout(() => ctrl.abort(), 15000);
     const r = await fetch(url, { signal: ctrl.signal, redirect: 'follow' });
     clearTimeout(t);
 
@@ -1500,7 +1500,8 @@ async function startEditCarton(cartonIdx) {
 function showEntryForm(isEdit) {
   const addBtn = document.getElementById('btn-add-entry');
   if (addBtn) addBtn.style.display = 'none';
-  document.getElementById('carton-detail-wrap').innerHTML = '';
+  const detailWrap = document.getElementById('carton-detail-wrap');
+  if (detailWrap) detailWrap.innerHTML = '';
   const wrap = document.getElementById('entry-form-wrap');
   const list = LISTS.find(l => l.listRef === currentListId);
   if (!list) { toast('List not found', 'error'); return; }
@@ -2035,7 +2036,9 @@ function updateSubmitBtn() {
 
 function cancelForm() {
   resetFormState();
-  renderListDetail();
+  // Only render packing list detail if we're actually on that page
+  // (staff entry calls this too and handles its own rendering)
+  if (currentPage === 'list-detail') renderListDetail();
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -3242,22 +3245,26 @@ let staffSelectedList = null;
 
 async function renderStaff() {
   const el = document.getElementById('page-staff');
-  const lists = await gasGetPackingLists();
+  // Use cached LISTS if available, else fetch
+  let lists = LISTS && LISTS.length > 0 ? LISTS : await gasGetPackingLists();
+  if (!lists || lists.length === 0) {
+    // Try fetching with longer timeout
+    try {
+      const res = await gasGet({ action: 'packingLists' }, { noCache: true });
+      if (res && res.lists) { lists = res.lists; LISTS = res.lists; }
+    } catch(e) { /* silent */ }
+  }
+  if (!lists) lists = [];
   const openLists = lists.filter(l => l.status === 'open');
 
+  // List selector
   let html = `
     <div class="page-header">
       <div>
         <div class="page-title"><svg><use href="#ic-plus"/></svg>Staff Entry</div>
         <div class="page-subtitle">Select a packing list and add cartons quickly.</div>
       </div>
-    </div>`;
-
-  if (!staffSelectedList || !openLists.find(l => l.listRef === staffSelectedList.listRef)) {
-    staffSelectedList = openLists.length > 0 ? openLists[0] : null;
-  }
-
-  html += `
+    </div>
     <div class="card" style="padding:14px 18px;margin-bottom:16px">
       <div class="form-group" style="margin:0">
         <label class="form-label">Select Packing List</label>
@@ -3274,109 +3281,28 @@ async function renderStaff() {
   if (staffSelectedList) {
     html += `<div class="text-xs text-muted mt-4">${escHtml(staffSelectedList.customer)} — ${escHtml(staffSelectedList.team || '')}</div>`;
   }
-  html += `</div>`;
+  html += `</div><div id="staff-form-area"></div>`;
 
-  if (!staffSelectedList) {
-    el.innerHTML = html + `<div class="alert alert-amber"><svg><use href="#ic-alert"/></svg><div>No open packing lists. Ask supervisor to create one.</div></div>`;
-    return;
+  if (!staffSelectedList || !openLists.find(l => l.listRef === staffSelectedList.listRef)) {
+    staffSelectedList = openLists.length > 0 ? openLists[0] : null;
   }
 
-  currentListId = staffSelectedList.listRef;
-  const list = staffSelectedList;
-  const isKit = formState.cartonType === 'kit';
-  const isSingle = formState.cartonType === 'single';
-
-  // Build the full entry form (same structure as showEntryForm)
-  html += `
-  <div class="form-panel" id="staff-entry-form">
-    <div class="form-panel-header primary-bg">
-      <span class="font-bold text-primary text-sm" style="text-transform:uppercase;letter-spacing:.07em">
-        <svg style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><use href="#ic-box"/></svg>
-        New Carton — ${escHtml(list.listRef)}
-      </span>
-    </div>
-    <div class="info-row">
-      <span><strong>Customer:</strong> ${escHtml(list.customer)}</span>
-      <span><strong>Packed By:</strong> ${escHtml(list.createdBy)}</span>
-      <span><strong>Team:</strong> ${escHtml(list.team)}</span>
-    </div>
-    <div class="form-panel-body">
-
-      <div class="section-title">Carton Info</div>
-      <div class="grid-2" style="margin-bottom:12px">
-        <div class="form-group">
-          <label class="form-label">Carton ID <span class="req">*</span></label>
-          <div class="input-wrap">
-            <input type="text" id="f-cartonId" placeholder="Scan or type carton ID..." value="${escHtml(formState.cartonId)}" />
-            <button type="button" class="btn-icon" onclick="openCamera('Carton ID',v=>{document.getElementById('f-cartonId').value=v;formState.cartonId=v;})"><svg style="width:14px;height:14px"><use href="#ic-camera"/></svg></button>
-          </div>
-        </div>
-      </div>
-
-      <div style="margin-bottom:16px">
-        <label class="form-label">Contents Type <span class="req">*</span></label>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button type="button" class="btn ${isSingle?'btn-primary':'btn-outline'}" style="flex:1" onclick="staffSetType('single')">Single Item</button>
-          <button type="button" class="btn ${isKit?'btn-primary':'btn-outline'}" style="flex:1" onclick="staffSetType('kit')">Kit</button>
-          <button type="button" class="btn ${formState.cartonType==='multiple'?'btn-primary':'btn-outline'}" style="flex:1" onclick="staffSetType('multiple')">Multiple Parts</button>
-        </div>
-      </div>
-
-      ${isKit ? `
-      <div style="margin-bottom:16px">
-        <div class="grid-3">
-          <div class="form-group">
-            <label class="form-label">PI No <span class="req">*</span></label>
-            <div class="input-wrap">
-              <input type="text" id="f-cartonPi" placeholder="123456/26..." value="${escHtml(formState.cartonPi)}" oninput="formState.cartonPi=this.value.trim().toUpperCase()" />
-              <button type="button" class="btn-icon" onclick="openCamera('PI No',v=>{document.getElementById('f-cartonPi').value=v;formState.cartonPi=v.trim().toUpperCase();syncKitPiToParts();})"><svg style="width:14px;height:14px"><use href="#ic-camera"/></svg></button>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Qty (pcs) <span class="req">*</span></label>
-            <input type="number" id="f-cartonQty" min="1" value="${formState.cartonQty}" oninput="formState.cartonQty=this.value;syncKitQtyToParts();" />
-          </div>
-        </div>
-      </div>` : ''}
-
-      <div class="section-title">
-        ${isSingle ? 'Item Details' : isKit ? 'Items in this Kit' : 'Parts in this Carton'}
-        ${!isSingle ? `<span style="float:right"><button class="btn btn-primary btn-xs" onclick="staffAddPart()"><svg><use href="#ic-plus"/></svg>Add ${isKit?'Item':'Part'}</button></span>` : ''}
-      </div>
-      <div id="parts-container"></div>
-
-      ${isKit ? `
-      <div style="font-size:10px;color:var(--muted-fg);margin:16px 0 10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-top:1px solid var(--border);padding-top:14px">Shared Barcodes (All Parts)</div>
-      <div class="grid-2" style="margin-bottom:16px">
-        ${buildPartBarcodeField(0, 'inner', 'Inner Box Barcode')}
-        ${buildPartBarcodeField(0, 'outer', 'Outer Carton Barcode')}
-      </div>
-
-      <div style="font-size:10px;color:var(--muted-fg);margin:16px 0 10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-top:1px solid var(--border);padding-top:14px">Kit Photos</div>
-      <div class="grid-3" style="margin-bottom:16px">
-        ${buildKitPhotoField('allParts', 'All Parts Laid Out')}
-        ${buildKitPhotoField('innerBox', 'Inner Box / Label')}
-        ${buildKitPhotoField('cartonLabel', 'Carton / Label')}
-      </div>` : ''}
-
-      <div id="mismatch-warn" class="alert alert-danger hidden">
-        <svg><use href="#ic-alert"/></svg><div>Barcode MISMATCH detected — you cannot submit until all barcodes match.</div>
-      </div>
-      <div id="form-error" class="hidden" style="color:var(--danger);font-size:12px;margin-bottom:8px;font-weight:600"></div>
-
-      <div style="display:flex;justify-content:flex-end;padding-top:14px;border-top:1px solid var(--border);gap:8px">
-        <button class="btn btn-outline" onclick="resetFormState();renderStaff();">Clear</button>
-        <button class="btn btn-primary" id="btn-submit" onclick="staffSubmitEntry()">
-          <svg><use href="#ic-box"/></svg>Save Carton
-        </button>
-      </div>
-
-    </div>
-  </div>`;
-
+  if (staffSelectedList) {
+    currentListId = staffSelectedList.listRef;
+    // Include entry-form-wrap in the HTML so showEntryForm can find it
+    html += `<div id="entry-form-wrap"></div>`;
+  }
   el.innerHTML = html;
-  renderPartCards();
-  updateSubmitBtn();
+
+  if (staffSelectedList) {
+    // Use the SAME showEntryForm as Packing List — identical form
+    showEntryForm(false);
+    // Hide the packing-list-specific buttons/elements that don't apply here
+    const addBtn = document.getElementById('btn-add-entry');
+    if (addBtn) addBtn.style.display = 'none';
+  } else {
+    document.getElementById('staff-form-area').innerHTML = `<div class="alert alert-amber"><svg><use href="#ic-alert"/></svg><div>No open packing lists. Ask supervisor to create one.</div></div>`;
+  }
 }
 
 function onStaffListChange(sel) {
