@@ -1069,15 +1069,13 @@ async function renderListDetail() {
 
   // Attach Packing Log status (verified/rejected) to cartons
   try {
-    const logRes = await gasGet({ action: 'records' });
+    const logRes = await gasGet({ action: 'records' }, { noCache: true });
     if (logRes && logRes.records) {
       const statusMap = new Map();
-      const rejectedSet = new Set();
       for (const r of logRes.records) {
         const cid = r.cartonId || '';
         if (!cid) continue;
         const s = (r.status || '').toLowerCase();
-        if (s.includes('rejected')) rejectedSet.add(cid);
         if (!statusMap.has(cid)) {
           statusMap.set(cid, { status: r.status || '', remarks: r.remarks || '', checker: r.checker || '' });
         }
@@ -1085,11 +1083,14 @@ async function renderListDetail() {
       cartons.forEach(c => {
         const cid = c.cartonId || '';
         const pl = statusMap.get(cid);
-        if (pl) { c.status = pl.status; c.remarks = pl.remarks; c.checker = pl.checker; }
-        if (rejectedSet.has(cid)) c._isRejected = true;
+        if (pl) {
+          const s = (pl.status || '').toLowerCase();
+          if (s.includes('rejected')) { c.status = 'rejected'; c._isRejected = true; c.remarks = pl.remarks; c.checker = pl.checker; }
+          else if (s.includes('verified') || s.includes('approved')) { c.status = 'verified'; c.checker = pl.checker; }
+        }
       });
     }
-  } catch(e) { /* silent - cartons keep their own status */ }
+  } catch(e) { console.warn('Status enrichment failed:', e.message); }
   // Sort cartons by cartonId ascending (natural sort: A001, A002, B001...)
   // Schwartzian transform: extract sort key once for O(n) instead of O(n log n) regex calls
   cartons.forEach(c => {
