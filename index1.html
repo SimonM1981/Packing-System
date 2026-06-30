@@ -1,5 +1,13 @@
+// --- LOCK: Prevent direct file access ---
+if (!window.google || !window.google.script) {
+  document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#000;color:#fff;font-size:24px;font-family:sans-serif;"><div>⛔ Access Denied<br><span style="font-size:14px;color:#888;">This app must be opened via the server.</span></div></div>';
+  throw new Error('Direct access blocked');
+}// --- LOCK: Prevent direct file access ---
+if (!window.google || !window.google.script) {
+  document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#000;color:#fff;font-size:24px;font-family:sans-serif;"><div>⛔ Access Denied<br><span style="font-size:14px;color:#888;">This app must be opened via the server.</span></div></div>';
+  throw new Error('Direct access blocked');
+}
 <!DOCTYPE html>
-<?php if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) { header('HTTP/1.0 403 Forbidden'); exit('Direct access denied'); } ?>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
