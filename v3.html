@@ -2773,8 +2773,6 @@ async function checkerSubmitVerdict() {
   const remarks = document.getElementById('checker-remarks').value.trim();
   if (!name) { toast('Please enter Checker Name', 'error'); return; }
   if (!selectedCheckerVerdict) { toast('Please select Approve or Reject', 'error'); return; }
-  const btn = document.getElementById('btnSubmitVerdict');
-  if (btn) { btn.disabled = true; btn.textContent = 'Submitting...'; }
   const statusStr = selectedCheckerVerdict === 'Approved' ? 'Verified \u2705' : 'Rejected \u274C';
   try {
     const res = await gasPost({ action: 'verify', row: currentCheckerRecord.row, checker: name.toUpperCase(), status: statusStr, remarks: remarks.toUpperCase() });
@@ -2792,8 +2790,6 @@ async function checkerSubmitVerdictGroup(rowNums) {
   const remarks = document.getElementById('checker-remarks').value.trim();
   if (!name) { toast('Please enter Checker Name', 'error'); return; }
   if (!selectedCheckerVerdict) { toast('Please select Approve or Reject', 'error'); return; }
-  const btn = document.getElementById('btnSubmitVerdict');
-  if (btn) { btn.disabled = true; btn.textContent = 'Submitting...'; }
   const statusStr = selectedCheckerVerdict === 'Approved' ? 'Verified \u2705' : 'Rejected \u274C';
   const nums = rowNums.split(',').map(n => parseInt(n.trim())).filter(Boolean);
   let successCount = 0;
