@@ -469,6 +469,13 @@ let formState = {
   cartonPhotos: { allParts: null, innerBox: null, cartonLabel: null },
   parts: [], uploading: false
 };
+// ── Auto Refresh for Multi-Staff Collaboration ──────────────
+let autoRefreshInterval = null;
+let lastCartonCount = 0;
+let isFormOpen = false;
+function stopAutoRefresh() {
+  if (autoRefreshInterval) { clearInterval(autoRefreshInterval); autoRefreshInterval = null; }
+}
 
 // ── Theme State ──────────────────────────────────────────────
 (function initTheme() {
@@ -645,6 +652,9 @@ function toast(msg, type='') {
 
 // ── Navigation ───────────────────────────────────────────────
 function nav(page, listId=null) {
+  // Stop auto-refresh when leaving packing list view
+  if (page !== 'list-detail') stopAutoRefresh();
+
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
   document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
   currentPage = page;
@@ -661,7 +671,6 @@ function nav(page, listId=null) {
   else if (page === 'rejects') renderRejects();
   else if (page === 'transfer') renderTransfer();
 }
-
 // ── Formatters ───────────────────────────────────────────────
 function fmtDate(ts) {
   if (!ts) return '\u2014';
@@ -1011,21 +1020,10 @@ async function renderListDetail() {
   const list = LISTS.find(l => l.listRef === currentListId);
   if (!list) { nav('packing-lists'); return; }
 
-  const [cartons, plMaps] = await Promise.all([
-    gasGetCartons(list.listRef),
-    getPackingLogStatusMap()
-  ]);
-  const plStatusMap = plMaps.statusMap;
-  const plRejectedMap = plMaps.rejectedMap;
+  stopAutoRefresh(); // prevent multiple refresh intervals stacking up
+
+  const cartons = await gasGetCartons(list.listRef);
   LIST_CARTONS[list.listRef] = cartons;
-
-  cartons.forEach(c => {
-    const cid = c.cartonId || '';
-    const pl = plStatusMap.get(cid);
-    if (pl) { c._plStatus = pl.status; c._plRemarks = pl.remarks; c._plChecker = pl.checker; }
-    if (plRejectedMap.has(cid)) c._isRejected = true;
-  });
-
   // Sort cartons by cartonId ascending (natural sort: A001, A002, B001...)
   cartons.sort((a, b) => {
     const idA = (a.cartonId || '').toUpperCase();
@@ -1041,7 +1039,7 @@ async function renderListDetail() {
     return idA.localeCompare(idB);
   });
 
-  const rejected = cartons.filter(c => c._isRejected);
+  const rejected = cartons.filter(c => c.status === 'rejected');
   const totalParts = cartons.reduce((s,c) => s + (c.parts||[]).length, 0);
   const missingCartons = detectMissingCartons(cartons);
   const el = document.getElementById('page-list-detail');
@@ -1119,8 +1117,9 @@ async function renderListDetail() {
     </div>`;
   }
 
-  html += `
+
   html += `<div id="entry-form-wrap"></div>`;
+  html += `
     <div class="table-wrap" style="margin-bottom:16px">
       <table class="table-responsive">
         <thead><tr>
@@ -1132,8 +1131,8 @@ async function renderListDetail() {
             const firstPart = (c.parts||[])[0] || {};
             const partCount = (c.parts||[]).length;
             const isKit = c.cartonType === 'kit';
-            const plStatus = (c._plStatus || '').toLowerCase();
-            const isRejected = c._isRejected === true || c.status === 'rejected' || plStatus.includes('rejected');
+            const plStatus = (c.status || '').toLowerCase();
+            const isRejected = c.status === 'rejected' || plStatus.includes('rejected');
             const isVerified = !isRejected && (plStatus.includes('verified') || plStatus.includes('approved'));
             const bagM = firstPart.bagMatch===true||firstPart.bagMatch==='no'||firstPart.bagMatch==='no-server';
             const innerM = firstPart.innerMatch===true||firstPart.innerMatch==='no'||firstPart.innerMatch==='no-server';
@@ -1145,8 +1144,8 @@ async function renderListDetail() {
             if (isRejected) statusBadge = `<span class="badge badge-red">REJECTED</span>`;
             else if (isVerified) statusBadge = `<span class="badge badge-green">VERIFIED</span>`;
             const statusSub = isRejected
-              ? `<div class="text-xs text-danger mt-4" style="font-style:italic;max-width:120px">${escHtml(c._plRemarks || c.rejectionReason || 'No reason')}</div>`
-              : isVerified && c._plChecker ? `<div class="text-xs text-primary mt-4">By: ${escHtml(c._plChecker)}</div>` : '';
+              ? `<div class="text-xs text-danger mt-4" style="font-style:italic;max-width:120px">${escHtml(c.remarks || c.rejectionReason || 'No reason')}</div>`
+              : isVerified && c.checker ? `<div class="text-xs text-primary mt-4">By: ${escHtml(c.checker)}</div>` : '';
             return `
             <tr class="${isRejected?'rejected':'clickable'}" onclick="${isRejected ? `startEditCarton(${ci})` : `viewCartonDetail(${ci})`}">
               <td data-label="Carton ID" class="font-bold text-primary">${escHtml(c.cartonId||'\u2014')}</td>
@@ -1183,6 +1182,25 @@ async function renderListDetail() {
   html += `<div id="carton-detail-wrap"></div>`;
 
   el.innerHTML = html;
+
+  // Track carton count for multi-staff refresh
+  lastCartonCount = cartons.length;
+
+  // Auto-refresh every 20 seconds for multi-staff collaboration
+  stopAutoRefresh();
+  autoRefreshInterval = setInterval(async () => {
+    if (currentPage !== 'list-detail' || pendingEditRow !== null) return;
+    try {
+      const fresh = await gasGetCartons(currentListId);
+      if (fresh && fresh.length !== lastCartonCount) {
+        const newCount = fresh.length - lastCartonCount;
+        lastCartonCount = fresh.length;
+        LIST_CARTONS[currentListId] = fresh;
+        renderListDetail();
+        if (newCount > 0) toast(newCount + ' new carton(s) added by other staff', 'success');
+      }
+    } catch(e) { /* silent - don't interrupt user */ }
+  }, 20000);
 }
 
 // ── Complete Packing List ────────────────────────────────────
@@ -1330,26 +1348,26 @@ function viewCartonDetail(ci) {
           </div>` : ''}
           ${partsHtml}
           ${photoHtml}
-          ${(c._plStatus || '').toLowerCase().includes('rejected') || c.status==='rejected' ? `
+          ${(c.status || '').toLowerCase().includes('rejected') || c.status==='rejected' ? `
           <div class="alert alert-danger" style="margin-top:14px">
             <svg><use href="#ic-alert"/></svg>
             <div>
               <strong style="font-size:13px;text-transform:uppercase;letter-spacing:.06em">\u274C REJECTED BY CHECKER</strong>
-              ${c._plChecker || c.checkedBy ? `<div class="text-xs text-muted mt-4">Checked by: ${escHtml(c._plChecker || c.checkedBy)}</div>` : ''}
-              <div class="text-sm" style="margin-top:6px;font-style:italic">${escHtml(c._plRemarks || c.rejectionReason || 'No reason given')}</div>
+              ${c.checker || c.checkedBy ? `<div class="text-xs text-muted mt-4">Checked by: ${escHtml(c.checker || c.checkedBy)}</div>` : ''}
+              <div class="text-sm" style="margin-top:6px;font-style:italic">${escHtml(c.remarks || c.rejectionReason || 'No reason given')}</div>
             </div>
-          </div>` : (c._plStatus || '').toLowerCase().includes('verified') ? `
+          </div>` : (c.status || '').toLowerCase().includes('verified') ? `
           <div class="alert alert-success" style="margin-top:14px">
             <svg><use href="#ic-check"/></svg>
             <div>
               <strong style="font-size:13px;text-transform:uppercase;letter-spacing:.06em">\u2705 VERIFIED BY CHECKER</strong>
-              ${c._plChecker ? `<div class="text-xs text-muted mt-4">Verified by: ${escHtml(c._plChecker)}</div>` : ''}
+              ${c.checker ? `<div class="text-xs text-muted mt-4">Verified by: ${escHtml(c.checker)}</div>` : ''}
             </div>
           </div>` : ''}
         </div>
         <div class="modal-footer">
-          ${((c._plStatus || '').toLowerCase().includes('rejected') || c.status==='rejected') && list.status==='open' ? `<button class="btn btn-danger" onclick="closeCartonDetail();startEditCarton(${ci});"><svg><use href="#ic-edit"/></svg>Edit & Resubmit</button>` : ''}
-          <button class="btn btn-outline ${((c._plStatus || '').toLowerCase().includes('rejected') || c.status==='rejected')?'':'btn-full'}" onclick="closeCartonDetail()">Close</button>
+          ${((c.status || '').toLowerCase().includes('rejected') || c.status==='rejected') && list.status==='open' ? `<button class="btn btn-danger" onclick="closeCartonDetail();startEditCarton(${ci});"><svg><use href="#ic-edit"/></svg>Edit & Resubmit</button>` : ''}
+          <button class="btn btn-outline ${((c.status || '').toLowerCase().includes('rejected') || c.status==='rejected')?'':'btn-full'}" onclick="closeCartonDetail()">Close</button>
         </div>
       </div>
     </div>`;
