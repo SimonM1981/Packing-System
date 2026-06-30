@@ -870,6 +870,12 @@ async function renderDashboard() {
 // ═══════════════════════════════════════════════════════════════
 async function renderPackingLists() {
   LISTS = await gasGetPackingLists();
+  if (LISTS && LISTS.length > 0) {
+    try {
+      localStorage.setItem('mg_lists_cache', JSON.stringify(LISTS));
+      localStorage.setItem('mg_lists_cache_time', String(Date.now()));
+    } catch(e) { /* ignore */ }
+  }
   const el = document.getElementById('page-packing-lists');
   el.innerHTML = `
     <div class="page-header">
@@ -3250,14 +3256,28 @@ let staffSelectedList = null;
 
 async function renderStaff() {
   const el = document.getElementById('page-staff');
-  // Use cached LISTS if available, else fetch
-  let lists = LISTS && LISTS.length > 0 ? LISTS : await gasGetPackingLists();
-  if (!lists || lists.length === 0) {
-    // Try fetching with longer timeout
+  // Use cached LISTS if available, else fetch (and save to global)
+  let lists = LISTS && LISTS.length > 0 ? LISTS : null;
+  if (!lists) {
+    // Try localStorage cache first
     try {
-      const res = await gasGet({ action: 'packingLists' }, { noCache: true });
-      if (res && res.lists) { lists = res.lists; LISTS = res.lists; }
-    } catch(e) { /* silent */ }
+      const cached = localStorage.getItem('mg_lists_cache');
+      const cacheTime = localStorage.getItem('mg_lists_cache_time');
+      if (cached && cacheTime && Date.now() - parseInt(cacheTime) < 300000) {
+        lists = JSON.parse(cached);
+        LISTS = lists;
+      }
+    } catch(e) { /* ignore */ }
+  }
+  if (!lists || lists.length === 0) {
+    lists = await gasGetPackingLists();
+    if (lists && lists.length > 0) {
+      LISTS = lists;
+      try {
+        localStorage.setItem('mg_lists_cache', JSON.stringify(lists));
+        localStorage.setItem('mg_lists_cache_time', String(Date.now()));
+      } catch(e) { /* ignore */ }
+    }
   }
   if (!lists) lists = [];
   const openLists = lists.filter(l => l.status === 'open');
@@ -3520,6 +3540,11 @@ function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&
 
 // ── Init ─────────────────────────────────────────────────────
 LISTS = [];
+// Load cached lists on startup
+try {
+  const cached = localStorage.getItem('mg_lists_cache');
+  if (cached) LISTS = JSON.parse(cached);
+} catch(e) { /* ignore */ }
 nav('dashboard');
 </script>
 </body>
