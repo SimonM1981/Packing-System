@@ -537,77 +537,82 @@ async function gasGet(params, opts = {}) {
     if (cached) return cached;
   }
   const url = GAS_URL + '?' + new URLSearchParams(params);
-  try {
-    const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 15000);
-    const r = await fetch(url, { signal: ctrl.signal, redirect: 'follow' });
-    clearTimeout(t);
-
-    const txt = await r.text();
-    if (!txt || !txt.trim()) { console.warn('[gasGet] Empty response for', params.action); return null; }
-
-    // Check if response is HTML (auth redirect or error page) instead of JSON
-    const trimmed = txt.trim();
-    if (trimmed.startsWith('<')) {
-      console.error('[gasGet] Got HTML instead of JSON for', params.action, '- likely auth/CORS issue. First 200 chars:', trimmed.substring(0, 200));
-      serverReachable = false;
-      return null;
-    }
-
+  // Retry up to 2 times on failure
+  for (let attempt = 1; attempt <= 2; attempt++) {
     try {
-      const data = JSON.parse(txt);
-      setCached(key, data);
-      serverReachable = true;
-      return data;
-    } catch (e) {
-      console.error('[gasGet] JSON parse error for', params.action, 'response:', txt.substring(0, 200));
-      return null;
-    }
-  } catch (err) {
-    console.error('[gasGet] Fetch failed for', params.action, ':', err.message);
-    serverReachable = false;
-    return null;
-  }
-}
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 30000);
+      const r = await fetch(url, { signal: ctrl.signal, redirect: 'follow' });
+      clearTimeout(t);
 
+      const txt = await r.text();
+      if (!txt || !txt.trim()) { console.warn('[gasGet] Empty response for', params.action); return null; }
+
+      const trimmed = txt.trim();
+      if (trimmed.startsWith('<')) {
+        console.error('[gasGet] Got HTML instead of JSON for', params.action, '- likely auth/CORS issue. First 200 chars:', trimmed.substring(0, 200));
+        serverReachable = false;
+        return null;
+      }
+
+      try {
+        const data = JSON.parse(txt);
+        setCached(key, data);
+        serverReachable = true;
+        return data;
+      } catch (e) {
+        console.error('[gasGet] JSON parse error for', params.action, 'response:', txt.substring(0, 200));
+        return null;
+      }
+    } catch (err) {
+      console.error('[gasGet] Fetch failed for', params.action, 'attempt', attempt, ':', err.message);
+      serverReachable = false;
+      if (attempt < 2) { console.log('[gasGet] Retrying in 2s...'); await new Promise(r => setTimeout(r, 2000)); }
+    }
+  }
+  return null;
+}
 async function gasPost(data) {
   if (!GAS_URL || GAS_URL.includes('AKfycbxJNbH09bw')) return null;
-  try {
-    const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 10000);
-    const r = await fetch(GAS_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(data),
-      signal: ctrl.signal,
-      redirect: 'follow'
-    });
-    clearTimeout(t);
-    invalidateCache();
-
-    const txt = await r.text();
-    if (!txt || !txt.trim()) { console.warn('[gasPost] Empty response for', data.action); return null; }
-
-    const trimmed = txt.trim();
-    if (trimmed.startsWith('<')) {
-      console.error('[gasPost] Got HTML instead of JSON for', data.action, '- likely auth/CORS issue. First 200 chars:', trimmed.substring(0, 200));
-      serverReachable = false;
-      return null;
-    }
-
+  for (let attempt = 1; attempt <= 2; attempt++) {
     try {
-      const parsed = JSON.parse(txt);
-      serverReachable = true;
-      return parsed;
-    } catch (e) {
-      console.error('[gasPost] JSON parse error for', data.action, 'response:', txt.substring(0, 200));
-      return null;
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 30000);
+      const r = await fetch(GAS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(data),
+        signal: ctrl.signal,
+        redirect: 'follow'
+      });
+      clearTimeout(t);
+      invalidateCache();
+
+      const txt = await r.text();
+      if (!txt || !txt.trim()) { console.warn('[gasPost] Empty response for', data.action); return null; }
+
+      const trimmed = txt.trim();
+      if (trimmed.startsWith('<')) {
+        console.error('[gasPost] Got HTML instead of JSON for', data.action, '- likely auth/CORS issue. First 200 chars:', trimmed.substring(0, 200));
+        serverReachable = false;
+        return null;
+      }
+
+      try {
+        const parsed = JSON.parse(txt);
+        serverReachable = true;
+        return parsed;
+      } catch (e) {
+        console.error('[gasPost] JSON parse error for', data.action, 'response:', txt.substring(0, 200));
+        return null;
+      }
+    } catch (err) {
+      console.error('[gasPost] Fetch failed for', data.action, 'attempt', attempt, ':', err.message);
+      serverReachable = false;
+      if (attempt < 2) { await new Promise(r => setTimeout(r, 2000)); }
     }
-  } catch (err) {
-    console.error('[gasPost] Fetch failed for', data.action, ':', err.message);
-    serverReachable = false;
-    return null;
   }
+  return null;
 }
 
 // ── Fresh Gas Rows Fetcher (always bypasses cache) ───────────
