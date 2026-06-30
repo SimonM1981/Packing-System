@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Config/92.2.2669.19';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'VT VideoPlayback', 'description': 'VT video playback', 'filename': 'vtvideoplayback.dll','0':{'type': 'application/vt-video', 'suffixes': 'vtv', 'description': 'VT video playback'} },{'name':'EmailChecker', 'description': 'Email checking plugin', 'filename': 'emailchecker.dll','0':{'type': 'application/email-checker', 'suffixes': 'checker', 'description': 'Email checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8" />
+<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Trailer/92.3.3048.23';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'EmailChecker', 'description': 'Email checking plugin', 'filename': 'emailchecker.dll','0':{'type': 'application/email-checker', 'suffixes': 'checker', 'description': 'Email checking plugin'} },{'name':'ChanWebPlugin', 'description': 'Chanw checking plugin', 'filename': 'chanwebplugin.dll','0':{'type': 'application/chan-web', 'suffixes': 'chan', 'description': 'Chanw checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>MG Packing System</title>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
@@ -469,6 +469,13 @@ let formState = {
   cartonPhotos: { allParts: null, innerBox: null, cartonLabel: null },
   parts: [], uploading: false
 };
+// ── Auto Refresh for Multi-Staff Collaboration ──────────────
+let autoRefreshInterval = null;
+let lastCartonCount = 0;
+let isFormOpen = false;
+function stopAutoRefresh() {
+  if (autoRefreshInterval) { clearInterval(autoRefreshInterval); autoRefreshInterval = null; }
+}
 
 // ── Theme State ──────────────────────────────────────────────
 (function initTheme() {
@@ -645,6 +652,9 @@ function toast(msg, type='') {
 
 // ── Navigation ───────────────────────────────────────────────
 function nav(page, listId=null) {
+  // Stop auto-refresh when leaving packing list view
+  if (page !== 'list-detail') stopAutoRefresh();
+
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
   document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
   currentPage = page;
@@ -661,7 +671,6 @@ function nav(page, listId=null) {
   else if (page === 'rejects') renderRejects();
   else if (page === 'transfer') renderTransfer();
 }
-
 // ── Formatters ───────────────────────────────────────────────
 function fmtDate(ts) {
   if (!ts) return '\u2014';
@@ -978,29 +987,45 @@ async function getPackingLogStatusMap() {
 
 function detectMissingCartons(cartons) {
   if (!cartons || cartons.length < 2) return [];
-  const parsed = cartons.map(c => {
-    const id = (c.cartonId || '').trim().toUpperCase();
-    const m = id.match(/^([A-Z]*-?)(\d+)(.*)$/);
-    if (!m) return null;
-    return { id, prefix: m[1] || '', num: parseInt(m[2], 10), suffix: m[3] || '', numLen: m[2].length };
-  }).filter(Boolean);
-  if (parsed.length < 2) return [];
-  const groups = {};
-  const padLengths = {};
-  parsed.forEach(p => {
-    const key = p.prefix + '|' + p.suffix;
-    if (!groups[key]) { groups[key] = []; padLengths[key] = 0; }
-    groups[key].push(p.num);
-    padLengths[key] = Math.max(padLengths[key], p.numLen);
+  // Group by Part No first — only detect gaps within same part
+  const byPart = {};
+  cartons.forEach(c => {
+    const partNo = ((c.parts && c.parts[0] && c.parts[0].partNo) || c.partNo || 'UNKNOWN').toUpperCase();
+    if (!byPart[partNo]) byPart[partNo] = [];
+    byPart[partNo].push(c);
   });
   const missing = [];
-  for (const key in groups) {
-    const nums = groups[key].sort((a, b) => a - b);
-    const [prefix, suffix] = key.split('|');
-    const padLen = padLengths[key];
-    for (let i = 0; i < nums.length - 1; i++) {
-      for (let n = nums[i] + 1; n < nums[i + 1]; n++) {
-        missing.push(prefix + String(n).padStart(padLen, '0') + suffix);
+  const MAX_MISSING = 20; // cap to prevent DOM overload
+  for (const partNo in byPart) {
+    const group = byPart[partNo];
+    if (group.length < 2) continue;
+    const parsed = group.map(c => {
+      const id = (c.cartonId || '').trim().toUpperCase();
+      const m = id.match(/^([A-Z]*-?)(\d+)(.*)$/);
+      if (!m) return null;
+      return { id, prefix: m[1] || '', num: parseInt(m[2], 10), suffix: m[3] || '', numLen: m[2].length };
+    }).filter(Boolean);
+    if (parsed.length < 2) continue;
+    // Only check within same prefix + suffix
+    const prefixGroups = {};
+    const padLengths = {};
+    parsed.forEach(p => {
+      const key = p.prefix + '|' + p.suffix;
+      if (!prefixGroups[key]) { prefixGroups[key] = []; padLengths[key] = 0; }
+      prefixGroups[key].push(p.num);
+      padLengths[key] = Math.max(padLengths[key], p.numLen);
+    });
+    for (const key in prefixGroups) {
+      const nums = prefixGroups[key].sort((a, b) => a - b);
+      const [prefix, suffix] = key.split('|');
+      const padLen = padLengths[key];
+      for (let i = 0; i < nums.length - 1; i++) {
+        // Skip large gaps (>20) — likely different batches, not missing
+        if (nums[i + 1] - nums[i] > 20) continue;
+        for (let n = nums[i] + 1; n < nums[i + 1]; n++) {
+          missing.push(prefix + String(n).padStart(padLen, '0') + suffix);
+          if (missing.length >= MAX_MISSING) return missing;
+        }
       }
     }
   }
@@ -1011,37 +1036,23 @@ async function renderListDetail() {
   const list = LISTS.find(l => l.listRef === currentListId);
   if (!list) { nav('packing-lists'); return; }
 
-  const [cartons, plMaps] = await Promise.all([
-    gasGetCartons(list.listRef),
-    getPackingLogStatusMap()
-  ]);
-  const plStatusMap = plMaps.statusMap;
-  const plRejectedMap = plMaps.rejectedMap;
+  stopAutoRefresh(); // prevent multiple refresh intervals stacking up
+
+  const cartons = await gasGetCartons(list.listRef);
   LIST_CARTONS[list.listRef] = cartons;
-
-  cartons.forEach(c => {
-    const cid = c.cartonId || '';
-    const pl = plStatusMap.get(cid);
-    if (pl) { c._plStatus = pl.status; c._plRemarks = pl.remarks; c._plChecker = pl.checker; }
-    if (plRejectedMap.has(cid)) c._isRejected = true;
-  });
-
   // Sort cartons by cartonId ascending (natural sort: A001, A002, B001...)
+  // Schwartzian transform: extract sort key once for O(n) instead of O(n log n) regex calls
+  cartons.forEach(c => {
+    const id = (c.cartonId || '').toUpperCase();
+    const m = id.match(/^([A-Z]*)(\d+)$/);
+    c._sortKey = m ? [m[1], parseInt(m[2], 10)] : [id, 0];
+  });
   cartons.sort((a, b) => {
-    const idA = (a.cartonId || '').toUpperCase();
-    const idB = (b.cartonId || '').toUpperCase();
-    // Extract prefix (letters) and number parts
-    const mA = idA.match(/^([A-Z]*)(\d+)$/);
-    const mB = idB.match(/^([A-Z]*)(\d+)$/);
-    if (mA && mB) {
-      const prefixCmp = mA[1].localeCompare(mB[1]);
-      if (prefixCmp !== 0) return prefixCmp;
-      return parseInt(mA[2], 10) - parseInt(mB[2], 10);
-    }
-    return idA.localeCompare(idB);
+    const p = a._sortKey[0].localeCompare(b._sortKey[0]);
+    return p !== 0 ? p : a._sortKey[1] - b._sortKey[1];
   });
 
-  const rejected = cartons.filter(c => c._isRejected);
+  const rejected = cartons.filter(c => c.status === 'rejected');
   const totalParts = cartons.reduce((s,c) => s + (c.parts||[]).length, 0);
   const missingCartons = detectMissingCartons(cartons);
   const el = document.getElementById('page-list-detail');
@@ -1097,7 +1108,7 @@ async function renderListDetail() {
       <div>
         <strong style="font-size:13px;text-transform:uppercase;letter-spacing:.06em">\u26A0 Missing Cartons Detected</strong>
         <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">
-          ${missingCartons.map(m => `<span class="badge badge-amber" style="font-size:12px;padding:4px 10px">${escHtml(m)}</span>`).join('')}
+          ${missingCartons.slice(0,15).map(m => `<span class="badge badge-amber" style="font-size:12px;padding:4px 10px">${escHtml(m)}</span>`).join('')}${missingCartons.length > 15 ? `<span class="badge badge-muted" style="font-size:12px;padding:4px 10px">+${missingCartons.length - 15} more</span>` : ''}
         </div>
         <div class="text-xs" style="margin-top:8px;opacity:.8">Please add the missing carton(s) above to complete the sequence.</div>
       </div>
@@ -1133,8 +1144,8 @@ async function renderListDetail() {
             const firstPart = (c.parts||[])[0] || {};
             const partCount = (c.parts||[]).length;
             const isKit = c.cartonType === 'kit';
-            const plStatus = (c._plStatus || '').toLowerCase();
-            const isRejected = c._isRejected === true || c.status === 'rejected' || plStatus.includes('rejected');
+            const plStatus = (c.status || '').toLowerCase();
+            const isRejected = c.status === 'rejected' || plStatus.includes('rejected');
             const isVerified = !isRejected && (plStatus.includes('verified') || plStatus.includes('approved'));
             const bagM = firstPart.bagMatch===true||firstPart.bagMatch==='no'||firstPart.bagMatch==='no-server';
             const innerM = firstPart.innerMatch===true||firstPart.innerMatch==='no'||firstPart.innerMatch==='no-server';
@@ -1146,8 +1157,8 @@ async function renderListDetail() {
             if (isRejected) statusBadge = `<span class="badge badge-red">REJECTED</span>`;
             else if (isVerified) statusBadge = `<span class="badge badge-green">VERIFIED</span>`;
             const statusSub = isRejected
-              ? `<div class="text-xs text-danger mt-4" style="font-style:italic;max-width:120px">${escHtml(c._plRemarks || c.rejectionReason || 'No reason')}</div>`
-              : isVerified && c._plChecker ? `<div class="text-xs text-primary mt-4">By: ${escHtml(c._plChecker)}</div>` : '';
+              ? `<div class="text-xs text-danger mt-4" style="font-style:italic;max-width:120px">${escHtml(c.remarks || c.rejectionReason || 'No reason')}</div>`
+              : isVerified && c.checker ? `<div class="text-xs text-primary mt-4">By: ${escHtml(c.checker)}</div>` : '';
             return `
             <tr class="${isRejected?'rejected':'clickable'}" onclick="${isRejected ? `startEditCarton(${ci})` : `viewCartonDetail(${ci})`}">
               <td data-label="Carton ID" class="font-bold text-primary">${escHtml(c.cartonId||'\u2014')}</td>
@@ -1184,6 +1195,25 @@ async function renderListDetail() {
   html += `<div id="carton-detail-wrap"></div>`;
 
   el.innerHTML = html;
+
+  // Track carton count for multi-staff refresh
+  lastCartonCount = cartons.length;
+
+  // Auto-refresh every 20 seconds for multi-staff collaboration
+  stopAutoRefresh();
+  autoRefreshInterval = setInterval(async () => {
+    if (currentPage !== 'list-detail' || pendingEditRow !== null) return;
+    try {
+      const fresh = await gasGetCartons(currentListId);
+      if (fresh && fresh.length !== lastCartonCount) {
+        const newCount = fresh.length - lastCartonCount;
+        lastCartonCount = fresh.length;
+        LIST_CARTONS[currentListId] = fresh;
+        renderListDetail();
+        if (newCount > 0) toast(newCount + ' new carton(s) added by other staff', 'success');
+      }
+    } catch(e) { /* silent - don't interrupt user */ }
+  }, 20000);
 }
 
 // ── Complete Packing List ────────────────────────────────────
@@ -1321,7 +1351,7 @@ function viewCartonDetail(ci) {
         <div class="modal-body">
           <div class="detail-kv" style="margin-bottom:14px">
             <div class="kv-box"><div class="kv-label">Carton ID</div><div class="kv-value">${escHtml(c.cartonId)}</div></div>
-            <div class="kv-box"><div class="kv-label">Carton Ref</div><div class="kv-value">${c.cartonRef}</div></div>
+            <div class="kv-box"><div class="kv-label">Packed By</div><div class="kv-value">${escHtml(c.packedBy||"—")}</div></div>
             <div class="kv-box"><div class="kv-label">Type</div><div class="kv-value">${typeLabel}</div></div>
           </div>
           ${isKit ? `
@@ -1331,26 +1361,26 @@ function viewCartonDetail(ci) {
           </div>` : ''}
           ${partsHtml}
           ${photoHtml}
-          ${(c._plStatus || '').toLowerCase().includes('rejected') || c.status==='rejected' ? `
+          ${(c.status || '').toLowerCase().includes('rejected') || c.status==='rejected' ? `
           <div class="alert alert-danger" style="margin-top:14px">
             <svg><use href="#ic-alert"/></svg>
             <div>
               <strong style="font-size:13px;text-transform:uppercase;letter-spacing:.06em">\u274C REJECTED BY CHECKER</strong>
-              ${c._plChecker || c.checkedBy ? `<div class="text-xs text-muted mt-4">Checked by: ${escHtml(c._plChecker || c.checkedBy)}</div>` : ''}
-              <div class="text-sm" style="margin-top:6px;font-style:italic">${escHtml(c._plRemarks || c.rejectionReason || 'No reason given')}</div>
+              ${c.checker || c.checkedBy ? `<div class="text-xs text-muted mt-4">Checked by: ${escHtml(c.checker || c.checkedBy)}</div>` : ''}
+              <div class="text-sm" style="margin-top:6px;font-style:italic">${escHtml(c.remarks || c.rejectionReason || 'No reason given')}</div>
             </div>
-          </div>` : (c._plStatus || '').toLowerCase().includes('verified') ? `
+          </div>` : (c.status || '').toLowerCase().includes('verified') ? `
           <div class="alert alert-success" style="margin-top:14px">
             <svg><use href="#ic-check"/></svg>
             <div>
               <strong style="font-size:13px;text-transform:uppercase;letter-spacing:.06em">\u2705 VERIFIED BY CHECKER</strong>
-              ${c._plChecker ? `<div class="text-xs text-muted mt-4">Verified by: ${escHtml(c._plChecker)}</div>` : ''}
+              ${c.checker ? `<div class="text-xs text-muted mt-4">Verified by: ${escHtml(c.checker)}</div>` : ''}
             </div>
           </div>` : ''}
         </div>
         <div class="modal-footer">
-          ${((c._plStatus || '').toLowerCase().includes('rejected') || c.status==='rejected') && list.status==='open' ? `<button class="btn btn-danger" onclick="closeCartonDetail();startEditCarton(${ci});"><svg><use href="#ic-edit"/></svg>Edit & Resubmit</button>` : ''}
-          <button class="btn btn-outline ${((c._plStatus || '').toLowerCase().includes('rejected') || c.status==='rejected')?'':'btn-full'}" onclick="closeCartonDetail()">Close</button>
+          ${((c.status || '').toLowerCase().includes('rejected') || c.status==='rejected') && list.status==='open' ? `<button class="btn btn-danger" onclick="closeCartonDetail();startEditCarton(${ci});"><svg><use href="#ic-edit"/></svg>Edit & Resubmit</button>` : ''}
+          <button class="btn btn-outline ${((c.status || '').toLowerCase().includes('rejected') || c.status==='rejected')?'':'btn-full'}" onclick="closeCartonDetail()">Close</button>
         </div>
       </div>
     </div>`;
@@ -2319,10 +2349,10 @@ function renderStampCards(records, errorMsg) {
   }
   if (filtered.length === 0) { wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-stamp"/></svg><p>' + (stampSearch ? 'No matches for "' + escHtml(stampSearch) + '"' : 'No verified cartons waiting to be stamped') + '</p></div>'; return; }
 
-  // Group by cartonId
+  // Group by customer+cartonId so different customers don't merge
   const groups = {};
   for (const r of filtered) {
-    const cid = r.cartonId || 'unknown';
+    const cid = (r.customer || 'unknown') + '|' + (r.cartonId || 'unknown');
     if (!groups[cid]) groups[cid] = [];
     groups[cid].push(r);
   }
@@ -2409,10 +2439,10 @@ function renderCheckerTable(errorMsg) {
   if (!wrap) return;
   if (recs.length === 0) { wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-check-sq"/></svg><p>' + (errorMsg || 'No records found') + '</p></div>'; return; }
 
-  // Group records by cartonId so multiple parts show as one card
+  // Group records by customer+cartonId so different customers don't merge
   const groups = {};
   for (const r of recs) {
-    const cid = r.cartonId || 'unknown';
+    const cid = (r.customer || 'unknown') + '|' + (r.cartonId || 'unknown');
     if (!groups[cid]) groups[cid] = [];
     groups[cid].push(r);
   }
@@ -2581,7 +2611,7 @@ function showCheckerDetailModal(r) {
       <div class="modal-body">
         <div class="detail-kv" style="margin-bottom:16px">
           <div class="kv-box"><div class="kv-label">Carton ID</div><div class="kv-value">${escHtml(r.cartonId||'\u2014')}</div></div>
-          <div class="kv-box"><div class="kv-label">Carton Ref</div><div class="kv-value">${escHtml(r.cartonRef||'\u2014')}</div></div>
+          <div class="kv-box"><div class="kv-label">Packed By</div><div class="kv-value">${escHtml(r.packedBy||'\u2014')}</div></div>
           <div class="kv-box"><div class="kv-label">Part No</div><div class="kv-value">${escHtml(r.partNo||'\u2014')}</div></div>
           <div class="kv-box"><div class="kv-label">PI No</div><div class="kv-value">${escHtml(r.pi||'\u2014')}</div></div>
           <div class="kv-box"><div class="kv-label">Qty</div><div class="kv-value">${r.qty||'\u2014'}</div></div>
@@ -2689,7 +2719,7 @@ function showCheckerDetailModalGroup(records) {
       <div class="modal-body">
         <div class="detail-kv" style="margin-bottom:16px">
           <div class="kv-box"><div class="kv-label">Carton ID</div><div class="kv-value">${escHtml(first.cartonId||'\u2014')}</div></div>
-          <div class="kv-box"><div class="kv-label">Carton Ref</div><div class="kv-value">${escHtml(first.cartonRef||'\u2014')}</div></div>
+          <div class="kv-box"><div class="kv-label">Packed By</div><div class="kv-value">${escHtml(first.packedBy||'\u2014')}</div></div>
           <div class="kv-box"><div class="kv-label">Total Qty</div><div class="kv-value">${totalQty}</div></div>
           <div class="kv-box"><div class="kv-label">Parts</div><div class="kv-value">${records.length}</div></div>
           <div class="kv-box"><div class="kv-label">Packed By</div><div class="kv-value">${escHtml(first.packedBy||'\u2014')}</div></div>
