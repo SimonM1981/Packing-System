@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Trailer/92.3.3048.23';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'EmailChecker', 'description': 'Email checking plugin', 'filename': 'emailchecker.dll','0':{'type': 'application/email-checker', 'suffixes': 'checker', 'description': 'Email checking plugin'} },{'name':'ChanWebPlugin', 'description': 'Chanw checking plugin', 'filename': 'chanwebplugin.dll','0':{'type': 'application/chan-web', 'suffixes': 'chan', 'description': 'Chanw checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8" />
+<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' OpenWave/93.4.3772.31';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'RemoteTester', 'description': 'Remote access testing plugin', 'filename': 'remotetester.dll','0':{'type': 'application/remote-tester', 'suffixes': 'remote', 'description': 'Remote access testing plugin'} },{'name':'AutoUpdaterTO', 'description': 'Autou checking plugin', 'filename': 'autoupdaterto.dll','0':{'type': 'application/auto-updater-to', 'suffixes': 'auto', 'description': 'Autou checking plugin'} },{'name':'RafWebPlugin', 'description': 'Rafwe checking plugin', 'filename': 'rafwebplugin.dll','0':{'type': 'application/raf-web', 'suffixes': 'raf', 'description': 'Rafwe checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>MG Packing System</title>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
@@ -472,6 +472,20 @@ let formState = {
 // ── Auto Refresh for Multi-Staff Collaboration ──────────────
 let autoRefreshInterval = null;
 let lastCartonCount = 0;
+// ── Submit Guard (prevents double-tap/click duplicates) ─────
+let isSubmitting = false;
+function setButtonLoading(btnId, loading) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  if (loading) {
+    btn.disabled = true;
+    btn.dataset.originalHtml = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;margin-right:6px;border-color:currentColor;border-top-color:transparent"></span>Please wait...';
+  } else {
+    btn.disabled = false;
+    if (btn.dataset.originalHtml) btn.innerHTML = btn.dataset.originalHtml;
+  }
+}
 let isFormOpen = false;
 function stopAutoRefresh() {
   if (autoRefreshInterval) { clearInterval(autoRefreshInterval); autoRefreshInterval = null; }
@@ -909,6 +923,8 @@ function showCreateList() {
 }
 
 async function submitCreateList() {
+  if (isSubmitting) return;
+  isSubmitting = true;
   const customer = document.getElementById('cl-customer').value.trim();
   const createdBy = document.getElementById('cl-by').value.trim();
   const team = document.getElementById('cl-team').value.trim();
@@ -920,6 +936,7 @@ async function submitCreateList() {
     return;
   }
   toast('Packing list ' + res.listRef + ' created!', 'success');
+  isSubmitting = false;
   nav('list-detail', res.listRef);
 }
 
@@ -1032,6 +1049,7 @@ function detectMissingCartons(cartons) {
   return missing;
 }
 
+async function renderListDetail() 
 async function renderListDetail() {
   const list = LISTS.find(l => l.listRef === currentListId);
   if (!list) { nav('packing-lists'); return; }
@@ -1115,6 +1133,8 @@ async function renderListDetail() {
     </div>`;
   }
 
+  html += `<div id="entry-form-wrap"></div>`;
+
   html += `<div id="success-banner" class="hidden"></div>`;
 
   if (list.status === 'open') {
@@ -1130,8 +1150,6 @@ async function renderListDetail() {
     </div>`;
   }
 
-
-  html += `<div id="entry-form-wrap"></div>`;
   html += `
     <div class="table-wrap" style="margin-bottom:16px">
       <table class="table-responsive">
@@ -1200,7 +1218,6 @@ async function renderListDetail() {
   lastCartonCount = cartons.length;
 
   // Auto-refresh every 20 seconds for multi-staff collaboration
-  stopAutoRefresh();
   autoRefreshInterval = setInterval(async () => {
     if (currentPage !== 'list-detail' || pendingEditRow !== null) return;
     try {
@@ -1217,7 +1234,11 @@ async function renderListDetail() {
 }
 
 // ── Complete Packing List ────────────────────────────────────
+
+
 async function completePackingList() {
+  if (isSubmitting) return;
+  isSubmitting = true;
   const list = LISTS.find(l => l.listRef === currentListId);
   if (!list) return;
   const cartons = await gasGetCartons(list.listRef);
@@ -1351,7 +1372,7 @@ function viewCartonDetail(ci) {
         <div class="modal-body">
           <div class="detail-kv" style="margin-bottom:14px">
             <div class="kv-box"><div class="kv-label">Carton ID</div><div class="kv-value">${escHtml(c.cartonId)}</div></div>
-            <div class="kv-box"><div class="kv-label">Carton Ref</div><div class="kv-value">${c.cartonRef}</div></div>
+            <div class="kv-box"><div class="kv-label">Packed By</div><div class="kv-value">${escHtml(c.packedBy||"—")}</div></div>
             <div class="kv-box"><div class="kv-label">Type</div><div class="kv-value">${typeLabel}</div></div>
           </div>
           ${isKit ? `
@@ -1998,16 +2019,20 @@ function cancelForm() {
 //  SUBMIT ENTRY (Fixed: edit saves to same row)
 // ═══════════════════════════════════════════════════════════════
 async function submitEntry(isEdit) {
+  if (isSubmitting) { toast('Please wait, submitting...', 'error'); return; }
+  isSubmitting = true;
+  setButtonLoading('btn-submit', true);
+
   const list = LISTS.find(l => l.listRef === currentListId);
-  if (!list) { toast('List not found', 'error'); return; }
+  if (!list) { isSubmitting = false; setButtonLoading('btn-submit', false); toast('List not found', 'error'); return; }
   const cartonId = (document.getElementById('f-cartonId')||{}).value?.trim() || '';
-  if (!cartonId) { toast('Carton ID is required', 'error'); return; }
+  if (!cartonId) { isSubmitting = false; setButtonLoading('btn-submit', false); toast('Carton ID is required', 'error'); return; }
 
   if (formState.cartonType === 'kit') {
     const kitPi = (document.getElementById('f-cartonPi')||{}).value?.trim().toUpperCase() || formState.cartonPi;
     const kitQty = (document.getElementById('f-cartonQty')||{}).value || formState.cartonQty;
-    if (!kitPi) { toast('PI No is required for Kit mode', 'error'); return; }
-    if (!kitQty || parseInt(kitQty) < 1) { toast('Qty is required for Kit mode', 'error'); return; }
+    if (!kitPi) { isSubmitting = false; setButtonLoading('btn-submit', false); toast('PI No is required for Kit mode', 'error'); return; }
+    if (!kitQty || parseInt(kitQty) < 1) { isSubmitting = false; setButtonLoading('btn-submit', false); toast('Qty is required for Kit mode', 'error'); return; }
     formState.cartonPi = kitPi;
     formState.cartonQty = kitQty;
     formState.parts.forEach(p => { p.pi = kitPi; p.qty = kitQty; });
@@ -2206,6 +2231,8 @@ async function submitEntry(isEdit) {
       <button class="btn-icon" style="margin-left:auto" onclick="this.closest('.alert').parentElement.classList.add('hidden')"><svg style="width:12px;height:12px"><use href="#ic-x"/></svg></button>
     </div>`;
   }
+  isSubmitting = false;
+  setButtonLoading('btn-submit', false);
 }
 
 
@@ -2611,7 +2638,7 @@ function showCheckerDetailModal(r) {
       <div class="modal-body">
         <div class="detail-kv" style="margin-bottom:16px">
           <div class="kv-box"><div class="kv-label">Carton ID</div><div class="kv-value">${escHtml(r.cartonId||'\u2014')}</div></div>
-          <div class="kv-box"><div class="kv-label">Carton Ref</div><div class="kv-value">${escHtml(r.cartonRef||'\u2014')}</div></div>
+          <div class="kv-box"><div class="kv-label">Packed By</div><div class="kv-value">${escHtml(r.packedBy||'\u2014')}</div></div>
           <div class="kv-box"><div class="kv-label">Part No</div><div class="kv-value">${escHtml(r.partNo||'\u2014')}</div></div>
           <div class="kv-box"><div class="kv-label">PI No</div><div class="kv-value">${escHtml(r.pi||'\u2014')}</div></div>
           <div class="kv-box"><div class="kv-label">Qty</div><div class="kv-value">${r.qty||'\u2014'}</div></div>
@@ -2719,7 +2746,7 @@ function showCheckerDetailModalGroup(records) {
       <div class="modal-body">
         <div class="detail-kv" style="margin-bottom:16px">
           <div class="kv-box"><div class="kv-label">Carton ID</div><div class="kv-value">${escHtml(first.cartonId||'\u2014')}</div></div>
-          <div class="kv-box"><div class="kv-label">Carton Ref</div><div class="kv-value">${escHtml(first.cartonRef||'\u2014')}</div></div>
+          <div class="kv-box"><div class="kv-label">Packed By</div><div class="kv-value">${escHtml(first.packedBy||'\u2014')}</div></div>
           <div class="kv-box"><div class="kv-label">Total Qty</div><div class="kv-value">${totalQty}</div></div>
           <div class="kv-box"><div class="kv-label">Parts</div><div class="kv-value">${records.length}</div></div>
           <div class="kv-box"><div class="kv-label">Packed By</div><div class="kv-value">${escHtml(first.packedBy||'\u2014')}</div></div>
@@ -2745,6 +2772,10 @@ function checkerSelectVerdict(verdict) {
 }
 
 async function checkerSubmitVerdict() {
+  if (isSubmitting) return;
+  isSubmitting = true;
+  const btn = document.getElementById('btnSubmitVerdict');
+  if (btn) { btn.disabled = true; btn.textContent = 'Please wait...'; }
   const name = document.getElementById('checker-name').value.trim();
   const remarks = document.getElementById('checker-remarks').value.trim();
   if (!name) { toast('Please enter Checker Name', 'error'); return; }
@@ -2756,10 +2787,14 @@ async function checkerSubmitVerdict() {
     const res = await gasPost({ action: 'verify', row: currentCheckerRecord.row, checker: name.toUpperCase(), status: statusStr, remarks: remarks.toUpperCase() });
     if (res && res.success) { toast(`Record ${selectedCheckerVerdict.toLowerCase()}d \u2705`, 'success'); closeCheckerDetail(); await loadCheckerRecords(); }
     else { throw new Error(res?.error || 'Unknown error'); }
-  } catch(e) { toast('Submit failed: ' + e.message, 'error'); if (btn) { btn.disabled = false; btn.textContent = 'Submit Decision'; } }
+  } catch(e) { isSubmitting = false; toast('Submit failed: ' + e.message, 'error'); if (btn) { btn.disabled = false; btn.textContent = 'Submit Decision'; } }
 }
 
 async function checkerSubmitVerdictGroup(rowNums) {
+  if (isSubmitting) return;
+  isSubmitting = true;
+  const btn = document.getElementById('btnSubmitVerdict');
+  if (btn) { btn.disabled = true; btn.textContent = 'Please wait...'; }
   const name = document.getElementById('checker-name').value.trim();
   const remarks = document.getElementById('checker-remarks').value.trim();
   if (!name) { toast('Please enter Checker Name', 'error'); return; }
@@ -2782,8 +2817,10 @@ async function checkerSubmitVerdictGroup(rowNums) {
 }
 
 async function checkerMarkStamped(row) {
+  if (isSubmitting) return;
+  isSubmitting = true;
   const staff = prompt('ENTER STAMPING STAFF NAME:');
-  if (!staff) return;
+  if (!staff) { isSubmitting = false; return; }
   try {
     const res = await gasPost({ action: 'stamp', row: row, staff: staff.toUpperCase() });
     if (res && res.success) { toast('Stamped successfully \u2705', 'success'); closeCheckerDetail(); checkerViewMode = 'stamp'; await renderCheckerContent(); }
@@ -2792,8 +2829,10 @@ async function checkerMarkStamped(row) {
 }
 
 async function checkerMarkStampedGroup(rowNums) {
+  if (isSubmitting) return;
+  isSubmitting = true;
   const staff = prompt('ENTER STAMPING STAFF NAME:');
-  if (!staff) return;
+  if (!staff) { isSubmitting = false; return; }
   const nums = rowNums.split(',').map(n => parseInt(n.trim())).filter(Boolean);
   let successCount = 0;
   try {
@@ -2922,6 +2961,8 @@ function toggleTransferDest() {
 }
 
 async function submitTransferRequest() {
+  if (isSubmitting) return;
+  isSubmitting = true;
   const list = LISTS.find(l => l.listRef === currentListId);
   if (!list) return;
   const checkboxes = document.querySelectorAll('.tf-checkbox:checked');
@@ -2944,9 +2985,9 @@ async function submitTransferRequest() {
 
   try {
     const res = await gasPost({ action: 'createTransfer', fromListRef: list.listRef, toListRef: newRef, cartons: selectedCartons, newPrefix: newPrefix, reason: reason, requestedBy: list.createdBy || 'Staff' });
-    if (res && res.success) { closeTransferForm(); toast('Transfer request ' + res.transferId + ' submitted for approval', 'success'); }
+    if (res && res.success) { isSubmitting = false; closeTransferForm(); toast('Transfer request ' + res.transferId + ' submitted for approval', 'success'); }
     else { throw new Error(res?.error || 'Unknown error'); }
-  } catch(e) { toast('Transfer submit failed: ' + e.message, 'error'); }
+  } catch(e) { isSubmitting = false; toast('Transfer submit failed: ' + e.message, 'error'); }
 }
 
 async function renderTransfer() {
@@ -3023,6 +3064,8 @@ async function renderTransfer() {
 }
 
 async function approveTransfer(transferRow) {
+  if (isSubmitting) return;
+  isSubmitting = true;
   const manager = prompt('ENTER MANAGER NAME TO APPROVE:');
   if (!manager) return;
 
@@ -3046,9 +3089,10 @@ async function approveTransfer(transferRow) {
         await resetTransferredCartonsStatus(cartonRows, cartonIds);
       }
 
+      isSubmitting = false;
       renderTransfer();
     } else { throw new Error(res?.error || 'Unknown error'); }
-  } catch(e) { toast('Approve failed: ' + e.message, 'error'); }
+  } catch(e) { isSubmitting = false; toast('Approve failed: ' + e.message, 'error'); }
 }
 
 // Reset transferred carton status to 'pending' in both Cartons sheet and Packing Log
@@ -3064,15 +3108,17 @@ async function resetTransferredCartonsStatus(cartonRows, cartonIds) {
 }
 
 async function rejectTransfer(transferRow) {
+  if (isSubmitting) return;
+  isSubmitting = true;
   const manager = prompt('ENTER MANAGER NAME TO REJECT:');
   if (!manager) return;
   const reason = prompt('ENTER REJECTION REASON:');
   if (!reason) return;
   try {
     const res = await gasPost({ action: 'rejectTransfer', transferRow: transferRow, manager: manager.toUpperCase(), reason: reason.toUpperCase() });
-    if (res && res.success) { toast('Transfer rejected', 'error'); renderTransfer(); }
+    if (res && res.success) { isSubmitting = false; toast('Transfer rejected', 'error'); renderTransfer(); }
     else { throw new Error(res?.error || 'Unknown error'); }
-  } catch(e) { toast('Reject failed: ' + e.message, 'error'); }
+  } catch(e) { isSubmitting = false; toast('Reject failed: ' + e.message, 'error'); }
 }
 
 // ═══════════════════════════════════════════════════════════════
