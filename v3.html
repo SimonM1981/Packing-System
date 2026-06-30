@@ -1066,6 +1066,30 @@ async function renderListDetail() {
 
   const cartons = await gasGetCartons(list.listRef);
   LIST_CARTONS[list.listRef] = cartons;
+
+  // Attach Packing Log status (verified/rejected) to cartons
+  try {
+    const logRes = await gasGet({ action: 'records' });
+    if (logRes && logRes.records) {
+      const statusMap = new Map();
+      const rejectedSet = new Set();
+      for (const r of logRes.records) {
+        const cid = r.cartonId || '';
+        if (!cid) continue;
+        const s = (r.status || '').toLowerCase();
+        if (s.includes('rejected')) rejectedSet.add(cid);
+        if (!statusMap.has(cid)) {
+          statusMap.set(cid, { status: r.status || '', remarks: r.remarks || '', checker: r.checker || '' });
+        }
+      }
+      cartons.forEach(c => {
+        const cid = c.cartonId || '';
+        const pl = statusMap.get(cid);
+        if (pl) { c.status = pl.status; c.remarks = pl.remarks; c.checker = pl.checker; }
+        if (rejectedSet.has(cid)) c._isRejected = true;
+      });
+    }
+  } catch(e) { /* silent - cartons keep their own status */ }
   // Sort cartons by cartonId ascending (natural sort: A001, A002, B001...)
   // Schwartzian transform: extract sort key once for O(n) instead of O(n log n) regex calls
   cartons.forEach(c => {
