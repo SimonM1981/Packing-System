@@ -2078,16 +2078,16 @@ async function submitEntry(isEdit) {
   const isKit = formState.cartonType === 'kit';
   for (let i = 0; i < formState.parts.length; i++) {
     const p = formState.parts[i];
-    if (!p.partNo) { toast(`Part ${i+1}: Part No is required`, 'error'); return; }
-    if (p.bagMatch === false) { toast(`Part ${i+1}: Bag barcode mismatch.`, 'error'); return; }
+    if (!p.partNo) { isSubmitting = false; setButtonLoading('btn-submit', false); toast(`Part ${i+1}: Part No is required`, 'error'); return; }
+    if (p.bagMatch === false) { isSubmitting = false; setButtonLoading('btn-submit', false); toast(`Part ${i+1}: Bag barcode mismatch.`, 'error'); return; }
     if (!isKit) {
-      if (!p.qty || parseInt(p.qty) < 1) { toast(`Part ${i+1}: Qty must be at least 1`, 'error'); return; }
-      if (p.innerMatch === false || p.outerMatch === false) { toast(`Part ${i+1}: Barcode mismatch.`, 'error'); return; }
+      if (!p.qty || parseInt(p.qty) < 1) { isSubmitting = false; setButtonLoading('btn-submit', false); toast(`Part ${i+1}: Qty must be at least 1`, 'error'); return; }
+      if (p.innerMatch === false || p.outerMatch === false) { isSubmitting = false; setButtonLoading('btn-submit', false); toast(`Part ${i+1}: Barcode mismatch.`, 'error'); return; }
     }
   }
   if (isKit) {
-    if (formState.cartonInnerMatch === false) { toast('Inner box barcode mismatch.', 'error'); return; }
-    if (formState.cartonOuterMatch === false) { toast('Outer carton barcode mismatch.', 'error'); return; }
+    if (formState.cartonInnerMatch === false) { isSubmitting = false; setButtonLoading('btn-submit', false); toast('Inner box barcode mismatch.', 'error'); return; }
+    if (formState.cartonOuterMatch === false) { isSubmitting = false; setButtonLoading('btn-submit', false); toast('Outer carton barcode mismatch.', 'error'); return; }
   }
 
   const btn = document.getElementById('btn-submit');
@@ -3481,71 +3481,147 @@ async function renderRejects() {
     <div class="page-header">
       <div>
         <div class="page-title" style="color:var(--danger)"><svg style="color:var(--danger)"><use href="#ic-alert"/></svg>Reject List</div>
-        <div class="page-subtitle">Cartons rejected by checker \u2014 must be corrected and resubmitted.</div>
+        <div class="page-subtitle">Cartons rejected by checker — click Edit to fix and resubmit.</div>
       </div>
       <button class="btn btn-outline btn-sm" onclick="renderRejects()"><svg><use href="#ic-refresh"/></svg>Refresh</button>
     </div>
-    <div id="reject-content"><div class="empty-state"><div class="spinner" style="width:24px;height:24px;margin:0 auto 12px;display:block"></div><p>Loading rejected entries...</p></div></div>`;
+    <div id="reject-content"><div class="empty-state"><div class="spinner" style="width:24px;height:24px;margin:0 auto 12px;display:block"></div><p>Loading rejected entries...</p></div></div>
+    <div id="reject-edit-wrap"></div>`;
 
+  // Only fetch records (ONE API call) — rejected records already have cartonId, customer, PI
   let rejected = [];
-  if (GAS_URL) {
-    try {
-      const res = await gasGet({ action: 'records' });
-      if (res && res.records) rejected = res.records.filter(r => (r.status || '').toLowerCase().includes('rejected'));
-    } catch (e) { console.warn('Failed to fetch Packing Log for rejects', e); }
-  }
-
-  const lists = await gasGetPackingLists();
-  const listMap = new Map();
-  const cartonToList = new Map();
-  for (const list of lists) {
-    listMap.set(list.listRef, list);
-    try {
-      const cartons = await gasGetCartons(list.listRef);
-      cartons.forEach(c => { if (c.cartonId) cartonToList.set(c.cartonId, list.listRef); });
-    } catch (e) { /* skip */ }
-  }
+  try {
+    const res = await gasGet({ action: 'records' });
+    if (res && res.records) {
+      rejected = res.records.filter(r => (r.status || '').toLowerCase().includes('rejected'));
+    }
+  } catch (e) { console.warn('Failed to fetch rejects:', e.message); }
 
   const el2 = document.getElementById('reject-content');
+  if (!el2) return;
+
+  // Group by cartonId + customer (same as checker view)
+  const groups = {};
+  for (const r of rejected) {
+    const key = (r.customer || 'unknown') + '|' + (r.cartonId || 'unknown');
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(r);
+  }
+
   el2.innerHTML = `
     <div class="stat-grid" style="max-width:300px;margin-bottom:20px">
-      <div class="stat-card"><div class="label">Total Rejected</div><div class="value text-danger">${rejected.length}</div></div>
-    </div>
-    <div class="table-wrap">
-      <table class="table-responsive">
-        <thead><tr><th>Carton ID</th><th>Customer / PI</th><th>Part No.</th><th>Qty</th><th>Reason</th><th>Checker</th><th>Action</th></tr></thead>
-        <tbody>
-        ${rejected.length===0 ? `<tr><td colspan="7"><div class="empty-state"><svg><use href="#ic-alert"/></svg><p>No rejected entries \u2014 great job!</p></div></td></tr>` :
-          rejected.map(r=>{
-            const lr = cartonToList.get(r.cartonId || '') || '';
-            return `<tr class="rejected">
-              <td data-label="Carton ID"><div class="font-bold text-danger text-sm">${escHtml(r.cartonId||'\u2014')}</div></td>
-              <td data-label="Customer"><div class="text-sm">${escHtml(r.customer||'\u2014')}</div><div class="text-xs text-muted">${escHtml(r.pi||'\u2014')}</div></td>
-              <td data-label="Part No."><div class="font-bold text-sm">${escHtml(r.partNo||'\u2014')}</div></td>
-              <td data-label="Qty" style="text-align:center;font-weight:700">${escHtml(r.qty||'\u2014')}</td>
-              <td data-label="Reason"><div class="text-xs text-danger" style="font-style:italic;max-width:180px">${escHtml(r.remarks||'No reason')}</div></td>
-              <td data-label="Checker" class="text-xs text-muted">${escHtml(r.checker||'\u2014')}</td>
-              <td data-label="Action">${lr ? `<button class="btn btn-outline btn-xs" onclick="nav('list-detail','${lr}')"><svg><use href="#ic-edit"/></svg>Edit</button>` : '<span class="text-xs text-muted">-</span>'}</td>
-            </tr>`;
-          }).join('')}
-        </tbody>
-      </table>
+      <div class="stat-card"><div class="label">Total Rejected</div><div class="value text-danger">${Object.keys(groups).length}</div></div>
     </div>`;
+
+  if (Object.keys(groups).length === 0) {
+    el2.innerHTML += `<div class="empty-state"><svg><use href="#ic-check-circle"/></svg><p>No rejected entries — great job!</p></div>`;
+    return;
+  }
+
+  // Render each rejected carton as a card with Edit button
+  for (const key in groups) {
+    const grecs = groups[key];
+    const first = grecs[0];
+    const rowNums = grecs.map(r => r.row).filter(Boolean).join(',');
+    const partNos = [...new Set(grecs.map(r => r.partNo).filter(Boolean))];
+    const pis = [...new Set(grecs.map(r => r.pi).filter(Boolean))];
+    const totalQty = grecs.reduce((s, r) => s + (parseInt(r.qty) || 0), 0);
+
+    // Photos
+    const photos = [];
+    const seen = new Set();
+    for (const r of grecs) {
+      if (r.imgBagUrl && !seen.has(r.imgBagUrl)) { seen.add(r.imgBagUrl); photos.push({url: r.imgBagUrl, lbl: 'Bag'}); }
+      if (r.imgInnerUrl && !seen.has(r.imgInnerUrl)) { seen.add(r.imgInnerUrl); photos.push({url: r.imgInnerUrl, lbl: 'Inner'}); }
+      if (r.imgCartonUrl && !seen.has(r.imgCartonUrl)) { seen.add(r.imgCartonUrl); photos.push({url: r.imgCartonUrl, lbl: 'Carton'}); }
+    }
+
+    const photoHtml = photos.length > 0 ? `<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">${photos.map(p => `<img src="${getThumbUrl(p.url, 200)}" style="width:64px;height:64px;object-fit:cover;border-radius:6px;border:1px solid var(--border);cursor:pointer" onclick="openLightbox('${p.url}')" loading="lazy" />`).join('')}</div>` : '';
+
+    el2.innerHTML += `
+    <div class="record-card rejected" style="border-left:4px solid var(--danger)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-weight:800;font-size:1.05rem;color:var(--danger)">${escHtml(first.customer || 'Unknown')}</div>
+        <span class="badge badge-red">REJECTED</span>
+      </div>
+      <div style="font-size:0.85rem;color:var(--muted-fg);margin-bottom:6px">
+        <strong>Carton:</strong> ${escHtml(first.cartonId || '—')} | <strong>Parts:</strong> ${escHtml(partNos.join(', ') || '—')}
+        ${grecs.length > 1 ? `<span class="badge badge-muted" style="margin-left:6px">${grecs.length} parts</span>` : ''}
+      </div>
+      <div style="display:flex;gap:12px;font-size:0.8rem;color:var(--muted-fg);margin-bottom:4px">
+        <span><strong>PI:</strong> ${escHtml(pis.join(', ') || '—')}</span>
+        <span><strong>Qty:</strong> ${totalQty} pcs</span>
+        <span><strong>Packed:</strong> ${escHtml(first.packedBy || '—')}</span>
+      </div>
+      <div style="display:flex;gap:10px;font-size:0.75rem;margin-top:6px">
+        <span style="color:var(--muted-fg)">Bag ${first.bagMatch?'✅':'❌'}</span>
+        <span style="color:var(--muted-fg)">Inner ${first.innerMatch?'✅':'❌'}</span>
+        <span style="color:var(--muted-fg)">Outer ${first.outerMatch?'✅':'❌'}</span>
+      </div>
+      <div style="font-size:0.8rem;color:var(--danger);margin-top:8px;font-style:italic;background:var(--danger-dim);padding:8px;border-radius:6px;border:1px solid var(--danger-border)">
+        <strong>Reason:</strong> ${escHtml(first.remarks || 'No reason')}<br/>
+        <strong>By:</strong> ${escHtml(first.checker || 'Checker')}
+      </div>
+      ${photoHtml}
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn btn-danger btn-sm" onclick="rejectEditCarton('${escHtml(first.cartonId || '')}', '${escHtml(first.customer || '')}', '${rowNums}')">
+          <svg><use href="#ic-edit"/></svg>Edit & Resubmit
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="openCheckerDetailGroup('${rowNums}')">
+          <svg><use href="#ic-zoom"/></svg>View Detail
+        </button>
+      </div>
+    </div>`;
+  }
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  UTILITIES
-// ═══════════════════════════════════════════════════════════════
-function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+// — Navigate to packing list to edit a rejected carton
+async function rejectEditCarton(cartonId, customer, rowNums) {
+  // Find packing list by customer name (fast — searches cached data, no API calls)
+  const lists = LISTS && LISTS.length > 0 ? LISTS : await gasGetPackingLists();
+  if (!LISTS || LISTS.length === 0) LISTS = lists;
 
-// ── Init ─────────────────────────────────────────────────────
-LISTS = [];
-// Load cached lists on startup
-try {
-  const cached = localStorage.getItem('mg_lists_cache');
-  if (cached) LISTS = JSON.parse(cached);
-} catch(e) { /* ignore */ }
-nav('dashboard');
+  const customerLower = (customer || '').toLowerCase();
+  let foundList = lists.find(l => (l.customer || '').toLowerCase() === customerLower);
+  if (!foundList) {
+    foundList = lists.find(l => (l.customer || '').toLowerCase().includes(customerLower));
+  }
+  if (!foundList) {
+    toast('Packing list not found for: ' + customer, 'error');
+    return;
+  }
+
+  toast('Opening packing list for editing...', 'success');
+  currentListId = foundList.listRef;
+
+  // Pre-load cartons to find the carton index before rendering
+  const cartons = await gasGetCartons(foundList.listRef);
+  LIST_CARTONS[foundList.listRef] = cartons;
+  const idx = cartons.findIndex(c => (c.cartonId || '') === cartonId);
+
+  // Navigate to list detail page
+  await renderListDetail();
+
+  // Pre-trigger edit mode for this carton
+  if (idx >= 0) {
+    pendingEditRow = { cartonIdx: idx, gasRows: rowNums.split(',').map(Number).filter(Boolean) };
+    await startEditCarton(idx);
+    // Scroll to edit form
+    setTimeout(() => {
+      const form = document.getElementById('entry-form');
+      if (form) form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 200);
+  }
+}
+
+function closeRejectEdit() {
+  const wrap = document.getElementById('reject-edit-wrap');
+  if (wrap) wrap.innerHTML = '';
+  pendingEditRow = null;
+  resetFormState();
+}
+
+
 </script>
 </body>
 </html>
