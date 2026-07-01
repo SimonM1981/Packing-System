@@ -1091,66 +1091,62 @@ function detectMissingCartons(cartons) {
   return missing;
 }
 
-async function renderListDetail() {
-  const list = LISTS.find(l => l.listRef === currentListId);
-  if (!list) { nav('packing-lists'); return; }
+// =============================================================
+//  LIST DETAIL HELPERS — cache + fast render
+// =============================================================
 
-  stopAutoRefresh();
+// Persist carton data per list in localStorage (10-min TTL)
+const CARTON_CACHE_TTL = 600000;
+function _saveCartonsToStorage(listRef, cartons) {
+  try { localStorage.setItem('mg_c_' + listRef, JSON.stringify({ c: cartons, t: Date.now() })); } catch(e) {}
+}
+function _loadCartonsFromStorage(listRef) {
+  try {
+    const raw = localStorage.getItem('mg_c_' + listRef);
+    if (!raw) return null;
+    const p = JSON.parse(raw);
+    return (p && p.c && Date.now() - p.t < CARTON_CACHE_TTL) ? p.c : null;
+  } catch(e) { return null; }
+}
 
-  // OPTIMIZED: Fetch cartons and records in parallel
-  const [cartonsResult, logResult] = await Promise.all([
-    gasGetCartons(list.listRef),
-    // Only fetch records if we don't have a fresh shared cache
-    (sharedRecordsCache.length > 0 && (Date.now() - sharedRecordsTs) < SHARED_CACHE_TTL)
-      ? Promise.resolve({ records: sharedRecordsCache })
-      : gasGet({ action: 'records', limit: '500' })
-  ]);
-
-  const cartons = cartonsResult || [];
-  LIST_CARTONS[list.listRef] = cartons;
-
-  // Cache records for reuse
-  if (logResult && logResult.records) {
-    sharedRecordsCache = logResult.records;
-    sharedRecordsTs = Date.now();
+// Attach checker/rejection status to cartons from the shared records cache.
+// Always clears derived fields first so stale status never persists across refreshes.
+function _attachRecordStatus(cartons) {
+  // Clear any previously-attached derived state before re-applying
+  cartons.forEach(c => { c.status = ''; c._isRejected = false; c.remarks = ''; c.checker = ''; });
+  if (!sharedRecordsCache.length) return;
+  const statusMap = new Map();
+  for (const r of sharedRecordsCache) {
+    const cid = r.cartonId || '';
+    if (!cid || statusMap.has(cid)) continue;
+    statusMap.set(cid, { status: r.status || '', remarks: r.remarks || '', checker: r.checker || '' });
   }
+  cartons.forEach(c => {
+    const pl = statusMap.get(c.cartonId || '');
+    if (!pl) return;
+    const s = (pl.status || '').toLowerCase();
+    if (s.includes('rejected')) { c.status = 'rejected'; c._isRejected = true; c.remarks = pl.remarks; c.checker = pl.checker; }
+    else if (s.includes('verified') || s.includes('approved')) { c.status = 'verified'; c.checker = pl.checker; }
+  });
+}
 
-  // Attach Packing Log status to cartons using cached records
-  if (logResult && logResult.records) {
-    const statusMap = new Map();
-    for (const r of logResult.records) {
-      const cid = r.cartonId || '';
-      if (!cid) continue;
-      if (!statusMap.has(cid)) {
-        const s = (r.status || '').toLowerCase();
-        statusMap.set(cid, { status: r.status || '', remarks: r.remarks || '', checker: r.checker || '' });
-      }
-    }
-    cartons.forEach(c => {
-      const cid = c.cartonId || '';
-      const pl = statusMap.get(cid);
-      if (pl) {
-        const s = (pl.status || '').toLowerCase();
-        if (s.includes('rejected')) { c.status = 'rejected'; c._isRejected = true; c.remarks = pl.remarks; c.checker = pl.checker; }
-        else if (s.includes('verified') || s.includes('approved')) { c.status = 'verified'; c.checker = pl.checker; }
-      }
-    });
-  }
-
-  // Sort cartons by cartonId ascending
+// Sort cartons by cartonId ascending (numeric-aware, handles prefixes with hyphens e.g. CTN-001)
+function _sortCartons(cartons) {
   cartons.forEach(c => {
     const id = (c.cartonId || '').toUpperCase();
-    const m = id.match(/^([A-Z]*)(\d+)$/);
+    const m = id.match(/^([A-Z0-9]*[-_]?)(\d+)/);
     c._sortKey = m ? [m[1], parseInt(m[2], 10)] : [id, 0];
   });
   cartons.sort((a, b) => {
     const p = a._sortKey[0].localeCompare(b._sortKey[0]);
     return p !== 0 ? p : a._sortKey[1] - b._sortKey[1];
   });
+}
 
+// Build the full list-detail HTML for a given set of cartons
+function _buildListDetailHTML(list, cartons) {
   const rejected = cartons.filter(c => c.status === 'rejected');
   const totalParts = cartons.reduce((s,c) => s + (c.parts||[]).length, 0);
-  const el = document.getElementById('page-list-detail');
 
   let html = `
     <div class="page-header">
@@ -1273,9 +1269,50 @@ async function renderListDetail() {
   }
 
   html += `<div id="carton-detail-wrap"></div>`;
-  el.innerHTML = html;
+  return html;
+}
 
-  // Pending reject edit from Reject List
+// Build a skeleton screen shown on first load while fetching
+function _buildListDetailSkeleton(list) {
+  const pulse = `<div style="height:14px;background:var(--border);border-radius:4px;animation:pulse 1.4s ease-in-out infinite"></div>`;
+  const rows = Array(4).fill(`
+    <tr>
+      <td><div style="height:14px;width:70px;background:var(--border);border-radius:4px;animation:pulse 1.4s ease-in-out infinite"></div></td>
+      <td><div style="height:14px;width:60px;background:var(--border);border-radius:4px;animation:pulse 1.4s ease-in-out infinite"></div></td>
+      <td><div style="height:14px;width:90px;background:var(--border);border-radius:4px;animation:pulse 1.4s ease-in-out infinite"></div></td>
+      <td><div style="height:14px;width:30px;background:var(--border);border-radius:4px;animation:pulse 1.4s ease-in-out infinite"></div></td>
+      <td><div style="height:14px;width:50px;background:var(--border);border-radius:4px;animation:pulse 1.4s ease-in-out infinite"></div></td>
+      <td><div style="height:18px;width:60px;background:var(--border);border-radius:8px;animation:pulse 1.4s ease-in-out infinite"></div></td>
+      <td><div style="height:14px;width:55px;background:var(--border);border-radius:4px;animation:pulse 1.4s ease-in-out infinite"></div></td>
+      <td></td>
+    </tr>`).join('');
+  return `
+    <div class="page-header">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="btn-icon" onclick="nav('packing-lists')"><svg style="width:16px;height:16px"><use href="#ic-back"/></svg></button>
+        <div>
+          <div class="page-title"><svg><use href="#ic-list"/></svg>${list.listRef}</div>
+          <div class="page-subtitle">${escHtml(list.customer)} \u2014 loading\u2026</div>
+        </div>
+      </div>
+      <span class="badge ${list.status==='open'?'badge-green':list.status==='completed'?'badge-blue':'badge-muted'}">${list.status}</span>
+    </div>
+    <style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}</style>
+    <div class="grid-3" style="margin-bottom:16px">
+      ${[1,2,3].map(()=>`<div class="card" style="padding:12px">${pulse}</div>`).join('')}
+    </div>
+    <div class="table-wrap" style="margin-bottom:16px">
+      <table class="table-responsive">
+        <thead><tr>
+          <th>Carton ID</th><th>P/I No.</th><th>Part No.</th><th>Qty</th><th>Barcodes</th><th>Status</th><th>Date</th><th></th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+// Finalise page after DOM is set: handle pending edits + start auto-refresh
+function _finaliseListDetail(list, cartons) {
   if (pendingRejectEdit && pendingRejectEdit.listRef === list.listRef) {
     const targetCartonId = pendingRejectEdit.cartonId;
     const editRows = pendingRejectEdit.gasRows;
@@ -1289,7 +1326,6 @@ async function renderListDetail() {
 
   lastCartonCount = cartons.length;
 
-  // OPTIMIZED: Use lightweight cartonCount for auto-refresh instead of full cartons
   autoRefreshInterval = setInterval(async () => {
     if (currentPage !== 'list-detail' || pendingEditRow !== null) return;
     try {
@@ -1297,16 +1333,91 @@ async function renderListDetail() {
       if (countRes && countRes.count !== lastCartonCount) {
         const newCount = countRes.count - lastCartonCount;
         lastCartonCount = countRes.count;
-        // Only do full refresh if count changed
         const fresh = await gasGetCartons(currentListId);
         if (fresh) {
           LIST_CARTONS[currentListId] = fresh;
+          _saveCartonsToStorage(currentListId, fresh);
           renderListDetail();
           if (newCount > 0) toast(newCount + ' new carton(s) added by other staff', 'success');
         }
       }
     } catch(e) { /* silent */ }
-  }, 15000); // Reduced from 20s to 15s since it's lightweight now
+  }, 15000);
+}
+
+async function renderListDetail() {
+  const list = LISTS.find(l => l.listRef === currentListId);
+  if (!list) { nav('packing-lists'); return; }
+
+  stopAutoRefresh();
+
+  const el = document.getElementById('page-list-detail');
+
+  // ── FAST PATH: use cached cartons → paint instantly, refresh in background ──
+  const cachedCartons = LIST_CARTONS[list.listRef] || _loadCartonsFromStorage(list.listRef);
+  if (cachedCartons) {
+    LIST_CARTONS[list.listRef] = cachedCartons;
+    _attachRecordStatus(cachedCartons);
+    _sortCartons(cachedCartons);
+    el.innerHTML = _buildListDetailHTML(list, cachedCartons);
+    _finaliseListDetail(list, cachedCartons);
+
+    // Silent background refresh — update if anything changed
+    (async () => {
+      try {
+        const [freshCartons, logResult] = await Promise.all([
+          gasGetCartons(list.listRef),
+          (sharedRecordsCache.length > 0 && (Date.now() - sharedRecordsTs) < SHARED_CACHE_TTL)
+            ? Promise.resolve({ records: sharedRecordsCache })
+            : gasGet({ action: 'records', limit: '500' })
+        ]);
+        if (!freshCartons || currentListId !== list.listRef) return;
+        if (logResult && logResult.records) {
+          sharedRecordsCache = logResult.records;
+          sharedRecordsTs = Date.now();
+        }
+        LIST_CARTONS[list.listRef] = freshCartons;
+        _saveCartonsToStorage(list.listRef, freshCartons);
+        _attachRecordStatus(freshCartons);
+        _sortCartons(freshCartons);
+        // Only repaint if carton count or statuses changed
+        const changed = freshCartons.length !== cachedCartons.length ||
+          freshCartons.some((c,i) => (c.status||'') !== (cachedCartons[i]||{}).status);
+        if (changed && currentPage === 'list-detail' && currentListId === list.listRef) {
+          el.innerHTML = _buildListDetailHTML(list, freshCartons);
+          _finaliseListDetail(list, freshCartons);
+        }
+      } catch(e) { /* silent */ }
+    })();
+    return;
+  }
+
+  // ── SLOW PATH (first ever load): show skeleton then fetch ──
+  el.innerHTML = _buildListDetailSkeleton(list);
+
+  const [cartonsResult, logResult] = await Promise.all([
+    gasGetCartons(list.listRef),
+    (sharedRecordsCache.length > 0 && (Date.now() - sharedRecordsTs) < SHARED_CACHE_TTL)
+      ? Promise.resolve({ records: sharedRecordsCache })
+      : gasGet({ action: 'records', limit: '500' })
+  ]);
+
+  // Navigation guard — user may have switched away while we were fetching
+  if (currentPage !== 'list-detail' || currentListId !== list.listRef) return;
+
+  const cartons = cartonsResult || [];
+  if (logResult && logResult.records) {
+    sharedRecordsCache = logResult.records;
+    sharedRecordsTs = Date.now();
+  }
+
+  LIST_CARTONS[list.listRef] = cartons;
+  _saveCartonsToStorage(list.listRef, cartons);
+  _attachRecordStatus(cartons);
+  _sortCartons(cartons);
+
+  el.innerHTML = _buildListDetailHTML(list, cartons);
+  _finaliseListDetail(list, cartons);
 }
 
 // -- Complete Packing List -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
