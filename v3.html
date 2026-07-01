@@ -465,6 +465,7 @@ let currentListId = null;
 let cameraCallback = null;
 let cameraReader = null;
 let pendingEditRow = null;
+let pendingRejectEdit = null; // set by rejectEditCarton, consumed by renderListDetail
 let allRecords = [];
 let masterData = [];
 let lookupCache = {};
@@ -1251,6 +1252,17 @@ async function renderListDetail() {
   html += `<div id="carton-detail-wrap"></div>`;
 
   el.innerHTML = html;
+
+  // If coming from Reject List edit, trigger edit mode after render
+  if (pendingRejectEdit && pendingRejectEdit.listRef === list.listRef) {
+    const editIdx = pendingRejectEdit.cartonIdx;
+    const editRows = pendingRejectEdit.gasRows;
+    pendingRejectEdit = null;
+    if (editIdx >= 0 && editIdx < cartons.length) {
+      pendingEditRow = { cartonIdx: editIdx, gasRows: editRows };
+      setTimeout(() => startEditCarton(editIdx), 100);
+    }
+  }
 
   // Track carton count for multi-staff refresh
   lastCartonCount = cartons.length;
@@ -2819,8 +2831,8 @@ async function checkerSubmitVerdict() {
   if (btn) { btn.disabled = true; btn.textContent = 'Please wait...'; }
   const name = document.getElementById('checker-name').value.trim();
   const remarks = document.getElementById('checker-remarks').value.trim();
-  if (!name) { toast('Please enter Checker Name', 'error'); return; }
-  if (!selectedCheckerVerdict) { toast('Please select Approve or Reject', 'error'); return; }
+  if (!name) { isSubmitting = false; if (btn) { btn.disabled = false; btn.textContent = 'Submit Decision'; } toast('Please enter Checker Name', 'error'); return; }
+  if (!selectedCheckerVerdict) { isSubmitting = false; if (btn) { btn.disabled = false; btn.textContent = 'Submit Decision'; } toast('Please select Approve or Reject', 'error'); return; }
   const statusStr = selectedCheckerVerdict === 'Approved' ? 'Verified \u2705' : 'Rejected \u274C';
   try {
     const res = await gasPost({ action: 'verify', row: currentCheckerRecord.row, checker: name.toUpperCase(), status: statusStr, remarks: remarks.toUpperCase() });
@@ -2836,8 +2848,8 @@ async function checkerSubmitVerdictGroup(rowNums) {
   if (btn) { btn.disabled = true; btn.textContent = 'Please wait...'; }
   const name = document.getElementById('checker-name').value.trim();
   const remarks = document.getElementById('checker-remarks').value.trim();
-  if (!name) { toast('Please enter Checker Name', 'error'); return; }
-  if (!selectedCheckerVerdict) { toast('Please select Approve or Reject', 'error'); return; }
+  if (!name) { isSubmitting = false; if (btn) { btn.disabled = false; btn.textContent = 'Submit Decision'; } toast('Please enter Checker Name', 'error'); return; }
+  if (!selectedCheckerVerdict) { isSubmitting = false; if (btn) { btn.disabled = false; btn.textContent = 'Submit Decision'; } toast('Please select Approve or Reject', 'error'); return; }
   const statusStr = selectedCheckerVerdict === 'Approved' ? 'Verified \u2705' : 'Rejected \u274C';
   const nums = rowNums.split(',').map(n => parseInt(n.trim())).filter(Boolean);
   let successCount = 0;
@@ -3614,26 +3626,22 @@ async function rejectEditCarton(cartonId, customer, rowNums) {
   }
 
   toast('Opening packing list for editing...', 'success');
-  currentListId = foundList.listRef;
 
-  // Pre-load cartons to find the carton index before rendering
+  // Pre-load cartons to find the carton index before navigating
   const cartons = await gasGetCartons(foundList.listRef);
   LIST_CARTONS[foundList.listRef] = cartons;
   const idx = cartons.findIndex(c => (c.cartonId || '') === cartonId);
+  const gasRows = rowNums.split(',').map(Number).filter(Boolean);
 
-  // Navigate to list detail page
-  await renderListDetail();
+  // Store pending edit so renderListDetail can trigger it after rendering
+  pendingRejectEdit = {
+    listRef: foundList.listRef,
+    cartonIdx: idx,
+    gasRows: gasRows
+  };
 
-  // Pre-trigger edit mode for this carton
-  if (idx >= 0) {
-    pendingEditRow = { cartonIdx: idx, gasRows: rowNums.split(',').map(Number).filter(Boolean) };
-    await startEditCarton(idx);
-    // Scroll to edit form
-    setTimeout(() => {
-      const form = document.getElementById('entry-form');
-      if (form) form.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 200);
-  }
+  // Navigate to list detail page (this calls renderListDetail, which checks pendingRejectEdit)
+  nav('list-detail', foundList.listRef);
 }
 
 function closeRejectEdit() {
