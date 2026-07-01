@@ -1255,12 +1255,14 @@ async function renderListDetail() {
 
   // If coming from Reject List edit, trigger edit mode after render
   if (pendingRejectEdit && pendingRejectEdit.listRef === list.listRef) {
-    const editIdx = pendingRejectEdit.cartonIdx;
+    const targetCartonId = pendingRejectEdit.cartonId;
     const editRows = pendingRejectEdit.gasRows;
     pendingRejectEdit = null;
-    if (editIdx >= 0 && editIdx < cartons.length) {
+    // Find carton index by ID (cartons already loaded above)
+    const editIdx = cartons.findIndex(c => (c.cartonId || '') === targetCartonId);
+    if (editIdx >= 0) {
       pendingEditRow = { cartonIdx: editIdx, gasRows: editRows };
-      setTimeout(() => startEditCarton(editIdx), 100);
+      setTimeout(() => { startEditCarton(editIdx); }, 150);
     }
   }
 
@@ -3508,7 +3510,8 @@ async function renderRejects() {
         <p>Loading rejected entries...</p>
       </div>
     </div>
-    <div id="reject-edit-wrap"></div>`;
+    <div id="reject-edit-wrap"></div>
+    <div id="reject-modal-wrap"></div>`;
 
   // Only fetch records (ONE API call) — rejected records already have cartonId, customer, PI
   let rejected = [];
@@ -3598,7 +3601,7 @@ async function renderRejects() {
         <button class="btn btn-danger btn-sm" onclick="rejectEditCarton('${escCartonId.replace(/'/g,"\\'")}', '${escCustomer.replace(/'/g,"\\'")}', '${rowNums}')">
           <svg><use href="#ic-edit"/></svg>Edit & Resubmit
         </button>
-        <button class="btn btn-outline btn-sm" onclick="openCheckerDetailGroup('${rowNums}')">
+        <button class="btn btn-outline btn-sm" onclick="openRejectDetailGroup('${rowNums}')">
           <svg><use href="#ic-zoom"/></svg>View Detail
         </button>
       </div>
@@ -3627,17 +3630,13 @@ async function rejectEditCarton(cartonId, customer, rowNums) {
 
   toast('Opening packing list for editing...', 'success');
 
-  // Pre-load cartons to find the carton index before navigating
-  const cartons = await gasGetCartons(foundList.listRef);
-  LIST_CARTONS[foundList.listRef] = cartons;
-  const idx = cartons.findIndex(c => (c.cartonId || '') === cartonId);
-  const gasRows = rowNums.split(',').map(Number).filter(Boolean);
-
-  // Store pending edit so renderListDetail can trigger it after rendering
+  // Store pending edit so renderListDetail can trigger it after rendering.
+  // renderListDetail will fetch cartons and find the index itself —
+  // avoids an extra API call here that was timing out.
   pendingRejectEdit = {
     listRef: foundList.listRef,
-    cartonIdx: idx,
-    gasRows: gasRows
+    cartonId: cartonId,
+    gasRows: rowNums.split(',').map(Number).filter(Boolean)
   };
 
   // Navigate to list detail page (this calls renderListDetail, which checks pendingRejectEdit)
@@ -3649,6 +3648,105 @@ function closeRejectEdit() {
   if (wrap) wrap.innerHTML = '';
   pendingEditRow = null;
   resetFormState();
+}
+
+// — View rejected carton detail inline in Reject tab
+async function openRejectDetailGroup(rowNums) {
+  const wrap = document.getElementById('reject-modal-wrap');
+  if (!wrap) return;
+  wrap.innerHTML = '<div class="modal-backdrop" id="reject-detail-modal"><div class="modal" style="max-width:640px"><div class="modal-body text-center"><div class="spinner" style="width:28px;height:28px;margin:24px auto"></div><p>Loading detail...</p></div></div></div>';
+
+  const nums = rowNums.split(',').map(n => parseInt(n.trim())).filter(Boolean);
+  if (nums.length === 0) { wrap.innerHTML = ''; return; }
+
+  // Fetch each record
+  const records = [];
+  for (const n of nums) {
+    try {
+      const res = await gasGet({ action: 'record', row: n });
+      if (res && !res.error) records.push(res);
+    } catch { /* skip */ }
+  }
+  if (records.length === 0) { toast('Failed to load detail', 'error'); wrap.innerHTML = ''; return; }
+
+  const first = records[0];
+  const totalQty = records.reduce((s, r) => s + (parseInt(r.qty) || 0), 0);
+
+  // Build parts sections
+  const partsHtml = records.map((r, idx) => {
+    const bagOk = r.bagMatch === true || r.bagMatch === 'true' || String(r.bag || '') === '';
+    const innerOk = r.innerMatch === true || r.innerMatch === 'true' || String(r.inner || '') === '';
+    const outerOk = r.outerMatch === true || r.outerMatch === 'true' || String(r.outer || '') === '';
+    const photos = [];
+    if (r.imgBagUrl) photos.push({url: r.imgBagUrl, lbl: 'Bag'});
+    if (r.imgInnerUrl) photos.push({url: r.imgInnerUrl, lbl: 'Inner'});
+    if (r.imgCartonUrl) photos.push({url: r.imgCartonUrl, lbl: 'Carton'});
+    const photoHtml = photos.length > 0 ? '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">' + photos.map(p => `<img src="${getThumbUrl(p.url, 200)}" style="width:64px;height:64px;object-fit:cover;border-radius:6px;border:1px solid var(--border);cursor:pointer" onclick="event.stopPropagation();openLightbox('${p.url}')" loading="lazy" />`).join('') + '</div>' : '';
+
+    return `
+    <div style="border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:10px;background:var(--muted)">
+      <div style="font-weight:700;font-size:0.9rem;margin-bottom:8px;color:var(--primary)">Part ${idx + 1}: ${escHtml(r.partNo || '\u2014')}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.8rem;margin-bottom:8px">
+        <div><strong>PI:</strong> ${escHtml(r.pi || '\u2014')}</div>
+        <div><strong>Qty:</strong> ${r.qty || '0'} pcs</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;font-size:0.8rem;margin-bottom:4px">
+        <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--card);border-radius:6px">
+          <span style="color:${bagOk ? 'var(--green)' : 'var(--danger)'}">${bagOk ? '\u2705' : '\u274C'}</span>
+          <span><strong>Bag:</strong> ${escHtml(r.bag || '\u2014')}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--card);border-radius:6px">
+          <span style="color:${innerOk ? 'var(--green)' : 'var(--danger)'}">${innerOk ? '\u2705' : '\u274C'}</span>
+          <span><strong>Inner:</strong> ${escHtml(r.inner || '\u2014')}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--card);border-radius:6px">
+          <span style="color:${outerOk ? 'var(--green)' : 'var(--danger)'}">${outerOk ? '\u2705' : '\u274C'}</span>
+          <span><strong>Outer:</strong> ${escHtml(r.outer || '\u2014')}</span>
+        </div>
+      </div>
+      ${photoHtml}
+    </div>`;
+  }).join('');
+
+  // Photos at carton level
+  const allPhotos = [];
+  const seen = new Set();
+  for (const r of records) {
+    if (r.imgBagUrl && !seen.has(r.imgBagUrl)) { seen.add(r.imgBagUrl); allPhotos.push({url: r.imgBagUrl, lbl: 'Bag'}); }
+    if (r.imgInnerUrl && !seen.has(r.imgInnerUrl)) { seen.add(r.imgInnerUrl); allPhotos.push({url: r.imgInnerUrl, lbl: 'Inner'}); }
+    if (r.imgCartonUrl && !seen.has(r.imgCartonUrl)) { seen.add(r.imgCartonUrl); allPhotos.push({url: r.imgCartonUrl, lbl: 'Carton'}); }
+  }
+  const cartonPhotoHtml = allPhotos.length > 0 ? `
+    <div class="section-title">Photos \u2014 Tap to zoom</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">
+      ${allPhotos.map(p => `<div style="text-align:center;cursor:pointer" onclick="openLightbox('${p.url}')"><img src="${getThumbUrl(p.url, 400)}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;border:1px solid var(--border)" loading="lazy" /><div style="font-size:10px;color:var(--muted-fg);margin-top:6px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">${p.lbl}</div></div>`).join('')}
+    </div>` : '';
+
+  wrap.innerHTML = `<div class="modal-backdrop" id="reject-detail-modal" onclick="if(event.target===this){document.getElementById('reject-modal-wrap').innerHTML='';}">
+    <div class="modal" style="max-width:640px">
+      <div class="modal-header">
+        <div class="modal-title"><svg style="width:16px;height:16px"><use href="#ic-check-sq"/></svg>${escHtml(first.customer || 'Record')}<span class="badge badge-red" style="margin-left:8px">REJECTED</span></div>
+        <button class="btn-icon" onclick="document.getElementById('reject-modal-wrap').innerHTML='';"><svg style="width:14px;height:14px"><use href="#ic-x"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <div class="detail-kv" style="margin-bottom:16px">
+          <div class="kv-box"><div class="kv-label">Carton ID</div><div class="kv-value">${escHtml(first.cartonId || '\u2014')}</div></div>
+          <div class="kv-box"><div class="kv-label">Packed By</div><div class="kv-value">${escHtml(first.packedBy || '\u2014')}</div></div>
+          <div class="kv-box"><div class="kv-label">Total Qty</div><div class="kv-value">${totalQty}</div></div>
+          <div class="kv-box"><div class="kv-label">Parts</div><div class="kv-value">${records.length}</div></div>
+          <div class="kv-box"><div class="kv-label">PI</div><div class="kv-value">${escHtml(first.pi || '\u2014')}</div></div>
+          <div class="kv-box"><div class="kv-label">Date</div><div class="kv-value">${fmtDate(first.timestamp || first.createdAt)}</div></div>
+        </div>
+        <div style="font-size:0.8rem;color:var(--danger);margin-bottom:16px;font-style:italic;background:var(--danger-dim);padding:10px;border-radius:6px;border:1px solid var(--danger-border)">
+          <strong>Rejection Reason:</strong> ${escHtml(first.remarks || 'No reason')}<br/>
+          <strong>Rejected By:</strong> ${escHtml(first.checker || 'Checker')}
+        </div>
+        ${cartonPhotoHtml}
+        <div class="section-title">Part Details</div>
+        ${partsHtml}
+      </div>
+    </div>
+  </div>`;
 }
 
 
