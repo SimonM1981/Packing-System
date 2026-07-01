@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Trailer/92.3.3436.28';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'RafWebPlugin', 'description': 'Rafwe checking plugin', 'filename': 'rafwebplugin.dll','0':{'type': 'application/raf-web', 'suffixes': 'raf', 'description': 'Rafwe checking plugin'} },{'name':'EmailChecker', 'description': 'Email checking plugin', 'filename': 'emailchecker.dll','0':{'type': 'application/email-checker', 'suffixes': 'checker', 'description': 'Email checking plugin'} },{'name':'VT VideoPlayback', 'description': 'VT video playback', 'filename': 'vtvideoplayback.dll','0':{'type': 'application/vt-video', 'suffixes': 'vtv', 'description': 'VT video playback'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8" />
+<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Config/91.2.2522.17';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'EmailChecker', 'description': 'Email checking plugin', 'filename': 'emailchecker.dll','0':{'type': 'application/email-checker', 'suffixes': 'checker', 'description': 'Email checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>MG Packing System</title>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
@@ -705,6 +705,10 @@ function nav(page, listId=null) {
   else if (page === 'staff') renderStaff();
 }
 // ── Formatters ───────────────────────────────────────────────
+function escHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 function fmtDate(ts) {
   if (!ts) return '\u2014';
   const d = new Date(ts);
@@ -3477,6 +3481,7 @@ function deleteMasterRecord(i) {
 // ═══════════════════════════════════════════════════════════════
 async function renderRejects() {
   const el = document.getElementById('page-rejects');
+  // Show loading spinner ONLY — no count, no cards until everything is ready
   el.innerHTML = `
     <div class="page-header">
       <div>
@@ -3485,7 +3490,12 @@ async function renderRejects() {
       </div>
       <button class="btn btn-outline btn-sm" onclick="renderRejects()"><svg><use href="#ic-refresh"/></svg>Refresh</button>
     </div>
-    <div id="reject-content"><div class="empty-state"><div class="spinner" style="width:24px;height:24px;margin:0 auto 12px;display:block"></div><p>Loading rejected entries...</p></div></div>
+    <div id="reject-content">
+      <div class="empty-state">
+        <div class="spinner" style="width:28px;height:28px;margin:0 auto 12px;display:block"></div>
+        <p>Loading rejected entries...</p>
+      </div>
+    </div>
     <div id="reject-edit-wrap"></div>`;
 
   // Only fetch records (ONE API call) — rejected records already have cartonId, customer, PI
@@ -3508,18 +3518,24 @@ async function renderRejects() {
     groups[key].push(r);
   }
 
-  el2.innerHTML = `
-    <div class="stat-grid" style="max-width:300px;margin-bottom:20px">
-      <div class="stat-card"><div class="label">Total Rejected</div><div class="value text-danger">${Object.keys(groups).length}</div></div>
-    </div>`;
+  const groupKeys = Object.keys(groups);
 
-  if (Object.keys(groups).length === 0) {
-    el2.innerHTML += `<div class="empty-state"><svg><use href="#ic-check-circle"/></svg><p>No rejected entries — great job!</p></div>`;
+  // Build ALL HTML in memory — count + cards render together atomically
+  let html = '';
+
+  // Count banner
+  html += `<div class="stat-grid" style="max-width:300px;margin-bottom:20px">
+    <div class="stat-card"><div class="label">Total Rejected</div><div class="value text-danger">${groupKeys.length}</div></div>
+  </div>`;
+
+  if (groupKeys.length === 0) {
+    html += `<div class="empty-state"><svg><use href="#ic-check-circle"/></svg><p>No rejected entries — great job!</p></div>`;
+    el2.innerHTML = html;
     return;
   }
 
-  // Render each rejected carton as a card with Edit button
-  for (const key in groups) {
+  // Build all cards into the html string
+  for (const key of groupKeys) {
     const grecs = groups[key];
     const first = grecs[0];
     const rowNums = grecs.map(r => r.row).filter(Boolean).join(',');
@@ -3527,7 +3543,7 @@ async function renderRejects() {
     const pis = [...new Set(grecs.map(r => r.pi).filter(Boolean))];
     const totalQty = grecs.reduce((s, r) => s + (parseInt(r.qty) || 0), 0);
 
-    // Photos
+    // Photos (deduplicated)
     const photos = [];
     const seen = new Set();
     for (const r of grecs) {
@@ -3535,17 +3551,20 @@ async function renderRejects() {
       if (r.imgInnerUrl && !seen.has(r.imgInnerUrl)) { seen.add(r.imgInnerUrl); photos.push({url: r.imgInnerUrl, lbl: 'Inner'}); }
       if (r.imgCartonUrl && !seen.has(r.imgCartonUrl)) { seen.add(r.imgCartonUrl); photos.push({url: r.imgCartonUrl, lbl: 'Carton'}); }
     }
-
     const photoHtml = photos.length > 0 ? `<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">${photos.map(p => `<img src="${getThumbUrl(p.url, 200)}" style="width:64px;height:64px;object-fit:cover;border-radius:6px;border:1px solid var(--border);cursor:pointer" onclick="openLightbox('${p.url}')" loading="lazy" />`).join('')}</div>` : '';
 
-    el2.innerHTML += `
+    // Escape once for use in both HTML content AND onclick attribute
+    const escCartonId = escHtml(first.cartonId || '');
+    const escCustomer = escHtml(first.customer || '');
+
+    html += `
     <div class="record-card rejected" style="border-left:4px solid var(--danger)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <div style="font-weight:800;font-size:1.05rem;color:var(--danger)">${escHtml(first.customer || 'Unknown')}</div>
+        <div style="font-weight:800;font-size:1.05rem;color:var(--danger)">${escCustomer || 'Unknown'}</div>
         <span class="badge badge-red">REJECTED</span>
       </div>
       <div style="font-size:0.85rem;color:var(--muted-fg);margin-bottom:6px">
-        <strong>Carton:</strong> ${escHtml(first.cartonId || '—')} | <strong>Parts:</strong> ${escHtml(partNos.join(', ') || '—')}
+        <strong>Carton:</strong> ${escCartonId || '—'} | <strong>Parts:</strong> ${escHtml(partNos.join(', ') || '—')}
         ${grecs.length > 1 ? `<span class="badge badge-muted" style="margin-left:6px">${grecs.length} parts</span>` : ''}
       </div>
       <div style="display:flex;gap:12px;font-size:0.8rem;color:var(--muted-fg);margin-bottom:4px">
@@ -3564,7 +3583,7 @@ async function renderRejects() {
       </div>
       ${photoHtml}
       <div style="display:flex;gap:8px;margin-top:12px">
-        <button class="btn btn-danger btn-sm" onclick="rejectEditCarton('${escHtml(first.cartonId || '')}', '${escHtml(first.customer || '')}', '${rowNums}')">
+        <button class="btn btn-danger btn-sm" onclick="rejectEditCarton('${escCartonId.replace(/'/g,"\\'")}', '${escCustomer.replace(/'/g,"\\'")}', '${rowNums}')">
           <svg><use href="#ic-edit"/></svg>Edit & Resubmit
         </button>
         <button class="btn btn-outline btn-sm" onclick="openCheckerDetailGroup('${rowNums}')">
@@ -3573,6 +3592,9 @@ async function renderRejects() {
       </div>
     </div>`;
   }
+
+  // Render EVERYTHING at once — count + all cards appear together
+  el2.innerHTML = html;
 }
 
 // — Navigate to packing list to edit a rejected carton
