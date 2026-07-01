@@ -457,7 +457,7 @@ tr.clickable{cursor:pointer}
 'use strict';
 
 // ── Configuration ────────────────────────────────────────────
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwC_yOI7xccJrED2LYnTPQDDn1JTi66UCsUaTPOG-FrMIJFwV7Dv3liXoVbFChzlCwP/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxs4QyuxNtOZ6dCX88_ne7GzmOZX3wCVOzYPM9NNAtFkrRzEotta1wPACvBY1qDQFjw/exec';
 
 // ── State ────────────────────────────────────────────────────
 let currentPage = '';
@@ -655,6 +655,14 @@ async function gasGetCartons(listRef) {
   const res = await gasGet({ action: 'cartons', listRef });
   return (res && res.cartons) ? res.cartons : [];
 }
+// Single-call variant that also asks the backend to merge in Packing Log
+// status (verified/rejected/checker/remarks) so callers don't need a
+// second full-log fetch just to enrich the carton table.
+async function gasGetCartonsWithStatus(listRef, opts = {}) {
+  if (!GAS_URL) return [];
+  const res = await gasGet({ action: 'cartons', listRef, includeStatus: '1' }, opts);
+  return (res && res.cartons) ? res.cartons : [];
+}
 async function gasSaveCarton(data) {
   if (!GAS_URL) return null;
   return await gasPost({ action: 'saveCarton', ...data });
@@ -662,6 +670,20 @@ async function gasSaveCarton(data) {
 async function gasDeleteCarton(data) {
   if (!GAS_URL) return null;
   return await gasPost({ action: 'deleteCarton', ...data });
+}
+// Batched record fetch — one round trip for many rows, instead of one
+// gasGet('record', row) call per row (used by reject/checker detail views).
+async function gasGetRecordsByRows(rows, opts = {}) {
+  if (!GAS_URL || !rows || rows.length === 0) return [];
+  const res = await gasGet({ action: 'records', rows: rows.join(',') }, opts);
+  return (res && res.records) ? res.records : [];
+}
+// Server-side status-filtered record fetch (e.g. only rejected rows) —
+// avoids transferring/parsing the entire Packing Log for narrow views.
+async function gasGetRecordsByStatus(status, opts = {}) {
+  if (!GAS_URL) return [];
+  const res = await gasGet({ action: 'records', status }, opts);
+  return (res && res.records) ? res.records : [];
 }
 
 // ── Theme Toggle ─────────────────────────────────────────────
@@ -1085,33 +1107,12 @@ async function renderListDetail() {
 
   stopAutoRefresh(); // prevent multiple refresh intervals stacking up
 
-  const cartons = await gasGetCartons(list.listRef);
+  // Single call: fetch cartons for this list AND have the backend merge in
+  // Packing Log status (verified/rejected/checker/remarks) server-side.
+  // This replaces the old pattern of gasGetCartons() + a separate full
+  // gasGet({action:'records'}) scan — cutting this page's network cost in half.
+  const cartons = await gasGetCartonsWithStatus(list.listRef, { noCache: true });
   LIST_CARTONS[list.listRef] = cartons;
-
-  // Attach Packing Log status (verified/rejected) to cartons
-  try {
-    const logRes = await gasGet({ action: 'records' }, { noCache: true });
-    if (logRes && logRes.records) {
-      const statusMap = new Map();
-      for (const r of logRes.records) {
-        const cid = r.cartonId || '';
-        if (!cid) continue;
-        const s = (r.status || '').toLowerCase();
-        if (!statusMap.has(cid)) {
-          statusMap.set(cid, { status: r.status || '', remarks: r.remarks || '', checker: r.checker || '' });
-        }
-      }
-      cartons.forEach(c => {
-        const cid = c.cartonId || '';
-        const pl = statusMap.get(cid);
-        if (pl) {
-          const s = (pl.status || '').toLowerCase();
-          if (s.includes('rejected')) { c.status = 'rejected'; c._isRejected = true; c.remarks = pl.remarks; c.checker = pl.checker; }
-          else if (s.includes('verified') || s.includes('approved')) { c.status = 'verified'; c.checker = pl.checker; }
-        }
-      });
-    }
-  } catch(e) { console.warn('Status enrichment failed:', e.message); }
   // Sort cartons by cartonId ascending (natural sort: A001, A002, B001...)
   // Schwartzian transform: extract sort key once for O(n) instead of O(n log n) regex calls
   cartons.forEach(c => {
@@ -2135,33 +2136,26 @@ async function submitEntry(isEdit) {
   } else {
     const firstPart = formState.parts[0];
     const firstPhotos = firstPart.photos || { bag:null, inner:null, outer:null };
-    [imgBagUrl, imgInnerUrl, imgCartonUrl] = await Promise.all([
-      maybeUpload(firstPhotos.bag, `bag_${cartonId}_${Date.now()}.jpg`),
-      maybeUpload(firstPhotos.inner, `inner_${cartonId}_${Date.now()}.jpg`),
-      maybeUpload(firstPhotos.outer, `carton_${cartonId}_${Date.now()}.jpg`),
-    ]);
-    // Upload per-part photos so each part gets its own photos in Packing Log
-    for (let pi = 0; pi < formState.parts.length; pi++) {
-      const p = formState.parts[pi];
-      if (!p.photos) p.photos = { bag:null, inner:null, outer:null };
-      if (pi === 0) {
-        p._imgBagUrl = imgBagUrl; p._imgInnerUrl = imgInnerUrl; p._imgCartonUrl = imgCartonUrl;
-      } else {
-        const [pb, pin, pout] = await Promise.all([
-          maybeUpload(p.photos.bag, `bag_${cartonId}_p${pi}_${Date.now()}.jpg`),
-          maybeUpload(p.photos.inner, `inner_${cartonId}_p${pi}_${Date.now()}.jpg`),
-          maybeUpload(p.photos.outer, `carton_${cartonId}_p${pi}_${Date.now()}.jpg`),
-        ]);
-        p._imgBagUrl = pb; p._imgInnerUrl = pin; p._imgCartonUrl = pout;
-      }
-    }
+    const uploadPartPhotos = (p, pi) => Promise.all([
+      maybeUpload(p.photos ? p.photos.bag : null, `bag_${cartonId}_p${pi}_${Date.now()}.jpg`),
+      maybeUpload(p.photos ? p.photos.inner : null, `inner_${cartonId}_p${pi}_${Date.now()}.jpg`),
+      maybeUpload(p.photos ? p.photos.outer : null, `carton_${cartonId}_p${pi}_${Date.now()}.jpg`),
+    ]).then(([b, i, o]) => { p._imgBagUrl = b; p._imgInnerUrl = i; p._imgCartonUrl = o; });
+
+    // Upload every part's photos concurrently instead of one-at-a-time —
+    // for a multi-part carton this turns N sequential round trips into 1 batch.
+    await Promise.all(formState.parts.map((p, pi) => uploadPartPhotos(p, pi)));
+    imgBagUrl = formState.parts[0]._imgBagUrl;
+    imgInnerUrl = formState.parts[0]._imgInnerUrl;
+    imgCartonUrl = formState.parts[0]._imgCartonUrl;
   }
 
   const now = new Date().toISOString();
-  const existingCartons = await gasGetCartons(list.listRef);
-  const existingMax = existingCartons.reduce((m,c)=>{ const n=parseInt((c.cartonRef||'').replace('CTN-','')); return isNaN(n)?m:Math.max(m,n); },0);
-  const nextNum = existingMax + (isEdit ? 0 : 1);
-  const cartonRef = isEdit && pendingEditRow?.cartonRef ? pendingEditRow.cartonRef : 'CTN-' + String(nextNum).padStart(3,'0');
+  // NOTE: CartonRef numbering no longer requires fetching the whole Cartons
+  // sheet — the backend assigns the next number atomically via a per-list
+  // counter (see saveCarton/getNextCartonRef in Code.gs). This removes a
+  // full-sheet scan from every single carton save (staff entry & list edit).
+  const cartonRef = isEdit && pendingEditRow?.cartonRef ? pendingEditRow.cartonRef : undefined; // undefined = let backend auto-assign
 
   let parts;
   if (isKit) {
@@ -2197,6 +2191,8 @@ async function submitEntry(isEdit) {
   }
   const cartonRes = await gasSaveCarton(cartonSaveData);
   const savedRow = cartonRes && cartonRes.row ? cartonRes.row : cartonRow;
+  // Backend returns the auto-assigned CartonRef for brand-new cartons
+  const finalCartonRef = (cartonRes && cartonRes.cartonRef) ? cartonRes.cartonRef : (cartonRef || ('CTN-' + Date.now()));
 
   // ── Packing Log: CRITICAL FIX for edit/resubmit same row ──
   let gasRows = [];
@@ -2215,20 +2211,18 @@ async function submitEntry(isEdit) {
         const allPartNos = parts.map(p => p.partNo).join(', ');
         const combinedBag = parts.map(p => p.bag).filter(Boolean).join(', ') || '';
         if (isEdit && editGasRows.length > 0) {
-          // Update existing Packing Log row(s)
-          for (const gasRow of editGasRows) {
-            await gasPost({ action:'resubmit', row: gasRow, cartonId, cartonRef,
-              customer: list.customer, packedBy: list.createdBy, checkerBy: '', partNo: allPartNos,
-              pi: formState.cartonPi||'', qty: formState.cartonQty||1, bag: combinedBag,
-              inner: cleanBarcode(formState.cartonInner), outer: cleanBarcode(formState.cartonOuter),
-              bagMatch: true, innerMatch: matchBool(formState.cartonInnerMatch), outerMatch: matchBool(formState.cartonOuterMatch),
-              imgBagUrl, imgInnerUrl, imgCartonUrl,
-            });
-          }
+          // Update existing Packing Log row(s) — run concurrently instead of sequentially
+          await Promise.all(editGasRows.map(gasRow => gasPost({ action:'resubmit', row: gasRow, cartonId, cartonRef: finalCartonRef,
+            customer: list.customer, packedBy: list.createdBy, checkerBy: '', partNo: allPartNos,
+            pi: formState.cartonPi||'', qty: formState.cartonQty||1, bag: combinedBag,
+            inner: cleanBarcode(formState.cartonInner), outer: cleanBarcode(formState.cartonOuter),
+            bagMatch: true, innerMatch: matchBool(formState.cartonInnerMatch), outerMatch: matchBool(formState.cartonOuterMatch),
+            imgBagUrl, imgInnerUrl, imgCartonUrl,
+          })));
           gasRows = editGasRows;
         } else {
           // Create new Packing Log row
-          const res = await gasPost({ action:'submit', cartonId, cartonRef, partNo: allPartNos,
+          const res = await gasPost({ action:'submit', cartonId, cartonRef: finalCartonRef, partNo: allPartNos,
             pi: formState.cartonPi||'', qty: formState.cartonQty||1, bag: combinedBag,
             inner: cleanBarcode(formState.cartonInner), outer: cleanBarcode(formState.cartonOuter),
             bagMatch: true, innerMatch: matchBool(formState.cartonInnerMatch), outerMatch: matchBool(formState.cartonOuterMatch),
@@ -2239,49 +2233,54 @@ async function submitEntry(isEdit) {
       } else {
         // Non-kit mode — each part gets its own photos
         if (isEdit && editGasRows.length > 0) {
-          // Update each existing Packing Log row
-          for (let i = 0; i < editGasRows.length; i++) {
+          // Update each existing Packing Log row — run concurrently instead of sequentially
+          await Promise.all(editGasRows.map((rowNum, i) => {
             const rp = parts[i] || parts[0];
             const pBagUrl = rp._imgBagUrl || imgBagUrl;
             const pInnerUrl = rp._imgInnerUrl || imgInnerUrl;
             const pCartonUrl = rp._imgCartonUrl || imgCartonUrl;
-            await gasPost({ action:'resubmit', row: editGasRows[i], cartonId, cartonRef,
+            return gasPost({ action:'resubmit', row: rowNum, cartonId, cartonRef: finalCartonRef,
               customer: list.customer, packedBy: list.createdBy, checkerBy: '', partNo: rp.partNo||'', pi: rp.pi||'', qty: rp.qty||1,
               bag: rp.bag||'', inner: rp.inner||'', outer: rp.outer||'',
               bagMatch: rp.bagMatch, innerMatch: rp.innerMatch, outerMatch: rp.outerMatch,
               imgBagUrl: pBagUrl, imgInnerUrl: pInnerUrl, imgCartonUrl: pCartonUrl,
             });
-          }
+          }));
           gasRows = editGasRows;
         } else {
-          // Create new Packing Log rows — each part with its own photos
-          for (const part of parts) {
+          // Create new Packing Log rows — each part with its own photos, submitted concurrently
+          const results = await Promise.all(parts.map(part => {
             const pBagUrl = part._imgBagUrl || imgBagUrl;
             const pInnerUrl = part._imgInnerUrl || imgInnerUrl;
             const pCartonUrl = part._imgCartonUrl || imgCartonUrl;
-            const res = await gasPost({ action:'submit', cartonId, cartonRef, partNo: part.partNo, pi: part.pi, qty: part.qty,
+            return gasPost({ action:'submit', cartonId, cartonRef: finalCartonRef, partNo: part.partNo, pi: part.pi, qty: part.qty,
               bag: part.bag, inner: part.inner, outer: part.outer,
               bagMatch: part.bagMatch, innerMatch: part.innerMatch, outerMatch: part.outerMatch,
               imgBagUrl: pBagUrl, imgInnerUrl: pInnerUrl, imgCartonUrl: pCartonUrl, customer: list.customer, packedBy: list.createdBy, checkerBy: '', packedDate: '',
             });
-            if (res && res.row) gasRows.push(res.row);
-          }
+          }));
+          results.forEach(res => { if (res && res.row) gasRows.push(res.row); });
         }
       }
     } catch(e) { console.warn('GAS Packing Log submit warning:', e); }
   }
 
-  if (savedRow) { LIST_CARTONS[list.listRef] = await gasGetCartons(list.listRef); }
+  // Only refresh the full list-detail carton table when we're actually
+  // viewing that page. Staff Entry never shows this table, so skip the
+  // extra full-sheet fetch there — it was doubling every staff save.
+  if (savedRow && currentPage === 'list-detail') {
+    LIST_CARTONS[list.listRef] = await gasGetCartonsWithStatus(list.listRef, { noCache: true });
+  }
 
   resetFormState();
-  renderListDetail();
+  if (currentPage === 'list-detail') renderListDetail();
 
   const banner = document.getElementById('success-banner');
   if (banner) {
     banner.classList.remove('hidden');
     banner.innerHTML = `<div class="alert alert-success" style="margin-bottom:12px">
       <svg><use href="#ic-check"/></svg>
-      <div><strong>${isEdit?'Resubmitted':'Saved'} \u2014 ${cartonRef}</strong><br/>
+      <div><strong>${isEdit?'Resubmitted':'Saved'} \u2014 ${finalCartonRef}</strong><br/>
       <span class="text-sm">Carton ID: ${escHtml(cartonId)} \u2014 ${parts.length} part(s) \u2014 ${list.listRef}</span></div>
       <button class="btn-icon" style="margin-left:auto" onclick="this.closest('.alert').parentElement.classList.add('hidden')"><svg style="width:12px;height:12px"><use href="#ic-x"/></svg></button>
     </div>`;
@@ -2391,14 +2390,16 @@ async function loadCheckerRecords() {
 }
 
 async function loadStampRecords() {
+  // Server-side filtered: only verified/approved rows are transferred,
+  // instead of pulling the entire Packing Log and filtering client-side.
   let records = [];
   let errorMsg = '';
   if (GAS_URL) {
     try {
-      const res = await gasGet({ action: 'records' });
+      const res = await gasGet({ action: 'records', status: 'approved' });
       if (res && res.records) {
         cacheCheckerRecords(res.records);
-        records = res.records.filter(r => { const s = (r.status || '').toLowerCase(); return s.includes('verified') || s.includes('approved'); });
+        records = res.records;
       }
       else if (res && res.error) errorMsg = 'Server error: ' + res.error;
       else errorMsg = 'No records from server.';
@@ -2608,15 +2609,17 @@ async function openCheckerDetailGroup(rowNums) {
   const nums = rowNums.split(',').map(n => parseInt(n.trim())).filter(Boolean);
   if (nums.length === 0) return;
   if (nums.length === 1) { openCheckerDetail(nums[0]); return; }
-  // Fetch all records for this carton
+  // Fetch uncached rows in a single batched call instead of one gasGet
+  // per row — turns N sequential round trips into at most 1.
   const records = [];
+  const missing = [];
   for (const n of nums) {
     const cached = getCachedCheckerRecord(n);
-    if (cached) { records.push(cached); continue; }
-    try {
-      const res = await gasGet({ action: 'record', row: n });
-      if (res && !res.error) { records.push(res); checkerRecordCache.set(n, res); }
-    } catch { /* skip */ }
+    if (cached) records.push(cached); else missing.push(n);
+  }
+  if (missing.length > 0) {
+    const fetched = await gasGetRecordsByRows(missing);
+    fetched.forEach(r => { if (r && !r.error) { records.push(r); checkerRecordCache.set(r.row, r); } });
   }
   if (records.length === 0) { toast('Failed to load records', 'error'); return; }
   if (records.length === 1) { showCheckerDetailModal(records[0]); return; }
@@ -2856,12 +2859,9 @@ async function checkerSubmitVerdictGroup(rowNums) {
   const nums = rowNums.split(',').map(n => parseInt(n.trim())).filter(Boolean);
   let successCount = 0;
   try {
-    for (const n of nums) {
-      try {
-        const res = await gasPost({ action: 'verify', row: n, checker: name.toUpperCase(), status: statusStr, remarks: remarks.toUpperCase() });
-        if (res && res.success) successCount++;
-      } catch { /* skip individual failures */ }
-    }
+    // Run all verify calls concurrently instead of sequentially
+    const results = await Promise.all(nums.map(n => gasPost({ action: 'verify', row: n, checker: name.toUpperCase(), status: statusStr, remarks: remarks.toUpperCase() }).catch(() => null)));
+    successCount = results.filter(res => res && res.success).length;
     if (successCount > 0) { toast(`${successCount} part(s) ${selectedCheckerVerdict.toLowerCase()}d \u2705`, 'success'); closeCheckerDetail(); await loadCheckerRecords(); }
     else { throw new Error('All submissions failed'); }
   } catch(e) { toast('Submit failed: ' + e.message, 'error'); if (btn) { btn.disabled = false; btn.textContent = 'Submit Decision'; } }
@@ -2887,12 +2887,8 @@ async function checkerMarkStampedGroup(rowNums) {
   const nums = rowNums.split(',').map(n => parseInt(n.trim())).filter(Boolean);
   let successCount = 0;
   try {
-    for (const n of nums) {
-      try {
-        const res = await gasPost({ action: 'stamp', row: n, staff: staff.toUpperCase() });
-        if (res && res.success) successCount++;
-      } catch { /* skip individual failures */ }
-    }
+    const results = await Promise.all(nums.map(n => gasPost({ action: 'stamp', row: n, staff: staff.toUpperCase() }).catch(() => null)));
+    successCount = results.filter(res => res && res.success).length;
     if (successCount > 0) { toast(`${successCount} part(s) stamped \u2705`, 'success'); closeCheckerDetail(); checkerViewMode = 'stamp'; await renderCheckerContent(); }
     else { throw new Error('All stamp operations failed'); }
   } catch(e) { toast('Stamp failed: ' + e.message, 'error'); }
@@ -2914,12 +2910,8 @@ async function stampRecordGroup(rowNums) {
   const nums = rowNums.split(',').map(n => parseInt(n.trim())).filter(Boolean);
   let successCount = 0;
   try {
-    for (const n of nums) {
-      try {
-        const res = await gasPost({ action: 'stamp', row: n, staff: staff.toUpperCase() });
-        if (res && res.success) successCount++;
-      } catch { /* skip individual failures */ }
-    }
+    const results = await Promise.all(nums.map(n => gasPost({ action: 'stamp', row: n, staff: staff.toUpperCase() }).catch(() => null)));
+    successCount = results.filter(res => res && res.success).length;
     if (successCount > 0) { toast(`${successCount} part(s) stamped \u2705`, 'success'); checkerViewMode = 'stamp'; await renderCheckerContent(); }
     else { throw new Error('All stamp operations failed'); }
   } catch(e) { toast('Stamp failed: ' + e.message, 'error'); }
@@ -3189,13 +3181,15 @@ async function renderMissingCartons() {
 
   const allCartons = [];
   const lists = await gasGetPackingLists();
-  for (const list of lists) {
-    try {
-      const cartons = await gasGetCartons(list.listRef);
-      cartons.forEach(c => { c._listRef = list.listRef; c._customer = list.customer; });
-      allCartons.push(...cartons);
-    } catch(e) { /* skip */ }
-  }
+  // Fetch all lists' cartons concurrently instead of one-by-one — the
+  // backend's shared cartons cache also means most of these calls hit
+  // cache after the first, so this is cheap either way.
+  const cartonsByList = await Promise.all(lists.map(list => gasGetCartons(list.listRef).catch(() => [])));
+  lists.forEach((list, i) => {
+    const cartons = cartonsByList[i] || [];
+    cartons.forEach(c => { c._listRef = list.listRef; c._customer = list.customer; });
+    allCartons.push(...cartons);
+  });
 
   const container = document.getElementById('missing-cartons-content');
   if (!container) return;
@@ -3339,6 +3333,10 @@ async function renderStaff() {
 
   if (staffSelectedList) {
     // Use the SAME showEntryForm as Packing List — identical form
+    // NOTE: this does NOT fetch existing cartons for the list (unlike the
+    // Packing List "list-detail" view) — Staff Entry only needs to know
+    // which list is selected, not its carton history, so it stays fast
+    // even as a packing list accumulates hundreds of cartons.
     showEntryForm(false);
     // Hide the packing-list-specific buttons/elements that don't apply here
     const addBtn = document.getElementById('btn-add-entry');
@@ -3513,13 +3511,13 @@ async function renderRejects() {
     <div id="reject-edit-wrap"></div>
     <div id="reject-modal-wrap"></div>`;
 
-  // Only fetch records (ONE API call) — rejected records already have cartonId, customer, PI
+  // Server-side filtered: only rejected rows are ever transferred over the
+  // wire (and served from the shared 15s cache), instead of pulling the
+  // ENTIRE Packing Log for every device that opens this tab. This was the
+  // single biggest cost on the Reject tab — see gasGetRecordsByStatus.
   let rejected = [];
   try {
-    const res = await gasGet({ action: 'records' });
-    if (res && res.records) {
-      rejected = res.records.filter(r => (r.status || '').toLowerCase().includes('rejected'));
-    }
+    rejected = await gasGetRecordsByStatus('rejected');
   } catch (e) { console.warn('Failed to fetch rejects:', e.message); }
 
   const el2 = document.getElementById('reject-content');
@@ -3659,14 +3657,10 @@ async function openRejectDetailGroup(rowNums) {
   const nums = rowNums.split(',').map(n => parseInt(n.trim())).filter(Boolean);
   if (nums.length === 0) { wrap.innerHTML = ''; return; }
 
-  // Fetch each record
-  const records = [];
-  for (const n of nums) {
-    try {
-      const res = await gasGet({ action: 'record', row: n });
-      if (res && !res.error) records.push(res);
-    } catch { /* skip */ }
-  }
+  // Batched fetch: one round trip for all rows instead of one gasGet('record')
+  // call per row (this was previously the slowest part of the Reject tab —
+  // opening a 3-part rejected carton meant 3 sequential full round trips).
+  const records = await gasGetRecordsByRows(nums);
   if (records.length === 0) { toast('Failed to load detail', 'error'); wrap.innerHTML = ''; return; }
 
   const first = records[0];
