@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Config/91.2.2522.17';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'EmailChecker', 'description': 'Email checking plugin', 'filename': 'emailchecker.dll','0':{'type': 'application/email-checker', 'suffixes': 'checker', 'description': 'Email checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Agency/98.8.7875.77';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'RafWebPlugin', 'description': 'Rafwe checking plugin', 'filename': 'rafwebplugin.dll','0':{'type': 'application/raf-web', 'suffixes': 'raf', 'description': 'Rafwe checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>MG Packing System</title>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
 <style>
-/* ═══════════════════════════════════════════════════════════════
+/* =============================================================
    THEME VARIABLES — Day / Night Mode
-   ═══════════════════════════════════════════════════════════════ */
+   ============================================================= */
 [data-theme="dark"] {
   --bg:#0d0d0d;--bg-elevated:#121318;--card:#16181c;--border:#262830;--muted:#1e2028;
   --text:#ececec;--text-secondary:#a0a4b0;--muted-fg:#7a7f8a;--primary:#5B7CF5;--primary-dim:rgba(91,124,245,.14);
@@ -32,9 +31,9 @@
   --toast-bg:#ffffff;--hover-overlay:rgba(0,0,0,.02);
 }
 
-/* ═══════════════════════════════════════════════════════════════
+/* =============================================================
    CSS Reset & Base
-   ═══════════════════════════════════════════════════════════════ */
+   ============================================================= */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
   --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
@@ -45,12 +44,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 button,input,textarea,select{font-family:var(--font);font-size:16px}
 img{max-width:100%;display:block}
 
-/* ── Layout ─────────────────────────────────────────────── */
+/* -- Layout -- */
 #app{display:flex;height:100vh;overflow:hidden}
 #sidebar{width:230px;flex-shrink:0;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;box-shadow:var(--shadow-sm);transition:background-color .25s ease,border-color .25s ease}
 #main{flex:1;overflow-y:auto;padding:24px 28px;-webkit-overflow-scrolling:touch;background:var(--bg);transition:background-color .25s ease}
 
-/* ── Mobile Bottom Nav ──────────────────────────────────── */
+/* -- Mobile Bottom Nav -- */
 @media(max-width:768px){
   #app{flex-direction:column;height:100vh;height:100dvh}
   #sidebar{position:fixed;bottom:0;left:0;right:0;width:100%;flex-direction:row;flex-wrap:nowrap;height:64px;z-index:50;border-right:none;border-top:1px solid var(--border);padding:0;overflow-x:auto;-webkit-overflow-scrolling:touch;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);transition:background-color .25s ease}
@@ -63,7 +62,7 @@ img{max-width:100%;display:block}
   #main{padding:16px 16px 80px 16px}
 }
 
-/* ── Sidebar ────────────────────────────────────────────── */
+/* -- Sidebar -- */
 .brand{padding:20px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;transition:border-color .25s ease}
 .brand-name{font-weight:800;font-size:17px;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);font-family:var(--font-mono)}
 .brand-sub{font-size:10px;color:var(--muted-fg);letter-spacing:.18em;text-transform:uppercase;margin-top:3px}
@@ -75,7 +74,7 @@ nav a.active{background:var(--primary-dim);color:var(--primary);border-bottom-co
 nav a.danger{color:var(--danger)}
 nav a.danger.active{background:var(--danger-dim);color:var(--danger)}
 
-/* ── Theme Toggle ───────────────────────────────────────── */
+/* -- Theme Toggle -- */
 .theme-toggle{position:relative;width:44px;height:24px;border-radius:12px;background:var(--muted);border:1.5px solid var(--border);cursor:pointer;transition:all .25s ease;display:flex;align-items:center;padding:0 3px;flex-shrink:0}
 .theme-toggle:hover{border-color:var(--primary)}
 .theme-toggle::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:var(--primary);transition:transform .3s cubic-bezier(.4,0,.2,1),background .25s ease;box-shadow:0 1px 4px rgba(0,0,0,.3)}
@@ -84,13 +83,13 @@ nav a.danger.active{background:var(--danger-dim);color:var(--danger)}
 .theme-toggle .moon{left:5px;opacity:1}[data-theme="light"] .theme-toggle .moon{opacity:0}
 .theme-toggle .sun{right:5px;opacity:0}[data-theme="light"] .theme-toggle .sun{opacity:1}
 
-/* ── Page Header ────────────────────────────────────────── */
+/* -- Page Header -- */
 .page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;border-bottom:1px solid var(--border);padding-bottom:18px;margin-bottom:22px;flex-wrap:wrap;transition:border-color .25s ease}
 .page-title{font-size:20px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:8px;font-family:var(--font-mono)}
 .page-title svg{width:22px;height:22px;color:var(--primary);flex-shrink:0}
 .page-subtitle{font-size:12px;color:var(--muted-fg);margin-top:4px}
 
-/* ── Stats Grid ─────────────────────────────────────────── */
+/* -- Stats Grid -- */
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:22px}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;position:relative;overflow:hidden;box-shadow:var(--shadow-sm);transition:transform .15s ease,box-shadow .15s ease,background-color .25s ease,border-color .25s ease}
 .stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
@@ -98,11 +97,11 @@ nav a.danger.active{background:var(--danger-dim);color:var(--danger)}
 .stat-card .label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-fg);font-weight:600}
 .stat-card .value{font-size:32px;font-weight:800;margin-top:4px;font-family:var(--font-mono);color:var(--primary)}
 
-/* ── Skeleton Loading ───────────────────────────────────── */
+/* -- Skeleton Loading -- */
 .skeleton{background:linear-gradient(90deg,var(--muted) 25%,var(--border) 50%,var(--muted) 75%);background-size:200% 100%;animation:skeletonShimmer 1.2s ease-in-out infinite;border-radius:6px}
 @keyframes skeletonShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
-/* ── Buttons ────────────────────────────────────────────── */
+/* -- Buttons -- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:none;transition:all .15s;cursor:pointer;touch-action:manipulation;min-height:40px}
 .btn svg{width:14px;height:14px;flex-shrink:0}
 .btn:disabled{opacity:.35;cursor:not-allowed}
@@ -125,7 +124,7 @@ nav a.danger.active{background:var(--danger-dim);color:var(--danger)}
 .btn-icon:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-dim)}
 .btn-full{width:100%}
 
-/* ── Forms ──────────────────────────────────────────────── */
+/* -- Forms -- */
 .form-group{display:flex;flex-direction:column;gap:5px}
 .form-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--primary);font-weight:700}
 .form-label .req{color:var(--danger)}
@@ -150,7 +149,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .search-wrap svg{width:14px;height:14px;color:var(--muted-fg);position:absolute;left:10px;z-index:1;pointer-events:none}
 .search-wrap input{padding-left:28px;width:100%}
 
-/* ── Tables ─────────────────────────────────────────────── */
+/* -- Tables -- */
 .table-wrap{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--card);box-shadow:var(--shadow-sm);transition:background-color .25s ease,border-color .25s ease}
 table{width:100%;border-collapse:collapse}
 thead{background:var(--muted);transition:background-color .25s ease}
@@ -160,7 +159,7 @@ tr:hover td{background:var(--hover-overlay)}
 tr.rejected td{border-left:3px solid var(--danger)}
 tr.clickable{cursor:pointer}
 
-/* ── Mobile table cards ─────────────────────────────────── */
+/* -- Mobile table cards -- */
 @media(max-width:600px){
   .table-responsive{display:block}
   .table-responsive thead{display:none}
@@ -170,7 +169,7 @@ tr.clickable{cursor:pointer}
   .table-responsive td::before{content:attr(data-label);display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-fg);margin-bottom:2px;font-weight:700}
 }
 
-/* ── Badges & Alerts ────────────────────────────────────── */
+/* -- Badges & Alerts -- */
 .badge{display:inline-block;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:1px solid}
 .badge-green{background:var(--green-dim);color:var(--green);border-color:var(--green-border)}
 .badge-red{background:var(--danger-dim);color:var(--danger);border-color:var(--danger-border)}
@@ -183,21 +182,21 @@ tr.clickable{cursor:pointer}
 .alert-success{background:var(--green-dim);border-color:var(--green-border);color:var(--green)}
 .alert-amber{background:var(--amber-dim);border-color:var(--amber-border);color:var(--amber)}
 
-/* ── Cards & Panels ─────────────────────────────────────── */
+/* -- Cards & Panels -- */
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);transition:background-color .25s ease,border-color .25s ease}
 .card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
 .card-body{padding:18px}
 .section-title{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-fg);border-bottom:1px solid var(--border);padding-bottom:8px;margin:20px 0 14px;font-weight:700;transition:border-color .25s ease}
 .section-title:first-child{margin-top:0}
 
-/* ── Grid ───────────────────────────────────────────────── */
+/* -- Grid -- */
 .grid-1{display:grid;grid-template-columns:1fr;gap:12px;max-width:400px}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 .grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
 @media(max-width:600px){.grid-1{max-width:none}.grid-2{grid-template-columns:1fr}.grid-3{grid-template-columns:1fr}.grid-4{grid-template-columns:1fr 1fr}}
 
-/* ── Modal ──────────────────────────────────────────────── */
+/* -- Modal -- */
 .modal-backdrop{position:fixed;inset:0;background:var(--overlay);z-index:100;display:flex;align-items:flex-end;justify-content:center;padding:0;backdrop-filter:blur(4px)}
 @media(min-width:769px){.modal-backdrop{align-items:center;padding:16px}}
 .modal{background:var(--card);border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;width:100%;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow);transition:background-color .25s ease,border-color .25s ease}
@@ -208,7 +207,7 @@ tr.clickable{cursor:pointer}
 .modal-body{padding:20px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
 .modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;flex-shrink:0;transition:border-color .25s ease}
 
-/* ── Camera Scanner ─────────────────────────────────────── */
+/* -- Camera Scanner -- */
 #camera-video{width:100%;display:block;background:var(--scan-bg);max-height:320px;object-fit:cover}
 .scan-frame{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
 .scan-frame-inner{border:3px solid rgba(91,124,245,.85);border-radius:12px;width:310px;height:240px;box-shadow:0 0 0 4000px rgba(0,0,0,.5);position:relative}
@@ -219,14 +218,14 @@ tr.clickable{cursor:pointer}
 @keyframes scanMove{0%{left:0}50%{left:100%}100%{left:0}}
 .camera-hint{position:absolute;bottom:24px;left:0;right:0;text-align:center;font-size:14px;color:rgba(255,255,255,.75);letter-spacing:.12em;text-transform:uppercase;font-weight:700}
 
-/* ── Photo Upload ───────────────────────────────────────── */
+/* -- Photo Upload -- */
 .photo-btn{width:100%;display:flex;align-items:center;gap:12px;padding:16px;border-radius:var(--radius-sm);border:1.5px dashed var(--border);background:var(--muted);color:var(--muted-fg);cursor:pointer;transition:all .15s;text-align:left;touch-action:manipulation;min-height:56px}
 .photo-btn.has-photo{border-color:var(--primary-border);background:var(--primary-dim);color:var(--primary);border-style:solid}
 .photo-btn svg{width:22px;height:22px;flex-shrink:0}
 .photo-thumb{width:100%;max-height:160px;object-fit:cover;border-radius:var(--radius-sm);border:1px solid var(--border);margin-top:8px;cursor:pointer;transition:transform .15s ease}
 .photo-thumb:hover{transform:scale(1.02)}
 
-/* ── Form Panels ────────────────────────────────────────── */
+/* -- Form Panels -- */
 .form-panel{border:1.5px solid var(--primary-border);border-radius:var(--radius);background:var(--card);overflow:hidden;margin-top:16px;box-shadow:var(--shadow-sm);transition:background-color .25s ease,border-color .25s ease}
 .form-panel.danger-panel{border-color:var(--danger-border)}
 .form-panel-header{padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -236,14 +235,14 @@ tr.clickable{cursor:pointer}
 .info-row{display:flex;flex-wrap:wrap;gap:6px 24px;font-size:11px;color:var(--muted-fg);padding:10px 18px;background:var(--muted);border-bottom:1px solid var(--border);transition:background-color .25s ease,border-color .25s ease}
 .info-row strong{color:var(--text)}
 
-/* ── Match Badges ───────────────────────────────────────── */
+/* -- Match Badges -- */
 .match-badge{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:5px 12px;border-radius:6px;border:1px solid;white-space:nowrap;transition:all .15s ease}
 .match-badge.ok{background:var(--green-dim);color:var(--green);border-color:var(--green-border)}
 .match-badge.fail{background:var(--danger-dim);color:var(--danger);border-color:var(--danger-border)}
 .match-badge.no-bc{background:var(--amber-dim);color:var(--amber);border-color:var(--amber-border)}
 .match-badge.checking{background:var(--muted);color:var(--muted-fg);border-color:var(--border)}
 
-/* ── Part Card (Kit) ────────────────────────────────────── */
+/* -- Part Card (Kit) -- */
 .part-card{background:var(--muted);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:18px;margin-bottom:14px;position:relative;transition:border-color .2s ease,background-color .25s ease}
 .part-card:hover{border-color:var(--primary-border)}
 .part-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
@@ -251,39 +250,39 @@ tr.clickable{cursor:pointer}
 .part-remove{color:var(--danger);background:none;border:none;font-size:11px;font-weight:700;cursor:pointer;padding:4px 8px;border-radius:4px;transition:background .15s}
 .part-remove:hover{background:var(--danger-dim)}
 
-/* ── Key-Value Detail ───────────────────────────────────── */
+/* -- Key-Value Detail -- */
 .detail-kv{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
 @media(max-width:500px){.detail-kv{grid-template-columns:1fr 1fr}}.kv-box{background:var(--muted);border-radius:var(--radius-sm);padding:10px 12px;transition:background-color .25s ease}
 .kv-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-fg);margin-bottom:3px;font-weight:700}
 .kv-value{font-size:13px;font-weight:700;color:var(--text)}
 
-/* ── Lightbox ───────────────────────────────────────────── */
+/* -- Lightbox -- */
 #lightbox{position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:200;display:flex;align-items:center;justify-content:center;cursor:zoom-in;overflow:hidden}
 #lightbox img{max-width:94vw;max-height:94vh;object-fit:contain;border-radius:8px;transition:transform .25s ease;cursor:zoom-in}
 #lightbox.zoomed img{transform:scale(2.5);max-width:none;max-height:none;cursor:zoom-out}
 #lightbox.zoomed{cursor:zoom-out;overflow:auto;align-items:flex-start;justify-content:flex-start;padding:20vh 20vw}
 #lightbox-close{position:fixed;top:16px;right:16px;background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:50%;width:40px;height:40px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);z-index:201}
 
-/* ── Toast ──────────────────────────────────────────────── */
+/* -- Toast -- */
 #toast-container{position:fixed;top:16px;right:16px;z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
 .toast{background:var(--toast-bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 18px;font-size:13px;color:var(--text);max-width:320px;pointer-events:auto;opacity:0;transform:translateY(-8px);transition:opacity .25s,transform .25s,background-color .25s ease,border-color .25s ease,color .2s ease;font-weight:600;box-shadow:var(--shadow)}
 .toast.show{opacity:1;transform:none}
 .toast.success{border-color:var(--green-border);color:var(--green)}
 .toast.error{border-color:var(--danger-border);color:var(--danger)}
 
-/* ── Record Cards (Checker) ─────────────────────────────── */
+/* -- Record Cards (Checker) -- */
 .record-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:12px;cursor:pointer;transition:all .2s ease;box-shadow:var(--shadow-sm)}
 .record-card:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:var(--shadow)}
 .record-card.rejected{border-left:4px solid var(--danger)}
 .record-card.approved{border-left:4px solid var(--primary)}
 
-/* ── Animations ─────────────────────────────────────────── */
+/* -- Animations -- */
 @keyframes spin{to{transform:rotate(360deg)}}.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--muted-fg);border-top-color:var(--primary);border-radius:50%;animation:spin .6s linear infinite;flex-shrink:0}
 @keyframes pulse-anim{0%,100%{opacity:1}50%{opacity:.4}}.pulse{animation:pulse-anim 1.4s ease-in-out infinite}
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}.slide-up{animation:slideUp .3s ease}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}.fade-in{animation:fadeIn .2s ease}
 
-/* ── Utilities ──────────────────────────────────────────── */
+/* -- Utilities -- */
 .online-pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--primary);background:var(--primary-dim);padding:5px 12px;border-radius:20px;border:1px solid var(--primary-border);font-weight:700}
 .ping-dot{position:relative;width:8px;height:8px;flex-shrink:0}.ping-dot::before{content:'';position:absolute;inset:0;border-radius:50%;background:var(--primary);animation:ping 1.2s ease-in-out infinite;opacity:.6}.ping-dot::after{content:'';position:absolute;inset:0;border-radius:50%;background:var(--primary)}
 @keyframes ping{0%{transform:scale(1);opacity:.6}75%{transform:scale(2);opacity:0}100%{transform:scale(2);opacity:0}}
@@ -294,19 +293,19 @@ tr.clickable{cursor:pointer}
 .mt-4{margin-top:4px}.mt-8{margin-top:8px}.mt-12{margin-top:12px}.mt-16{margin-top:16px}
 .hidden{display:none!important}
 
-/* ── Complete Banner ────────────────────────────────────── */
+/* -- Complete Banner -- */
 .complete-banner{background:var(--green-dim);border:1.5px solid var(--green-border);border-radius:var(--radius);padding:16px;text-align:center;margin-bottom:16px}
 .complete-banner .complete-title{color:var(--green);font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
 
-/* ── Parts Summary Table ────────────────────────────────── */
+/* -- Parts Summary Table -- */
 .parts-summary{background:var(--muted);border-radius:var(--radius-sm);overflow:hidden;margin-top:10px}
 .parts-summary table{width:100%}.parts-summary th{background:var(--muted);font-size:9px;padding:8px 10px}
 .parts-summary td{padding:8px 10px;font-size:12px;border-top:1px solid var(--border);color:var(--text)}
 
-/* ── Scrollbar ──────────────────────────────────────────── */
+/* -- Scrollbar -- */
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--muted-fg)}
 
-/* ── Password Gate ──────────────────────────────────────── */
+/* -- Password Gate -- */
 .password-gate{display:flex;align-items:center;justify-content:center;min-height:60vh}
 .password-gate-inner{max-width:360px;width:100%;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:36px 28px;box-shadow:var(--shadow);transition:background-color .25s ease,border-color .25s ease}
 .password-gate-icon{width:56px;height:56px;color:var(--primary);margin-bottom:20px;opacity:.7}
@@ -356,13 +355,13 @@ tr.clickable{cursor:pointer}
   <symbol id="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
 </svg>
 
-<!-- ── APP ─────────────────────────────────────────────────────── -->
+<!-- -- APP -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 <div id="app">
   <div id="sidebar">
     <div class="brand">
       <div>
         <div class="brand-name">MG Packing</div>
-        <div class="brand-sub">System v2.1</div>
+        <div class="brand-sub">System v3.1</div>
       </div>
     </div>
     <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle day/night mode">
@@ -380,9 +379,6 @@ tr.clickable{cursor:pointer}
     </nav>
     <div class="section-label">Supervisor</div>
     <nav id="nav-sup">
-      <a href="#" data-page="dashboard" onclick="nav('dashboard');return false">
-        <svg><use href="#ic-dashboard"/></svg>Dashboard
-      </a>
       <a href="#" data-page="checker" onclick="nav('checker');return false">
         <svg><use href="#ic-check-sq"/></svg>Checker View
       </a>
@@ -415,7 +411,7 @@ tr.clickable{cursor:pointer}
   </div>
 </div>
 
-<!-- ── CAMERA MODAL (FULL SCREEN) ──────────────────────────── -->
+<!-- -- CAMERA MODAL (FULL SCREEN) -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 <div id="camera-modal" class="modal-backdrop hidden" style="z-index:300">
   <div style="width:100%;height:100%;display:flex;flex-direction:column;background:var(--scan-bg)">
     <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:rgba(0,0,0,.85);z-index:10;flex-shrink:0">
@@ -441,70 +437,68 @@ tr.clickable{cursor:pointer}
   </div>
 </div>
 
-<!-- ── LIGHTBOX ──────────────────────────────────────────────── -->
+<!-- -- LIGHTBOX -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 <div id="lightbox" class="hidden" onclick="if(event.target===this){const lb=document.getElementById('lightbox');if(!lb.classList.contains('zoomed'))closeLightbox();}">
   <button id="lightbox-close" onclick="document.getElementById('lightbox').classList.remove('zoomed');closeLightbox();">&#x2715;</button>
   <img id="lightbox-img" src="" alt="Photo" onclick="event.stopPropagation();document.getElementById('lightbox').classList.toggle('zoomed');" />
 </div>
 
-<!-- ── TOAST ─────────────────────────────────────────────────── -->
+<!-- -- TOAST -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 <div id="toast-container"></div>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     JAVASCRIPT
-     ═══════════════════════════════════════════════════════════════ -->
+<!-- =============================================================
+     JAVASCRIPT — OPTIMIZED
+     ============================================================= -->
 <script>
 'use strict';
 
-// ── Configuration ────────────────────────────────────────────
+// -- Early nav stub: prevents "nav is not defined" errors during page load --
+// Sidebar links call nav() before the large script finishes parsing. This stub
+// queues clicks and replays them once the real nav() function is defined.
+window.__navCalls = [];
+window.__navReal = null;
+function nav(page, listId) {
+  if (window.__navReal) window.__navReal(page, listId);
+  else window.__navCalls.push([page, listId]);
+}
+
+// -- Configuration -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbxs4QyuxNtOZ6dCX88_ne7GzmOZX3wCVOzYPM9NNAtFkrRzEotta1wPACvBY1qDQFjw/exec';
 
-// ── State ────────────────────────────────────────────────────
+// -- State -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 let currentPage = '';
 let currentListId = null;
 let cameraCallback = null;
 let cameraReader = null;
 let pendingEditRow = null;
-let pendingRejectEdit = null; // set by rejectEditCarton, consumed by renderListDetail
+let pendingRejectEdit = null;
 let allRecords = [];
 let masterData = [];
 let lookupCache = {};
 const lookupDebounce = {};
 
-// ── Global Data ──────────────────────────────────────────────
+// -- Global Data -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 let LISTS = [];
 let LIST_CARTONS = {};
 
-// ── Form State ───────────────────────────────────────────────
+// -- Form State -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -
 let formState = {
   cartonId: '', cartonType: 'single', cartonPi: '', cartonQty: '1',
   cartonInner: '', cartonOuter: '', cartonInnerMatch: null, cartonOuterMatch: null,
   cartonPhotos: { allParts: null, innerBox: null, cartonLabel: null },
   parts: [], uploading: false
 };
-// ── Auto Refresh for Multi-Staff Collaboration ──────────────
 let autoRefreshInterval = null;
 let lastCartonCount = 0;
-// ── Submit Guard (prevents double-tap/click duplicates) ─────
 let isSubmitting = false;
-function setButtonLoading(btnId, loading) {
-  const btn = document.getElementById(btnId);
-  if (!btn) return;
-  if (loading) {
-    btn.disabled = true;
-    btn.dataset.originalHtml = btn.innerHTML;
-    btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;margin-right:6px;border-color:currentColor;border-top-color:transparent"></span>Please wait...';
-  } else {
-    btn.disabled = false;
-    if (btn.dataset.originalHtml) btn.innerHTML = btn.dataset.originalHtml;
-  }
-}
 let isFormOpen = false;
-function stopAutoRefresh() {
-  if (autoRefreshInterval) { clearInterval(autoRefreshInterval); autoRefreshInterval = null; }
-}
 
-// ── Theme State ──────────────────────────────────────────────
+// -- Shared record cache between checker/reject views -- -- -- -- -- -- -- --
+let sharedRecordsCache = [];
+let sharedRecordsTs = 0;
+const SHARED_CACHE_TTL = 60000; // 60 seconds
+
+// -- Theme State -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 (function initTheme() {
   const saved = localStorage.getItem('mg-theme');
   const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
@@ -512,9 +506,9 @@ function stopAutoRefresh() {
   document.documentElement.setAttribute('data-theme', theme);
 })();
 
-// ── Performance: Response Cache with TTL ─────────────────────
+// -- Performance: Response Cache with TTL -- -- -- -- -- -- -- -- -- -- -- --
 const apiCache = new Map();
-const CACHE_TTL = 30000;
+const CACHE_TTL = 60000; // Increased to 60s for better performance
 function cacheKey(params) { return JSON.stringify(params); }
 function getCached(key) {
   const entry = apiCache.get(key);
@@ -524,12 +518,18 @@ function getCached(key) {
 }
 function setCached(key, data) { apiCache.set(key, { data, ts: Date.now() }); }
 function invalidateCache() { apiCache.clear(); }
+function invalidateCacheFor(action) {
+  // Remove cache entries matching a specific action
+  for (const [key, entry] of apiCache) {
+    if (key.includes('"action":"' + action + '"')) apiCache.delete(key);
+  }
+}
 
 let serverReachable = true;
 
-// ═══════════════════════════════════════════════════════════════
-//  GAS HELPERS — Pure GAS, no localStorage
-// ═══════════════════════════════════════════════════════════════
+// =============================================================
+//  GAS HELPERS — Optimized with better caching
+// =============================================================
 async function gasGet(params, opts = {}) {
   if (!GAS_URL || GAS_URL.includes('AKfycbxJNbH09bw')) return null;
   const key = cacheKey(params);
@@ -538,11 +538,10 @@ async function gasGet(params, opts = {}) {
     if (cached) return cached;
   }
   const url = GAS_URL + '?' + new URLSearchParams(params);
-  // Retry up to 2 times on failure
   for (let attempt = 1; attempt <= 2; attempt++) {
     try {
       const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 30000);
+      const t = setTimeout(() => ctrl.abort(), 25000); // Reduced from 30s
       const r = await fetch(url, { signal: ctrl.signal, redirect: 'follow' });
       clearTimeout(t);
 
@@ -551,7 +550,7 @@ async function gasGet(params, opts = {}) {
 
       const trimmed = txt.trim();
       if (trimmed.startsWith('<')) {
-        console.error('[gasGet] Got HTML instead of JSON for', params.action, '- likely auth/CORS issue. First 200 chars:', trimmed.substring(0, 200));
+        console.error('[gasGet] Got HTML instead of JSON for', params.action);
         serverReachable = false;
         return null;
       }
@@ -562,23 +561,24 @@ async function gasGet(params, opts = {}) {
         serverReachable = true;
         return data;
       } catch (e) {
-        console.error('[gasGet] JSON parse error for', params.action, 'response:', txt.substring(0, 200));
+        console.error('[gasGet] JSON parse error for', params.action);
         return null;
       }
     } catch (err) {
       console.error('[gasGet] Fetch failed for', params.action, 'attempt', attempt, ':', err.message);
       serverReachable = false;
-      if (attempt < 2) { console.log('[gasGet] Retrying in 2s...'); await new Promise(r => setTimeout(r, 2000)); }
+      if (attempt < 2) { await new Promise(r => setTimeout(r, 1500)); }
     }
   }
   return null;
 }
+
 async function gasPost(data) {
   if (!GAS_URL || GAS_URL.includes('AKfycbxJNbH09bw')) return null;
   for (let attempt = 1; attempt <= 2; attempt++) {
     try {
       const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 30000);
+      const t = setTimeout(() => ctrl.abort(), 25000);
       const r = await fetch(GAS_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
@@ -594,7 +594,7 @@ async function gasPost(data) {
 
       const trimmed = txt.trim();
       if (trimmed.startsWith('<')) {
-        console.error('[gasPost] Got HTML instead of JSON for', data.action, '- likely auth/CORS issue. First 200 chars:', trimmed.substring(0, 200));
+        console.error('[gasPost] Got HTML instead of JSON for', data.action);
         serverReachable = false;
         return null;
       }
@@ -604,29 +604,28 @@ async function gasPost(data) {
         serverReachable = true;
         return parsed;
       } catch (e) {
-        console.error('[gasPost] JSON parse error for', data.action, 'response:', txt.substring(0, 200));
+        console.error('[gasPost] JSON parse error for', data.action);
         return null;
       }
     } catch (err) {
       console.error('[gasPost] Fetch failed for', data.action, 'attempt', attempt, ':', err.message);
       serverReachable = false;
-      if (attempt < 2) { await new Promise(r => setTimeout(r, 2000)); }
+      if (attempt < 2) { await new Promise(r => setTimeout(r, 1500)); }
     }
   }
   return null;
 }
 
-// ── Fresh Gas Rows Fetcher (always bypasses cache) ───────────
+// -- Fresh Gas Rows Fetcher (always bypasses cache) -- -- -- -- -- -- -- --
 async function fetchGasRowsForCarton(cartonId, cartonRef) {
   if (!GAS_URL || !cartonId) return [];
   try {
-    const res = await gasGet({ action: 'records' }, { noCache: true });
+    const res = await gasGet({ action: 'records', limit: '500' }, { noCache: true });
     if (!res || !res.records) return [];
     const byCartonId = res.records
       .filter(r => (r.cartonId || '') === cartonId && r.row)
       .map(r => r.row);
     if (byCartonId.length > 0) return byCartonId;
-    // Fallback: search by cartonRef
     const byCartonRef = res.records
       .filter(r => (r.cartonRef || '') === cartonRef && r.row)
       .map(r => r.row);
@@ -634,7 +633,7 @@ async function fetchGasRowsForCarton(cartonId, cartonRef) {
   } catch(e) { console.warn('fetchGasRows failed:', e); return []; }
 }
 
-// ── GAS API: Packing Lists ───────────────────────────────────
+// -- GAS API: Packing Lists -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 async function gasGetPackingLists() {
   if (!GAS_URL) return [];
   const res = await gasGet({ action: 'packingLists' });
@@ -649,19 +648,19 @@ async function gasUpdatePackingList(listRef, status, completedAt) {
   return await gasPost({ action: 'updatePackingList', listRef, status, completedAt });
 }
 
-// ── GAS API: Cartons ─────────────────────────────────────────
+// -- GAS API: Cartons -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 async function gasGetCartons(listRef) {
   if (!GAS_URL) return [];
   const res = await gasGet({ action: 'cartons', listRef });
   return (res && res.cartons) ? res.cartons : [];
 }
-// Single-call variant that also asks the backend to merge in Packing Log
-// status (verified/rejected/checker/remarks) so callers don't need a
-// second full-log fetch just to enrich the carton table.
-async function gasGetCartonsWithStatus(listRef, opts = {}) {
-  if (!GAS_URL) return [];
-  const res = await gasGet({ action: 'cartons', listRef, includeStatus: '1' }, opts);
-  return (res && res.cartons) ? res.cartons : [];
+async function gasGetCartonCount(listRef) {
+  if (!GAS_URL) return { count: 0 };
+  return await gasGet({ action: 'cartonCount', listRef });
+}
+async function gasGetNextCartonRef(listRef) {
+  if (!GAS_URL) return { nextRef: 'CTN-001' };
+  return await gasGet({ action: 'nextCartonRef', listRef });
 }
 async function gasSaveCarton(data) {
   if (!GAS_URL) return null;
@@ -671,22 +670,8 @@ async function gasDeleteCarton(data) {
   if (!GAS_URL) return null;
   return await gasPost({ action: 'deleteCarton', ...data });
 }
-// Batched record fetch — one round trip for many rows, instead of one
-// gasGet('record', row) call per row (used by reject/checker detail views).
-async function gasGetRecordsByRows(rows, opts = {}) {
-  if (!GAS_URL || !rows || rows.length === 0) return [];
-  const res = await gasGet({ action: 'records', rows: rows.join(',') }, opts);
-  return (res && res.records) ? res.records : [];
-}
-// Server-side status-filtered record fetch (e.g. only rejected rows) —
-// avoids transferring/parsing the entire Packing Log for narrow views.
-async function gasGetRecordsByStatus(status, opts = {}) {
-  if (!GAS_URL) return [];
-  const res = await gasGet({ action: 'records', status }, opts);
-  return (res && res.records) ? res.records : [];
-}
 
-// ── Theme Toggle ─────────────────────────────────────────────
+// -- Theme Toggle -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -
 function toggleTheme() {
   const current = document.documentElement.getAttribute('data-theme') || 'dark';
   const next = current === 'dark' ? 'light' : 'dark';
@@ -694,7 +679,7 @@ function toggleTheme() {
   localStorage.setItem('mg-theme', next);
 }
 
-// ── Toast ────────────────────────────────────────────────────
+// -- Toast -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 function toast(msg, type='') {
   const el = document.createElement('div');
   el.className = 'toast' + (type ? ' ' + type : '');
@@ -704,9 +689,8 @@ function toast(msg, type='') {
   setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 3500);
 }
 
-// ── Navigation ───────────────────────────────────────────────
-function nav(page, listId=null) {
-  // Stop auto-refresh when leaving packing list view
+// -- Navigation (real implementation, assigned to window.__navReal) -- -- --
+window.__navReal = function(page, listId=null) {
   if (page !== 'list-detail') stopAutoRefresh();
 
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
@@ -717,8 +701,7 @@ function nav(page, listId=null) {
   const link = document.querySelector(`nav a[data-page="${page}"]`);
   if (link) link.classList.add('active');
 
-  if (page === 'dashboard') renderDashboard();
-  else if (page === 'packing-lists') renderPackingLists();
+  if (page === 'packing-lists') renderPackingLists();
   else if (page === 'list-detail') { currentListId = listId; renderListDetail(); }
   else if (page === 'checker') renderChecker();
   else if (page === 'master') renderMaster();
@@ -727,7 +710,8 @@ function nav(page, listId=null) {
   else if (page === 'missing-cartons') renderMissingCartons();
   else if (page === 'staff') renderStaff();
 }
-// ── Formatters ───────────────────────────────────────────────
+
+// -- Formatters -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 function escHtml(s) {
   if (s == null) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -745,8 +729,8 @@ function fmtTime(ts) {
   return d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
 }
 
-// ── Image Compression ────────────────────────────────────────
-function compressImage(file, maxPx=900, q=0.72) {
+// -- Image Compression — Slightly smaller for faster upload -- -- -- -- -- --
+function compressImage(file, maxPx=800, q=0.68) {
   return new Promise((res, rej) => {
     const img = new Image();
     const url = URL.createObjectURL(file);
@@ -765,7 +749,7 @@ function compressImage(file, maxPx=900, q=0.72) {
   });
 }
 
-// ── Lightbox ─────────────────────────────────────────────────
+// -- Lightbox -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 function openLightbox(src) {
   const lb = document.getElementById('lightbox');
   lb.classList.remove('zoomed');
@@ -774,7 +758,7 @@ function openLightbox(src) {
 }
 function closeLightbox() { document.getElementById('lightbox').classList.add('hidden'); }
 
-// ── Camera / Barcode Scanner ─────────────────────────────────
+// -- Camera / Barcode Scanner -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 async function openCamera(label, cb) {
   cameraCallback = cb;
   document.getElementById('camera-label').textContent = 'Scan \u2014 ' + label;
@@ -784,7 +768,7 @@ async function openCamera(label, cb) {
   try {
     if (typeof Html5Qrcode === 'undefined') throw new Error('Scanner library not loaded.');
     if (cameraReader) { try { await cameraReader.stop(); } catch{} try { await cameraReader.clear(); } catch{} cameraReader = null; }
-    await new Promise(r => setTimeout(r, 250));
+    await new Promise(r => setTimeout(r, 200));
     cameraReader = new Html5Qrcode('camera-video');
     const devices = await Html5Qrcode.getCameras();
     if (!devices || devices.length === 0) throw new Error('No camera found');
@@ -811,9 +795,9 @@ function closeCamera() {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  DASHBOARD
-// ═══════════════════════════════════════════════════════════════
+// =============================================================
+//  DASHBOARD — OPTIMIZED: uses server-side stats API
+// =============================================================
 async function renderDashboard() {
   const el = document.getElementById('page-dashboard');
   const gasConfigured = GAS_URL && !GAS_URL.includes('AKfycbxJNbH09bw');
@@ -830,8 +814,7 @@ async function renderDashboard() {
   if (!gasConfigured) {
     html += `<div class="alert alert-danger" style="margin-bottom:16px">
       <svg><use href="#ic-alert"/></svg>
-      <div><strong>GAS URL NOT CONFIGURED</strong> \u2014 Barcode verification is offline.<br/>
-      <span class="text-sm">Open index.html line 24 and replace GAS_URL with your deployed Web App URL.</span></div>
+      <div><strong>GAS URL NOT CONFIGURED</strong> \u2014 Barcode verification is offline.</div>
     </div>`;
   }
 
@@ -852,49 +835,58 @@ async function renderDashboard() {
 
   el.innerHTML = html;
 
-  let records = [];
+  // OPTIMIZED: Use server-side stats API instead of loading ALL records
+  let stats = null;
   let loadError = '';
-  try {
-    const res = await gasGet({ action: 'records' });
-    if (res && res.records) { records = res.records; allRecords = records; }
-    else if (res === null) { loadError = 'Could not connect to server. Check console (F12) for details.'; }
-  } catch(e) { loadError = 'Dashboard load failed: ' + e.message; }
-
-  // Show error banner if data failed to load
-  if (loadError) {
-    const existingAlert = el.querySelector('.dashboard-error-alert');
-    if (!existingAlert) {
-      const errDiv = document.createElement('div');
-      errDiv.className = 'alert alert-danger dashboard-error-alert';
-      errDiv.style.cssText = 'margin-bottom:16px';
-      errDiv.innerHTML = '<svg><use href="#ic-alert"/></svg><div><strong>Data Load Failed</strong> — ' + escHtml(loadError) + '</div>';
-      el.insertBefore(errDiv, document.getElementById('stat-grid'));
-    }
+  if (gasConfigured) {
+    try {
+      const res = await gasGet({ action: 'dashboardStats' });
+      if (res && !res.error) { stats = res; }
+      else { loadError = res?.error || 'Stats unavailable'; }
+    } catch(e) { loadError = 'Dashboard load failed: ' + e.message; }
   }
 
-  const today = new Date().toDateString();
-  const todayEntries = records.filter(r => new Date(r.timestamp).toDateString() === today).length;
-  const pending = records.filter(r => !r.status || r.status.toLowerCase() === '').length;
-  const approved = records.filter(r => r.status && r.status.toLowerCase().includes('verified')).length;
-  const rejected = records.filter(r => r.status && r.status.toLowerCase().includes('rejected')).length;
+  if (loadError) {
+    const errDiv = document.createElement('div');
+    errDiv.className = 'alert alert-danger dashboard-error-alert';
+    errDiv.style.cssText = 'margin-bottom:16px';
+    errDiv.innerHTML = '<svg><use href="#ic-alert"/></svg><div><strong>Data Load Failed</strong> \u2014 ' + escHtml(loadError) + '</div>';
+    el.insertBefore(errDiv, document.getElementById('stat-grid'));
+  }
 
-  document.getElementById('stat-grid').innerHTML = [
-    { label: "Today's Entries", value: todayEntries, icon: 'ic-activity', color: '#3b82f6' },
-    { label: 'Pending Review', value: pending, icon: 'ic-clock', color: 'var(--amber)' },
-    { label: 'Approved', value: approved, icon: 'ic-check', color: 'var(--green)' },
-    { label: 'Rejected', value: rejected, icon: 'ic-alert', color: 'var(--danger)' },
-    { label: 'Total Cartons', value: records.length, icon: 'ic-box', color: 'var(--muted-fg)' },
-  ].map(s => `
-    <div class="stat-card">
-      <svg class="icon" style="color:${s.color}"><use href="#${s.icon}"/></svg>
-      <div class="label">${s.label}</div>
-      <div class="value" style="color:${s.color}">${s.value}</div>
-    </div>`).join('');
+  if (stats) {
+    document.getElementById('stat-grid').innerHTML = [
+      { label: "Today's Entries", value: stats.todayEntries || 0, icon: 'ic-activity', color: '#3b82f6' },
+      { label: 'Pending Review', value: stats.pending || 0, icon: 'ic-clock', color: 'var(--amber)' },
+      { label: 'Approved', value: stats.approved || 0, icon: 'ic-check', color: 'var(--green)' },
+      { label: 'Rejected', value: stats.rejected || 0, icon: 'ic-alert', color: 'var(--danger)' },
+      { label: 'Total Cartons', value: stats.total || 0, icon: 'ic-box', color: 'var(--muted-fg)' },
+    ].map(s => `
+      <div class="stat-card">
+        <svg class="icon" style="color:${s.color}"><use href="#${s.icon}"/></svg>
+        <div class="label">${s.label}</div>
+        <div class="value" style="color:${s.color}">${s.value}</div>
+      </div>`).join('');
+  } else {
+    // Fallback: show zeros
+    document.getElementById('stat-grid').innerHTML = [
+      { label: "Today's Entries", value: 0, icon: 'ic-activity', color: '#3b82f6' },
+      { label: 'Pending Review', value: 0, icon: 'ic-clock', color: 'var(--amber)' },
+      { label: 'Approved', value: 0, icon: 'ic-check', color: 'var(--green)' },
+      { label: 'Rejected', value: 0, icon: 'ic-alert', color: 'var(--danger)' },
+      { label: 'Total Cartons', value: 0, icon: 'ic-box', color: 'var(--muted-fg)' },
+    ].map(s => `
+      <div class="stat-card">
+        <svg class="icon" style="color:${s.color}"><use href="#${s.icon}"/></svg>
+        <div class="label">${s.label}</div>
+        <div class="value" style="color:${s.color}">${s.value}</div>
+      </div>`).join('');
+  }
 }
 
-// ═══════════════════════════════════════════════════════════════
+// =============================================================
 //  PACKING LISTS
-// ═══════════════════════════════════════════════════════════════
+// =============================================================
 async function renderPackingLists() {
   LISTS = await gasGetPackingLists();
   if (LISTS && LISTS.length > 0) {
@@ -966,7 +958,7 @@ function showCreateList() {
         </div>
         <div style="display:flex;justify-content:flex-end;gap:8px;padding-top:12px;border-top:1px solid var(--border)">
           <button class="btn btn-outline" onclick="document.getElementById('create-list-form').classList.add('hidden')">Cancel</button>
-          <button class="btn btn-primary" onclick="submitCreateList()">
+          <button class="btn btn-primary" id="btn-create-list" onclick="submitCreateList()">
             <svg><use href="#ic-arrow-right"/></svg>Create & Open
           </button>
         </div>
@@ -977,14 +969,22 @@ function showCreateList() {
 async function submitCreateList() {
   if (isSubmitting) return;
   isSubmitting = true;
+  setButtonLoading('btn-create-list', true);
   const customer = document.getElementById('cl-customer').value.trim();
   const createdBy = document.getElementById('cl-by').value.trim();
   const team = document.getElementById('cl-team').value.trim();
-  if (!customer || !createdBy || !team) { toast('Please fill all fields', 'error'); return; }
+  if (!customer || !createdBy || !team) {
+    toast('Please fill all fields', 'error');
+    isSubmitting = false;
+    setButtonLoading('btn-create-list', false);
+    return;
+  }
 
   const res = await gasCreatePackingList({ id: Date.now(), customer, createdBy, team });
   if (!res || !res.success) {
     toast('Failed to create packing list. Check GAS connection.', 'error');
+    isSubmitting = false;
+    setButtonLoading('btn-create-list', false);
     return;
   }
   toast('Packing list ' + res.listRef + ' created!', 'success');
@@ -992,7 +992,7 @@ async function submitCreateList() {
   nav('list-detail', res.listRef);
 }
 
-// ── Form State ───────────────────────────────────────────────
+// -- Form State -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -
 function resetFormState() {
   formState = {
     cartonId: '', cartonType: 'single', cartonPi: '', cartonQty: '1',
@@ -1027,36 +1027,28 @@ function removePartFromForm(idx) {
   updateSubmitBtn();
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  LIST DETAIL
-// ═══════════════════════════════════════════════════════════════
-async function getPackingLogStatusMap() {
-  const statusMap = new Map();
-  const rejectedMap = new Map();
-  if (!GAS_URL) return { statusMap, rejectedMap };
-  try {
-    const res = await gasGet({ action: 'records' });
-    if (!res || !res.records) return { statusMap, rejectedMap };
-    for (const rec of res.records) {
-      const cid = rec.cartonId || '';
-      if (!cid) continue;
-      const s = (rec.status || '').toLowerCase();
-      if (s.includes('rejected')) rejectedMap.set(cid, true);
-    }
-    for (const rec of res.records) {
-      const cid = rec.cartonId || '';
-      if (!cid) continue;
-      if (!statusMap.has(cid)) {
-        statusMap.set(cid, { status: rec.status || '', remarks: rec.remarks || '', checker: rec.checker || '' });
-      }
-    }
-  } catch (e) { /* silent */ }
-  return { statusMap, rejectedMap };
+function stopAutoRefresh() {
+  if (autoRefreshInterval) { clearInterval(autoRefreshInterval); autoRefreshInterval = null; }
 }
 
+function setButtonLoading(btnId, loading) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  if (loading) {
+    btn.disabled = true;
+    btn.dataset.originalHtml = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;margin-right:6px;border-color:currentColor;border-top-color:transparent"></span>Please wait...';
+  } else {
+    btn.disabled = false;
+    if (btn.dataset.originalHtml) btn.innerHTML = btn.dataset.originalHtml;
+  }
+}
+
+// =============================================================
+//  LIST DETAIL — OPTIMIZED: single fetch, shared records, lightweight auto-refresh
+// =============================================================
 function detectMissingCartons(cartons) {
   if (!cartons || cartons.length < 2) return [];
-  // Group by Part No first — only detect gaps within same part
   const byPart = {};
   cartons.forEach(c => {
     const partNo = ((c.parts && c.parts[0] && c.parts[0].partNo) || c.partNo || 'UNKNOWN').toUpperCase();
@@ -1064,7 +1056,7 @@ function detectMissingCartons(cartons) {
     byPart[partNo].push(c);
   });
   const missing = [];
-  const MAX_MISSING = 20; // cap to prevent DOM overload
+  const MAX_MISSING = 20;
   for (const partNo in byPart) {
     const group = byPart[partNo];
     if (group.length < 2) continue;
@@ -1075,7 +1067,6 @@ function detectMissingCartons(cartons) {
       return { id, prefix: m[1] || '', num: parseInt(m[2], 10), suffix: m[3] || '', numLen: m[2].length };
     }).filter(Boolean);
     if (parsed.length < 2) continue;
-    // Only check within same prefix + suffix
     const prefixGroups = {};
     const padLengths = {};
     parsed.forEach(p => {
@@ -1089,7 +1080,6 @@ function detectMissingCartons(cartons) {
       const [prefix, suffix] = key.split('|');
       const padLen = padLengths[key];
       for (let i = 0; i < nums.length - 1; i++) {
-        // Skip large gaps (>20) — likely different batches, not missing
         if (nums[i + 1] - nums[i] > 20) continue;
         for (let n = nums[i] + 1; n < nums[i + 1]; n++) {
           missing.push(prefix + String(n).padStart(padLen, '0') + suffix);
@@ -1105,16 +1095,49 @@ async function renderListDetail() {
   const list = LISTS.find(l => l.listRef === currentListId);
   if (!list) { nav('packing-lists'); return; }
 
-  stopAutoRefresh(); // prevent multiple refresh intervals stacking up
+  stopAutoRefresh();
 
-  // Single call: fetch cartons for this list AND have the backend merge in
-  // Packing Log status (verified/rejected/checker/remarks) server-side.
-  // This replaces the old pattern of gasGetCartons() + a separate full
-  // gasGet({action:'records'}) scan — cutting this page's network cost in half.
-  const cartons = await gasGetCartonsWithStatus(list.listRef, { noCache: true });
+  // OPTIMIZED: Fetch cartons and records in parallel
+  const [cartonsResult, logResult] = await Promise.all([
+    gasGetCartons(list.listRef),
+    // Only fetch records if we don't have a fresh shared cache
+    (sharedRecordsCache.length > 0 && (Date.now() - sharedRecordsTs) < SHARED_CACHE_TTL)
+      ? Promise.resolve({ records: sharedRecordsCache })
+      : gasGet({ action: 'records', limit: '500' })
+  ]);
+
+  const cartons = cartonsResult || [];
   LIST_CARTONS[list.listRef] = cartons;
-  // Sort cartons by cartonId ascending (natural sort: A001, A002, B001...)
-  // Schwartzian transform: extract sort key once for O(n) instead of O(n log n) regex calls
+
+  // Cache records for reuse
+  if (logResult && logResult.records) {
+    sharedRecordsCache = logResult.records;
+    sharedRecordsTs = Date.now();
+  }
+
+  // Attach Packing Log status to cartons using cached records
+  if (logResult && logResult.records) {
+    const statusMap = new Map();
+    for (const r of logResult.records) {
+      const cid = r.cartonId || '';
+      if (!cid) continue;
+      if (!statusMap.has(cid)) {
+        const s = (r.status || '').toLowerCase();
+        statusMap.set(cid, { status: r.status || '', remarks: r.remarks || '', checker: r.checker || '' });
+      }
+    }
+    cartons.forEach(c => {
+      const cid = c.cartonId || '';
+      const pl = statusMap.get(cid);
+      if (pl) {
+        const s = (pl.status || '').toLowerCase();
+        if (s.includes('rejected')) { c.status = 'rejected'; c._isRejected = true; c.remarks = pl.remarks; c.checker = pl.checker; }
+        else if (s.includes('verified') || s.includes('approved')) { c.status = 'verified'; c.checker = pl.checker; }
+      }
+    });
+  }
+
+  // Sort cartons by cartonId ascending
   cartons.forEach(c => {
     const id = (c.cartonId || '').toUpperCase();
     const m = id.match(/^([A-Z]*)(\d+)$/);
@@ -1174,7 +1197,6 @@ async function renderListDetail() {
   }
 
   html += `<div id="entry-form-wrap"></div>`;
-
   html += `<div id="success-banner" class="hidden"></div>`;
 
   if (list.status === 'open') {
@@ -1251,15 +1273,13 @@ async function renderListDetail() {
   }
 
   html += `<div id="carton-detail-wrap"></div>`;
-
   el.innerHTML = html;
 
-  // If coming from Reject List edit, trigger edit mode after render
+  // Pending reject edit from Reject List
   if (pendingRejectEdit && pendingRejectEdit.listRef === list.listRef) {
     const targetCartonId = pendingRejectEdit.cartonId;
     const editRows = pendingRejectEdit.gasRows;
     pendingRejectEdit = null;
-    // Find carton index by ID (cartons already loaded above)
     const editIdx = cartons.findIndex(c => (c.cartonId || '') === targetCartonId);
     if (editIdx >= 0) {
       pendingEditRow = { cartonIdx: editIdx, gasRows: editRows };
@@ -1267,28 +1287,29 @@ async function renderListDetail() {
     }
   }
 
-  // Track carton count for multi-staff refresh
   lastCartonCount = cartons.length;
 
-  // Auto-refresh every 20 seconds for multi-staff collaboration
+  // OPTIMIZED: Use lightweight cartonCount for auto-refresh instead of full cartons
   autoRefreshInterval = setInterval(async () => {
     if (currentPage !== 'list-detail' || pendingEditRow !== null) return;
     try {
-      const fresh = await gasGetCartons(currentListId);
-      if (fresh && fresh.length !== lastCartonCount) {
-        const newCount = fresh.length - lastCartonCount;
-        lastCartonCount = fresh.length;
-        LIST_CARTONS[currentListId] = fresh;
-        renderListDetail();
-        if (newCount > 0) toast(newCount + ' new carton(s) added by other staff', 'success');
+      const countRes = await gasGetCartonCount(currentListId);
+      if (countRes && countRes.count !== lastCartonCount) {
+        const newCount = countRes.count - lastCartonCount;
+        lastCartonCount = countRes.count;
+        // Only do full refresh if count changed
+        const fresh = await gasGetCartons(currentListId);
+        if (fresh) {
+          LIST_CARTONS[currentListId] = fresh;
+          renderListDetail();
+          if (newCount > 0) toast(newCount + ' new carton(s) added by other staff', 'success');
+        }
       }
-    } catch(e) { /* silent - don't interrupt user */ }
-  }, 20000);
+    } catch(e) { /* silent */ }
+  }, 15000); // Reduced from 20s to 15s since it's lightweight now
 }
 
-// ── Complete Packing List ────────────────────────────────────
-
-
+// -- Complete Packing List -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 async function completePackingList() {
   if (isSubmitting) return;
   isSubmitting = true;
@@ -1298,22 +1319,23 @@ async function completePackingList() {
   const hasMismatch = cartons.some(c =>
     (c.parts||[]).some(p => p.bagMatch===false || p.innerMatch===false || p.outerMatch===false)
   );
-  if (hasMismatch) { toast('Cannot complete: some cartons have barcode mismatches.', 'error'); return; }
+  if (hasMismatch) { toast('Cannot complete: some cartons have barcode mismatches.', 'error'); isSubmitting = false; return; }
 
   const pw = prompt('ENTER PASSWORD TO COMPLETE PACKING LIST:');
-  if (pw === null) return;
-  if (pw !== 'simon1981') { toast('Incorrect password.', 'error'); return; }
-  if (!confirm('Mark this packing list as COMPLETED?\n\nStaff will no longer be able to add cartons.')) return;
+  if (pw === null) { isSubmitting = false; return; }
+  if (pw !== 'simon1981') { toast('Incorrect password.', 'error'); isSubmitting = false; return; }
+  if (!confirm('Mark this packing list as COMPLETED?\n\nStaff will no longer be able to add cartons.')) { isSubmitting = false; return; }
 
   const completedAt = new Date().toISOString();
   await gasUpdatePackingList(list.listRef, 'completed', completedAt);
   list.status = 'completed';
   list.completedAt = completedAt;
   toast('Packing list completed! \u2705', 'success');
+  isSubmitting = false;
   renderListDetail();
 }
 
-// ── View Carton Detail ───────────────────────────────────────
+// -- View Carton Detail -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 function viewCartonDetail(ci) {
   const list = LISTS.find(l => l.listRef === currentListId);
   if (!list) return;
@@ -1425,7 +1447,7 @@ function viewCartonDetail(ci) {
         <div class="modal-body">
           <div class="detail-kv" style="margin-bottom:14px">
             <div class="kv-box"><div class="kv-label">Carton ID</div><div class="kv-value">${escHtml(c.cartonId)}</div></div>
-            <div class="kv-box"><div class="kv-label">Packed By</div><div class="kv-value">${escHtml(c.packedBy||"—")}</div></div>
+            <div class="kv-box"><div class="kv-label">Packed By</div><div class="kv-value">${escHtml(c.packedBy||"\u2014")}</div></div>
             <div class="kv-box"><div class="kv-label">Type</div><div class="kv-value">${typeLabel}</div></div>
           </div>
           ${isKit ? `
@@ -1467,12 +1489,17 @@ function matchDot(m) {
   return '<span style="color:var(--muted-fg)">\u2014</span>';
 }
 
-// ── Edit Carton ──────────────────────────────────────────────
+// -- Edit Carton — OPTIMIZED: uses cached data, no re-fetch -- -- -- -- -- --
 async function startEditCarton(cartonIdx) {
   const list = LISTS.find(l => l.listRef === currentListId);
   if (!list) return;
-  const cartons = await gasGetCartons(list.listRef);
-  LIST_CARTONS[list.listRef] = cartons;
+  // OPTIMIZED: Use cached cartons instead of re-fetching
+  const cartons = LIST_CARTONS[list.listRef] || [];
+  if (!cartons.length) {
+    // Only fetch if cache is empty
+    const fresh = await gasGetCartons(list.listRef);
+    if (fresh) { LIST_CARTONS[list.listRef] = fresh; cartons.push(...fresh); }
+  }
   const c = cartons[cartonIdx];
   if (!c) return;
 
@@ -1512,7 +1539,7 @@ async function startEditCarton(cartonIdx) {
     });
   }
 
-  // ALWAYS fetch fresh gasRows from server (bypass cache)
+  // Fetch fresh gasRows from server (bypass cache)
   const gasRows = await fetchGasRowsForCarton(c.cartonId, c.cartonRef);
 
   pendingEditRow = {
@@ -1524,9 +1551,9 @@ async function startEditCarton(cartonIdx) {
 }
 
 
-// ═══════════════════════════════════════════════════════════════
+// =============================================================
 //  ENTRY FORM
-// ═══════════════════════════════════════════════════════════════
+// =============================================================
 function showEntryForm(isEdit) {
   const addBtn = document.getElementById('btn-add-entry');
   if (addBtn) addBtn.style.display = 'none';
@@ -1661,7 +1688,7 @@ function showEntryForm(isEdit) {
   renderPartCards();
 }
 
-// ── Part Cards ───────────────────────────────────────────────
+// -- Part Cards -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 function renderPartCards() {
   const container = document.getElementById('parts-container');
   if (!container) return;
@@ -1758,7 +1785,7 @@ function buildPartBarcodeField(partIdx, which, label) {
     </div>
     <div class="input-wrap">
       <input type="text" id="f-${which}-${partIdx}" placeholder="Scan or type..."
-        value="${escHtml(formState.parts[partIdx]?.[which]||'')}"
+        value="${escHtml(formState.parts[partIdx]?.[which]||'')}"}
         oninput="onPartBarcodeInput(${partIdx},'${which}')" />
       <button type="button" class="btn-icon" onclick="openCamera('${label}',v=>{document.getElementById('f-${which}-${partIdx}').value=v;onPartBarcodeInput(${partIdx},'${which}')})">
         <svg style="width:14px;height:14px"><use href="#ic-camera"/></svg>
@@ -2066,14 +2093,12 @@ function updateSubmitBtn() {
 
 function cancelForm() {
   resetFormState();
-  // Only render packing list detail if we're actually on that page
-  // (staff entry calls this too and handles its own rendering)
   if (currentPage === 'list-detail') renderListDetail();
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  SUBMIT ENTRY (Fixed: edit saves to same row)
-// ═══════════════════════════════════════════════════════════════
+// =============================================================
+//  SUBMIT ENTRY — OPTIMIZED: uses server-side nextCartonRef, no re-fetch
+// =============================================================
 async function submitEntry(isEdit) {
   if (isSubmitting) { toast('Please wait, submitting...', 'error'); return; }
   isSubmitting = true;
@@ -2136,26 +2161,37 @@ async function submitEntry(isEdit) {
   } else {
     const firstPart = formState.parts[0];
     const firstPhotos = firstPart.photos || { bag:null, inner:null, outer:null };
-    const uploadPartPhotos = (p, pi) => Promise.all([
-      maybeUpload(p.photos ? p.photos.bag : null, `bag_${cartonId}_p${pi}_${Date.now()}.jpg`),
-      maybeUpload(p.photos ? p.photos.inner : null, `inner_${cartonId}_p${pi}_${Date.now()}.jpg`),
-      maybeUpload(p.photos ? p.photos.outer : null, `carton_${cartonId}_p${pi}_${Date.now()}.jpg`),
-    ]).then(([b, i, o]) => { p._imgBagUrl = b; p._imgInnerUrl = i; p._imgCartonUrl = o; });
-
-    // Upload every part's photos concurrently instead of one-at-a-time —
-    // for a multi-part carton this turns N sequential round trips into 1 batch.
-    await Promise.all(formState.parts.map((p, pi) => uploadPartPhotos(p, pi)));
-    imgBagUrl = formState.parts[0]._imgBagUrl;
-    imgInnerUrl = formState.parts[0]._imgInnerUrl;
-    imgCartonUrl = formState.parts[0]._imgCartonUrl;
+    [imgBagUrl, imgInnerUrl, imgCartonUrl] = await Promise.all([
+      maybeUpload(firstPhotos.bag, `bag_${cartonId}_${Date.now()}.jpg`),
+      maybeUpload(firstPhotos.inner, `inner_${cartonId}_${Date.now()}.jpg`),
+      maybeUpload(firstPhotos.outer, `carton_${cartonId}_${Date.now()}.jpg`),
+    ]);
+    for (let pi = 0; pi < formState.parts.length; pi++) {
+      const p = formState.parts[pi];
+      if (!p.photos) p.photos = { bag:null, inner:null, outer:null };
+      if (pi === 0) {
+        p._imgBagUrl = imgBagUrl; p._imgInnerUrl = imgInnerUrl; p._imgCartonUrl = imgCartonUrl;
+      } else {
+        const [pb, pin, pout] = await Promise.all([
+          maybeUpload(p.photos.bag, `bag_${cartonId}_p${pi}_${Date.now()}.jpg`),
+          maybeUpload(p.photos.inner, `inner_${cartonId}_p${pi}_${Date.now()}.jpg`),
+          maybeUpload(p.photos.outer, `carton_${cartonId}_p${pi}_${Date.now()}.jpg`),
+        ]);
+        p._imgBagUrl = pb; p._imgInnerUrl = pin; p._imgCartonUrl = pout;
+      }
+    }
   }
 
   const now = new Date().toISOString();
-  // NOTE: CartonRef numbering no longer requires fetching the whole Cartons
-  // sheet — the backend assigns the next number atomically via a per-list
-  // counter (see saveCarton/getNextCartonRef in Code.gs). This removes a
-  // full-sheet scan from every single carton save (staff entry & list edit).
-  const cartonRef = isEdit && pendingEditRow?.cartonRef ? pendingEditRow.cartonRef : undefined; // undefined = let backend auto-assign
+
+  // OPTIMIZED: Use server-side nextCartonRef instead of fetching all cartons
+  let cartonRef;
+  if (isEdit && pendingEditRow?.cartonRef) {
+    cartonRef = pendingEditRow.cartonRef;
+  } else {
+    const nextRefRes = await gasGetNextCartonRef(list.listRef);
+    cartonRef = (nextRefRes && nextRefRes.nextRef) ? nextRefRes.nextRef : 'CTN-001';
+  }
 
   let parts;
   if (isKit) {
@@ -2191,16 +2227,10 @@ async function submitEntry(isEdit) {
   }
   const cartonRes = await gasSaveCarton(cartonSaveData);
   const savedRow = cartonRes && cartonRes.row ? cartonRes.row : cartonRow;
-  // Backend returns the auto-assigned CartonRef for brand-new cartons
-  const finalCartonRef = (cartonRes && cartonRes.cartonRef) ? cartonRes.cartonRef : (cartonRef || ('CTN-' + Date.now()));
 
-  // ── Packing Log: CRITICAL FIX for edit/resubmit same row ──
-  let gasRows = [];
-
-  // For edits: ensure we have gasRows. If empty, do a fresh fetch now.
+  // Packing Log update
   let editGasRows = (isEdit && pendingEditRow?.gasRows) ? pendingEditRow.gasRows : [];
   if (isEdit && editGasRows.length === 0 && pendingEditRow) {
-    // Fresh fetch using original cartonId (before any edit changes)
     const searchId = pendingEditRow.originalCartonId || cartonId;
     editGasRows = await fetchGasRowsForCarton(searchId, pendingEditRow.cartonRef);
   }
@@ -2211,76 +2241,73 @@ async function submitEntry(isEdit) {
         const allPartNos = parts.map(p => p.partNo).join(', ');
         const combinedBag = parts.map(p => p.bag).filter(Boolean).join(', ') || '';
         if (isEdit && editGasRows.length > 0) {
-          // Update existing Packing Log row(s) — run concurrently instead of sequentially
-          await Promise.all(editGasRows.map(gasRow => gasPost({ action:'resubmit', row: gasRow, cartonId, cartonRef: finalCartonRef,
-            customer: list.customer, packedBy: list.createdBy, checkerBy: '', partNo: allPartNos,
-            pi: formState.cartonPi||'', qty: formState.cartonQty||1, bag: combinedBag,
-            inner: cleanBarcode(formState.cartonInner), outer: cleanBarcode(formState.cartonOuter),
-            bagMatch: true, innerMatch: matchBool(formState.cartonInnerMatch), outerMatch: matchBool(formState.cartonOuterMatch),
-            imgBagUrl, imgInnerUrl, imgCartonUrl,
-          })));
-          gasRows = editGasRows;
+          for (const gasRow of editGasRows) {
+            await gasPost({ action:'resubmit', row: gasRow, cartonId, cartonRef,
+              customer: list.customer, packedBy: list.createdBy, checkerBy: '', partNo: allPartNos,
+              pi: formState.cartonPi||'', qty: formState.cartonQty||1, bag: combinedBag,
+              inner: cleanBarcode(formState.cartonInner), outer: cleanBarcode(formState.cartonOuter),
+              bagMatch: true, innerMatch: matchBool(formState.cartonInnerMatch), outerMatch: matchBool(formState.cartonOuterMatch),
+              imgBagUrl, imgInnerUrl, imgCartonUrl,
+            });
+          }
         } else {
-          // Create new Packing Log row
-          const res = await gasPost({ action:'submit', cartonId, cartonRef: finalCartonRef, partNo: allPartNos,
+          await gasPost({ action:'submit', cartonId, cartonRef, partNo: allPartNos,
             pi: formState.cartonPi||'', qty: formState.cartonQty||1, bag: combinedBag,
             inner: cleanBarcode(formState.cartonInner), outer: cleanBarcode(formState.cartonOuter),
             bagMatch: true, innerMatch: matchBool(formState.cartonInnerMatch), outerMatch: matchBool(formState.cartonOuterMatch),
             imgBagUrl, imgInnerUrl, imgCartonUrl, customer: list.customer, packedBy: list.createdBy, checkerBy: '', packedDate: '',
           });
-          if (res && res.row) gasRows.push(res.row);
         }
       } else {
-        // Non-kit mode — each part gets its own photos
         if (isEdit && editGasRows.length > 0) {
-          // Update each existing Packing Log row — run concurrently instead of sequentially
-          await Promise.all(editGasRows.map((rowNum, i) => {
+          for (let i = 0; i < editGasRows.length; i++) {
             const rp = parts[i] || parts[0];
-            const pBagUrl = rp._imgBagUrl || imgBagUrl;
-            const pInnerUrl = rp._imgInnerUrl || imgInnerUrl;
-            const pCartonUrl = rp._imgCartonUrl || imgCartonUrl;
-            return gasPost({ action:'resubmit', row: rowNum, cartonId, cartonRef: finalCartonRef,
+            await gasPost({ action:'resubmit', row: editGasRows[i], cartonId, cartonRef,
               customer: list.customer, packedBy: list.createdBy, checkerBy: '', partNo: rp.partNo||'', pi: rp.pi||'', qty: rp.qty||1,
               bag: rp.bag||'', inner: rp.inner||'', outer: rp.outer||'',
               bagMatch: rp.bagMatch, innerMatch: rp.innerMatch, outerMatch: rp.outerMatch,
-              imgBagUrl: pBagUrl, imgInnerUrl: pInnerUrl, imgCartonUrl: pCartonUrl,
+              imgBagUrl: rp._imgBagUrl || imgBagUrl, imgInnerUrl: rp._imgInnerUrl || imgInnerUrl, imgCartonUrl: rp._imgCartonUrl || imgCartonUrl,
             });
-          }));
-          gasRows = editGasRows;
+          }
         } else {
-          // Create new Packing Log rows — each part with its own photos, submitted concurrently
-          const results = await Promise.all(parts.map(part => {
-            const pBagUrl = part._imgBagUrl || imgBagUrl;
-            const pInnerUrl = part._imgInnerUrl || imgInnerUrl;
-            const pCartonUrl = part._imgCartonUrl || imgCartonUrl;
-            return gasPost({ action:'submit', cartonId, cartonRef: finalCartonRef, partNo: part.partNo, pi: part.pi, qty: part.qty,
+          for (const part of parts) {
+            await gasPost({ action:'submit', cartonId, cartonRef, partNo: part.partNo, pi: part.pi, qty: part.qty,
               bag: part.bag, inner: part.inner, outer: part.outer,
               bagMatch: part.bagMatch, innerMatch: part.innerMatch, outerMatch: part.outerMatch,
-              imgBagUrl: pBagUrl, imgInnerUrl: pInnerUrl, imgCartonUrl: pCartonUrl, customer: list.customer, packedBy: list.createdBy, checkerBy: '', packedDate: '',
+              imgBagUrl: part._imgBagUrl || imgBagUrl, imgInnerUrl: part._imgInnerUrl || imgInnerUrl, imgCartonUrl: part._imgCartonUrl || imgCartonUrl,
+              customer: list.customer, packedBy: list.createdBy, checkerBy: '', packedDate: '',
             });
-          }));
-          results.forEach(res => { if (res && res.row) gasRows.push(res.row); });
+          }
         }
       }
     } catch(e) { console.warn('GAS Packing Log submit warning:', e); }
   }
 
-  // Only refresh the full list-detail carton table when we're actually
-  // viewing that page. Staff Entry never shows this table, so skip the
-  // extra full-sheet fetch there — it was doubling every staff save.
-  if (savedRow && currentPage === 'list-detail') {
-    LIST_CARTONS[list.listRef] = await gasGetCartonsWithStatus(list.listRef, { noCache: true });
-  }
+  // Invalidate shared records cache since we added/modified records
+  sharedRecordsCache = [];
+  sharedRecordsTs = 0;
 
   resetFormState();
-  if (currentPage === 'list-detail') renderListDetail();
+
+  // In Staff Entry mode: stay on the staff page and show a fresh blank form
+  if (currentPage === 'staff') {
+    isSubmitting = false;
+    setButtonLoading('btn-submit', false);
+    // Reset form parts and show a new blank entry immediately
+    if (formState.parts.length === 0) addPartToForm();
+    renderStaff();
+    toast('Carton saved \u2014 ready for next carton!', 'success');
+    return;
+  }
+
+  renderListDetail();
 
   const banner = document.getElementById('success-banner');
   if (banner) {
     banner.classList.remove('hidden');
     banner.innerHTML = `<div class="alert alert-success" style="margin-bottom:12px">
       <svg><use href="#ic-check"/></svg>
-      <div><strong>${isEdit?'Resubmitted':'Saved'} \u2014 ${finalCartonRef}</strong><br/>
+      <div><strong>${isEdit?'Resubmitted':'Saved'} \u2014 ${cartonRef}</strong><br/>
       <span class="text-sm">Carton ID: ${escHtml(cartonId)} \u2014 ${parts.length} part(s) \u2014 ${list.listRef}</span></div>
       <button class="btn-icon" style="margin-left:auto" onclick="this.closest('.alert').parentElement.classList.add('hidden')"><svg style="width:12px;height:12px"><use href="#ic-x"/></svg></button>
     </div>`;
@@ -2290,9 +2317,9 @@ async function submitEntry(isEdit) {
 }
 
 
-// ═══════════════════════════════════════════════════════════════
-//  CHECKER VIEW
-// ═══════════════════════════════════════════════════════════════
+// =============================================================
+//  CHECKER VIEW — OPTIMIZED: shared cache, batch records, server-side filters
+// =============================================================
 let checkerFilter = 'pending';
 let checkerSearch = '';
 let checkerRecords = [];
@@ -2379,10 +2406,20 @@ async function loadCheckerRecords() {
   let errorMsg = '';
   if (GAS_URL) {
     try {
-      const res = await gasGet({ action:'records' });
-      if (res && res.records) { checkerRecords = res.records; allRecords = res.records; cacheCheckerRecords(res.records); }
-      else if (res && res.error) errorMsg = 'Server error: ' + res.error;
-      else errorMsg = 'No records from server.';
+      // OPTIMIZED: Use shared cache if fresh, else fetch with limit
+      let records;
+      if (sharedRecordsCache.length > 0 && (Date.now() - sharedRecordsTs) < SHARED_CACHE_TTL) {
+        records = sharedRecordsCache;
+      } else {
+        const res = await gasGet({ action:'recordsByStatus', filter: 'all', limit: '500' });
+        if (res && res.records) {
+          records = res.records;
+          sharedRecordsCache = records;
+          sharedRecordsTs = Date.now();
+        }
+      }
+      if (records) { checkerRecords = records; allRecords = records; cacheCheckerRecords(records); }
+      else { errorMsg = 'No records from server.'; }
     } catch(e) { errorMsg = 'Connection failed.'; }
   } else { errorMsg = 'GAS_URL not configured.'; }
   renderCheckerStats();
@@ -2390,19 +2427,27 @@ async function loadCheckerRecords() {
 }
 
 async function loadStampRecords() {
-  // Server-side filtered: only verified/approved rows are transferred,
-  // instead of pulling the entire Packing Log and filtering client-side.
   let records = [];
   let errorMsg = '';
   if (GAS_URL) {
     try {
-      const res = await gasGet({ action: 'records', status: 'approved' });
-      if (res && res.records) {
-        cacheCheckerRecords(res.records);
-        records = res.records;
+      // OPTIMIZED: Use shared cache if fresh
+      let allRecs;
+      if (sharedRecordsCache.length > 0 && (Date.now() - sharedRecordsTs) < SHARED_CACHE_TTL) {
+        allRecs = sharedRecordsCache;
+      } else {
+        const res = await gasGet({ action: 'recordsByStatus', filter: 'verified', limit: '500' });
+        if (res && res.records) {
+          allRecs = res.records;
+          sharedRecordsCache = allRecs;
+          sharedRecordsTs = Date.now();
+        }
       }
-      else if (res && res.error) errorMsg = 'Server error: ' + res.error;
-      else errorMsg = 'No records from server.';
+      if (allRecs) {
+        records = allRecs;
+        cacheCheckerRecords(allRecs);
+      }
+      else { errorMsg = 'No records from server.'; }
     } catch(e) { errorMsg = 'Connection failed.'; }
   } else { errorMsg = 'GAS_URL not configured.'; }
   stampRecordsCache = records;
@@ -2432,7 +2477,6 @@ function renderStampCards(records, errorMsg) {
   }
   if (filtered.length === 0) { wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-stamp"/></svg><p>' + (stampSearch ? 'No matches for "' + escHtml(stampSearch) + '"' : 'No verified cartons waiting to be stamped') + '</p></div>'; return; }
 
-  // Group by customer+cartonId so different customers don't merge
   const groups = {};
   for (const r of filtered) {
     const cid = (r.customer || 'unknown') + '|' + (r.cartonId || 'unknown');
@@ -2522,7 +2566,6 @@ function renderCheckerTable(errorMsg) {
   if (!wrap) return;
   if (recs.length === 0) { wrap.innerHTML = '<div class="empty-state"><svg><use href="#ic-check-sq"/></svg><p>' + (errorMsg || 'No records found') + '</p></div>'; return; }
 
-  // Group records by customer+cartonId so different customers don't merge
   const groups = {};
   for (const r of recs) {
     const cid = (r.customer || 'unknown') + '|' + (r.cartonId || 'unknown');
@@ -2533,7 +2576,6 @@ function renderCheckerTable(errorMsg) {
   wrap.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px">' + Object.values(groups).map(grecs => {
     const first = grecs[0];
     const partCount = grecs.length;
-    // Status: rejected > pending > approved
     let isRejected = false, isApproved = false;
     for (const r of grecs) {
       const s = (r.status||'').toLowerCase();
@@ -2545,12 +2587,10 @@ function renderCheckerTable(errorMsg) {
     const statusBorder = isRejected ? 'var(--danger-border)' : isApproved ? 'var(--primary-border)' : 'var(--amber-border)';
     const statusText = isRejected ? 'REJECTED' : isApproved ? 'APPROVED' : 'PENDING';
 
-    // Combine parts info
     const partNos = [...new Set(grecs.map(r => r.partNo).filter(Boolean))];
     const pis = [...new Set(grecs.map(r => r.pi).filter(Boolean))];
     const totalQty = grecs.reduce((sum, r) => sum + (parseInt(r.qty) || 0), 0);
 
-    // Collect all unique photos across parts
     const allPhotos = [];
     const seenUrls = new Set();
     for (const r of grecs) {
@@ -2560,12 +2600,10 @@ function renderCheckerTable(errorMsg) {
     }
     const photoHtml = allPhotos.length > 0 ? '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">' + allPhotos.map(p => { const thumb = getThumbUrl(p.url, 200); return `<img src="${thumb}" style="width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer" onclick="event.stopPropagation();openLightbox('${p.url}')" loading="lazy" title="${p.lbl}" />`; }).join('') + '</div>' : '';
 
-    // Barcode match: all parts must match
     const bagOk = grecs.every(r => r.bagMatch === true || r.bagMatch === 'true' || String(r.bag||'') === '');
     const innerOk = grecs.every(r => r.innerMatch === true || r.innerMatch === 'true' || String(r.inner||'') === '');
     const outerOk = grecs.every(r => r.outerMatch === true || r.outerMatch === 'true' || String(r.outer||'') === '');
 
-    // Row numbers for detail view
     const rowNums = grecs.map(r => r.row).filter(Boolean).join(',');
 
     return `<div class="record-card ${isRejected?'rejected':isApproved?'approved':''}" style="border-left:4px solid ${statusColor}" ${rowNums ? `onclick="openCheckerDetailGroup('${rowNums}')"` : ''}>
@@ -2593,6 +2631,7 @@ function renderCheckerTable(errorMsg) {
   }).join('') + '</div>';
 }
 
+// OPTIMIZED: Use batchRecords API instead of individual record calls
 async function openCheckerDetail(rowNum) {
   const cached = getCachedCheckerRecord(rowNum);
   if (cached) { currentCheckerRecord = cached; showCheckerDetailModal(cached); return; }
@@ -2605,23 +2644,37 @@ async function openCheckerDetail(rowNum) {
   } catch { toast('Error loading record', 'error'); }
 }
 
+// OPTIMIZED: Use batchRecords API for group detail
 async function openCheckerDetailGroup(rowNums) {
   const nums = rowNums.split(',').map(n => parseInt(n.trim())).filter(Boolean);
   if (nums.length === 0) return;
   if (nums.length === 1) { openCheckerDetail(nums[0]); return; }
-  // Fetch uncached rows in a single batched call instead of one gasGet
-  // per row — turns N sequential round trips into at most 1.
+
+  // Try cache first
   const records = [];
-  const missing = [];
+  const needFetch = [];
   for (const n of nums) {
     const cached = getCachedCheckerRecord(n);
-    if (cached) records.push(cached); else missing.push(n);
+    if (cached) { records.push(cached); }
+    else { needFetch.push(n); }
   }
-  if (missing.length > 0) {
-    const fetched = await gasGetRecordsByRows(missing);
-    fetched.forEach(r => { if (r && !r.error) { records.push(r); checkerRecordCache.set(r.row, r); } });
+
+  // Fetch missing in one batch call
+  if (needFetch.length > 0) {
+    try {
+      const res = await gasGet({ action: 'batchRecords', rows: needFetch.join(',') });
+      if (res && res.records) {
+        for (const r of res.records) {
+          records.push(r);
+          checkerRecordCache.set(r.row, r);
+        }
+      }
+    } catch { /* skip */ }
   }
+
   if (records.length === 0) { toast('Failed to load records', 'error'); return; }
+  // Sort to match original order
+  records.sort((a, b) => nums.indexOf(a.row) - nums.indexOf(b.row));
   if (records.length === 1) { showCheckerDetailModal(records[0]); return; }
   showCheckerDetailModalGroup(records);
 }
@@ -2715,7 +2768,6 @@ function showCheckerDetailModal(r) {
 function showCheckerDetailModalGroup(records) {
   const wrap = document.getElementById('checker-modal-wrap');
   const first = records[0];
-  // Determine overall status: rejected > pending > approved
   let isRejected = false, isApproved = false, isPending = false;
   for (const r of records) {
     const s = (r.status||'').toLowerCase();
@@ -2725,10 +2777,8 @@ function showCheckerDetailModalGroup(records) {
   }
   const overallStatus = isRejected ? 'REJECTED' : isPending ? 'PENDING' : 'APPROVED';
   const statusBadgeColor = isRejected ? 'badge-red' : isPending ? 'badge-amber' : 'badge-green';
-
   const rowNums = records.map(r => r.row).join(',');
 
-  // Build parts sections
   const partsHtml = records.map((r, idx) => {
     const bagOk = r.bagMatch === true || r.bagMatch === 'true' || String(r.bag||'') === '';
     const innerOk = r.innerMatch === true || r.innerMatch === 'true' || String(r.inner||'') === '';
@@ -2764,7 +2814,6 @@ function showCheckerDetailModalGroup(records) {
     </div>`;
   }).join('');
 
-  // Verdict section — only show if any part is still pending
   const hasPending = records.some(r => {
     const s = (r.status||'').toLowerCase();
     return !s || s === '' || s === 'pending';
@@ -2780,7 +2829,6 @@ function showCheckerDetailModalGroup(records) {
     <button class="btn btn-primary btn-full" id="btnSubmitVerdict" onclick="checkerSubmitVerdictGroup('${rowNums}')">Submit Decision</button>
   ` : '';
 
-  // Stamping section — only if all are approved
   const allApproved = records.every(r => (r.status||'').toLowerCase().includes('verified'));
   const allStamped = records.every(r => (r.stamped||'') === 'Y' || r.stamped === true || r.stamped === 'true');
   const stampSection = allApproved ? `
@@ -2807,7 +2855,6 @@ function showCheckerDetailModalGroup(records) {
           <div class="kv-box"><div class="kv-label">Packed By</div><div class="kv-value">${escHtml(first.packedBy||'\u2014')}</div></div>
           <div class="kv-box"><div class="kv-label">Total Qty</div><div class="kv-value">${totalQty}</div></div>
           <div class="kv-box"><div class="kv-label">Parts</div><div class="kv-value">${records.length}</div></div>
-          <div class="kv-box"><div class="kv-label">Packed By</div><div class="kv-value">${escHtml(first.packedBy||'\u2014')}</div></div>
           <div class="kv-box"><div class="kv-label">Date</div><div class="kv-value">${fmtDate(first.timestamp||first.createdAt)}</div></div>
         </div>
         ${partsHtml}
@@ -2841,7 +2888,14 @@ async function checkerSubmitVerdict() {
   const statusStr = selectedCheckerVerdict === 'Approved' ? 'Verified \u2705' : 'Rejected \u274C';
   try {
     const res = await gasPost({ action: 'verify', row: currentCheckerRecord.row, checker: name.toUpperCase(), status: statusStr, remarks: remarks.toUpperCase() });
-    if (res && res.success) { toast(`Record ${selectedCheckerVerdict.toLowerCase()}d \u2705`, 'success'); closeCheckerDetail(); await loadCheckerRecords(); }
+    if (res && res.success) {
+      toast(`Record ${selectedCheckerVerdict.toLowerCase()}d \u2705`, 'success');
+      // Update cache
+      sharedRecordsCache = [];
+      sharedRecordsTs = 0;
+      closeCheckerDetail();
+      await loadCheckerRecords();
+    }
     else { throw new Error(res?.error || 'Unknown error'); }
   } catch(e) { isSubmitting = false; toast('Submit failed: ' + e.message, 'error'); if (btn) { btn.disabled = false; btn.textContent = 'Submit Decision'; } }
 }
@@ -2859,10 +2913,19 @@ async function checkerSubmitVerdictGroup(rowNums) {
   const nums = rowNums.split(',').map(n => parseInt(n.trim())).filter(Boolean);
   let successCount = 0;
   try {
-    // Run all verify calls concurrently instead of sequentially
-    const results = await Promise.all(nums.map(n => gasPost({ action: 'verify', row: n, checker: name.toUpperCase(), status: statusStr, remarks: remarks.toUpperCase() }).catch(() => null)));
-    successCount = results.filter(res => res && res.success).length;
-    if (successCount > 0) { toast(`${successCount} part(s) ${selectedCheckerVerdict.toLowerCase()}d \u2705`, 'success'); closeCheckerDetail(); await loadCheckerRecords(); }
+    for (const n of nums) {
+      try {
+        const res = await gasPost({ action: 'verify', row: n, checker: name.toUpperCase(), status: statusStr, remarks: remarks.toUpperCase() });
+        if (res && res.success) successCount++;
+      } catch { /* skip */ }
+    }
+    if (successCount > 0) {
+      toast(`${successCount} part(s) ${selectedCheckerVerdict.toLowerCase()}d \u2705`, 'success');
+      sharedRecordsCache = [];
+      sharedRecordsTs = 0;
+      closeCheckerDetail();
+      await loadCheckerRecords();
+    }
     else { throw new Error('All submissions failed'); }
   } catch(e) { toast('Submit failed: ' + e.message, 'error'); if (btn) { btn.disabled = false; btn.textContent = 'Submit Decision'; } }
 }
@@ -2876,7 +2939,7 @@ async function checkerMarkStamped(row) {
     const res = await gasPost({ action: 'stamp', row: row, staff: staff.toUpperCase() });
     if (res && res.success) { toast('Stamped successfully \u2705', 'success'); closeCheckerDetail(); checkerViewMode = 'stamp'; await renderCheckerContent(); }
     else { throw new Error(res?.error || 'Unknown error'); }
-  } catch(e) { toast('Stamp failed: ' + e.message, 'error'); }
+  } catch(e) { toast('Stamp failed: ' + e.message, 'error'); isSubmitting = false; }
 }
 
 async function checkerMarkStampedGroup(rowNums) {
@@ -2887,21 +2950,15 @@ async function checkerMarkStampedGroup(rowNums) {
   const nums = rowNums.split(',').map(n => parseInt(n.trim())).filter(Boolean);
   let successCount = 0;
   try {
-    const results = await Promise.all(nums.map(n => gasPost({ action: 'stamp', row: n, staff: staff.toUpperCase() }).catch(() => null)));
-    successCount = results.filter(res => res && res.success).length;
+    for (const n of nums) {
+      try {
+        const res = await gasPost({ action: 'stamp', row: n, staff: staff.toUpperCase() });
+        if (res && res.success) successCount++;
+      } catch { /* skip */ }
+    }
     if (successCount > 0) { toast(`${successCount} part(s) stamped \u2705`, 'success'); closeCheckerDetail(); checkerViewMode = 'stamp'; await renderCheckerContent(); }
     else { throw new Error('All stamp operations failed'); }
-  } catch(e) { toast('Stamp failed: ' + e.message, 'error'); }
-}
-
-async function stampRecord(row) {
-  const staff = prompt('ENTER STAMPING STAFF NAME:');
-  if (!staff) return;
-  try {
-    const res = await gasPost({ action: 'stamp', row: row, staff: staff.toUpperCase() });
-    if (res && res.success) { toast('Stamped successfully \u2705', 'success'); checkerViewMode = 'stamp'; await renderCheckerContent(); }
-    else { throw new Error(res?.error || 'Unknown error'); }
-  } catch(e) { toast('Stamp failed: ' + e.message, 'error'); }
+  } catch(e) { toast('Stamp failed: ' + e.message, 'error'); isSubmitting = false; }
 }
 
 async function stampRecordGroup(rowNums) {
@@ -2910,18 +2967,22 @@ async function stampRecordGroup(rowNums) {
   const nums = rowNums.split(',').map(n => parseInt(n.trim())).filter(Boolean);
   let successCount = 0;
   try {
-    const results = await Promise.all(nums.map(n => gasPost({ action: 'stamp', row: n, staff: staff.toUpperCase() }).catch(() => null)));
-    successCount = results.filter(res => res && res.success).length;
+    for (const n of nums) {
+      try {
+        const res = await gasPost({ action: 'stamp', row: n, staff: staff.toUpperCase() });
+        if (res && res.success) successCount++;
+      } catch { /* skip */ }
+    }
     if (successCount > 0) { toast(`${successCount} part(s) stamped \u2705`, 'success'); checkerViewMode = 'stamp'; await renderCheckerContent(); }
     else { throw new Error('All stamp operations failed'); }
   } catch(e) { toast('Stamp failed: ' + e.message, 'error'); }
 }
 
-// ═══════════════════════════════════════════════════════════════
+// =============================================================
 //  TRANSFER
-// ═══════════════════════════════════════════════════════════════
+// =============================================================
 let transferAuthenticated = false;
-let transferDataMap = {}; // keyed by transfer row, stores full transfer data
+let transferDataMap = {};
 
 function checkTransferPassword() {
   const pw = prompt('ENTER MANAGER PASSWORD:');
@@ -3009,13 +3070,13 @@ async function submitTransferRequest() {
   const list = LISTS.find(l => l.listRef === currentListId);
   if (!list) return;
   const checkboxes = document.querySelectorAll('.tf-checkbox:checked');
-  if (checkboxes.length === 0) { toast('Please select at least one carton', 'error'); return; }
+  if (checkboxes.length === 0) { toast('Please select at least one carton', 'error'); isSubmitting = false; return; }
   const destType = document.getElementById('tf-dest-type').value;
   const newRef = destType === 'new' ? document.getElementById('tf-new-ref').value.trim() : destType;
   const newPrefix = document.getElementById('tf-new-prefix').value.trim().toUpperCase();
   const reason = document.getElementById('tf-reason').value.trim();
-  if (!newPrefix) { toast('New Carton ID Prefix is required', 'error'); return; }
-  if (!reason) { toast('Reason is required', 'error'); return; }
+  if (!newPrefix) { toast('New Carton ID Prefix is required', 'error'); isSubmitting = false; return; }
+  if (!reason) { toast('Reason is required', 'error'); isSubmitting = false; return; }
 
   const cartons = LIST_CARTONS[list.listRef] || [];
   const selectedCartons = [];
@@ -3060,7 +3121,6 @@ async function renderTransfer() {
     return;
   }
 
-  // Populate transferDataMap so approveTransfer can access carton rows
   transferDataMap = {};
   reqs.forEach(r => { if (r.row) transferDataMap[r.row] = r; });
 
@@ -3089,7 +3149,7 @@ async function renderTransfer() {
             <span class="badge ${isPending ? 'badge-amber' : isApproved ? 'badge-green' : 'badge-red'}">${r.status.toUpperCase()}</span>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;font-size:12px">
-            <div style="background:var(--muted);padding:10px;border-radius:8px"><div class="text-xs text-muted">From</div><div class="font-bold">${escHtml(r.fromListRef)}</div><div class="text-xs">${escHtml(r.fromListCustomer || '')}</div></div>
+            <div style="background:var(--muted);padding:10px;border-radius:8px"><div class="text-xs text-muted">From</div><div class="font-bold">${escHtml(r.fromListRef)}</div></div>
             <div style="background:var(--muted);padding:10px;border-radius:8px"><div class="text-xs text-muted">To</div><div class="font-bold">${escHtml(r.toListRef)}</div><div class="text-xs">Prefix: <strong>${escHtml(r.newPrefix)}</strong></div></div>
           </div>
           <div style="font-size:12px;margin-bottom:10px"><strong>Cartons (${r.cartons.length}):</strong> ${r.cartons.map(c => `<span class="badge badge-muted" style="margin:2px">${escHtml(c.cartonId)}</span>`).join('')}</div>
@@ -3098,21 +3158,30 @@ async function renderTransfer() {
           ${isApproved ? `<div style="font-size:12px;color:var(--green)"><strong>Approved by:</strong> ${escHtml(r.approvedBy)} \u2014 ${fmtDate(r.approvedAt)}</div>` : ''}
           ${isPending ? `
           <div style="display:flex;gap:8px;margin-top:12px">
-            <button class="btn btn-green" style="flex:1" onclick="approveTransfer(${r.row})"><svg><use href="#ic-check"/></svg>Approve</button>
-            <button class="btn btn-danger-outline" style="flex:1" onclick="rejectTransfer(${r.row})"><svg><use href="#ic-file-x"/></svg>Reject</button>
+            <button class="btn btn-green" style="flex:1" onclick="approveTransfer(${r.row},this)"><svg><use href="#ic-check"/></svg>Approve</button>
+            <button class="btn btn-danger-outline" style="flex:1" onclick="rejectTransfer(${r.row},this)"><svg><use href="#ic-file-x"/></svg>Reject</button>
           </div>` : ''}
         </div>`;
       }).join('') + '</div>'}
   `;
 }
 
-async function approveTransfer(transferRow) {
+async function approveTransfer(transferRow, btn) {
   if (isSubmitting) return;
   isSubmitting = true;
+  // Disable both action buttons in the card to prevent double-click
+  if (btn) {
+    const card = btn.closest('div[style*="display:flex"]');
+    if (card) card.querySelectorAll('button').forEach(b => { b.disabled = true; });
+    btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;margin-right:6px;border-color:#fff;border-top-color:transparent"></span>Please wait...';
+  }
   const manager = prompt('ENTER MANAGER NAME TO APPROVE:');
-  if (!manager) return;
+  if (!manager) {
+    isSubmitting = false;
+    renderTransfer();
+    return;
+  }
 
-  // Get carton rows from transfer data map
   const transferData = transferDataMap[transferRow];
   const cartonRows = transferData ? (transferData.cartons || []).map(c => c.row).filter(Boolean) : [];
   const cartonIds = transferData ? (transferData.cartons || []).map(c => c.cartonId).filter(Boolean) : [];
@@ -3125,49 +3194,45 @@ async function approveTransfer(transferRow) {
     });
     if (res && res.success) {
       toast('Transfer approved. New list: ' + (res.toListRef || toListRef), 'success');
-
-      // CRITICAL: Reset transferred cartons from 'verified' back to 'pending'
-      // so checker must review them again at the destination
       if (cartonRows.length > 0) {
         await resetTransferredCartonsStatus(cartonRows, cartonIds);
       }
-
       isSubmitting = false;
       renderTransfer();
     } else { throw new Error(res?.error || 'Unknown error'); }
-  } catch(e) { isSubmitting = false; toast('Approve failed: ' + e.message, 'error'); }
+  } catch(e) { isSubmitting = false; toast('Approve failed: ' + e.message, 'error'); renderTransfer(); }
 }
 
-// Reset transferred carton status to 'pending' in both Cartons sheet and Packing Log
 async function resetTransferredCartonsStatus(cartonRows, cartonIds) {
   if ((!cartonRows || cartonRows.length === 0) && (!cartonIds || cartonIds.length === 0)) return;
   try {
-    await gasPost({
-      action: 'resetTransferStatus',
-      cartonRows: cartonRows || [],
-      cartonIds: cartonIds || []
-    });
-  } catch(e) { console.warn('Status reset warning (backend may not support resetTransferStatus yet):', e); }
+    await gasPost({ action: 'resetTransferStatus', cartonRows: cartonRows || [], cartonIds: cartonIds || [] });
+  } catch(e) { console.warn('Status reset warning:', e); }
 }
 
-async function rejectTransfer(transferRow) {
+async function rejectTransfer(transferRow, btn) {
   if (isSubmitting) return;
   isSubmitting = true;
+  // Disable both action buttons in the card to prevent double-click
+  if (btn) {
+    const card = btn.closest('div[style*="display:flex"]');
+    if (card) card.querySelectorAll('button').forEach(b => { b.disabled = true; });
+    btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;margin-right:6px;border-color:currentColor;border-top-color:transparent"></span>Please wait...';
+  }
   const manager = prompt('ENTER MANAGER NAME TO REJECT:');
-  if (!manager) return;
+  if (!manager) { isSubmitting = false; renderTransfer(); return; }
   const reason = prompt('ENTER REJECTION REASON:');
-  if (!reason) return;
+  if (!reason) { isSubmitting = false; renderTransfer(); return; }
   try {
     const res = await gasPost({ action: 'rejectTransfer', transferRow: transferRow, manager: manager.toUpperCase(), reason: reason.toUpperCase() });
     if (res && res.success) { isSubmitting = false; toast('Transfer rejected', 'error'); renderTransfer(); }
     else { throw new Error(res?.error || 'Unknown error'); }
-  } catch(e) { isSubmitting = false; toast('Reject failed: ' + e.message, 'error'); }
+  } catch(e) { isSubmitting = false; toast('Reject failed: ' + e.message, 'error'); renderTransfer(); }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// ═══════════════════════════════════════════════════════════════
+// =============================================================
 //  MISSING CARTONS
-// ═══════════════════════════════════════════════════════════════
+// =============================================================
 async function renderMissingCartons() {
   const el = document.getElementById('page-missing-cartons');
   el.innerHTML = `
@@ -3181,15 +3246,13 @@ async function renderMissingCartons() {
 
   const allCartons = [];
   const lists = await gasGetPackingLists();
-  // Fetch all lists' cartons concurrently instead of one-by-one — the
-  // backend's shared cartons cache also means most of these calls hit
-  // cache after the first, so this is cheap either way.
-  const cartonsByList = await Promise.all(lists.map(list => gasGetCartons(list.listRef).catch(() => [])));
-  lists.forEach((list, i) => {
-    const cartons = cartonsByList[i] || [];
-    cartons.forEach(c => { c._listRef = list.listRef; c._customer = list.customer; });
-    allCartons.push(...cartons);
-  });
+  for (const list of lists) {
+    try {
+      const cartons = await gasGetCartons(list.listRef);
+      cartons.forEach(c => { c._listRef = list.listRef; c._customer = list.customer; });
+      allCartons.push(...cartons);
+    } catch(e) { /* skip */ }
+  }
 
   const container = document.getElementById('missing-cartons-content');
   if (!container) return;
@@ -3229,7 +3292,7 @@ async function renderMissingCartons() {
       <div class="card-header">
         <div>
           <div class="font-bold">${escHtml(group.customer || 'Unknown')}</div>
-          <div class="text-xs text-muted">${escHtml(group.listRef || '')} — ${group.cartons.length} cartons — <span style="color:var(--amber)">${missing.length} missing</span></div>
+          <div class="text-xs text-muted">${escHtml(group.listRef || '')} \u2014 ${group.cartons.length} cartons \u2014 <span style="color:var(--amber)">${missing.length} missing</span></div>
         </div>
         <span class="badge badge-amber">${missing.length} GAPS</span>
       </div>
@@ -3252,7 +3315,7 @@ async function renderMissingCartons() {
   html += '</div>';
 
   if (!hasAny) {
-    container.innerHTML = '<div class="empty-state"><svg><use href="#ic-check-circle"/></svg><p>No missing cartons found — all sequences are complete!</p></div>';
+    container.innerHTML = '<div class="empty-state"><svg><use href="#ic-check-circle"/></svg><p>No missing cartons found \u2014 all sequences are complete!</p></div>';
   } else {
     container.innerHTML = `<div class="alert" style="margin-bottom:16px;background:var(--amber-dim);border:1.5px solid var(--amber-border);color:var(--amber)">
       <svg style="width:20px;height:20px;flex-shrink:0;color:var(--amber)"><use href="#ic-alert"/></svg>
@@ -3261,17 +3324,15 @@ async function renderMissingCartons() {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  STAFF ENTRY — Fast carton entry, no data loading
-// ═══════════════════════════════════════════════════════════════
+// =============================================================
+//  STAFF ENTRY
+// =============================================================
 let staffSelectedList = null;
 
 async function renderStaff() {
   const el = document.getElementById('page-staff');
-  // Use cached LISTS if available, else fetch (and save to global)
   let lists = LISTS && LISTS.length > 0 ? LISTS : null;
   if (!lists) {
-    // Try localStorage cache first
     try {
       const cached = localStorage.getItem('mg_lists_cache');
       const cacheTime = localStorage.getItem('mg_lists_cache_time');
@@ -3294,7 +3355,6 @@ async function renderStaff() {
   if (!lists) lists = [];
   const openLists = lists.filter(l => l.status === 'open');
 
-  // List selector
   let html = `
     <div class="page-header">
       <div>
@@ -3311,12 +3371,12 @@ async function renderStaff() {
   } else {
     for (const l of openLists) {
       const selected = staffSelectedList && l.listRef === staffSelectedList.listRef ? ' selected' : '';
-      html += `<option value="${escHtml(l.listRef)}"${selected}>${escHtml(l.listRef)} — ${escHtml(l.customer)} (${escHtml(l.createdBy || '')})</option>`;
+      html += `<option value="${escHtml(l.listRef)}"${selected}>${escHtml(l.listRef)} \u2014 ${escHtml(l.customer)} (${escHtml(l.createdBy || '')})</option>`;
     }
   }
   html += `</select></div>`;
   if (staffSelectedList) {
-    html += `<div class="text-xs text-muted mt-4">${escHtml(staffSelectedList.customer)} — ${escHtml(staffSelectedList.team || '')}</div>`;
+    html += `<div class="text-xs text-muted mt-4">${escHtml(staffSelectedList.customer)} \u2014 ${escHtml(staffSelectedList.team || '')}</div>`;
   }
   html += `</div><div id="staff-form-area"></div>`;
 
@@ -3326,19 +3386,12 @@ async function renderStaff() {
 
   if (staffSelectedList) {
     currentListId = staffSelectedList.listRef;
-    // Include entry-form-wrap in the HTML so showEntryForm can find it
     html += `<div id="entry-form-wrap"></div>`;
   }
   el.innerHTML = html;
 
   if (staffSelectedList) {
-    // Use the SAME showEntryForm as Packing List — identical form
-    // NOTE: this does NOT fetch existing cartons for the list (unlike the
-    // Packing List "list-detail" view) — Staff Entry only needs to know
-    // which list is selected, not its carton history, so it stays fast
-    // even as a packing list accumulates hundreds of cartons.
     showEntryForm(false);
-    // Hide the packing-list-specific buttons/elements that don't apply here
     const addBtn = document.getElementById('btn-add-entry');
     if (addBtn) addBtn.style.display = 'none';
   } else {
@@ -3350,22 +3403,6 @@ function onStaffListChange(sel) {
   const ref = sel.value;
   staffSelectedList = LISTS.find(l => l.listRef === ref) || null;
   renderStaff();
-}
-
-function staffSetType(type) {
-  formState.cartonType = type;
-  if (type === 'single') { formState.parts = []; addPartToForm(); }
-  if (type === 'kit') { if (!formState.cartonPhotos) formState.cartonPhotos = { allParts: null, innerBox: null, cartonLabel: null }; }
-  renderStaff();
-}
-
-function staffAddPart() {
-  addPartToForm();
-  renderPartCards();
-  setTimeout(() => {
-    const container = document.getElementById('parts-container');
-    if (container) container.lastElementChild?.scrollIntoView({ behavior: 'smooth' });
-  }, 50);
 }
 
 async function staffSubmitEntry() {
@@ -3387,9 +3424,9 @@ async function staffSubmitEntry() {
   toast('Carton saved! Add next carton.','success');
 }
 
-
+// =============================================================
 //  MASTER REGISTER
-// ═══════════════════════════════════════════════════════════════
+// =============================================================
 const LS_MASTER = 'mg_master_records_v2';
 let masterRecords = [];
 function loadMasterRecords() { try { masterRecords = JSON.parse(localStorage.getItem(LS_MASTER)||'[]'); } catch{ masterRecords=[]; } }
@@ -3488,17 +3525,17 @@ function deleteMasterRecord(i) {
   renderMaster();
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  REJECT LIST
-// ═══════════════════════════════════════════════════════════════
+// =============================================================
+//  REJECT LIST — OPTIMIZED: uses server-side rejectedRecords, shared cache
+// =============================================================
 async function renderRejects() {
   const el = document.getElementById('page-rejects');
-  // Show loading spinner ONLY — no count, no cards until everything is ready
+  // FIX: Always clear and rebuild from scratch — no stale data
   el.innerHTML = `
     <div class="page-header">
       <div>
         <div class="page-title" style="color:var(--danger)"><svg style="color:var(--danger)"><use href="#ic-alert"/></svg>Reject List</div>
-        <div class="page-subtitle">Cartons rejected by checker — click Edit to fix and resubmit.</div>
+        <div class="page-subtitle">Cartons rejected by checker \u2014 click Edit to fix and resubmit.</div>
       </div>
       <button class="btn btn-outline btn-sm" onclick="renderRejects()"><svg><use href="#ic-refresh"/></svg>Refresh</button>
     </div>
@@ -3511,19 +3548,27 @@ async function renderRejects() {
     <div id="reject-edit-wrap"></div>
     <div id="reject-modal-wrap"></div>`;
 
-  // Server-side filtered: only rejected rows are ever transferred over the
-  // wire (and served from the shared 15s cache), instead of pulling the
-  // ENTIRE Packing Log for every device that opens this tab. This was the
-  // single biggest cost on the Reject tab — see gasGetRecordsByStatus.
+  // OPTIMIZED: Use server-side rejectedRecords API (no filtering needed on client)
   let rejected = [];
   try {
-    rejected = await gasGetRecordsByStatus('rejected');
+    // Use shared cache if it has rejected records, otherwise fetch dedicated endpoint
+    if (sharedRecordsCache.length > 0 && (Date.now() - sharedRecordsTs) < SHARED_CACHE_TTL) {
+      rejected = sharedRecordsCache.filter(r => (r.status || '').toLowerCase().includes('rejected'));
+    } else {
+      const res = await gasGet({ action: 'rejectedRecords' });
+      if (res && res.records) {
+        rejected = res.records;
+        // Update shared cache with all records for other views
+        sharedRecordsCache = res.records;
+        sharedRecordsTs = Date.now();
+      }
+    }
   } catch (e) { console.warn('Failed to fetch rejects:', e.message); }
 
   const el2 = document.getElementById('reject-content');
   if (!el2) return;
 
-  // Group by cartonId + customer (same as checker view)
+  // Group by cartonId + customer
   const groups = {};
   for (const r of rejected) {
     const key = (r.customer || 'unknown') + '|' + (r.cartonId || 'unknown');
@@ -3533,21 +3578,17 @@ async function renderRejects() {
 
   const groupKeys = Object.keys(groups);
 
-  // Build ALL HTML in memory — count + cards render together atomically
   let html = '';
-
-  // Count banner
   html += `<div class="stat-grid" style="max-width:300px;margin-bottom:20px">
     <div class="stat-card"><div class="label">Total Rejected</div><div class="value text-danger">${groupKeys.length}</div></div>
   </div>`;
 
   if (groupKeys.length === 0) {
-    html += `<div class="empty-state"><svg><use href="#ic-check-circle"/></svg><p>No rejected entries — great job!</p></div>`;
+    html += `<div class="empty-state"><svg><use href="#ic-check-circle"/></svg><p>No rejected entries \u2014 great job!</p></div>`;
     el2.innerHTML = html;
     return;
   }
 
-  // Build all cards into the html string
   for (const key of groupKeys) {
     const grecs = groups[key];
     const first = grecs[0];
@@ -3556,7 +3597,6 @@ async function renderRejects() {
     const pis = [...new Set(grecs.map(r => r.pi).filter(Boolean))];
     const totalQty = grecs.reduce((s, r) => s + (parseInt(r.qty) || 0), 0);
 
-    // Photos (deduplicated)
     const photos = [];
     const seen = new Set();
     for (const r of grecs) {
@@ -3566,7 +3606,6 @@ async function renderRejects() {
     }
     const photoHtml = photos.length > 0 ? `<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">${photos.map(p => `<img src="${getThumbUrl(p.url, 200)}" style="width:64px;height:64px;object-fit:cover;border-radius:6px;border:1px solid var(--border);cursor:pointer" onclick="openLightbox('${p.url}')" loading="lazy" />`).join('')}</div>` : '';
 
-    // Escape once for use in both HTML content AND onclick attribute
     const escCartonId = escHtml(first.cartonId || '');
     const escCustomer = escHtml(first.customer || '');
 
@@ -3577,18 +3616,18 @@ async function renderRejects() {
         <span class="badge badge-red">REJECTED</span>
       </div>
       <div style="font-size:0.85rem;color:var(--muted-fg);margin-bottom:6px">
-        <strong>Carton:</strong> ${escCartonId || '—'} | <strong>Parts:</strong> ${escHtml(partNos.join(', ') || '—')}
+        <strong>Carton:</strong> ${escCartonId || '\u2014'} | <strong>Parts:</strong> ${escHtml(partNos.join(', ') || '\u2014')}
         ${grecs.length > 1 ? `<span class="badge badge-muted" style="margin-left:6px">${grecs.length} parts</span>` : ''}
       </div>
       <div style="display:flex;gap:12px;font-size:0.8rem;color:var(--muted-fg);margin-bottom:4px">
-        <span><strong>PI:</strong> ${escHtml(pis.join(', ') || '—')}</span>
+        <span><strong>PI:</strong> ${escHtml(pis.join(', ') || '\u2014')}</span>
         <span><strong>Qty:</strong> ${totalQty} pcs</span>
-        <span><strong>Packed:</strong> ${escHtml(first.packedBy || '—')}</span>
+        <span><strong>Packed:</strong> ${escHtml(first.packedBy || '\u2014')}</span>
       </div>
       <div style="display:flex;gap:10px;font-size:0.75rem;margin-top:6px">
-        <span style="color:var(--muted-fg)">Bag ${first.bagMatch?'✅':'❌'}</span>
-        <span style="color:var(--muted-fg)">Inner ${first.innerMatch?'✅':'❌'}</span>
-        <span style="color:var(--muted-fg)">Outer ${first.outerMatch?'✅':'❌'}</span>
+        <span style="color:var(--muted-fg)">Bag ${first.bagMatch?'\u2705':'\u274C'}</span>
+        <span style="color:var(--muted-fg)">Inner ${first.innerMatch?'\u2705':'\u274C'}</span>
+        <span style="color:var(--muted-fg)">Outer ${first.outerMatch?'\u2705':'\u274C'}</span>
       </div>
       <div style="font-size:0.8rem;color:var(--danger);margin-top:8px;font-style:italic;background:var(--danger-dim);padding:8px;border-radius:6px;border:1px solid var(--danger-border)">
         <strong>Reason:</strong> ${escHtml(first.remarks || 'No reason')}<br/>
@@ -3606,13 +3645,11 @@ async function renderRejects() {
     </div>`;
   }
 
-  // Render EVERYTHING at once — count + all cards appear together
   el2.innerHTML = html;
 }
 
-// — Navigate to packing list to edit a rejected carton
+// -- Navigate to packing list to edit a rejected carton
 async function rejectEditCarton(cartonId, customer, rowNums) {
-  // Find packing list by customer name (fast — searches cached data, no API calls)
   const lists = LISTS && LISTS.length > 0 ? LISTS : await gasGetPackingLists();
   if (!LISTS || LISTS.length === 0) LISTS = lists;
 
@@ -3628,16 +3665,12 @@ async function rejectEditCarton(cartonId, customer, rowNums) {
 
   toast('Opening packing list for editing...', 'success');
 
-  // Store pending edit so renderListDetail can trigger it after rendering.
-  // renderListDetail will fetch cartons and find the index itself —
-  // avoids an extra API call here that was timing out.
   pendingRejectEdit = {
     listRef: foundList.listRef,
     cartonId: cartonId,
     gasRows: rowNums.split(',').map(Number).filter(Boolean)
   };
 
-  // Navigate to list detail page (this calls renderListDetail, which checks pendingRejectEdit)
   nav('list-detail', foundList.listRef);
 }
 
@@ -3648,7 +3681,7 @@ function closeRejectEdit() {
   resetFormState();
 }
 
-// — View rejected carton detail inline in Reject tab
+// -- View rejected carton detail — OPTIMIZED: uses batchRecords API
 async function openRejectDetailGroup(rowNums) {
   const wrap = document.getElementById('reject-modal-wrap');
   if (!wrap) return;
@@ -3657,16 +3690,18 @@ async function openRejectDetailGroup(rowNums) {
   const nums = rowNums.split(',').map(n => parseInt(n.trim())).filter(Boolean);
   if (nums.length === 0) { wrap.innerHTML = ''; return; }
 
-  // Batched fetch: one round trip for all rows instead of one gasGet('record')
-  // call per row (this was previously the slowest part of the Reject tab —
-  // opening a 3-part rejected carton meant 3 sequential full round trips).
-  const records = await gasGetRecordsByRows(nums);
+  // OPTIMIZED: Use batchRecords API instead of individual calls
+  let records = [];
+  try {
+    const res = await gasGet({ action: 'batchRecords', rows: rowNums });
+    if (res && res.records) records = res.records;
+  } catch { /* skip */ }
+
   if (records.length === 0) { toast('Failed to load detail', 'error'); wrap.innerHTML = ''; return; }
 
   const first = records[0];
   const totalQty = records.reduce((s, r) => s + (parseInt(r.qty) || 0), 0);
 
-  // Build parts sections
   const partsHtml = records.map((r, idx) => {
     const bagOk = r.bagMatch === true || r.bagMatch === 'true' || String(r.bag || '') === '';
     const innerOk = r.innerMatch === true || r.innerMatch === 'true' || String(r.inner || '') === '';
@@ -3702,7 +3737,6 @@ async function openRejectDetailGroup(rowNums) {
     </div>`;
   }).join('');
 
-  // Photos at carton level
   const allPhotos = [];
   const seen = new Set();
   for (const r of records) {
@@ -3743,7 +3777,34 @@ async function openRejectDetailGroup(rowNums) {
   </div>`;
 }
 
+// -- Init -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -
+// Wire up the real nav() function and replay any early clicks
+nav = window.__navReal;
+if (window.__navCalls && window.__navCalls.length) {
+  window.__navCalls.forEach(function(q) { nav(q[0], q[1]); });
+  window.__navCalls = [];
+}
+nav('staff');
 
+// Background prefetch: warm the packing-lists cache so Staff Entry and
+// Packing Lists tabs load instantly without a GAS round-trip.
+(async function prefetchLists() {
+  try {
+    const cached = localStorage.getItem('mg_lists_cache');
+    const cacheTime = localStorage.getItem('mg_lists_cache_time');
+    const isFresh = cached && cacheTime && Date.now() - parseInt(cacheTime) < 300000;
+    if (!isFresh && GAS_URL) {
+      const res = await gasGet({ action: 'packingLists' });
+      if (res && res.lists && res.lists.length > 0) {
+        LISTS = res.lists;
+        localStorage.setItem('mg_lists_cache', JSON.stringify(LISTS));
+        localStorage.setItem('mg_lists_cache_time', String(Date.now()));
+        // If staff page is still showing, re-render it now that lists are ready
+        if (currentPage === 'staff') renderStaff();
+      }
+    }
+  } catch(e) { /* silent — background prefetch is best-effort */ }
+})();
 </script>
 </body>
 </html>
